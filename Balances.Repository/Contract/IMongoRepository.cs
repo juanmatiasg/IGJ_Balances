@@ -10,6 +10,5 @@ namespace Balances.Repository.Contract
         List<Balance> GetAll();
         void UpdateBalance(string id, Balance balance);
         void DeleteBalance(string id);
-
     }
 }

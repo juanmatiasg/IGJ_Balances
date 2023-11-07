@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Balances.WebAssembly", "Bal
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Balances.Services", "Balances.Services\Balances.Services.csproj", "{C01CEB85-2F54-4432-834F-CA095E07A183}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Balances.Bussiness", "Balances.Bussiness\Balances.Bussiness.csproj", "{5006D919-8752-4033-8A2D-60EF73D7D9FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Balances.Bussiness", "Balances.Bussiness\Balances.Bussiness.csproj", "{5006D919-8752-4033-8A2D-60EF73D7D9FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

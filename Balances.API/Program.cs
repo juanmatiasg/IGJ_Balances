@@ -1,13 +1,11 @@
-
 using Balances.Repository.Contract;
 using Balances.Repository.Implementation;
 using Balances.Utilities;
 using Balances.Services.Contract;
 using Balances.Services.Implementation;
 using MongoDB.Driver;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Balances.Model;
+using Dominio.Helpers;
+using EmailSender;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +16,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+
 builder.Services.AddSingleton<IBalanceService, BalanceService>();
+builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 
 
 builder.Services.AddSingleton<IMongoRepository>(provider =>

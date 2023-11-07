@@ -11,4 +11,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.11" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Balances.DTO\Balances.DTO.csproj" />
+    <ProjectReference Include="..\Balances.Services\Balances.Services.csproj" />
+  </ItemGroup>
+
 </Project>
