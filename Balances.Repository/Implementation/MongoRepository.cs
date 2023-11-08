@@ -35,11 +35,6 @@ namespace Balances.Repository.Implementation
             return balance;
         }
 
-        public void InsertBalance(Balance balance)
-        {
-            _balances.InsertOneAsync(balance);
-
-        }
 
         public void UpdateBalance(string id, Balance balance)
         {

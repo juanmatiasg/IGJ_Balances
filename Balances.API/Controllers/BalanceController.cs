@@ -17,13 +17,14 @@ namespace Balances.API.Controllers
         }
 
       
-        [HttpPost]
+        [HttpPost("PostBalance")]
         public IActionResult Create(BalanceRequestDTO balanceRequest)
+
         {
-            var createdBalance =  _balanceService.Create(balanceRequest);
+            var createdBalance = _balanceService.Create(balanceRequest); // Asegúrate de que el método utilizado sea el correcto
             var response = new ResponseDTO<BalanceResponseDTO>
             {
-                Result = createdBalance, 
+                Result = createdBalance,
                 IsSuccess = true,
                 Message = "Balance created successfully"
             };

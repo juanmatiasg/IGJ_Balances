@@ -1,6 +1,5 @@
 ﻿@page "/Entidad"
 @using Balances.DTO;
-@using Balances.WebAssembly.Services.Contract;
 
 
 <!DOCTYPE html>
@@ -38,28 +37,28 @@
     </div>
     <ul class="nav nav-tabs d-flex justify-content-center">
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/Entidad">Entidad</a>
-        </li>
-        <li class="nav-item" disabled id="estado">
-            <a class="nav-link" href="/EstadoContable">Estado</a>
+            <a class="nav-link text-primary active" aria-current="page" href="/Entidad">Entidad</a>
         </li>
         <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
+            <a class="nav-link text-secondary" href="/EstadoContable">Estado</a>
         </li>
         <li class="nav-item" disabled>
-            <a class="nav-link" href="/Contador">Contador</a>
+            <a class="nav-link text-secondary" href="/Libros">Libros</a>
         </li>
         <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
+            <a class="nav-link text-secondary" href="/Contador">Contador</a>
         </li>
         <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
+            <a class="nav-link text-secondary" href="/Autoridad">Autoridad</a>
         </li>
         <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
+            <a class="nav-link text-secondary" href="/Integrante">Integrante</a>
         </li>
         <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+            <a class="nav-link text-secondary" href="/Archivos">Archivos</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link text-secondary" href="/Confirmacion">Confirmación DJ</a>
         </li>
     </ul>
 
@@ -112,12 +111,12 @@
 
                     <div class="form-group col mb-4">
                         <label for="location">Domicilio</label>
-                        <input type="text" class="form-control" id="location" placeholder="Domicilio">
+                        <input type="text" class="form-control" id="domicilio" placeholder="Domicilio">
                     </div>
 
                     <div class="col mt-4 mb-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta">
                             <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
                         </div>
                     </div>
@@ -133,11 +132,37 @@
                         <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" />
                     </div>
                 </div>
+                <div class=" ="row">
+                    <div class="col-12">
+                        <div class="modal fade" id="errorEmailModal" tabindex="-1" aria-labelledby="errorEmailModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="errorEmailModalLabel">Error de correo electrónico</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Por favor, ingrese un correo electrónico válido.
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" title="Por favor, ingrese un correo electrónico válido." />
+                    </div>
+                </div>
+
+                <div class="col mt-4">
+                    <button type="button"  id="btnInit" class="btn btn-secondary w-100" onclick="sendmail()">Iniciar Trámite</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!--Mail-->
+    <!--Mail
     <div class="container mt-2">
         <div class="card mx-auto" style="width: 800px;">
             <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
@@ -152,18 +177,15 @@
                     </div>
 
                     <div class="row mt-2">
-                        <div class="col-12 col-md-7">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" title="Por favor, ingrese un correo electrónico válido." />
-                        </div>
+                        
                         <div class="col mt-4">
-                            <button type="button" class="btn btn-primary" onclick="sendmail()">Enviar Mail</button>
+                            <button type="button" class="btn btn-primary" onclick="sendmail()">Iniciar Trámite</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> 
+    </div>-->
 
 
 
@@ -192,6 +214,36 @@
     *@
 
     <script>
+
+        document.getElementById("busqueda").addEventListener("input", enableSubmitButton);
+        document.getElementById("domicilio").addEventListener("input", enableSubmitButton);
+        document.getElementById("fechaDeInicio").addEventListener("input", enableSubmitButton);
+        document.getElementById("fechaDeCierre").addEventListener("input", enableSubmitButton);
+        document.getElementById("email").addEventListener("input", enableSubmitButton);
+
+        function enableSubmitButton() {
+            const busqueda = document.getElementById("busqueda").value;
+            const domicilio = document.getElementById("domicilio").value;
+            const fechaDeInicio = document.getElementById("fechaDeInicio").value;
+            const fechaDeCierre = document.getElementById("fechaDeCierre").value;
+            const email = document.getElementById("email").value;
+
+            const submitButton = document.getElementById("btnInit");
+
+          
+
+            if (busqueda && domicilio && fechaDeInicio && fechaDeCierre && email) {
+                submitButton.disabled = false;
+                submitButton.classList.remove("btn-secondary");
+                submitButton.classList.add("btn-primary");
+            } else {
+                submitButton.disabled = true;
+                submitButton.classList.remove("btn-primary");
+                submitButton.classList.add("btn-secondary");
+            }
+        }
+
+
         const localhost = "https://localhost:7172/";
 
 
@@ -210,8 +262,7 @@
                     }
                     return response.json();
                 }
-                )
-                .then(data => {
+                ).then(data => {
                     if (data.razonSocial) {
                         document.getElementById('razonSocial').textContent = data.razonSocial;
                     } else {
@@ -239,7 +290,7 @@
             const busqueda = document.getElementById("email").value;
             const endpoint = `mail?email=${busqueda}`;
 
-
+      
             const url = localhost + endpoint; // Combinar las partes de la URL
 
             fetch(url)
@@ -248,7 +299,12 @@
                         throw new Error('Error en la solicitud');
                     }
                     else {
+                    
                         alert("Se envio el correo");
+                        document.getElementById("btnInit").classList.add("d-none");
+
+
+                        insertEntity();
                     }
 
                     return response.json();
@@ -263,6 +319,63 @@
              );
 
         }
+       
+
+        function insertEntity() {
+            var razonSocial = document.getElementById("razonSocial").textContent
+            var tipoEntidad = document.getElementById("tipoEntidad").textContent
+            var domicilio = document.getElementById("domicilio").value;
+            var fechaInicio = document.getElementById("fechaDeInicio").value;
+            var fechaDeCierre = document.getElementById("fechaDeCierre").value
+            var email = document.getElementById("email").value;
+            var sedeSocialInscripta = document.getElementById("sedeInscripta").checked;
+
+            const endpoint = "Balance/PostBalance";
+
+            const url = localhost + endpoint;
+
+            // Datos para enviar en la solicitud POST
+            var data = {
+                id:"",
+                email: email,
+                entidad: {
+                    razonSocial: razonSocial,
+                    tipoEntidad: tipoEntidad,
+                    domicilio: domicilio,
+                    sedeSocialInscripta: sedeSocialInscripta,
+                    fechaInicio: fechaInicio,
+                    fechaDeCierre: fechaDeCierre,
+                }
+            };
+
+            // Realizar la solicitud POST
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Manejar la respuesta del servidor aquí
+                    console.log(data);
+                })
+                .catch(error => {
+                    // Manejar los errores aquí
+                    console.error('Error:', error);
+                });
+
+        }
+
+
+     
+     
     </script>
 
 </body>
