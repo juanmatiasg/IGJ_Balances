@@ -37,6 +37,7 @@ namespace WebApi.Controllers
             else
             {
                 entidadService = await BusquedaEntidadService.BusquedaEntidadByCorrelativo(Convert.ToInt32(filtro));
+                //var oEntidad = _mapper.Map<EntidadModel>(entidadService);
                 EntidadModel oEntidad = new EntidadModel()
                 {
                     NroCorrelativo = entidadService.NroCorrelativo.ToString(),

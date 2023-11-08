@@ -20,13 +20,17 @@ namespace Balances.WebAssembly.Services.Implementation
         {
             try
             {
+
                 return await _httpClient.GetFromJsonAsync<ResponseDTO<BusquedaEntidadResponse>>($"BusquedaByCuilOrCorrelativo?cuitcorrelativo={id}");
             }
             catch (HttpRequestException e)
             {
                 // Manejar el error apropiadamente
                 Console.WriteLine($"Excepción en la solicitud HTTP: {e.Message}");
-                return new ResponseDTO<BusquedaEntidadResponse> { };
+                return new ResponseDTO<BusquedaEntidadResponse> {
+                    IsSuccess = false,
+                    Message= e.Message,
+                };
             }
         }
     }

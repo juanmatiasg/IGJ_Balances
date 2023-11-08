@@ -1,7 +1,6 @@
 ﻿@page "/Entidad"
 @using Balances.DTO;
 @using Balances.WebAssembly.Services.Contract;
-@inject IBusquedaCuilOrCorrelativoService busquedaService;
 
 
 <!DOCTYPE html>
@@ -79,11 +78,11 @@
                 <div class="row">
                     <div class="col w-100">
                         <label for="busqueda">Número Correlativo/CUIT/CUIL</label>
-                        <input type="text" @bind="@busqueda" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" title="Por favor, ingrese un CUIT válido (solo números).">
+                        <input type="text"  id="busqueda" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" title="Por favor, ingrese un CUIT válido (solo números).">
                            
                     </div>
                     <div class="col mt-4">
-                        <button type="submit" class="btn btn-primary" @onclick=FindEntities>Buscar</button>
+                        <button type="submit" class="btn btn-primary" onclick="findEntities()">Buscar</button>
                     </div>
                 </div>
 
@@ -92,7 +91,7 @@
                         <p class="control texto">Razón Social:</p>
                     </div>
                     <div class="col-12 col-md-5">
-                        <p id="razonSocial">@razonSocial</p>
+                        <p id="razonSocial"></p>
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -100,7 +99,7 @@
                         <p class="control texto">Tipo de Entidad:</p>
                     </div>
                     <div class="col-12 col-md-5">
-                        <p id="tipoEntidad">@tipoEntidad</p>
+                        <p id="tipoEntidad"></p>
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -193,35 +192,16 @@
     *@
 
     <script>
-        const localhost = "https://localhost:7274/";
+        const localhost = "https://localhost:7172/";
 
-        window.addEventListener('beforeunload', function () {
-            sessionStorage.setItem('NroCorrelativo', document.getElementById('busqueda').textContent);
-            sessionStorage.setItem('RazonSocial', document.getElementById('razonSocial').textContent);
-            sessionStorage.setItem('TipoEntidad', document.getElementById('tipoEntidad').textContent);
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            // Recuperar los valores de sessionStorage
-            var nroCorrelativo = sessionStorage.getItem('NroCorrelativo');
-            var razonSocial = sessionStorage.getItem('RazonSocial');
-            var tipoEntidad = sessionStorage.getItem('TipoEntidad');
-
-            // Verificar si los valores existen en sessionStorage
-            if (razonSocial && tipoEntidad) {
-                // Actualizar los elementos HTML con los valores recuperados
-                document.getElementById('busqueda').textContent = nroCorrelativo;
-                document.getElementById('razonSocial').textContent = razonSocial;
-                document.getElementById('tipoEntidad').textContent = tipoEntidad;
-            }
-        });
 
         function findEntities() {
 
             const busqueda = document.getElementById("busqueda").value;
-            const endpoint = `BusquedaByCuilOrCorrelativo?cuit=${busqueda}`;
+            const endpoint = `BusquedaByCuilOrCorrelativo?cuitcorrelativo=${busqueda}`;
 
-            const url = localhost + endpoint; // Combinar las partes de la URL
+            const url = localhost + endpoint;
+
 
             fetch(url)
                 .then(response => {
@@ -245,6 +225,7 @@
                     }
 
                     console.log(data); // Puedes imprimir los datos en la consola o manejarlos de la manera que desees
+
                 }).catch(error => {
                     console.error('Hubo un problema con la solicitud fetch:', error);
                 }
@@ -265,17 +246,21 @@
                     if (!response.ok) {
                         throw new Error('Error en la solicitud');
                     }
+                    else {
+                        alert("Se envio el correo");
+                    }
+
                     return response.json();
                 }
                 )
                 .then(data => {
                     console.log(data); // Puedes imprimir los datos en la consola o manejarlos de la manera que desees
                 }).catch(error => {
-                    console.error('Hubo un problema con la solicitud fetch:', error);
+                    console.log(error);
                 }
-                );
 
-            alert("Se envio el correo");
+             );
+
         }
     </script>
 
@@ -285,29 +270,10 @@
 </html>
 
 @code {
-    private string razonSocial;
-    private string tipoEntidad;
-    private string busqueda;
+    private string hola;
 
-    private async void FindEntities()
+    private String Saludo()
     {
-        int numero;
-        var response = await busquedaService.GetByCuilOrCorrelativo(int.Parse(busqueda));
-
-            if (response.IsSuccess)
-            {
-                var result = response.Result;
-                razonSocial = result.RazonSocial;
-                tipoEntidad = result.TipoEntidad;
-            }
-            else
-            {
-                razonSocial ="No existe la Entidad";
-                tipoEntidad = "";
-            }
-
-        }
-       
+        return "Hola mundo";
     }
-
 }
