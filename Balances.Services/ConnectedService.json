@@ -1,0 +1,16 @@
+{
+  "ExtendedData": {
+    "inputs": [
+      "http://zidane:9020/WS-IGJ-Generic.asmx"
+    ],
+    "collectionTypes": [
+      "System.Array",
+      "System.Collections.Generic.Dictionary`2"
+    ],
+    "namespaceMappings": [
+      "*, WebService"
+    ],
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}

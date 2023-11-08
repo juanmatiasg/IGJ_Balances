@@ -1,0 +1,279 @@
+﻿@page "/Entidad"
+@using Balances.DTO;
+@using Balances.WebAssembly.Services.Contract;
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Entidad</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap-Vue CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.21.2/dist/bootstrap-vue.min.css" rel="stylesheet">
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Bootstrap-Vue JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.21.2/dist/bootstrap-vue.min.js"></script>
+
+</head>
+
+<body>
+
+    <!--Navegacion-->
+    <div class="d-flex justify-content-center align-items-center">
+        <h3 class="fs-2 font-weight mt-4 mb-4">
+            <p>Entidad:</p>
+        </h3>
+    </div>
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/Entidad">Entidad</a>
+        </li>
+        <li class="nav-item" disabled id="estado">
+            <a class="nav-link" href="/EstadoContable">Estado</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Libros">Libros</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Contador">Contador</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Autoridad">Autoridad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Integrante">Integrante</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Archivos">Archivos</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+        </li>
+    </ul>
+
+
+    <!---------------------------------------------------------------->
+    <!--Entidad-->
+
+    <div class="container mt-2">
+        <div class="card mx-auto" style="width: 800px;">
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Entidad
+            </div>
+
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col w-100">
+                        <label for="busqueda">Número Correlativo/CUIT/CUIL</label>
+                        <input type="text"  id="busqueda" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" title="Por favor, ingrese un CUIT válido (solo números).">
+                           
+                    </div>
+                    <div class="col mt-4">
+                        <button type="submit" class="btn btn-primary" onclick="findEntities()">Buscar</button>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-12 col-md-4 ml-2">
+                        <p class="control texto">Razón Social:</p>
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <p id="razonSocial"></p>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12 col-md-4 ml-2">
+                        <p class="control texto">Tipo de Entidad:</p>
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <p id="tipoEntidad"></p>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12 col-md-5">
+                        <div id="ReCaptchContainer" class="control texto" lang="es"></div>
+                    </div>
+                    <div class="col-6 col-md-4"></div>
+                </div>
+                <div class="row">
+
+                    <div class="form-group col mb-4">
+                        <label for="location">Domicilio</label>
+                        <input type="text" class="form-control" id="location" placeholder="Domicilio">
+                    </div>
+
+                    <div class="col mt-4 mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col mb-4">
+                        <label for="domicilio">Fecha de inicio</label>
+                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" />
+                    </div>
+                    <div class="col mb-4">
+                        <label for="domicilio">Fecha de Cierre</label>
+                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Mail-->
+    <div class="container mt-2">
+        <div class="card mx-auto" style="width: 800px;">
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Ingreso de Mail
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-10">
+                        <p style="margin-top: 4px; margin-left: -5px; color: #444; font-size: 18px; font-weight: normal;">
+                            Una carga de balance puede resultar muy extensa. Si agrega su dirección de e-mail, le enviaremos un vínculo de continuación con el cual podrá retomar la carga en cualquier momento.
+                        </p>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12 col-md-7">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" title="Por favor, ingrese un correo electrónico válido." />
+                        </div>
+                        <div class="col mt-4">
+                            <button type="button" class="btn btn-primary" onclick="sendmail()">Enviar Mail</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Error de validación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Por favor, complete todos los campos.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*
+    <script src="~/js/validarCamposEntidad.js"></script>
+    <script src="~/js/buscarEntidad.js"></script>
+
+    *@
+
+    <script>
+        const localhost = "https://localhost:7172/";
+
+
+        function findEntities() {
+
+            const busqueda = document.getElementById("busqueda").value;
+            const endpoint = `BusquedaByCuilOrCorrelativo?cuitcorrelativo=${busqueda}`;
+
+            const url = localhost + endpoint;
+
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud');
+                    }
+                    return response.json();
+                }
+                )
+                .then(data => {
+                    if (data.razonSocial) {
+                        document.getElementById('razonSocial').textContent = data.razonSocial;
+                    } else {
+                        document.getElementById('razonSocial').textContent = "Entidad no encontrada";
+                    }
+
+                    if (data.tipoEntidad) {
+                        document.getElementById('tipoEntidad').textContent = data.tipoEntidad;
+                    } else {
+                        document.getElementById('tipoEntidad').textContent = "";
+                    }
+
+                    console.log(data); // Puedes imprimir los datos en la consola o manejarlos de la manera que desees
+
+                }).catch(error => {
+                    console.error('Hubo un problema con la solicitud fetch:', error);
+                }
+                );
+
+        }
+
+        function sendmail() {
+
+            const busqueda = document.getElementById("email").value;
+            const endpoint = `mail?email=${busqueda}`;
+
+
+            const url = localhost + endpoint; // Combinar las partes de la URL
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud');
+                    }
+                    else {
+                        alert("Se envio el correo");
+                    }
+
+                    return response.json();
+                }
+                )
+                .then(data => {
+                    console.log(data); // Puedes imprimir los datos en la consola o manejarlos de la manera que desees
+                }).catch(error => {
+                    console.log(error);
+                }
+
+             );
+
+        }
+    </script>
+
+</body>
+
+
+</html>
+
+@code {
+    private string hola;
+
+    private String Saludo()
+    {
+        return "Hola mundo";
+    }
+}
