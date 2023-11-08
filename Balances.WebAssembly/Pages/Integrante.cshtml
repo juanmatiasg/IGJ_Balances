@@ -1,0 +1,158 @@
+﻿@page "/Integrante"
+
+@{
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado Contable</title>
+    <!-- Agrega los enlaces a los estilos de Bootstrap y otros recursos aquí -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<!--Navegacion-->
+<div class="d-flex justify-content-center align-items-center">
+    <h3 class="fs-2 font-weight mt-4 mb-4">
+        <p>Entidad:</p>
+    </h3>
+</div>
+<ul class="nav nav-tabs d-flex justify-content-center">
+    <li class="nav-item">
+        <a class="nav-link" disabled href="/Entidad">Entidad</a>
+    </li>
+    <li class="nav-item" disabled>
+        <a class="nav-link" href="/EstadoContable">Estado</a>
+    </li>
+    <li class="nav-item" disabled>
+        <a class="nav-link" href="/Libros">Libros</a>
+    </li>
+    <li class="nav-item" active disabled>
+        <a class="nav-link" href="/Contador">Contador</a>
+    </li>
+    <li class="nav-item" disabled>
+        <a class="nav-link" href="/Autoridad">Autoridad</a>
+    </li>
+    <li class="nav-item" disabled>
+        <a class="nav-link" href="/Integrante">Integrante</a>
+    </li>
+    <li class="nav-item" disabled>
+        <a class="nav-link" href="/Archivos">Archivos</a>
+    </li>
+    <li class="nav-item" disabled>
+        <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+    </li>
+</ul>
+
+
+<!---------------------------------------------------------------->
+    <!-- Tabs -->
+    <div class="container mt-4">
+        <ul class="nav nav-tabs" style="width: 1200px;">
+            <li class="nav-item">
+                <a class="nav-link active" href="#humano" onclick="openTab(event, 'humano')">Integrante Humano</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#juridico" onclick="openTab(event, 'juridico')">Integrante Jurídico</a>
+            </li>
+        </ul>
+        <hr style="width: 1130px;" />
+    </div>
+
+    <!-- Formulario de Datos del Integrante -->
+    <div class="container mt-4">
+        <form class="card" id="formAccionista" onsubmit="handleSubmit(event)" onchange="handleChange(event)">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 20px; color: #0375bc; font-weight: bold; text-align: center;">
+                    Datos del Integrante
+                </h5>
+                <div class="form-group">
+                    <label for="accionistaNombre">Nombre</label>
+                    <input type="text" class="form-control" id="accionistaNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="accionistaNombre">Apellido</label>
+                    <input type="text" class="form-control" id="accionistaNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="accionistaNombre">Tipo de Documento</label>
+                    <input type="text" class="form-control" id="accionistaNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="accionistaNombre">Numero de Documento</label>
+                    <input type="text" class="form-control" id="accionistaNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="accionistaNombre">Número de Identificación Fiscal</label>
+                    <input type="text" class="form-control" id="accionistaNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="accionistaNombre">Cuotas</label>
+                    <input type="text" class="form-control" id="accionistaNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="accionistaNombre">Votos</label>
+                    <input type="text" class="form-control" id="accionistaNombre" required>
+                </div>
+                <!-- Rest of the form content -->
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary" onclick="addItem(event)">Agregar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lista de Integrantes -->
+    <div class="container mt-4">
+        <div class="card" style="margin-top: 50px;">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #0375bc; font-size: larger;">Integrantes</h5>
+                <!-- ... Rest of the card content ... -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y otras dependencias -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, navlinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            navlinks = document.getElementsByClassName("nav-link");
+            for (i = 0; i < navlinks.length; i++) {
+                navlinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add("active");
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            // Agrega la lógica de envío de formulario aquí
+        }
+
+        function handleChange(event) {
+            // Agrega la lógica de cambio de formulario aquí
+        }
+
+        function addItem(event) {
+            event.preventDefault();
+            // Agrega la lógica para agregar un elemento del formulario
+        }
+
+        function deleteItem(id) {
+            // Agrega la lógica para eliminar el elemento con el id especificado
+        }
+    </script>
+
+</body>
+
+</html>

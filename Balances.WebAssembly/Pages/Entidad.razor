@@ -162,32 +162,6 @@
         </div>
     </div>
 
-    <!--Mail
-    <div class="container mt-2">
-        <div class="card mx-auto" style="width: 800px;">
-            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                Ingreso de Mail
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12 col-md-10">
-                        <p style="margin-top: 4px; margin-left: -5px; color: #444; font-size: 18px; font-weight: normal;">
-                            Una carga de balance puede resultar muy extensa. Si agrega su dirección de e-mail, le enviaremos un vínculo de continuación con el cual podrá retomar la carga en cualquier momento.
-                        </p>
-                    </div>
-
-                    <div class="row mt-2">
-                        
-                        <div class="col mt-4">
-                            <button type="button" class="btn btn-primary" onclick="sendmail()">Iniciar Trámite</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> 
-    </div>-->
-
-
 
     <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -228,14 +202,15 @@
             const fechaDeCierre = document.getElementById("fechaDeCierre").value;
             const email = document.getElementById("email").value;
 
-            const submitButton = document.getElementById("btnInit");
-
-          
-
+            const submitButton = document.getElementById("btnInit")
+   
             if (busqueda && domicilio && fechaDeInicio && fechaDeCierre && email) {
                 submitButton.disabled = false;
                 submitButton.classList.remove("btn-secondary");
                 submitButton.classList.add("btn-primary");
+
+               
+
             } else {
                 submitButton.disabled = true;
                 submitButton.classList.remove("btn-primary");
@@ -303,7 +278,7 @@
                         alert("Se envio el correo");
                         document.getElementById("btnInit").classList.add("d-none");
 
-
+                        enableNavLinks();
                         insertEntity();
                     }
 
@@ -371,6 +346,15 @@
                     console.error('Error:', error);
                 });
 
+        }
+
+        function enableNavLinks() {
+            const navLinks = document.querySelectorAll(".nav-link");
+            for (let i = 0; i < navLinks.length; i++) {
+                navLinks[i].classList.remove("text-secondary");
+                navLinks[i].classList.add("text-primary");
+                navLinks[i].removeAttribute("disabled");
+            }
         }
 
 

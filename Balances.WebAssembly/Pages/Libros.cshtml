@@ -1,0 +1,135 @@
+﻿@page "/Libros"
+@model WebApplicationBalances.Pages.Shared.LibrosModel
+@{
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos de Libros</title>
+    <!-- Agrega los enlaces a los estilos de Bootstrap y otros recursos que puedas necesitar -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!--Navegacion-->
+    <div class="d-flex justify-content-center align-items-center">
+        <h3 class="fs-2 font-weight mt-4 mb-4">
+            <p>Entidad:</p>
+        </h3>
+    </div>
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" disabled href="/Entidad">Entidad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/EstadoContable">Estado</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Libros">Libros</a>
+        </li>
+        <li class="nav-item" active disabled>
+            <a class="nav-link" href="/Contador">Contador</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Autoridad">Autoridad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Integrante">Integrante</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Archivos">Archivos</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+        </li>
+    </ul>
+
+    <div class="container mt-2">
+        <div class="card mx-auto" style="width: 800px;">
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Datos de Libros
+            </div>
+            @for (int i = 1; i <= 12; i++)
+            {
+                <div class="d-flex justify-content-center align-items-center content-input">
+                    <div class="col-md-2 mt-2">
+                        <p style="text-align: center;">
+                            Campo @i
+                        </p>
+                    </div>
+
+                    <div class="col-md-3">
+                        <input name="campo@i" placeholder="Campo @i" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input name="campo@i" placeholder="Campo @i" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input name="campo@i" placeholder="Campo @i" class="form-control" />
+                    </div>
+                   
+                    <div class="col-md-1 m-2">
+                        <div class="form-check">
+                            <input type="checkbox" v-model="input.noSabeNoContesta" class="form-check-input" />
+                            <label class="form-check-label">NC</label>
+                        </div>
+                    </div>
+
+                    <!-- Agrega más divs y estilos según sea necesario -->
+
+                </div>
+            }
+         </div>
+
+    </div>
+
+    <div class="row mt-4">
+        <div class="col d-flex justify-content-center w-100">
+            <button type="submit" class="btn btn-primary" onclick="validarCampos()">Enviar</button>
+        </div>
+    </div>
+
+    <!-- Agrega el modal al final de la página, después de los enlaces a los scripts de Bootstrap y otros recursos -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Error de validación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Por favor, complete todos los campos.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validarCampos() {
+            let camposVacios = false;
+            const inputs = document.querySelectorAll('input');
+
+            inputs.forEach(input => {
+                if (input.value.trim() === '') {
+                    camposVacios = true;
+                }
+            });
+
+            if (camposVacios) {
+                $('#errorModal').modal('show');
+            } else {
+                window.location.href ="/Contador"
+            }
+        }
+    </script>
+            
+
+
+</body>
+</html>
+

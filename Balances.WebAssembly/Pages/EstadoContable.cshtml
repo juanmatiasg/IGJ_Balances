@@ -1,0 +1,266 @@
+﻿@page "/EstadoContable"
+@{
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado Contable</title>
+    <!-- Agrega los enlaces a los estilos de Bootstrap y otros recursos aquí -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!--Navegacion-->
+    <div class="d-flex justify-content-center align-items-center">
+        <h3 class="fs-2 font-weight mt-4 mb-4">
+            <p>Entidad:</p>
+        </h3>
+    </div>
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" disabled aria-current="page" href="/Entidad">Entidad</a>
+        </li>
+        <li class="nav-item" enabled id="estado">
+            <a class="nav-link" active aria-current="page" href="/EstadoContable">Estado</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Libros">Libros</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Contador">Contador</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Autoridad">Autoridad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Integrante">Integrante</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Archivos">Archivos</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+        </li>
+    </ul>
+
+
+    <!---------------------------------------------------------------->
+    <div class="container mt-4">
+        <h2 class="text-center">Estado Contable</h2>
+        <form>
+            <!-- Período -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Período</h5>
+                    <div class="form-group">
+                        <label for="tipoBalance">Tipo de Balance</label>
+                        <select class="form-control" id="tipoBalance">
+                            <!-- Agrega las opciones aquí -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaInicio">Fecha de Inicio</label>
+                        <input type="text" class="form-control" id="fechaInicio" placeholder="Fecha de Inicio">
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaEstado">Fecha de Cierre</label>
+                        <input type="text" class="form-control" id="fechaEstado" placeholder="Fecha de Cierre">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aprobado por -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Aprobado por</h5>
+                    <div class="form-group">
+                        <label for="fechaReunionDirectorio">Fecha de Acta de Renión de Autoridades</label>
+                        <input type="text" class="form-control" id="fechaReunionDirectorio" placeholder="Fecha de Acta de Renión de Autoridades">
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaAsamblea">Fecha de Acta de Reunión de Socios</label>
+                        <input type="text" class="form-control" id="fechaAsamblea" placeholder="Fecha de Acta de Reunión de Socios">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rubros del Balance -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Rubros del Balance</h5>
+                    <!-- Repite esta estructura para otros campos -->
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="bienesDeCambio">Bienes de Cambio</label>
+                        <input type="text" class="form-control" id="bienesDeCambio" placeholder="Bienes de Cambio">
+                    </div>
+                    <div class="form-group">
+                        <label for="activoCorriente">Activo Corriente</label>
+                        <input type="text" class="form-control" id="activoCorriente" placeholder="Activo Corrientee">
+                    </div>
+                    <div class="form-group">
+                        <label for="bienesDeUso">Bienes de Uso</label>
+                        <input type="text" class="form-control" id="bienesDeUso" placeholder="Bienes de Uso">
+                    </div>
+                    <div class="form-group">
+                        <label for="propiedadesDeInversion">Inversiones Activo No Corriente</label>
+                        <input type="text" class="form-control" id="propiedadesDeInversion" placeholder="Inversiones Activo No Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="activoNoCorrienteRestante">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="activoNoCorrienteRestante" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                    <div class="form-group">
+                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
+                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rubros del Patrimonio Neto -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Rubros del Patrimonio Neto</h5>
+                    <!-- Repite esta estructura para otros campos -->
+                    <div class="form-group">
+                        <label for="capitalSuscripto">Capital Suscripto</label>
+                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
+                    </div>
+                    <div class="form-group">
+                        <label for="capitalSuscripto">Capital Suscripto</label>
+                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
+                    </div>
+                    <div class="form-group">
+                        <label for="capitalSuscripto">Capital Suscripto</label>
+                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
+                    </div>
+                    <div class="form-group">
+                        <label for="capitalSuscripto">Capital Suscripto</label>
+                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
+                    </div>
+                    <div class="form-group">
+                        <label for="capitalSuscripto">Capital Suscripto</label>
+                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
+                    </div>
+                    <div class="form-group">
+                        <label for="capitalSuscripto">Capital Suscripto</label>
+                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
+                    </div>
+                    <div class="form-group">
+                        <label for="capitalSuscripto">Capital Suscripto</label>
+                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Datos Adicionales</h5>
+                    <!-- Repite esta estructura para otros campos -->
+                    <div class="form-group">
+                        <h5 class="card-title">
+                            Otros Rubros del Patrimonio Neto</h5>
+
+                        <label for="capitalSuscripto">Capital Suscripto</label>
+                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
+                    </div>
+                    <div class="form-group">
+                        <label for="capitalSuscripto">Capital Suscripto</label>
+                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
+                    </div>
+                    <button type="submit" class="btn btn-primary d-flex justify-content-center">Agregar +</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <!-- Agrega el modal al final de la página, después de los enlaces a los scripts de Bootstrap y otros recursos -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Error de validación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Por favor, complete todos los campos.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <button type="button" class="btn btn-primary d-flex justify-content-center" onclick="validarCampos()">Validar Campos</button>
+
+
+    <!-- Agrega el siguiente script al final de la página, después del modal y los enlaces a los scripts de Bootstrap y otros recursos -->
+    <script>
+        function validarCampos() {
+            const formElements = document.querySelectorAll('input[type="text"]');
+            let allFieldsFilled = true;
+
+            formElements.forEach((element) => {
+                if (element.value.trim() === '') {
+                    allFieldsFilled = false;
+                }
+            });
+
+            if (allFieldsFilled) {
+                alert('Todos los campos están completos.');
+                window.location.href = '/Libros';
+            } else {
+                $('#errorModal').modal('show');
+            }
+        }
+    </script>
+
+    <!-- Agrega los enlaces a los scripts de Bootstrap y otros recursos aquí -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

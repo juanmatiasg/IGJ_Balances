@@ -1,0 +1,123 @@
+﻿@page "/Archivos"
+@model WebApplicationBalances.Pages.Shared.ArchivosModel
+@{
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archivos</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+
+<body>
+    <!--Navegacion-->
+    <div class="d-flex justify-content-center align-items-center">
+        <h3 class="fs-2 font-weight mt-4 mb-4">
+            <p>Entidad:</p>
+        </h3>
+    </div>
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/Entidad">Entidad</a>
+        </li>
+        <li class="nav-item" disabled id="estado">
+            <a class="nav-link" href="/EstadoContable">Estado</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Libros">Libros</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Contador">Contador</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Autoridad">Autoridad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Integrante">Integrante</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Archivos">Archivos</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+        </li>
+    </ul>
+
+
+    <!---------------------------------------------------------------->
+    <div class="container mt-5">
+        <h2 class="text-center" style="margin-bottom: 20px; color: #0375bc; font-weight: bold;">
+            Archivos
+        </h2>
+        <div class="row">
+            <!-- Tarjeta: Enviar Archivos -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Enviar Archivos
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="tipoArchivo">Tipo de Archivo</label>
+                                <select class="form-control" id="tipoArchivo">
+                                    <option value="Declaraciones de Accionista">Declaraciones de Accionista</option>
+                                    <option value="Estatuto">Estatuto</option>
+                                </select>
+                            </div>
+                        </form>
+                        <div class="card-text text-center">
+                            <h5>Arrastre los archivos aquí o haga clic para subir</h5>
+                            <p>Los archivos deben tener un máximo de 20MB.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta: Archivo Recibido -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Archivo Recibido
+                    </div>
+                    <ul class="list-group list-group-flush" id="archivosRecibidos">
+                        <!-- Los archivos recibidos se agregarán aquí -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Función para agregar un archivo recibido a la lista
+        function agregarArchivoRecibido(nombreArchivo) {
+            const listaArchivosRecibidos = document.getElementById("archivosRecibidos");
+            const listItem = document.createElement("li");
+            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+            listItem.innerHTML = `
+                                ${nombreArchivo}
+                                <span class="badge badge-danger badge-pill" onclick="eliminarArchivo(this)">X</span>
+                            `;
+            listaArchivosRecibidos.appendChild(listItem);
+        }
+
+        // Función para eliminar un archivo de la lista
+        function eliminarArchivo(elemento) {
+            elemento.parentElement.remove();
+        }
+    </script>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

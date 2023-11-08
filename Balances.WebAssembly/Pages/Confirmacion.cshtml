@@ -1,0 +1,150 @@
+﻿@page "/Confirmacion"
+@model WebApplicationBalances.Pages.Shared.ConfirmacionModel
+@{
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!--Navegacion-->
+    <div class="d-flex justify-content-center align-items-center">
+        <h3 class="fs-2 font-weight mt-4 mb-4">
+            <p>Entidad:</p>
+        </h3>
+    </div>
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/Entidad">Entidad</a>
+        </li>
+        <li class="nav-item" disabled id="estado">
+            <a class="nav-link" href="/EstadoContable">Estado</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Libros">Libros</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Contador">Contador</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Autoridad">Autoridad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Integrante">Integrante</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Archivos">Archivos</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+        </li>
+    </ul>
+
+
+    <!---------------------------------------------------------------->
+    <div id="app" v-if="Ok">
+        <div v-if="loading" style="min-height: 500px;margin-top: 100px;margin-left: 500px;">
+            <img src="/1487.gif" alt="Logo">
+        </div>
+        <div v-else>
+            <!-- Render PDF -->
+        </div>
+    </div>
+
+    <div v-else>
+        <ul class="list-group" v-for="error in errores">
+            <li class="list-group-item" style="color: red;">{{ error }}</li>
+        </ul>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+<script>
+    const loading = true;
+    const Ok = false;
+    const errores = [];
+
+    const rootUrl = ""; // Put your URL here
+    const pdfSource = rootUrl + 'Confirmacion/' + localStorage.getItem('BalanceId');
+
+    window.onload = function () {
+        CheckOnServer();
+    };
+
+    function CheckOnServer() {
+        showPdf();
+    }
+
+    function showPdf() {
+        console.log("SHOW PDF");
+        errores.length = 0;
+
+        // Use Axios or Fetch API for making API calls
+        // axios.get(rootUrl + 'Confirmacion/validar/' + localStorage.getItem('BalanceId'))
+        //   .then(response => {
+        //     paintPanel(response);
+        //   });
+
+        // For demo, we are using a mock function
+        mockAxiosGetRequest(rootUrl + 'Confirmacion/validar/' + localStorage.getItem('BalanceId'))
+            .then(response => {
+                paintPanel(response);
+            });
+    }
+
+    function paintPanel(response) {
+        // Process your response and errors
+
+        console.log('ARRAY IS EMPTY');
+
+        const arrayOk = arrayIsEmpty(errores) === true;
+        console.log(arrayOk);
+
+        Ok = arrayOk;
+
+        console.log("CONFIRMACION CheckOnServer errores: ");
+
+        console.log(errores);
+    }
+
+    function arrayIsEmpty(array) {
+        //If it's not an array, return FALSE.
+        if (!Array.isArray(array)) {
+            return false;
+        }
+        //If it is an array, check its length property
+        if (array.length === 0) {
+            //Return TRUE if the array is empty
+            return true;
+        }
+        //Otherwise, return FALSE.
+        return false;
+    }
+
+    // Mock Axios GET Request
+    function mockAxiosGetRequest(url) {
+        return new Promise((resolve, reject) => {
+            // Mimicking the behavior of axios.get()
+            // Replace this with your actual logic
+            setTimeout(() => {
+                const response = {
+                    data: ["Error 1", "Error 2", "Error 3"] // Example data, replace with your actual response
+                };
+                resolve(response);
+            }, 2000);
+        });
+    }
+</script>
+
+</html>
