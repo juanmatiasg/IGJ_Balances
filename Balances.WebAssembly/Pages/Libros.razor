@@ -1,5 +1,5 @@
-﻿@page "/Libros"
-@model WebApplicationBalances.Pages.Shared.LibrosModel
+﻿
+@page "/Libros"
 @{
 }
 
@@ -69,7 +69,7 @@
                     <div class="col-md-3">
                         <input name="campo@i" placeholder="Campo @i" class="form-control" />
                     </div>
-                   
+
                     <div class="col-md-1 m-2">
                         <div class="form-check">
                             <input type="checkbox" v-model="input.noSabeNoContesta" class="form-check-input" />
@@ -81,7 +81,7 @@
 
                 </div>
             }
-         </div>
+        </div>
 
     </div>
 
@@ -123,13 +123,18 @@
             if (camposVacios) {
                 $('#errorModal').modal('show');
             } else {
-                window.location.href ="/Contador"
+                window.location.href = "/Contador"
             }
         }
     </script>
-            
+
 
 
 </body>
 </html>
 
+
+
+@code {
+
+}

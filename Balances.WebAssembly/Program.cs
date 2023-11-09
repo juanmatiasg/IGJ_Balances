@@ -1,7 +1,10 @@
+using Balances.Services.Contract;
+using Balances.Services.Implementation;
 using Balances.WebAssembly;
 
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

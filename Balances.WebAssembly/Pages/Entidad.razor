@@ -162,7 +162,6 @@
         </div>
     </div>
 
-
     <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -202,15 +201,14 @@
             const fechaDeCierre = document.getElementById("fechaDeCierre").value;
             const email = document.getElementById("email").value;
 
-            const submitButton = document.getElementById("btnInit")
-   
+            const submitButton = document.getElementById("btnInit");
+
+          
+
             if (busqueda && domicilio && fechaDeInicio && fechaDeCierre && email) {
                 submitButton.disabled = false;
                 submitButton.classList.remove("btn-secondary");
                 submitButton.classList.add("btn-primary");
-
-               
-
             } else {
                 submitButton.disabled = true;
                 submitButton.classList.remove("btn-primary");
@@ -277,7 +275,6 @@
                     
                         alert("Se envio el correo");
                         document.getElementById("btnInit").classList.add("d-none");
-
                         enableNavLinks();
                         insertEntity();
                     }
@@ -295,6 +292,7 @@
 
         }
        
+
 
         function insertEntity() {
             var razonSocial = document.getElementById("razonSocial").textContent
@@ -323,6 +321,8 @@
                 }
             };
 
+           
+
             // Realizar la solicitud POST
             fetch(url, {
                 method: 'POST',
@@ -330,16 +330,22 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
+
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return response.json();
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
                 .then(data => {
-                    // Manejar la respuesta del servidor aquí
                     console.log(data);
+                    // Manejar la respuesta del servidor aquí
+                    var idBalance = JSON.stringify(data['result']['id']);
+                    const modifiedIdBalanced = idBalance.replace(/['"]+/g, ''); // Recibo un Json de String y lo remplazamos a una variable sin ""
+                    
+                    console.log(modifiedIdBalanced);
+                    setSession(modifiedIdBalanced);
                 })
                 .catch(error => {
                     // Manejar los errores aquí
@@ -357,8 +363,22 @@
             }
         }
 
+        async function setSession(modifiedIdBalanced) {
+            const endpointSession = `Session/${modifiedIdBalanced}`;
+            const url = localhost + endpointSession;
 
-     
+            const res = await fetch(url, {
+                "method": "POST",
+                "headers": {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await res.json();
+            console.log(data);
+        }
+        
+
+       
      
     </script>
 

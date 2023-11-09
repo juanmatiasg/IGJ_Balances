@@ -1,7 +1,7 @@
 ﻿function validarCampos() {
     const busqueda = document.getElementById("busqueda").value;
     const email = document.getElementById("email").value;
-    const location = document.getElementById("location").value;
+    const location = document.getElementById("domicilio").value;
     const fechaDeInicio = document.getElementById("fechaDeInicio").value;
     const fechaDeCierre = document.getElementById("fechaDeCierre").value;
 

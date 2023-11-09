@@ -12,14 +12,28 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+//SMTP Settings
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
+//Balance
 builder.Services.AddSingleton<IBalanceService, BalanceService>();
+
+//Email
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
+
+//Session
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+    options.IdleTimeout = TimeSpan.FromHours(3));
+
 
 
 builder.Services.AddSingleton<IMongoRepository>(provider =>
@@ -56,6 +70,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//Session
+app.UseSession();
+
+//Cors
 app.UseCors("NuevaPolitica");
 
 app.UseAuthorization();
