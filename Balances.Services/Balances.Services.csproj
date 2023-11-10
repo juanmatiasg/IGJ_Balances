@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     <PackageReference Include="MimeKit" Version="4.2.0" />
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
@@ -18,6 +20,7 @@
     <ProjectReference Include="..\Balances.DTO\Balances.DTO.csproj" />
     <ProjectReference Include="..\Balances.Model\Balances.Model.csproj" />
     <ProjectReference Include="..\Balances.Repository\Balances.Repository.csproj" />
+    <ProjectReference Include="..\Balances.Utilities\Balances.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

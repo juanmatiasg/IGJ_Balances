@@ -1,13 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Balances.Model
+﻿namespace Balances.Model
 {
     public class Entidad
     {
@@ -16,6 +7,8 @@ namespace Balances.Model
         public string TipoEntidad { get; set; }
 
         public string Domicilio { get; set; }
+
+        public string Correlativo { get; set; }
 
         public bool SedeSocialInscripta { get; set; }
 

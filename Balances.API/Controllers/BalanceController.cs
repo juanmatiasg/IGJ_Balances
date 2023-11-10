@@ -1,5 +1,4 @@
-﻿using Balances.DTO;
-using Balances.Model;
+﻿using Balances.Model;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,19 +15,14 @@ namespace Balances.API.Controllers
             _balanceService = balanceService;
         }
 
-      
+
         [HttpPost("PostBalance")]
-        public IActionResult Create(BalanceRequestDTO balanceRequest)
+        public IActionResult Create(Balance balance)
 
         {
-            var createdBalance = _balanceService.Create(balanceRequest); // Asegúrate de que el método utilizado sea el correcto
-            var response = new ResponseDTO<BalanceResponseDTO>
-            {
-                Result = createdBalance,
-                IsSuccess = true,
-                Message = "Balance created successfully"
-            };
-            return Ok(response);
+            _balanceService.InsertBalance(balance); // Asegúrate de que el método utilizado sea el correcto
+
+            return Ok(balance);
         }
 
         [HttpGet("{id}")]
@@ -39,64 +33,36 @@ namespace Balances.API.Controllers
             {
                 return NotFound();
             }
-            var response = new ResponseDTO<BalanceResponseDTO>
-            {
-                Result = balance, 
-                IsSuccess = true,
-                Message = "Balance found"
-            };
-            return Ok(response);
+
+            return Ok(balance);
         }
 
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var balances =  _balanceService.GetAll();
-            var response = new ResponseDTO<List<BalanceResponseDTO>>
-            {
-                Result = balances,
-                IsSuccess = true,
-                Message = "Balances retrieved successfully"
-            };
-            return Ok(response);
+            var balances = _balanceService.GetAll();
+
+            return Ok(balances);
         }
-    
+
 
         [HttpPut]
-        public IActionResult Update(BalanceRequestDTO balanceRequest)
+        public IActionResult Update(Balance balance)
         {
-            var isUpdated =  _balanceService.Update(balanceRequest);
-            var response = new ResponseDTO<bool>
-            {
-                Result = isUpdated,
-                IsSuccess = isUpdated,
-                Message = isUpdated ? "Balance updated successfully" : "Update failed"
-            };
+            _balanceService.UpdateBalance(balance.Id, balance);
 
-            if (!isUpdated)
-            {
-                return NotFound(response);
-            }
-            return Ok(response);
+
+
+            return Ok(balance);
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var isDeleted =  _balanceService.Delete(id);
-            var response = new ResponseDTO<bool>
-            {
-                Result = isDeleted,
-                IsSuccess = isDeleted,
-                Message = isDeleted ? "Balance deleted successfully" : "Deletion failed"
-            };
+            _balanceService.DeleteBalance(id);
 
-            if (!isDeleted)
-            {
-                return NotFound(response);
-            }
-            return Ok(response);
+            return Ok();
         }
     }
 }

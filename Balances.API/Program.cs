@@ -1,11 +1,11 @@
 using Balances.Repository.Contract;
 using Balances.Repository.Implementation;
-using Balances.Utilities;
 using Balances.Services.Contract;
 using Balances.Services.Implementation;
-using MongoDB.Driver;
+using Balances.Utilities;
 using Dominio.Helpers;
 using EmailSender;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +23,11 @@ builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpS
 
 //Balance
 builder.Services.AddSingleton<IBalanceService, BalanceService>();
+builder.Services.AddScoped<IContadorService, ContadorService>();
+builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
+//builder.Services.AddScoped<IRepresentanteLegalService, RepresentanteLegalService>();
+builder.Services.AddScoped<IArchivoService, ArchivoService>();
+//builder.Services.AddScoped<IPresentacionService, PresentacionService>();
 
 //Email
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
@@ -34,14 +39,18 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromHours(3));
 
+//DB
+builder.Services.Configure<MongoDbSettings>
+                          (builder.Configuration.GetSection(nameof(MongoDbSettings)));
+builder.Services.AddSingleton<IMongoDbSettings>
+                             (d => d.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
-
-builder.Services.AddSingleton<IMongoRepository>(provider =>
-{
-    var mongoClient = new MongoClient("mongodb://localhost:27017");
-    var database = mongoClient.GetDatabase("DeclaracionJurada");
-    return new MongoRepository(database, "Balances");
-});
+//builder.Services.AddSingleton<IMongoRepository>(provider =>
+//{
+//    var mongoClient = new MongoClient("mongodb://localhost:27017");
+//    var database = mongoClient.GetDatabase("DeclaracionJurada");
+//    return new MongoRepository(database, "Balances");
+//});
 
 
 
