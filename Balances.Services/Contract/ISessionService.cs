@@ -8,7 +8,11 @@ namespace Balances.Services.Contract
 {
     public interface ISessionService
     {
-        string CreateSessionId(string key,string value);
-        string GetSessionId(string key);
+        string BalanceId { get; set; }
+
+        void SetBalanceId(string balanceId);
+        string GetBalanceId();
     }
+
+
 }

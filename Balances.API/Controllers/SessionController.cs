@@ -2,7 +2,6 @@
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ServiceModel.Channels;
 
 namespace Balances.API.Controllers
 {
@@ -12,49 +11,49 @@ namespace Balances.API.Controllers
     public class SessionController : ControllerBase
     {
         private readonly ISessionService _sessionService;
-        private const string KEY_VALUE = "idSession";
+
+
 
         public SessionController(ISessionService sessionService)
         {
             _sessionService = sessionService;
         }
 
-        [HttpPost]
+        [HttpPost("{balanceId}")]
         public IActionResult CreateSession(string balanceId)
         {
-            var sessionResult = _sessionService.CreateSessionId(KEY_VALUE, balanceId);
-
+            _sessionService.SetBalanceId(balanceId);
             var response = new ResponseDTO<String>
             {
-                Result = sessionResult,
+                Result = "Success",
                 IsSuccess = true,
                 Message = "Session created successfully"
             };
-
             return Ok(response);
-
-            
 
         }
 
-        [HttpGet]
+
+        [HttpGet("getSession")]
         public IActionResult GetSession()
         {
-            var session = _sessionService.GetSessionId(KEY_VALUE);
-            var response = new ResponseDTO<String>();
+            var session = _sessionService.GetBalanceId();
 
-            if (session != null)
+
+            if (session == null)
             {
-                response.Result = session;
-                response.IsSuccess = true;
-                response.Message = "Session found";
+                NotFound();
             }
-            else
+
+
+            var response = new ResponseDTO<String>
             {
-                response.Result = session;
-                response.IsSuccess = false;
-                response.Message = "Session not found";
-            }
+                Result = session,
+                IsSuccess = true,
+                Message = "Session found"
+            };
+
+
 
             return Ok(response);
         }

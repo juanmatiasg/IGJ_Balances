@@ -1,0 +1,140 @@
+﻿@page "/Contador"
+
+@{
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos del Contador Certificante</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!--Navegacion-->
+    <div class="d-flex justify-content-center align-items-center">
+        <h3 class="fs-2 font-weight mt-4 mb-4">
+            <p>Entidad:</p>
+        </h3>
+    </div>
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" disabled href="/Entidad">Entidad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/EstadoContable">Estado</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Libros">Libros</a>
+        </li>
+        <li class="nav-item active disabled">
+            <a class="nav-link" href="/Contador">Contador</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Autoridad">Autoridad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Integrante">Integrante</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Archivos">Archivos</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+        </li>
+    </ul>
+
+    <div class="container mt-2 d-flex justify-content-center">
+        <form id="formContador" class="mt-2" onsubmit="handleSubmit(event)" oninput="handleChange(event)">
+            <div class="card" style="width: 600px;">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Datos del Contador Certificante
+                    </h5>
+                    <div>
+                        <div class="form-group">
+                            <label for="contadorNombre">Nombre</label>
+                            <input type="text" class="form-control" id="contadorNombre" :value="form.nombre" oninput="handleChange(event)" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ContadorApellido">Apellido</label>
+                            <input type="text" class="form-control" id="ContadorApellido" :value="form.apellido" oninput="handleChange(event)" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tipoDocumento">Tipo de Documento</label>
+                            <select class="form-control" id="tipoDocumento" :value="form.tipoDocumento" onchange="handleChange(event)" required>
+                                <!-- options here -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contadorNroDocumento">Número de Documento</label>
+                            <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento" oninput="handleChange(event)" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contadorNuFiscal">Nro. de Identificación Fiscal</label>
+                            <input type="number" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal" oninput="handleChange(event)" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tomo">Tomo</label>
+                            <input type="text" class="form-control" id="tomo" :value="form.tomo" oninput="handleChange(event)" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="folio">Folio</label>
+                            <input type="text" class="form-control" id="folio" :value="form.folio" oninput="handleChange(event)" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="feInformeAuditorExt">Fecha del Informe del Auditor Externo</label>
+                            <input type="text" class="form-control" id="feInformeAuditorExt" :value="form.fechaInformeAuditorExt" oninput="handleChange(event)" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nroLegalInfoAudExt">Nro. de Legalización del Informe del Auditor Externo</label>
+                            <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt" oninput="handleChange(event)" required>
+                        </div>
+                    </div>
+                    <!-- Resto del formulario -->
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row mt-4">
+        <div class="col d-flex justify-content-center w-100">
+            <button type="submit" class="btn btn-primary" onclick="validarCampos()">Enviar</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // JavaScript logic
+        function handleChange(event) {
+            // Add your logic for handling input changes here
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            // Add your form submission logic here
+        }
+    </script>
+
+</body>
+
+</html>
+
+
+@code {
+
+}
