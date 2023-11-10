@@ -2,6 +2,7 @@
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ServiceModel.Channels;
 
 namespace Balances.API.Controllers
 {
@@ -11,50 +12,50 @@ namespace Balances.API.Controllers
     public class SessionController : ControllerBase
     {
         private readonly ISessionService _sessionService;
-       
-
+        private const string KEY_VALUE = "idSession";
 
         public SessionController(ISessionService sessionService)
         {
             _sessionService = sessionService;
         }
 
-        [HttpPut("{balanceId}")]
+        [HttpPost]
         public IActionResult CreateSession(string balanceId)
         {
-            _sessionService.CreateSessionId(balanceId);
+            var sessionResult = _sessionService.CreateSessionId(KEY_VALUE, balanceId);
+
             var response = new ResponseDTO<String>
             {
-                Result = "Success",
+                Result = sessionResult,
                 IsSuccess = true,
                 Message = "Session created successfully"
             };
+
             return Ok(response);
+
             
+
         }
 
-
-        [HttpGet("getSession")]
+        [HttpGet]
         public IActionResult GetSession()
         {
-            var session = _sessionService.GetSessionId();
-          
+            var session = _sessionService.GetSessionId(KEY_VALUE);
+            var response = new ResponseDTO<String>();
 
-            if(session == null)
+            if (session != null)
             {
-                NotFound();
+                response.Result = session;
+                response.IsSuccess = true;
+                response.Message = "Session found";
             }
-     
-          
-            var response = new ResponseDTO<String>
+            else
             {
-                Result = session,
-                IsSuccess = true,
-                Message = "Session found"
-            };
+                response.Result = session;
+                response.IsSuccess = false;
+                response.Message = "Session not found";
+            }
 
-          
-        
             return Ok(response);
         }
     }

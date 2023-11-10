@@ -15,15 +15,16 @@ namespace Balances.Services.Implementation
         }
 
         
-         public void CreateSessionId(string balanceId)
+         public string CreateSessionId(string key ,string value)
          {
-             _context.HttpContext.Session.SetString("idSession", balanceId);
+             _context.HttpContext.Session.SetString(key, value);
+
+            return value;
          }
 
-         public string GetSessionId()
+         public string GetSessionId(string key)
          {
-
-             return _context.HttpContext.Session.GetString("idSession");
+             return _context.HttpContext.Session.GetString(key);
 
          }
 

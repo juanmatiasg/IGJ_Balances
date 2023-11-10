@@ -27,12 +27,20 @@ builder.Services.AddSingleton<IBalanceService, BalanceService>();
 //Email
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 
+//Set Session
+builder.Services.AddDistributedMemoryCache(); // O el proveedor de sesión que estás utilizando
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+
+
 //Session
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ISessionService, SessionService>();
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-    options.IdleTimeout = TimeSpan.FromHours(3));
 
 
 
@@ -70,11 +78,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//Session
-app.UseSession();
 
 //Cors
 app.UseCors("NuevaPolitica");
+
+app.UseSession();
 
 app.UseAuthorization();
 

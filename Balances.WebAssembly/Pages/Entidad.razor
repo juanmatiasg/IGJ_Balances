@@ -1,5 +1,6 @@
 ﻿@page "/Entidad"
 @using Balances.DTO;
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage;
 
 
 <!DOCTYPE html>
@@ -32,33 +33,33 @@
     <!--Navegacion-->
     <div class="d-flex justify-content-center align-items-center">
         <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
+            <p class="mr-2">Entidad:&nbsp;<h4 class="font-weight" id="entidad"></h4>  </p>
         </h3>
     </div>
     <ul class="nav nav-tabs d-flex justify-content-center">
         <li class="nav-item">
             <a class="nav-link text-primary active" aria-current="page" href="/Entidad">Entidad</a>
         </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link text-secondary" href="/EstadoContable">Estado</a>
+        <li class="nav-item" >
+            <a class="nav-link text-secondary disabled" href="/EstadoContable">Estado</a>
         </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link text-secondary" href="/Libros">Libros</a>
+        <li class="nav-item" >
+            <a class="nav-link text-secondary disabled" href="/Libros">Libros</a>
         </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link text-secondary" href="/Contador">Contador</a>
+        <li class="nav-item" >
+            <a class="nav-link text-secondary disabled" href="/Contador">Contador</a>
         </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link text-secondary" href="/Autoridad">Autoridad</a>
+        <li class="nav-item" >
+            <a class="nav-link text-secondary disabled" href="/Autoridad">Autoridad</a>
         </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link text-secondary" href="/Integrante">Integrante</a>
+        <li class="nav-item" >
+            <a class="nav-link text-secondary disabled" href="/Integrante">Integrante</a>
         </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link text-secondary" href="/Archivos">Archivos</a>
+        <li class="nav-item" >
+            <a class="nav-link text-secondary disabled" href="/Archivos">Archivos</a>
         </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link text-secondary" href="/Confirmacion">Confirmación DJ</a>
+        <li class="nav-item">
+            <a class="nav-link text-secondary disabled" href="/Confirmacion">Confirmación DJ</a>
         </li>
     </ul>
 
@@ -160,6 +161,25 @@
                 </div>
             </div>
         </div>
+
+        <div class="card mx-auto mt-4 mb-4" style="width: 800px;">
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Número de Identificación:
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col w-100">
+                        <p id="nroIdentificacion">
+                           @balanceId
+                        </p>
+                    </div>
+                </div>
+                <div class="col mt-4">
+                    <button type="button" id="btnInit" class="btn btn-primary w-100" @onclick="GetSession">Obtener el Id</button>
+                </div>
+            </div>
+        </div>
+        
     </div>
 
     <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
@@ -224,71 +244,89 @@
 
             const busqueda = document.getElementById("busqueda").value;
             const endpoint = `BusquedaByCuilOrCorrelativo?cuitcorrelativo=${busqueda}`;
+            const numericBusqueda = parseInt(busqueda, 10);
 
-            const url = localhost + endpoint;
+
+            if (!isNaN(numericBusqueda)) {
+                const url = localhost + endpoint;
 
 
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la solicitud');
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la solicitud');
+                        }
+                        return response.json();
                     }
-                    return response.json();
-                }
-                ).then(data => {
-                    if (data.razonSocial) {
-                        document.getElementById('razonSocial').textContent = data.razonSocial;
-                    } else {
-                        document.getElementById('razonSocial').textContent = "Entidad no encontrada";
+                    ).then(data => {
+                        if (data.razonSocial) {
+                            document.getElementById('razonSocial').textContent = data.razonSocial;
+                        } else {
+                            document.getElementById('razonSocial').textContent = "Entidad no encontrada";
+                        }
+
+                        if (data.tipoEntidad) {
+                            document.getElementById('tipoEntidad').textContent = data.tipoEntidad;
+                            document.getElementById('entidad').textContent = data.tipoEntidad;
+                        } else {
+                            document.getElementById('tipoEntidad').textContent = "";
+                            document.getElementById('entidad').textContent = "";
+                        }
+
+
+                        console.log(data);
+
+                    }).catch(error => {
+                        console.error('Hubo un problema con la solicitud fetch:', error);
                     }
-
-                    if (data.tipoEntidad) {
-                        document.getElementById('tipoEntidad').textContent = data.tipoEntidad;
-                    } else {
-                        document.getElementById('tipoEntidad').textContent = "";
-                    } 
-
-
-                    console.log(data); // Puedes imprimir los datos en la consola o manejarlos de la manera que desees
-
-                }).catch(error => {
-                    console.error('Hubo un problema con la solicitud fetch:', error);
-                }
-                );
-
+                    );
+            } else {
+                alert("El campo nro Correlativo tiene que ser numérico");
+            }
+           
         }
 
         function sendmail() {
-
+            const fechaDeInicio = document.getElementById("fechaDeInicio").value;
+            const fechaDeCierre = document.getElementById("fechaDeCierre").value;
             const busqueda = document.getElementById("email").value;
             const endpoint = `mail?email=${busqueda}`;
+            const btnInit = document.getElementById("btnInit");
+
+            const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
 
       
-            const url = localhost + endpoint; // Combinar las partes de la URL
+            const url = localhost + endpoint;
 
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la solicitud');
+            if (new Date(fechaDeInicio) >= new Date(fechaDeCierre)) {
+               alert("La fecha de inicio debe ser anterior a la fecha de cierre.");
+            } else {
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la solicitud');
+                        }
+                        else {
+
+                            alert("Se envio el correo");
+                            btnInit.classList.add("d-none");
+                            enableNavLinks();
+                            insertEntity();
+
+                        }
+                        cardIdentification.classList.add("d-none");
+                        return response.json();
                     }
-                    else {
-                    
-                        alert("Se envio el correo");
-                        document.getElementById("btnInit").classList.add("d-none");
-                        enableNavLinks();
-                        insertEntity();
+                    )
+                    .then(data => {
+                        console.log(data);
+                    }).catch(error => {
+                        console.log(error);
                     }
 
-                    return response.json();
-                }
-                )
-                .then(data => {
-                    console.log(data); // Puedes imprimir los datos en la consola o manejarlos de la manera que desees
-                }).catch(error => {
-                    console.log(error);
-                }
-
-             );
+                    );
+            }
 
         }
        
@@ -345,7 +383,8 @@
                     const modifiedIdBalanced = idBalance.replace(/['"]+/g, ''); // Recibo un Json de String y lo remplazamos a una variable sin ""
                     
                     console.log(modifiedIdBalanced);
-                    setSession(modifiedIdBalanced);
+                    sessionStorage.setItem("idSession", idBalance);
+                   // setSession(modifiedIdBalanced)
                 })
                 .catch(error => {
                     // Manejar los errores aquí
@@ -359,27 +398,59 @@
             for (let i = 0; i < navLinks.length; i++) {
                 navLinks[i].classList.remove("text-secondary");
                 navLinks[i].classList.add("text-primary");
-                navLinks[i].removeAttribute("disabled");
+                navLinks[i].classList.remove("disabled");
             }
         }
 
         async function setSession(modifiedIdBalanced) {
-            const endpointSession = `Session/${modifiedIdBalanced}`;
+            const endpointSession = `Session?balanceId=${modifiedIdBalanced}`;
             const url = localhost + endpointSession;
 
             const res = await fetch(url, {
-                "method": "POST",
-                "headers": {
+                method: "POST",
+                headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({}) // Empty body or provide necessary data
             });
+
             const data = await res.json();
+
+            
             console.log(data);
+
+            
+        }
+
+        async function getSession() {
+            const endpoint = "Session";
+            const url = localhost + endpoint;
+
+            const res = await fetch(url, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                
+            });
+            
+            const data = await res.json();
+            document.getElementById("nroIdentificacion").textContent = data['result']
+            
+            console.log(data);
+
+
+            /*if (data['result'] !== null) {
+                document.getElementById("nroIdentificacion").textContent = data['result'];
+                console.log(data);
+
+            } else {
+                document.getElementById("nroIdentificacion").textContent = data;
+                console.error('Session data is null');
+                console.log(data);
+            }*/
         }
         
-
-       
-     
     </script>
 
 </body>
@@ -388,10 +459,10 @@
 </html>
 
 @code {
-    private string hola;
+    private string balanceId;
 
-    private String Saludo()
+    public async Task GetSession()
     {
-        return "Hola mundo";
+        balanceId = await sessionStorage.GetItemAsStringAsync("idSession");
     }
 }
