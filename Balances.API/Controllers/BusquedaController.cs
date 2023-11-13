@@ -12,38 +12,60 @@ namespace WebApi.Controllers
     [ApiController]
     public class BusquedaController : ControllerBase
     {
-        [HttpGet("BusquedaByCuilOrCorrelativo")]
-        public async Task<IActionResult> BusquedaByCuilOrCorrelativo(string cuitcorrelativo)
-        {
-            var entidadService = new WebService.Entidad();
-            string filtro = cuitcorrelativo.Replace("-", "").Replace(" ", "");
 
-            BusquedaEntidadResponse response;
-
-            if (filtro.Length == 11)
+      
+            [HttpGet("BusquedaByCuilOrCorrelativo")]
+            public async Task<IActionResult> BusquedaByCuilOrCorrelativo(string cuitOrCorrelativo)
             {
-                entidadService = await BusquedaEntidadService.GetByCuit(Convert.ToInt64(filtro));
-                response = new BusquedaEntidadResponse
+                var entidadService = new WebService.Entidad();
+
+                string filtro = SanitizeInput(cuitOrCorrelativo);
+
+                if (TryParseCuit(filtro, out long cuit))
                 {
-                    NroCorrelativo = entidadService.NroCorrelativo.ToString(),
-                    TipoEntidad = entidadService.TipoSoc,
-                    RazonSocial = entidadService.RazonSocial
-                    // Populate other properties as needed
-                };
-            }
-            else
-            {
-                entidadService = await BusquedaEntidadService.BusquedaEntidadByCorrelativo(Convert.ToInt32(filtro));
-                response = new BusquedaEntidadResponse
+                    entidadService = await BusquedaEntidadService.GetByCuit(cuit);
+                }
+                else if (TryParseCorrelativo(filtro, out int correlativo))
                 {
-                    NroCorrelativo = entidadService.NroCorrelativo.ToString(),
-                    TipoEntidad = entidadService.TipoSoc,
-                    RazonSocial = entidadService.RazonSocial
-                    // Populate other properties as needed
+                    entidadService = await BusquedaEntidadService.BusquedaEntidadByCorrelativo(correlativo);
+                }
+                else
+                {
+                    return BadRequest("Invalid input. Please provide a valid CUIT (11 characters) or correlativo.");
+                }
+
+                if (entidadService == null)
+                {
+                    return NotFound();
+                }
+
+                var response = new ResponseDTO<WebService.Entidad>
+                {
+                    Result = entidadService,
+                    IsSuccess = true,
+                    Message = "Entity found"
                 };
+
+                return Ok(response);
             }
 
-            return Ok(response);
+            private string SanitizeInput(string input)
+            {
+                return input.Replace("-", "").Replace(" ", "");
+            }
+
+            private bool TryParseCuit(string input, out long cuit)
+            {
+                cuit = 0;
+                return input.Length == 11 && long.TryParse(input, out cuit);
+            }
+
+            private bool TryParseCorrelativo(string input, out int correlativo)
+            {
+                correlativo = 0;
+                return int.TryParse(input, out correlativo);
+            }
         }
-    }
+      
+    
 }

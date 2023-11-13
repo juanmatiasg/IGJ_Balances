@@ -1,5 +1,9 @@
 ﻿using Balances.DTO;
+using Balances.Model;
 using Balances.Web.Services.Implementation;
+using com.sun.org.apache.xml.@internal.resolver.helpers;
+using javax.jws;
+using Newtonsoft.Json;
 using System.Net.Http.Json;
 
 namespace Balances.Web.Services.Contracts
@@ -11,39 +15,39 @@ namespace Balances.Web.Services.Contracts
         public CaratulaService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7172/"); // Replace with your actual API base URL
 
-        } 
-
+        }
 
         public async Task<ResponseDTO<BusquedaEntidadResponse>> findEntities(string nroCorrelativo)
         {
-            var requestUrl = $"BusquedaByCuilOrCorrelativo?cuitcorrelativo={nroCorrelativo}";
             try
-        {
-        var response = await _httpClient.GetFromJsonAsync<ResponseDTO<BusquedaEntidadResponse>>(requestUrl);
+            {
 
-        // Check if the response indicates success (you can customize this check based on your API's behavior)
-        if (response != null && response.IsSuccess)
-        {
-            return response;
-        }
-        else
-        {
-            // Handle the error condition, throw an exception, or return a custom error response
-            throw new HttpRequestException($"HTTP request failed with status code {response?.Message}");
-        }
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP request failed: {ex.Message}");
-            throw; // Rethrow the exception for higher-level handling
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An unexpected error occurred: {ex.Message}");
-            throw;
-        }
+                var response = await _httpClient.GetFromJsonAsync<ResponseDTO<BusquedaEntidadResponse>>($"BusquedaByCuilOrCorrelativo?cuitOrCorrelativo={nroCorrelativo}");
+
+
+                return response;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error en la solicitud HTTP: {ex.Message}");
+                return new ResponseDTO<BusquedaEntidadResponse>
+                {
+                    IsSuccess = false,
+                    Message = "Error en la solicitud HTTP"
+                };
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error de deserialización JSON: {ex.Message}");
+                return new ResponseDTO<BusquedaEntidadResponse>
+                {
+                    IsSuccess = false,
+                    Message = "Error de deserialización JSON"
+                };
             }
         }
+    }
+
 }
+

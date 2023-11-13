@@ -263,7 +263,7 @@
 
 
                             // Actualizar los elementos HTML
-                            document.getElementById('busqueda').value = id;
+                            //document.getElementById('busqueda').value = id;
                             document.getElementById('razonSocial').textContent = entidad.razonSocial;
                             document.getElementById('tipoEntidad').textContent = entidad.tipoEntidad;
                             document.getElementById('entidad').textContent = entidad.tipoEntidad;
@@ -275,7 +275,7 @@
                            
                             // ... (update other UI elements)
                             document.getElementById("email").disabled = true;
-                            document.getElementById("busqueda").disabled = true;
+                            //document.getElementById("busqueda").disabled = true;
                             document.getElementById("domicilio").disabled = true;
                             document.getElementById("fechaDeInicio").disabled = true;
                             document.getElementById("fechaDeCierre").disabled = true;
@@ -297,7 +297,7 @@
                     });
             }
            
-            document.getElementById("busqueda").addEventListener("input", enableSubmitButton);
+            //document.getElementById("busqueda").addEventListener("input", enableSubmitButton);
             document.getElementById("domicilio").addEventListener("input", enableSubmitButton);
             document.getElementById("fechaDeInicio").addEventListener("input", enableSubmitButton);
             document.getElementById("fechaDeCierre").addEventListener("input", enableSubmitButton);
@@ -358,7 +358,7 @@
 
 
             function enableSubmitButton() {
-                const busqueda = document.getElementById("busqueda").value;
+                //const busqueda = document.getElementById("busqueda").value;
                 const domicilio = document.getElementById("domicilio").value;
                 const fechaDeInicio = document.getElementById("fechaDeInicio").value;
                 const fechaDeCierre = document.getElementById("fechaDeCierre").value;
@@ -382,11 +382,11 @@
 
 
 
-            function findEntities() {
+            /*function findEntities() {
                 let localhost = "https://localhost:7172/";
 
 
-                const busqueda = document.getElementById("busqueda").value;
+                //const busqueda = document.getElementById("busqueda").value;
                 const busquedaError = document.getElementById("busquedaError");
 
          
@@ -457,7 +457,7 @@
 
                 }
            
-            }
+            }*/
 
             function sendmail() {
 
@@ -511,7 +511,7 @@
 
 
 
-                                document.getElementById("busqueda").disabled = true;
+                                //document.getElementById("busqueda").disabled = true;
                                 document.getElementById("domicilio").disabled = true;
                                 document.getElementById("fechaDeInicio").disabled = true;
                                 document.getElementById("fechaDeCierre").disabled = true;
@@ -720,8 +720,8 @@
 
                 if (response != null)
                 {
-                    razonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
-                    tipoEntidad = response.Result.TipoEntidad; 
+                    /*razonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
+                    tipoEntidad = response.Result.TipoEntidad;*/ 
                     
                     Console.WriteLine($"Datos: {response.Result}");
 

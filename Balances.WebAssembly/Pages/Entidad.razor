@@ -1,5 +1,7 @@
 ﻿@page "/Entidad"
 @using Balances.DTO;
+@using Balances.Utilities;
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage;
 
 
 
@@ -204,16 +206,26 @@
         </div>
 
 
-        <!-- ReCAPTCHA script -->
-        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+     
+        const currentYear = new Date().getFullYear();
 
-        <script>
+      /*  // Set the start date (fechaDeInicio) to the first day of the current year
+        document.getElementById("fechaDeInicio").value = `${currentYear}-01-01`;
+        document.getElementById("fechaDeInicio").min = `${currentYear}-01-01`;
+        document.getElementById("fechaDeInicio").max = `${currentYear}-12-31`;
 
-            document.getElementById("busqueda").addEventListener("input", enableSubmitButton);
-            document.getElementById("domicilio").addEventListener("input", enableSubmitButton);
-            document.getElementById("fechaDeInicio").addEventListener("input", enableSubmitButton);
-            document.getElementById("fechaDeCierre").addEventListener("input", enableSubmitButton);
-            document.getElementById("email").addEventListener("input", enableSubmitButton);
+        // Set the end date (fechaDeCierre) to the last day of the current year
+        document.getElementById("fechaDeCierre").value = `${currentYear}-12-31`;
+        document.getElementById("fechaDeCierre").min = `${currentYear}-01-01`;
+        document.getElementById("fechaDeCierre").max = `${currentYear}-12-31`;*/
+
+
+        document.getElementById("busqueda").addEventListener("input", enableSubmitButton);
+        document.getElementById("domicilio").addEventListener("input", enableSubmitButton);
+        document.getElementById("fechaDeInicio").addEventListener("input", enableSubmitButton);
+        document.getElementById("fechaDeCierre").addEventListener("input", enableSubmitButton);
+        document.getElementById("email").addEventListener("input", enableSubmitButton);
 
      
             document.getElementById("domicilio").disabled = true;
@@ -269,43 +281,30 @@
             const localhost = "https://localhost:7172/";
 
 
-            function findEntities() {
-
-                const busqueda = document.getElementById("busqueda").value;
-                const busquedaError = document.getElementById("busquedaError");
-
+        function findEntities() {
+          
+            const busqueda = document.getElementById("busqueda").value;
          
-                const endpoint = `BusquedaByCuilOrCorrelativo?cuitcorrelativo=${busqueda}`;
-                const numericBusqueda = parseInt(busqueda, 10);
+            const endpoint = `BusquedaByCuilOrCorrelativo?cuitcorrelativo=${busqueda}`;
+            const numericBusqueda = parseInt(busqueda, 10);
+
+
+            if (!isNaN(numericBusqueda)) {
                 const url = localhost + endpoint;
 
-          
-
-                if (busqueda != "" || busqueda == null) {
-                    busquedaError.innerText = "";
-
-                    if (!isNaN(numericBusqueda)) {
-                   
-                        busquedaError.innerText = "";
-
-                        fetch(url)
-                            .then(response => {
-
-
-                                if (!response.ok) {
-
-                                    throw new Error('Error en la solicitud');
-                                }
-                                return response.json();
-                            }
-                            ).then(data => {
-
-
-                                if (data.razonSocial) {
-                                    document.getElementById('razonSocial').textContent = data.razonSocial;
-                                } else {
-                                    document.getElementById('razonSocial').textContent = "Entidad no encontrada";
-                                }
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la solicitud');
+                        }
+                        return response.json();
+                    }
+                    ).then(data => {
+                        if (data.razonSocial) {
+                            document.getElementById('razonSocial').textContent = data.razonSocial;
+                        } else {
+                            document.getElementById('razonSocial').textContent = "Entidad no encontrada";
+                        }
 
                                 if (data.tipoEntidad) {
                                     document.getElementById('tipoEntidad').textContent = data.tipoEntidad;
@@ -327,33 +326,25 @@
 
                                 console.log(data);
 
-                            }).catch(error => {
-
-
-                                console.error('Hubo un problema con la solicitud fetch:', error);
-                            }
-                            );
-                    } else {
-                        busquedaError.innerText = "El campo tiene que ser numérico";
-
+                    }).catch(error => {
+                        console.error('Hubo un problema con la solicitud fetch:', error);
                     }
-                }else{
-                    busquedaError.innerText = "El campo no puede estar vacío";
-
-                }
-           
+                    );
+            } else {
+                alert("El campo Nro Correlativo / Cuit / Cuil tiene que ser numérico");
             }
+           
+        }
 
-            function sendmail() {
-
-
-                const razonSocial = document.getElementById("razonSocial").textContent
-                const tipoEntidad = document.getElementById("tipoEntidad").textContent
-                const fechaDeInicio = document.getElementById("fechaDeInicio").value;
-                const fechaDeCierre = document.getElementById("fechaDeCierre").value;
-                const email = document.getElementById("email").value;
-                const endpoint = `mail?email=${email}`;
-                const btnInit = document.getElementById("btnInit");
+        function sendmail() {
+           
+            const razonSocial = document.getElementById("razonSocial").textContent
+            const tipoEntidad = document.getElementById("tipoEntidad").textContent
+            const fechaDeInicio = document.getElementById("fechaDeInicio").value;
+            const fechaDeCierre = document.getElementById("fechaDeCierre").value;
+            const email = document.getElementById("email").value;
+            const endpoint = `mail?email=${email}`;
+            const btnInit = document.getElementById("btnInit");
 
 
                 const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
@@ -369,14 +360,13 @@
 
                 const url = localhost + endpoint;
 
-                if (razonSocial == "" || razonSocial == null && tipoEntidad == "" || tipoEntidad == null) {
-                    fechaError.innerText = "";
-                    emailError.innerText = ""
-                } else if (new Date(fechaDeInicio) >= new Date(fechaDeCierre)) {
-                    fechaError.innerText = "La fecha de inicio debe ser anterior a la fecha de cierre.";
-                } else if (!emailRegex.test(email)) {
-                    emailError.innerText = "Por favor, ingrese un correo electrónico válido."
-                } else {
+            if (razonSocial == "" || razonSocial == null && tipoEntidad == "" || tipoEntidad == null) {
+                alert("Tenes que buscar la Entidad.");
+            } else if (new Date(fechaDeInicio) >= new Date(fechaDeCierre)) {
+               alert("La fecha de inicio debe ser anterior a la fecha de cierre.");
+            } else if (!emailRegex.test(email)) {
+                alert("Por favor, ingrese un correo electrónico válido.");
+            } else {
 
 
                     fetch(url)
@@ -386,51 +376,36 @@
                             }
                             else {
 
-                                hideLoadingModal();
+                            btnInit.classList.add("d-none");
+                            enableNavLinks();
+                            insertEntity();
 
+                            document.getElementById("busqueda").disabled = true;
+                            document.getElementById("domicilio").disabled = true;
+                            document.getElementById("fechaDeInicio").disabled = true;
+                            document.getElementById("fechaDeCierre").disabled = true;
+                            document.getElementById("email").disabled = true;
+                            document.getElementById("sedeInscripta").disabled = true;
 
-                                btnInit.classList.add("d-none");
-                                enableNavLinks();
-                                insertEntity();
-
-
-
-                                document.getElementById("busqueda").disabled = true;
-                                document.getElementById("domicilio").disabled = true;
-                                document.getElementById("fechaDeInicio").disabled = true;
-                                document.getElementById("fechaDeCierre").disabled = true;
-                                document.getElementById("email").disabled = true;
-                                document.getElementById("sedeInscripta").disabled = true;
-
-                                document.getElementById("btnBuscar").disabled = true;
-                                document.getElementById("btnBuscar").classList.remove("btn-primary"); // Remove btn-primary class
-                                document.getElementById("btnBuscar").classList.add("btn-secondary"); // Add btn-secondary class
-
-                                document.getElementById("nroIdentificacionContent").classList.remove("d-none");
-
-
-                                alert("Se envio el correo");
-
-                                document.getElementById('ReCaptchContainer').style.display = 'none';
-
-                                var sesion = document.getElementById("nroIdentificacion").textContent;
-                                sesion = sessionStorage.getItem("idSession");
-                                console.log("idSession recuperado:", sessionStorage.getItem("idSession"));
+                            document.getElementById("btnBuscar").disabled = true;
+                            document.getElementById("btnBuscar").classList.remove("btn-primary"); // Remove btn-primary class
+                            document.getElementById("btnBuscar").classList.add("btn-secondary"); // Add btn-secondary class
 
 
 
-                            }
-                            return response.json();
+
+                            alert("Se envio el correo");
+
 
                         }
-                        )
-                        .then(data => {
-                            console.log(data);
-                        }).catch(error => {
-                            hideLoadingModal();
-
-                            console.log(error);
-                        }
+                        return response.json();
+                    }
+                    )
+                    .then(data => {
+                        console.log(data);
+                    }).catch(error => {
+                        console.log(error);
+                    }
 
                         );
 
@@ -480,24 +455,21 @@
                             throw new Error('Network response was not ok');
                         }
 
-                        return response.json();
-                    })
-                        .then(data => {
-                            console.log(data);
-                            // Manejar la respuesta del servidor aquí
-                            var idBalance = JSON.stringify(data['result']['id']);
-                            const modifiedIdBalanced = idBalance.replace(/['"]+/g, ''); // Recibo un Json de String y lo remplazamos a una variable sin ""
-
-                            console.log(modifiedIdBalanced);
-                            console.log("idSession guardado:", sessionStorage.setItem("idSession", modifiedIdBalanced));
-                            // Después de guardar el valor de la sesión
-                            sessionStorage.setItem("idSession", modifiedIdBalanced);
-                            StateHasChanged();
-                        })
-                        .catch(error => {
-                            // Manejar los errores aquí
-                            console.error('Error:', error);
-                        });
+                return response.json();
+            })
+                .then(data => {
+                    console.log(data);
+                    // Manejar la respuesta del servidor aquí
+                    var idBalance = JSON.stringify(data['result']['id']);
+                    const modifiedIdBalanced = idBalance.replace(/['"]+/g, ''); // Recibo un Json de String y lo remplazamos a una variable sin ""
+                    
+                    console.log(modifiedIdBalanced);
+                    sessionStorage.setItem("idSession", idBalance);
+                })
+                .catch(error => {
+                    // Manejar los errores aquí
+                    console.error('Error:', error);
+                });
 
                 }
 
@@ -542,20 +514,19 @@
                 }
 
 
-
-                // Function to show error modal
-                function showErrorModal(title, message) {
-                    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'), {
-                        backdrop: 'static', // Evita que se cierre haciendo clic fuera del modal
-                        keyboard: false // Evita que se cierre al presionar la tecla Esc
-                    });
-
-                    document.getElementById('errorModalTitle').innerText = title;
-                    document.getElementById('errorModalMessage').innerText = message;
-
-                    errorModal.show();
-                }
-            }
+            const res = await fetch(url, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                
+            });
+            
+            const data = await res.json();
+            document.getElementById("nroIdentificacion").textContent = data['result']
+            
+            console.log(data);
+        }
         
         </script>
 
