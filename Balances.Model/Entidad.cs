@@ -8,13 +8,10 @@
 
         public string Domicilio { get; set; }
 
-        public string Correlativo { get; set; }
-
         public bool SedeSocialInscripta { get; set; }
 
-        public DateTime FechaInicio { get; set; }
+        public string Correlativo { get; set; }
 
-        public DateTime FechaDeCierre { get; set; }
 
     }
 }

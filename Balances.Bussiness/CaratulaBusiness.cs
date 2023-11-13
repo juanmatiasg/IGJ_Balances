@@ -1,7 +1,6 @@
 ﻿namespace Balances.Bussiness
 {
-    public class Class1
+    public class CaratulaBusiness
     {
-
     }
 }

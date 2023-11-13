@@ -23,11 +23,11 @@ namespace Balances.Services.Implementation
 
             var PlantillaHTML = File.ReadAllText(Plantilla);
 
-            PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Entidad.RazonSocial);
-            PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Entidad.TipoEntidad);
-            PlantillaHTML = PlantillaHTML.Replace("{{NroCorrelativo}}", balance.Entidad.Correlativo);
-            PlantillaHTML = PlantillaHTML.Replace("{{FechaEstado}}", balance.Entidad.FechaDeCierre.ToShortDateString());
-            PlantillaHTML = PlantillaHTML.Replace("{{Domicilio}}", balance.Entidad.Domicilio);
+            PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
+            PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
+            PlantillaHTML = PlantillaHTML.Replace("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
+            PlantillaHTML = PlantillaHTML.Replace("{{FechaEstado}}", balance.Caratula.FechaDeCierre.ToShortDateString());
+            PlantillaHTML = PlantillaHTML.Replace("{{Domicilio}}", balance.Caratula.Entidad.Domicilio);
 
 
 

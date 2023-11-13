@@ -11,7 +11,7 @@ namespace Balances.API.Controllers
     public class SessionController : ControllerBase
     {
         private readonly ISessionService _sessionService;
-       
+
 
 
         public SessionController(ISessionService sessionService)
@@ -19,7 +19,7 @@ namespace Balances.API.Controllers
             _sessionService = sessionService;
         }
 
-        [HttpPut("{balanceId}")]
+        [HttpPost("{balanceId}")]
         public IActionResult CreateSession(string balanceId)
         {
             _sessionService.CreateSessionId(balanceId);
@@ -30,7 +30,7 @@ namespace Balances.API.Controllers
                 Message = "Session created successfully"
             };
             return Ok(response);
-            
+
         }
 
 
@@ -38,14 +38,14 @@ namespace Balances.API.Controllers
         public IActionResult GetSession()
         {
             var session = _sessionService.GetSessionId();
-          
 
-            if(session == null)
+
+            if (session == null)
             {
                 NotFound();
             }
-     
-          
+
+
             var response = new ResponseDTO<String>
             {
                 Result = session,
@@ -53,8 +53,8 @@ namespace Balances.API.Controllers
                 Message = "Session found"
             };
 
-          
-        
+
+
             return Ok(response);
         }
     }

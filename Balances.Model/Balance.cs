@@ -10,12 +10,9 @@ namespace Balances.Model
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [BsonElement("Email")]
-        public string Email { get; set; }
-
         [DataMember]
-        [BsonElement("Entidad")]
-        public Entidad Entidad { get; set; }
+        [BsonElement("Caratula")]
+        public Caratula Caratula { get; set; }
 
         public ICollection<Archivo> Archivos { get; set; }
         public RepresentanteLegales RepresentantesLegales { get; set; }

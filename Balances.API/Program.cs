@@ -34,7 +34,7 @@ builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 
 //Session
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddSingleton<ISessionService, SessionService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromHours(3));
