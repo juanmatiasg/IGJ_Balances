@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Balances.DTO\Balances.DTO.csproj" />
     <ProjectReference Include="..\Balances.Services\Balances.Services.csproj" />
+    <ProjectReference Include="..\Balances.Utilities\Balances.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿@page "/Entidad"
 @using Balances.DTO;
+@using Balances.Utilities;
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage;
 
 
@@ -200,13 +201,20 @@
     </div>
 
 
-    @*
-    <script src="~/js/validarCamposEntidad.js"></script>
-    <script src="~/js/buscarEntidad.js"></script>
-
-    *@
-
     <script>
+     
+        const currentYear = new Date().getFullYear();
+
+      /*  // Set the start date (fechaDeInicio) to the first day of the current year
+        document.getElementById("fechaDeInicio").value = `${currentYear}-01-01`;
+        document.getElementById("fechaDeInicio").min = `${currentYear}-01-01`;
+        document.getElementById("fechaDeInicio").max = `${currentYear}-12-31`;
+
+        // Set the end date (fechaDeCierre) to the last day of the current year
+        document.getElementById("fechaDeCierre").value = `${currentYear}-12-31`;
+        document.getElementById("fechaDeCierre").min = `${currentYear}-01-01`;
+        document.getElementById("fechaDeCierre").max = `${currentYear}-12-31`;*/
+
 
         document.getElementById("busqueda").addEventListener("input", enableSubmitButton);
         document.getElementById("domicilio").addEventListener("input", enableSubmitButton);
@@ -241,15 +249,15 @@
 
 
         function findEntities() {
-
+          
             const busqueda = document.getElementById("busqueda").value;
+         
             const endpoint = `BusquedaByCuilOrCorrelativo?cuitcorrelativo=${busqueda}`;
             const numericBusqueda = parseInt(busqueda, 10);
 
 
             if (!isNaN(numericBusqueda)) {
                 const url = localhost + endpoint;
-
 
                 fetch(url)
                     .then(response => {
@@ -281,16 +289,19 @@
                     }
                     );
             } else {
-                alert("El campo nro Correlativo tiene que ser numérico");
+                alert("El campo Nro Correlativo / Cuit / Cuil tiene que ser numérico");
             }
            
         }
 
         function sendmail() {
+           
+            const razonSocial = document.getElementById("razonSocial").textContent
+            const tipoEntidad = document.getElementById("tipoEntidad").textContent
             const fechaDeInicio = document.getElementById("fechaDeInicio").value;
             const fechaDeCierre = document.getElementById("fechaDeCierre").value;
-            const busqueda = document.getElementById("email").value;
-            const endpoint = `mail?email=${busqueda}`;
+            const email = document.getElementById("email").value;
+            const endpoint = `mail?email=${email}`;
             const btnInit = document.getElementById("btnInit");
 
             const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
@@ -298,8 +309,12 @@
       
             const url = localhost + endpoint;
 
-            if (new Date(fechaDeInicio) >= new Date(fechaDeCierre)) {
+            if (razonSocial == "" || razonSocial == null && tipoEntidad == "" || tipoEntidad == null) {
+                alert("Tenes que buscar la Entidad.");
+            } else if (new Date(fechaDeInicio) >= new Date(fechaDeCierre)) {
                alert("La fecha de inicio debe ser anterior a la fecha de cierre.");
+            } else if (!emailRegex.test(email)) {
+                alert("Por favor, ingrese un correo electrónico válido.");
             } else {
 
                 fetch(url)
@@ -309,13 +324,28 @@
                         }
                         else {
 
-                            alert("Se envio el correo");
                             btnInit.classList.add("d-none");
                             enableNavLinks();
                             insertEntity();
 
+                            document.getElementById("busqueda").disabled = true;
+                            document.getElementById("domicilio").disabled = true;
+                            document.getElementById("fechaDeInicio").disabled = true;
+                            document.getElementById("fechaDeCierre").disabled = true;
+                            document.getElementById("email").disabled = true;
+                            document.getElementById("sedeInscripta").disabled = true;
+
+                            document.getElementById("btnBuscar").disabled = true;
+                            document.getElementById("btnBuscar").classList.remove("btn-primary"); // Remove btn-primary class
+                            document.getElementById("btnBuscar").classList.add("btn-secondary"); // Add btn-secondary class
+
+
+
+
+                            alert("Se envio el correo");
+
+
                         }
-                        cardIdentification.classList.add("d-none");
                         return response.json();
                     }
                     )
@@ -384,7 +414,6 @@
                     
                     console.log(modifiedIdBalanced);
                     sessionStorage.setItem("idSession", idBalance);
-                   // setSession(modifiedIdBalanced)
                 })
                 .catch(error => {
                     // Manejar los errores aquí
@@ -438,17 +467,6 @@
             document.getElementById("nroIdentificacion").textContent = data['result']
             
             console.log(data);
-
-
-            /*if (data['result'] !== null) {
-                document.getElementById("nroIdentificacion").textContent = data['result'];
-                console.log(data);
-
-            } else {
-                document.getElementById("nroIdentificacion").textContent = data;
-                console.error('Session data is null');
-                console.log(data);
-            }*/
         }
         
     </script>
