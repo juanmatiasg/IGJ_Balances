@@ -1,4 +1,5 @@
-﻿using Balances.DTO;
+﻿using Balances.Bussiness.Contrato;
+using Balances.DTO;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,33 +11,35 @@ namespace Balances.API.Controllers
     [ApiController]
     public class ContadorController : ControllerBase
     {
-        private readonly IContadorService _servicio;
+        private readonly IContadorBusiness _contadorBusiness;
         private readonly ISessionService _sessionService;
-        public ContadorController(IContadorService servicio, ISessionService sessionService)
+
+        public ContadorController(IContadorBusiness contadorBusiness, ISessionService sessionService)
         {
-            _servicio = servicio;
+            _contadorBusiness = contadorBusiness;
             _sessionService = sessionService;
         }
 
         [HttpPost]
-        [Route("Post")]
-        public ContadorDto PostContador([FromBody] ActualizarContadorDto contador)
+        [Route("Insert")]
+        public ResponseDTO<BalanceDto> Insert([FromBody] ContadorDto contadordto)
         {
 
-            var contadorDb = _servicio.ActualizarContador(contador);
-
-            return contadorDb;
+            var rsp = _contadorBusiness.Insert(contadordto);
+            return rsp;
 
         }
 
         [HttpGet]
-        [Route("Contador/{balanceId}")]
+        [Route("{balanceId}")]
         public ContadorDto Get(string balanceId)
         {
 
-            var contador = _servicio.Get(balanceId);
+            var contadorDto = _contadorBusiness.GetById(balanceId);
 
-            return contador;
+
+
+            return contadorDto;
         }
 
     }

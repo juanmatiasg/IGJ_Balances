@@ -2,7 +2,7 @@
 {
     public class AltaRepresentanteLegalDto
     {
-        public string BalanceId { get; set; }
-        public RepresentanteLegalDto RepresentanteLegal { get; set; }
+        //public string BalanceId { get; set; }
+        //public RepresentanteLegalDto RepresentanteLegal { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace Balances.Services.Implementation
             try
             {
 
-                var balanceId = _sessionService.GetSessionId();
+                var balanceId = _sessionService.GetBalanceId();
                 var balance = _balanceService.GetById(balanceId);
 
                 var message = new MimeMessage();

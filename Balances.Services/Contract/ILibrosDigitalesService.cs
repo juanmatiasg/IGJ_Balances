@@ -5,8 +5,8 @@ namespace Balances.Services.Contract
 {
     public interface ILibrosDigitalesService
     {
-        void ActualizarLibrosDigitales(LibrosDigitalesDto librosDigitales);
-        LibrosDigitalesDto Get(string balanceId);
-        List<LibroDigital> GetNewList();
+        void ActualizarLibrosDigitales(LibrosDto librosDigitales);
+        LibrosDto Get(string balanceId);
+        List<Libro> GetNewList();
     }
 }

@@ -8,6 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Balances.DTO\Balances.DTO.csproj" />
+    <ProjectReference Include="..\Balances.Repository\Balances.Repository.csproj" />
+    <ProjectReference Include="..\Balances.Services\Balances.Services.csproj" />
   </ItemGroup>
 
 </Project>

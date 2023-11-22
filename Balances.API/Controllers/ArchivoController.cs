@@ -1,4 +1,5 @@
-﻿using Balances.Services.Contract;
+﻿using Balances.Bussiness.Contrato;
+using Balances.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Balances.API.Controllers
@@ -7,26 +8,21 @@ namespace Balances.API.Controllers
     [ApiController]
     public class ArchivoController : ControllerBase
     {
-        private readonly IArchivoService _servicio;
-        private readonly ISessionService _sessionService;
+        private readonly IArchivoBusiness _archivoBusiness;
 
-        public ArchivoController(IArchivoService servicio, ISessionService sessionService)
+        public ArchivoController(IArchivoBusiness archivoBusiness)
         {
-            _servicio = servicio;
-            _sessionService = sessionService;
+            _archivoBusiness = archivoBusiness;
         }
 
-
         [HttpPost]
-        //[Route("Archivo/Upload/{balanceId}")]
-        [Route("Upload")]
-        public Task<bool> UploadFile()
+        [Route("InsertArchivos")]
+        public ResponseDTO<BalanceDto> InsertArchivos(IFormFileCollection files)
         {
-            string balanceId = _sessionService.GetSessionId();
-            bool resultado = false;
-            var files = Request.Form.Files;
-            _servicio.Upload(balanceId, files);
-            return Task.FromResult(resultado);
+
+            var rsp = _archivoBusiness.Upload(files);
+            return rsp;
+
         }
 
 

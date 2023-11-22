@@ -47,8 +47,8 @@
         public decimal? GananciasPerdidasEjercicio { get; set; }
         public decimal? ReservaLegal { get; set; }
 
-        public List<RubroPatrimonioNeto?> OtrosRubros { get; set; }
-        public string Estado { get; set; }
-        public string OtrosRubrosEstado { get; internal set; }
+        public List<RubroPatrimonioNeto> otrosRubros { get; set; }
+        //public string Estado { get; set; }
+        //public string OtrosRubrosEstado { get; internal set; }
     }
 }

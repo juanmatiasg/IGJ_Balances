@@ -9,23 +9,29 @@ namespace Balances.Services.Implementation
     {
         private readonly IHttpContextAccessor _context;
 
+        public string BalanceId
+        {
+            get { return GetBalanceId(); }
+            set { SetBalanceId(value); }
+        }
+
         public SessionService(IHttpContextAccessor context)
         {
             _context = context;
         }
 
-        
-         public void CreateSessionId(string balanceId)
-         {
-             _context.HttpContext.Session.SetString("idSession", balanceId);
-         }
 
-         public string GetSessionId()
-         {
+        public void SetBalanceId(string balanceId)
+        {
+            _context.HttpContext.Session.SetString("idSession", balanceId);
+        }
 
-             return _context.HttpContext.Session.GetString("idSession");
+        public string GetBalanceId()
+        {
 
-         }
+            return _context.HttpContext.Session.GetString("idSession");
+
+        }
 
 
     }

@@ -49,7 +49,7 @@ namespace Balances.DTO
         public decimal gananciasPerdidasEjercicio { get; set; }
         public decimal reservaLegal { get; set; }
 
-        public RubrosPatrimonioNetoDto? otrosRubros { get; set; }
+        public List<RubroPatrimonioNeto> otrosRubros { get; set; }
 
         public EstadoContable GetEstadoContable()
         {
@@ -95,7 +95,7 @@ namespace Balances.DTO
             };
 
 
-            estado.OtrosRubros = otrosRubros.GetRubrosPatrimonioNeto();
+            //estado.OtrosRubros = otrosRubros.GetRubrosPatrimonioNeto();
 
 
 
@@ -149,7 +149,7 @@ namespace Balances.DTO
             gananciasPerdidasEjercicio = (decimal)a.GananciasPerdidasEjercicio;
             reservaLegal = (decimal)a.ReservaLegal;
 
-            otrosRubros = new RubrosPatrimonioNetoDto(a.OtrosRubros);
+            //otrosRubros = new RubrosPatrimonioNetoDto(a.OtrosRubros);
 
         }
 

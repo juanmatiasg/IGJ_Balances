@@ -15,9 +15,10 @@ namespace Balances.Model
         public Caratula Caratula { get; set; }
 
         public ICollection<Archivo> Archivos { get; set; }
-        public RepresentanteLegales RepresentantesLegales { get; set; }
+        public List<Autoridad> Autoridades { get; set; }
         public EstadoContable EstadoContable { get; set; }
-        public List<LibroDigital> LibrosDigitales { get; set; }
+        public Libros Libros { get; set; }
+        public Socios Socios { get; set; }
         public Contador Contador { get; set; }
     }
 }

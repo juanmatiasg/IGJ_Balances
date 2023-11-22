@@ -1,4 +1,5 @@
-﻿using Balances.Model;
+﻿using Balances.Bussiness.Contrato;
+using Balances.DTO;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,61 +9,63 @@ namespace Balances.API.Controllers
     [Route("[controller]")]
     public class BalanceController : ControllerBase
     {
+
+        private readonly IBalanceBusiness _balanceBusiness;
         private readonly IBalanceService _balanceService;
 
-        public BalanceController(IBalanceService balanceService)
+        public BalanceController(IBalanceService balanceService, IBalanceBusiness balanceBusiness)
         {
+
+            _balanceBusiness = balanceBusiness;
             _balanceService = balanceService;
         }
 
-
-        [HttpPost("PostBalance")]
-        public IActionResult Create(Balance balance)
-
+        [HttpPost("InsertBalance")]
+        public IActionResult Create(BalanceDto balance)
         {
-            _balanceService.InsertBalance(balance); // Asegúrate de que el método utilizado sea el correcto
+            var rsp = _balanceBusiness.Insert(balance);
 
-            return Ok(balance);
+            return Ok(rsp);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(string id)
         {
-            var balance = _balanceService.GetById(id);
-            if (balance == null)
-            {
-                return NotFound();
-            }
+            var balance = _balanceBusiness.GetById(id);
+
+            if (balance == null) return NotFound();
 
             return Ok(balance);
         }
 
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
-            var balances = _balanceService.GetAll();
+            var balances = _balanceBusiness.List();
+
+            if (balances == null) return NotFound();
 
             return Ok(balances);
         }
 
 
-        [HttpPut]
-        public IActionResult Update(Balance balance)
+        [HttpPut("Update")]
+        public IActionResult Update(/*[FromBody] */BalanceDto balance)
         {
-            _balanceService.UpdateBalance(balance.Id, balance);
+            //_balanceService.UpdateBalance(balance.Id, balance);
 
+            var balancedto = _balanceBusiness.Update(balance);
 
-
-            return Ok(balance);
+            return Ok(balancedto);
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            _balanceService.DeleteBalance(id);
+            var rsp = _balanceBusiness.Delete(id);
 
-            return Ok();
+            return Ok(rsp);
         }
     }
 }

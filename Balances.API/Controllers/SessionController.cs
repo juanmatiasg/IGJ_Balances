@@ -22,7 +22,7 @@ namespace Balances.API.Controllers
         [HttpPost("{balanceId}")]
         public IActionResult CreateSession(string balanceId)
         {
-            _sessionService.CreateSessionId(balanceId);
+            _sessionService.SetBalanceId(balanceId);
             var response = new ResponseDTO<String>
             {
                 Result = "Success",
@@ -37,7 +37,7 @@ namespace Balances.API.Controllers
         [HttpGet("getSession")]
         public IActionResult GetSession()
         {
-            var session = _sessionService.GetSessionId();
+            var session = _sessionService.GetBalanceId();
 
 
             if (session == null)
