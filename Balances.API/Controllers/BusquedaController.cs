@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebService;
 
 namespace WebApi.Controllers
-{
+{ //sesion y objeto
 
     [AllowAnonymous]
     [ApiController]
@@ -50,7 +50,7 @@ namespace WebApi.Controllers
                 return Ok(oEntidad);
             }
 
-
+            
         }
 
 

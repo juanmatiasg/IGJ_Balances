@@ -18,6 +18,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+/*Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo.Console()
+            .WriteTo.File("Logs/Log-.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();*/
+
+
+/// builder.Host.UseSerilog;
+
 //SMTP Settings
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
