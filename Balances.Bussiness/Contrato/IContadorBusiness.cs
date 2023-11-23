@@ -8,7 +8,7 @@ namespace Balances.Bussiness.Contrato
 
         bool Update(ContadorDto modelo);
 
-        bool Delete(ContadorDto modelo);
+        ResponseDTO<BalanceDto> Delete(ContadorDto modelo);
 
         ContadorDto GetById(string id);
 

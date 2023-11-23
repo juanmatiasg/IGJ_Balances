@@ -9,7 +9,6 @@ using Balances.Utilities;
 using Dominio.Helpers;
 using EmailSender;
 using Microsoft.Extensions.Options;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,11 +24,11 @@ builder.Services.AddSwaggerGen();
 //Log.Logger = new LoggerConfiguration()
 //    .ReadFrom.Configuration(builder.Configuration).CreateLogger();
 
-Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .WriteTo.Console()
-            .WriteTo.File("Logs/Log-.txt", rollingInterval: RollingInterval.Day)
-            .CreateLogger();
+//Log.Logger = new LoggerConfiguration()
+//            .MinimumLevel.Information()
+//            .WriteTo.Console()
+//            .WriteTo.File("Logs/Log-.txt", rollingInterval: RollingInterval.Day)
+//            .CreateLogger();
 
 
 /// builder.Host.UseSerilog;
@@ -38,6 +37,8 @@ Log.Logger = new LoggerConfiguration()
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 //Balance
+
+builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
 builder.Services.AddScoped<ICaratulaBusiness, CaratulaBusiness>();
 builder.Services.AddScoped<IBalanceBusiness, BalanceBusiness>();
 builder.Services.AddScoped<IContadorBusiness, ContadorBusiness>();
@@ -47,21 +48,24 @@ builder.Services.AddScoped<IArchivoBusiness, ArchivoBusiness>();
 builder.Services.AddScoped<ILibrosBusiness, LibrosBusiness>();
 builder.Services.AddScoped<ISociosBusiness, SociosBusiness>();
 
-
+builder.Services.AddSingleton<ISessionService, SessionService>();
 
 builder.Services.AddSingleton<IBalanceService, BalanceService>();
 //builder.Services.AddScoped<IContadorService, ContadorService>();
 builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
 //builder.Services.AddScoped<IRepresentanteLegalService, RepresentanteLegalService>();
 builder.Services.AddScoped<IArchivoService, ArchivoService>();
-//builder.Services.AddScoped<IPresentacionService, PresentacionService>();
+builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
 
 //Email
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 
+
+//builder.Services.AddHttpContextAccessor();
 //Session
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<ISessionService, SessionService>();
+
+//builder.Services.AddSingleton<IPresentacionService, IPresentacionService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromHours(3));
@@ -81,6 +85,7 @@ builder.Services.AddSingleton<IMongoDbSettings>
 //    var database = mongoClient.GetDatabase("DeclaracionJurada");
 //    return new MongoRepository(database, "Balances");
 //});
+
 
 
 

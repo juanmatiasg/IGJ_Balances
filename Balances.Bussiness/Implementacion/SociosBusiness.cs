@@ -94,5 +94,59 @@ namespace Balances.Bussiness.Implementacion
 
             return respuesta;
         }
+
+        public ResponseDTO<BalanceDto> DeletePersonaHumana(PersonaHumanaDto modelo)
+        {
+            var respuesta = new ResponseDTO<BalanceDto>();
+            respuesta.IsSuccess = false;
+            try
+            {
+                var bal = _balanceBusiness.BalanceActual;
+
+                var humano = bal.Socios.PersonasHumanas.FirstOrDefault(x => x.Id == modelo.Id);
+
+                if (humano != null) bal.Socios.PersonasHumanas.Remove(humano);
+
+                _balanceBusiness.Update(bal);
+                respuesta.Result = bal;
+                respuesta.IsSuccess = true;
+                respuesta.Message = "persona humana borrada correctamente";
+            }
+            catch (Exception ex)
+            {
+
+                respuesta.Message = ex.Message;
+            }
+
+            return respuesta;
+
+        }
+
+        public ResponseDTO<BalanceDto> DeletePersonaJuriridica(PersonaJuridicaDto modelo)
+        {
+            var respuesta = new ResponseDTO<BalanceDto>();
+            respuesta.IsSuccess = false;
+
+            try
+            {
+                var bal = _balanceBusiness.BalanceActual;
+
+                var juridica = bal.Socios.PersonasJuridicas.FirstOrDefault(x => x.Id == modelo.Id);
+
+                if (juridica != null) bal.Socios.PersonasJuridicas.Remove(juridica);
+
+                _balanceBusiness.Update(bal);
+                respuesta.Result = bal;
+                respuesta.IsSuccess = true;
+                respuesta.Message = "persona juridica borrada correctamente";
+            }
+            catch (Exception ex)
+            {
+
+                respuesta.Message = ex.Message;
+            }
+
+            return respuesta;
+        }
     }
 }

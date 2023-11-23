@@ -34,5 +34,24 @@ namespace Balances.API.Controllers
             return rsp;
 
         }
+        [HttpDelete]
+        [Route("DeletePersonaJuridica")]
+        public ResponseDTO<BalanceDto> DeletePersonaJuridica(PersonaJuridicaDto personaJuridicaDto)
+        {
+
+            var rsp = _sociosBusiness.DeletePersonaJuriridica(personaJuridicaDto);
+            return rsp;
+
+        }
+
+        [HttpDelete]
+        [Route("DeletePersonaHumana")]
+        public ResponseDTO<BalanceDto> DeletePersonaHumana(PersonaHumanaDto personaHumanaDto)
+        {
+
+            var rsp = _sociosBusiness.DeletePersonaHumana(personaHumanaDto);
+            return rsp;
+
+        }
     }
 }

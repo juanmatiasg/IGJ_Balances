@@ -29,30 +29,28 @@ namespace Balances.Bussiness.Implementacion
 
 
 
-        public ContadorDto GetById(string id)
+        public ResponseDTO<BalanceDto> Delete(ContadorDto modelo)
         {
-
+            ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
+            respuesta.IsSuccess = false;
 
             try
             {
-                var balance = _balanceBusiness.GetById(id);
-
-                var contadordto = MappToContadorDto(balance.Result.Contador);
-
-                return contadordto;
-
-
+                //BUSCO BALANCE
 
 
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw ex;
+                throw;
             }
 
 
+
+
+            throw new NotImplementedException();
         }
 
         public ResponseDTO<BalanceDto> Insert(ContadorDto modelo)
@@ -126,6 +124,31 @@ namespace Balances.Bussiness.Implementacion
             return contadordto;
         }
 
+        public ContadorDto GetById(string id)
+        {
+
+
+            try
+            {
+                var balance = _balanceBusiness.GetById(id);
+
+                var contadordto = MappToContadorDto(balance.Result.Contador);
+
+                return contadordto;
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+
+        }
 
         private Contador MappToContador(ContadorDto modelo)
         {
@@ -145,10 +168,9 @@ namespace Balances.Bussiness.Implementacion
             return contador;
         }
 
-        public bool Delete(ContadorDto modelo)
-        {
-            throw new NotImplementedException();
-        }
+
+
+
 
     }
 }

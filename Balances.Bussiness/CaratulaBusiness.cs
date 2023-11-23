@@ -4,6 +4,7 @@ using Balances.DTO;
 using Balances.Model;
 using Balances.Repository.Contract;
 using Balances.Services.Contract;
+using EmailSender;
 using MongoDB.Driver;
 
 namespace Balances.Bussiness
@@ -15,9 +16,14 @@ namespace Balances.Bussiness
         protected IMapper _mapper;
         private ISessionService _sessionService;
         private readonly IBalanceBusiness _balanceBusiness;
+        private readonly IEmailSenderService _emailSenderService;
 
 
-        public CaratulaBusiness(IMongoDbSettings _settings, IMapper mapper, ISessionService sessionService, IBalanceBusiness balanceBusiness)
+        public CaratulaBusiness(IMongoDbSettings _settings,
+                                IMapper mapper,
+                                ISessionService sessionService,
+                                IBalanceBusiness balanceBusiness,
+                                IEmailSenderService emailSenderService)
         {
             var cliente = new MongoClient(_settings.Server);
             var database = cliente.GetDatabase(_settings.Database);
@@ -25,6 +31,7 @@ namespace Balances.Bussiness
             _mapper = mapper;
             _sessionService = sessionService;
             _balanceBusiness = balanceBusiness;
+            _emailSenderService = emailSenderService;
         }
 
         public bool Delete(CaratulaDto modelo)
@@ -78,11 +85,15 @@ namespace Balances.Bussiness
 
                 var rsp = _balance.InsertOneAsync(balance);
 
+                var balanceDto = _mapper.Map<BalanceDto>(balance);
+
+                var EmailRequest = _emailSenderService.EmaiInicioTramite(balanceDto);
+                _emailSenderService.SendEmailAsync(EmailRequest);
 
                 // si inserto correctamente
                 if (rsp != null)
                 {
-                    //_sessionService.SetBalanceId(balance.Id);
+                    _sessionService.SetBalanceId(balance.Id);
                     //balance.Id = rsp.Id.ToString();
                     respuesta.IsSuccess = true;
                     respuesta.Message = "Caratula creada correctamente";

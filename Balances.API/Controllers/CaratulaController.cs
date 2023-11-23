@@ -14,7 +14,6 @@ namespace Balances.API.Controllers
 
         public CaratulaController(ICaratulaBusiness caratulaBusiness)
         {
-
             _caratulaBusiness = caratulaBusiness;
 
         }

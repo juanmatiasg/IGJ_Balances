@@ -21,7 +21,39 @@ namespace Balances.Bussiness.Implementacion
 
         public ResponseDTO<BalanceDto> Delete(ArchivoDTO modelo)
         {
-            throw new NotImplementedException();
+
+            var resultadoDto = new ResponseDTO<BalanceDto>();
+            resultadoDto.IsSuccess = false;
+            try
+            {
+
+                //RECUPERO BALANCE
+                var bal = _balanceBusiness.BalanceActual;
+
+                //BUSCO EL ARCHIVO EN EL BALANCE
+                var archivo = bal.Archivos.FirstOrDefault(x => x.Id == modelo.Id);
+
+                if (archivo != null) bal.Archivos.Remove(archivo);
+
+                string Periodo = CalcularPeriodo(archivo.FechaCreacion);
+                string fullPath = $@"{_baseDir}\{Periodo}\{archivo.Id}{Path.GetExtension(archivo.NombreArchivo)}";
+
+                if (File.Exists(fullPath))
+                    File.Delete(fullPath);
+
+                _balanceBusiness.Update(bal);
+
+                resultadoDto.IsSuccess = true;
+                resultadoDto.Message = "archivo eliminado correctamente";
+                resultadoDto.Result = bal;
+            }
+            catch (Exception ex)
+            {
+
+                resultadoDto.Message = ex.Message;
+            }
+
+            return resultadoDto;
         }
 
         public ResponseDTO<BalanceDto> Upload(IFormFileCollection files)

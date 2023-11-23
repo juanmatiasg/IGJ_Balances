@@ -25,6 +25,16 @@ namespace Balances.API.Controllers
 
         }
 
+        [HttpDelete]
+        [Route("DeleteArchivo")]
+        public ResponseDTO<BalanceDto> Delete([FromBody] ArchivoDTO archivodto)
+        {
+
+            var rsp = _archivoBusiness.Delete(archivodto);
+            return rsp;
+
+        }
+
 
 
 

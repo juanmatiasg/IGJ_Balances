@@ -1,4 +1,4 @@
-﻿using Balances.Model;
+﻿using Balances.DTO;
 using Balances.Services.Contract;
 using Dominio.Helpers;
 using EmailSender;
@@ -26,21 +26,49 @@ namespace Balances.Services.Implementation
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task SendEmailAsync(MailRequest request)
+
+        public MailRequest EmailPresentacion(BalanceDto balance, string html)
+        {
+            var mailRequest = new MailRequest()
+            {
+                To = balance.Caratula.Email,
+                Subject = $"Presentacion Generada - {balance.Caratula.Entidad.RazonSocial} ",
+                Body = html,
+            };
+
+            return mailRequest;
+        }
+
+
+        public MailRequest EmaiInicioTramite(BalanceDto balance)
+        {
+            var mailRequest = new MailRequest()
+            {
+
+                To = balance.Caratula.Email,
+                Subject = $"Presentación Digital de Balances - {balance.Caratula.Entidad.RazonSocial} ",
+                Body = ConstructorBody(balance).HtmlBody,
+            };
+
+            return mailRequest;
+        }
+
+        public async Task<bool> SendEmailAsync(MailRequest request)
         {
             try
             {
-
+                /*
                 var balanceId = _sessionService.GetBalanceId();
                 var balance = _balanceService.GetById(balanceId);
-
+                */
                 var message = new MimeMessage();
 
                 message.From.Add(new MailboxAddress(_smtpSettings.SenderName, _smtpSettings.SenderEmail));
-                message.To.Add(new MailboxAddress("", request.Email));
-                message.Subject = $"Presentación Digital de Balances - {balance.Caratula.Entidad.RazonSocial} "; /*request.Subject*/
+                message.To.Add(new MailboxAddress("", request.To));
+                message.Subject = request.Subject; //$"Presentación Digital de Balances - {balance.Caratula.Entidad.RazonSocial} "; /*request.Subject*/
                 //message.Body = new TextPart("html") { Text = request.Body };
-                message.Body = ConstructorBody(balance).ToMessageBody();
+                message.Body = new TextPart("html") { Text = request.Body };
+
 
 
                 using (var client = new SmtpClient())
@@ -52,16 +80,18 @@ namespace Balances.Services.Implementation
 
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
+
+                    return true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return false;
             }
         }
 
-        public BodyBuilder ConstructorBody(Balance balance)
+        public BodyBuilder ConstructorBody(BalanceDto balance)
         {
 
             var path = _webHostEnvironment.ContentRootPath + "/Plantillas";
