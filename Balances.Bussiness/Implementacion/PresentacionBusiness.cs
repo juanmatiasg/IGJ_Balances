@@ -71,12 +71,12 @@ namespace Balances.Bussiness.Implementacion
 
 
             // paso como parametro el balance y la plantilla para armar el emailRequest 
-            var EmailRequest = _emailSenderService.EmailPresentacion(bal, Plantillahtml);
+            //var EmailRequest = _emailSenderService.EmailPresentacion(bal, Plantillahtml);
 
             try
             {
                 //Envio el email con los datos del EmailRequest
-                _emailSenderService.SendEmailAsync(EmailRequest);
+                //_emailSenderService.SendEmailAsync(EmailRequest);
 
                 //respuesta.Message = "Presentacion generada y enviada correctamente";
                 //respuesta.Result = Plantillahtml;
