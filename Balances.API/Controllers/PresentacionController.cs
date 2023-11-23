@@ -23,5 +23,16 @@ namespace Balances.API.Controllers
             var rsp = _presentacionBusiness.PresentarTramite();
             return rsp;
         }
+
+
+        [HttpGet("GenerarPresentacionEnHtml")]
+        public string GenerarPresentacionEnHtml()
+
+        {
+
+            var rsp = _presentacionBusiness.FormatPresentacionHTML();
+            return rsp;
+        }
     }
 }
+
