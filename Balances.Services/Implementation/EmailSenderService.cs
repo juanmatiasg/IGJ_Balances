@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
-
 namespace Balances.Services.Implementation
 {
     public class EmailSenderService : IEmailSenderService
@@ -27,15 +26,29 @@ namespace Balances.Services.Implementation
         }
 
 
-        public MailRequest EmailPresentacion(BalanceDto balance, string html)
+        public MailRequest EmailPresentacion(BalanceDto balance, string html, byte[] pdfPresentacion, string qr)
         {
             var mailRequest = new MailRequest()
             {
                 To = balance.Caratula.Email,
                 Subject = $"Presentacion Generada - {balance.Caratula.Entidad.RazonSocial} ",
                 Body = html,
+
             };
 
+            mailRequest.Adjuntos.Add(new MailRequest.ArchivoAdjunto()
+            {
+                Nombre = balance.Id + ".pdf",
+                TipoArchivo = "aplication/pdf",
+                Binario = pdfPresentacion
+            });
+
+            mailRequest.Adjuntos.Add(new MailRequest.ArchivoAdjunto()
+            {
+                Nombre = "qr.png",
+                TipoArchivo = "image/png",
+                Binario = System.Convert.FromBase64String(qr)
+            });
             return mailRequest;
         }
 
@@ -53,7 +66,7 @@ namespace Balances.Services.Implementation
             return mailRequest;
         }
 
-        public async Task<bool> SendEmailAsync(MailRequest request)
+        public async Task<bool> SendEmailAsync(MimeMessage message)
         {
             try
             {
@@ -61,16 +74,40 @@ namespace Balances.Services.Implementation
                 var balanceId = _sessionService.GetBalanceId();
                 var balance = _balanceService.GetById(balanceId);
                 */
-                var message = new MimeMessage();
+                //var message = new MimeMessage();
 
                 message.From.Add(new MailboxAddress(_smtpSettings.SenderName, _smtpSettings.SenderEmail));
-                message.To.Add(new MailboxAddress("", request.To));
-                message.Subject = request.Subject; //$"Presentación Digital de Balances - {balance.Caratula.Entidad.RazonSocial} "; /*request.Subject*/
+                //message.To.Add(new MailboxAddress("", request.To));
+                /*message.Subject = request.Subject; //$"Presentación Digital de Balances - {balance.Caratula.Entidad.RazonSocial} "; /*request.Subject*/
                 //message.Body = new TextPart("html") { Text = request.Body };
-                message.Body = new TextPart("html") { Text = request.Body };
+                // message.Body = new TextPart("html") { Text = request.Body };*/
 
 
+                /*
 
+                var multipart = new Multipart("mixed");
+                //si tienearchivo adjunto
+                if (request.Adjuntos != null)
+                {
+                    foreach (var adjunto in request.Adjuntos)
+                    {
+                        var attachment = new MimePart(adjunto.TipoArchivo)
+                        {
+                            Content = new MimeContent(new MemoryStream(adjunto.Binario)),
+                            ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                            ContentTransferEncoding = ContentEncoding.Base64,
+                            FileName = adjunto.Nombre
+                        };
+
+                        multipart.Add(attachment);
+                    }
+
+
+                    multipart.Add(message.Body);
+
+                    message.Body = multipart;
+                }
+                */
                 using (var client = new SmtpClient())
                 {
 
@@ -112,6 +149,11 @@ namespace Balances.Services.Implementation
 
 
             return bodyBuilder;
+        }
+
+        public Task<bool> SendEmailAsync(MailRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }

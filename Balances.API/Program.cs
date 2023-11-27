@@ -57,15 +57,20 @@ builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
 builder.Services.AddScoped<IArchivoService, ArchivoService>();
 builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
 
+//QR
+builder.Services.AddScoped<IQRService, QRService>();
+//PDF
+builder.Services.AddScoped<IPDFService, PDFService>();
+
 //Email
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 
+builder.Services.AddScoped<IPresentacionService, PresentacionService>();
 
-//builder.Services.AddHttpContextAccessor();
 //Session
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-//builder.Services.AddSingleton<IPresentacionService, IPresentacionService>();
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromHours(3));
@@ -78,16 +83,6 @@ builder.Services.Configure<MongoDbSettings>
                           (builder.Configuration.GetSection(nameof(MongoDbSettings)));
 builder.Services.AddSingleton<IMongoDbSettings>
                              (d => d.GetRequiredService<IOptions<MongoDbSettings>>().Value);
-
-//builder.Services.AddSingleton<IMongoRepository>(provider =>
-//{
-//    var mongoClient = new MongoClient("mongodb://localhost:27017");
-//    var database = mongoClient.GetDatabase("DeclaracionJurada");
-//    return new MongoRepository(database, "Balances");
-//});
-
-
-
 
 
 builder.Services.AddCors(options =>
