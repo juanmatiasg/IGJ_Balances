@@ -1,5 +1,4 @@
 ﻿using Balances.Model;
-using System.Linq.Expressions;
 
 namespace Balances.Repository.Contract
 {
@@ -10,5 +9,11 @@ namespace Balances.Repository.Contract
         List<Balance> GetAll();
         void UpdateBalance(string id, Balance balance);
         void DeleteBalance(string id);
+
+        Balance Create(Balance balance);
+        Balance GetById(string id);
+        //List<Balance> GetAll();
+        bool Update(string id, Balance balance);
+        bool Delete(string id);
     }
 }

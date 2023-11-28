@@ -1,7 +1,10 @@
-﻿using Dominio.Helpers;
+﻿using Balances.DTO;
+using Balances.Services.Contract;
+using Dominio.Helpers;
 using EmailSender;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
@@ -11,23 +14,61 @@ namespace Balances.Services.Implementation
     public class EmailSenderService : IEmailSenderService
     {
         private readonly SmtpSettings _smtpSettings;
+        private readonly ISessionService _sessionService;
+        private readonly IBalanceService _balanceService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public EmailSenderService(IOptions<SmtpSettings> smtpSettings)
+        public EmailSenderService(IOptions<SmtpSettings> smtpSettings, ISessionService sessionService, IBalanceService balanceService, IWebHostEnvironment webHostEnvironment)
         {
             _smtpSettings = smtpSettings.Value;
+            _sessionService = sessionService;
+            _balanceService = balanceService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task SendEmailAsync(MailRequest request)
+
+        public MailRequest EmailPresentacion(BalanceDto balance, string html)
+        {
+            var mailRequest = new MailRequest()
+            {
+                To = balance.Caratula.Email,
+                Subject = $"Presentacion Generada - {balance.Caratula.Entidad.RazonSocial} ",
+                Body = html,
+            };
+
+            return mailRequest;
+        }
+
+
+        public MailRequest EmaiInicioTramite(BalanceDto balance)
+        {
+            var mailRequest = new MailRequest()
+            {
+
+                To = balance.Caratula.Email,
+                Subject = $"Presentación Digital de Balances - {balance.Caratula.Entidad.RazonSocial} ",
+                Body = ConstructorBody(balance).HtmlBody,
+            };
+
+            return mailRequest;
+        }
+
+        public async Task<bool> SendEmailAsync(MailRequest request)
         {
             try
             {
+                /*
+                var balanceId = _sessionService.GetBalanceId();
+                var balance = _balanceService.GetById(balanceId);
+                */
                 var message = new MimeMessage();
 
                 message.From.Add(new MailboxAddress(_smtpSettings.SenderName, _smtpSettings.SenderEmail));
-                message.To.Add(new MailboxAddress("", request.Email));
-                message.Subject = "Inicio de Presentación Digital de Balances - @nombreEntidad"; /*request.Subject*/
+                message.To.Add(new MailboxAddress("", request.To));
+                message.Subject = request.Subject; //$"Presentación Digital de Balances - {balance.Caratula.Entidad.RazonSocial} "; /*request.Subject*/
                 //message.Body = new TextPart("html") { Text = request.Body };
-                message.Body = ConstructorBody().ToMessageBody();
+                message.Body = new TextPart("html") { Text = request.Body };
+
 
 
                 using (var client = new SmtpClient())
@@ -39,34 +80,36 @@ namespace Balances.Services.Implementation
 
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
+
+                    return true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return false;
             }
         }
 
-        public BodyBuilder ConstructorBody()
+        public BodyBuilder ConstructorBody(BalanceDto balance)
         {
+
+            var path = _webHostEnvironment.ContentRootPath + "/Plantillas";
+            var Plantilla = path + "/PlantillaEmail.html";
+            var PlantillaHTML = File.ReadAllText(Plantilla);
+
+            PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
+            PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
+            PlantillaHTML = PlantillaHTML.Replace("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
+            PlantillaHTML = PlantillaHTML.Replace("{{FechaEstado}}", balance.Caratula.FechaDeCierre.ToShortDateString());
+            PlantillaHTML = PlantillaHTML.Replace("{{Domicilio}}", balance.Caratula.Entidad.Domicilio);
+            PlantillaHTML = PlantillaHTML.Replace("{{BalanceId}}", balance.Id);
+
             var bodyBuilder = new BodyBuilder();
 
-            bodyBuilder.HtmlBody = @"
-                        <div style='background-color:black;color:white;padding:10px;'>
-                 
-                            <h1 style='font-family: 'Sigmar One', cursive;'>Inicio de Presentación Digital de Balances - @nombreEntidad</h1>
-                            <h2>Datos Presentacion</h2>
-                            <p>Fecha De Inico: <b><i> </i> @fechainicio </b></p>
-                            <p>Entidad <b><i> @nombreEntidad </i> </b></p>
-                            <p>Cierre de Balance: <b><i> @fechacierre </i> </b></p>
-                            <p>Para continuar con la carga de su balance, haga clic en el siguiente enlace:</p>
-                            <p style='color:1678E7;'>https://balancesdesa.justicia.ar/?key=64e62685c54fd008c507c8c0 </p>
-                            <p>Nuestro canal de consulta:infoigj@jus.gob.ar </p>
-                            <p style='text-align:right;color:#1678E7;font-size:18px;' ><b><i>Inspeccion General de Justicia</i></b> </p>
-                        
-                        </div>
-            ";
+
+            bodyBuilder.HtmlBody = PlantillaHTML;
+
 
             return bodyBuilder;
         }

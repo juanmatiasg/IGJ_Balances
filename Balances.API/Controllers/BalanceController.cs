@@ -1,5 +1,5 @@
-﻿using Balances.DTO;
-using Balances.Model;
+﻿using Balances.Bussiness.Contrato;
+using Balances.DTO;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,94 +9,63 @@ namespace Balances.API.Controllers
     [Route("[controller]")]
     public class BalanceController : ControllerBase
     {
+
+        private readonly IBalanceBusiness _balanceBusiness;
         private readonly IBalanceService _balanceService;
 
-        public BalanceController(IBalanceService balanceService)
+        public BalanceController(IBalanceService balanceService, IBalanceBusiness balanceBusiness)
         {
+
+            _balanceBusiness = balanceBusiness;
             _balanceService = balanceService;
         }
 
-      
-        [HttpPost("PostBalance")]
-        public IActionResult Create(BalanceRequestDTO balanceRequest)
-
+        [HttpPost("InsertBalance")]
+        public IActionResult Create(BalanceDto balance)
         {
-            var createdBalance = _balanceService.Create(balanceRequest); // Asegúrate de que el método utilizado sea el correcto
-            var response = new ResponseDTO<BalanceResponseDTO>
-            {
-                Result = createdBalance,
-                IsSuccess = true,
-                Message = "Balance created successfully"
-            };
-            return Ok(response);
+            var rsp = _balanceBusiness.Insert(balance);
+
+            return Ok(rsp);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(string id)
         {
-            var balance = _balanceService.GetById(id);
-            if (balance == null)
-            {
-                return NotFound();
-            }
-            var response = new ResponseDTO<BalanceResponseDTO>
-            {
-                Result = balance, 
-                IsSuccess = true,
-                Message = "Balance found"
-            };
-            return Ok(response);
+            var balance = _balanceBusiness.GetById(id);
+
+            if (balance == null) return NotFound();
+
+            return Ok(balance);
         }
 
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
-            var balances =  _balanceService.GetAll();
-            var response = new ResponseDTO<List<BalanceResponseDTO>>
-            {
-                Result = balances,
-                IsSuccess = true,
-                Message = "Balances retrieved successfully"
-            };
-            return Ok(response);
+            var balances = _balanceBusiness.List();
+
+            if (balances == null) return NotFound();
+
+            return Ok(balances);
         }
-    
 
-        [HttpPut]
-        public IActionResult Update(BalanceRequestDTO balanceRequest)
+
+        [HttpPut("Update")]
+        public IActionResult Update(/*[FromBody] */BalanceDto balance)
         {
-            var isUpdated =  _balanceService.Update(balanceRequest);
-            var response = new ResponseDTO<bool>
-            {
-                Result = isUpdated,
-                IsSuccess = isUpdated,
-                Message = isUpdated ? "Balance updated successfully" : "Update failed"
-            };
+            //_balanceService.UpdateBalance(balance.Id, balance);
 
-            if (!isUpdated)
-            {
-                return NotFound(response);
-            }
-            return Ok(response);
+            var balancedto = _balanceBusiness.Update(balance);
+
+            return Ok(balancedto);
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var isDeleted =  _balanceService.Delete(id);
-            var response = new ResponseDTO<bool>
-            {
-                Result = isDeleted,
-                IsSuccess = isDeleted,
-                Message = isDeleted ? "Balance deleted successfully" : "Deletion failed"
-            };
+            var rsp = _balanceBusiness.Delete(id);
 
-            if (!isDeleted)
-            {
-                return NotFound(response);
-            }
-            return Ok(response);
+            return Ok(rsp);
         }
     }
 }

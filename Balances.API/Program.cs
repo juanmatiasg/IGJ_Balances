@@ -1,11 +1,14 @@
+using Balances.Bussiness;
+using Balances.Bussiness.Contrato;
+using Balances.Bussiness.Implementacion;
 using Balances.Repository.Contract;
 using Balances.Repository.Implementation;
-using Balances.Utilities;
 using Balances.Services.Contract;
 using Balances.Services.Implementation;
-using MongoDB.Driver;
+using Balances.Utilities;
 using Dominio.Helpers;
 using EmailSender;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +20,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Serilog Logs
+//Log.Logger = new LoggerConfiguration()
+//    .ReadFrom.Configuration(builder.Configuration).CreateLogger();
 
-/*Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .WriteTo.Console()
-            .WriteTo.File("Logs/Log-.txt", rollingInterval: RollingInterval.Day)
-            .CreateLogger();*/
+//Log.Logger = new LoggerConfiguration()
+//            .MinimumLevel.Information()
+//            .WriteTo.Console()
+//            .WriteTo.File("Logs/Log-.txt", rollingInterval: RollingInterval.Day)
+//            .CreateLogger();
 
 
 /// builder.Host.UseSerilog;
@@ -31,34 +37,55 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 //Balance
+
+builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
+builder.Services.AddScoped<ICaratulaBusiness, CaratulaBusiness>();
+builder.Services.AddScoped<IBalanceBusiness, BalanceBusiness>();
+builder.Services.AddScoped<IContadorBusiness, ContadorBusiness>();
+builder.Services.AddScoped<IAutoridadesBusiness, AutoridadesBusiness>();
+builder.Services.AddScoped<IEstadoContableBusiness, EstadoContableBusiness>();
+builder.Services.AddScoped<IArchivoBusiness, ArchivoBusiness>();
+builder.Services.AddScoped<ILibrosBusiness, LibrosBusiness>();
+builder.Services.AddScoped<ISociosBusiness, SociosBusiness>();
+
+builder.Services.AddSingleton<ISessionService, SessionService>();
+
 builder.Services.AddSingleton<IBalanceService, BalanceService>();
+//builder.Services.AddScoped<IContadorService, ContadorService>();
+builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
+//builder.Services.AddScoped<IRepresentanteLegalService, RepresentanteLegalService>();
+builder.Services.AddScoped<IArchivoService, ArchivoService>();
+builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
 
 //Email
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 
-//Set Session
-builder.Services.AddDistributedMemoryCache(); // O el proveedor de sesión que estás utilizando
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 
-
-
+//builder.Services.AddHttpContextAccessor();
 //Session
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<ISessionService, SessionService>();
 
+//builder.Services.AddSingleton<IPresentacionService, IPresentacionService>();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+    options.IdleTimeout = TimeSpan.FromHours(3));
 
+//AUTOMAPPER
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-builder.Services.AddSingleton<IMongoRepository>(provider =>
-{
-    var mongoClient = new MongoClient("mongodb://localhost:27017");
-    var database = mongoClient.GetDatabase("DeclaracionJurada");
-    return new MongoRepository(database, "Balances");
-});
+//DB
+builder.Services.Configure<MongoDbSettings>
+                          (builder.Configuration.GetSection(nameof(MongoDbSettings)));
+builder.Services.AddSingleton<IMongoDbSettings>
+                             (d => d.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+
+//builder.Services.AddSingleton<IMongoRepository>(provider =>
+//{
+//    var mongoClient = new MongoClient("mongodb://localhost:27017");
+//    var database = mongoClient.GetDatabase("DeclaracionJurada");
+//    return new MongoRepository(database, "Balances");
+//});
+
 
 
 
@@ -87,6 +114,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+//Serilog
+//app.UseSerilogRequestLogging();
 
 //Cors
 app.UseCors("NuevaPolitica");
