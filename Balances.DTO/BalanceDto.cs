@@ -21,5 +21,6 @@ namespace Balances.DTO
         public LibrosDto Libros { get; set; }
         public Contador Contador { get; set; }
         public SociosDto Socios { get; set; }
+        public Presentacion Presentacion { get; set; }
     }
 }

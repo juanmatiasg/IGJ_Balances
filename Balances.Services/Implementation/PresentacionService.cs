@@ -41,7 +41,7 @@ namespace Balances.Services.Implementation
             return balFilter;
         }
 
-        public string CrearMailPresentacion(BalanceDtoPresentacion balance, string qr)
+        public string CrearPlantillaPresentacion(BalanceDtoPresentacion balance, string qr)
         {
             string PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalance2.html");
 

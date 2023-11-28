@@ -20,5 +20,6 @@ namespace Balances.Model
         public Libros Libros { get; set; }
         public Socios Socios { get; set; }
         public Contador Contador { get; set; }
+        public Presentacion Presentacion { get; set; }
     }
 }

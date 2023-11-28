@@ -1,5 +1,6 @@
 ﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
+using Balances.Model;
 using Balances.Services.Contract;
 using Dominio.Helpers;
 using EmailSender;
@@ -62,9 +63,9 @@ namespace Balances.Bussiness.Implementacion
             //pdf
 
             var binariopdf = _pdfService.HtmlToPDF(plantillahtmlpdf, balPresentacion);
+            bal.Presentacion = new Presentacion(binariopdf);
 
-
-            var plantillahtml = _presentacionService.CrearMailPresentacion(balPresentacion, qr);
+            var plantillahtml = _presentacionService.CrearPlantillaPresentacion(balPresentacion, qr);
 
             //File.WriteAllBytes("c:/prueba.pdf", pdf);
             // paso como parametro el balance y la plantilla para armar el emailRequest 
@@ -86,6 +87,8 @@ namespace Balances.Bussiness.Implementacion
                 respuesta.Message = ex.Message;
             }
 
+
+            _balanceBusiness.Update(bal);
 
             return respuesta;
         }
@@ -112,18 +115,7 @@ namespace Balances.Bussiness.Implementacion
             return Plantillahtml;
         }
 
-        public MailRequest CrearEmaiInicioTramite(BalanceDto balance)
-        {
-            var mailRequest = new MailRequest()
-            {
 
-                To = balance.Caratula.Email,
-                Subject = $"Presentación Digital de Balances - {balance.Caratula.Entidad.RazonSocial} ",
-                Body = CrearBodyBuilder(balance).HtmlBody,
-            };
-
-            return mailRequest;
-        }
 
         public MimeMessage CrearEmailPresentacion(BalanceDto balance, string html, byte[] binariopdf, string qr)
         {
@@ -139,6 +131,7 @@ namespace Balances.Bussiness.Implementacion
 
             var builder = new BodyBuilder();
             var pathImage = _webHostEnvironment.ContentRootPath + "/Plantillas/Imagenes";
+
             /* A G R E G AM O S   I M A G E N E S   H E A D E R */
             var imgIGJ = builder.LinkedResources.Add("igj.png", File.ReadAllBytes(pathImage + "/igj.png"));
             imgIGJ.ContentId = MimeUtils.GenerateMessageId();

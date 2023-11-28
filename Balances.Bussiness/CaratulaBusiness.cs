@@ -5,6 +5,9 @@ using Balances.Model;
 using Balances.Repository.Contract;
 using Balances.Services.Contract;
 using EmailSender;
+using Microsoft.AspNetCore.Hosting;
+using MimeKit;
+using MimeKit.Utils;
 using MongoDB.Driver;
 
 namespace Balances.Bussiness
@@ -17,13 +20,15 @@ namespace Balances.Bussiness
         private ISessionService _sessionService;
         private readonly IBalanceBusiness _balanceBusiness;
         private readonly IEmailSenderService _emailSenderService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
 
         public CaratulaBusiness(IMongoDbSettings _settings,
                                 IMapper mapper,
                                 ISessionService sessionService,
                                 IBalanceBusiness balanceBusiness,
-                                IEmailSenderService emailSenderService)
+                                IEmailSenderService emailSenderService,
+                                IWebHostEnvironment webHostEnvironment)
         {
             var cliente = new MongoClient(_settings.Server);
             var database = cliente.GetDatabase(_settings.Database);
@@ -32,6 +37,7 @@ namespace Balances.Bussiness
             _sessionService = sessionService;
             _balanceBusiness = balanceBusiness;
             _emailSenderService = emailSenderService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public bool Delete(CaratulaDto modelo)
@@ -87,8 +93,11 @@ namespace Balances.Bussiness
 
                 var balanceDto = _mapper.Map<BalanceDto>(balance);
 
-                var EmailRequest = _emailSenderService.EmaiInicioTramite(balanceDto);
-                _emailSenderService.SendEmailAsync(EmailRequest);
+                var plantillahtml = CrearPlantillaInicioTramite(balanceDto);
+
+                var email = CrearEmaiInicioTramite(balanceDto, plantillahtml);
+                //var EmailRequest = _emailSenderService.EmaiInicioTramite(balanceDto);
+                _emailSenderService.SendEmailAsync(email);
 
                 // si inserto correctamente
                 if (rsp != null)
@@ -111,6 +120,66 @@ namespace Balances.Bussiness
 
             }
             return respuesta;
+        }
+
+        public string CrearPlantillaInicioTramite(BalanceDto balance)
+        {
+            string PlantillaHTML = GetPlantillaHtml("PlantillaEmail.html");
+
+            PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
+            PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
+            PlantillaHTML = PlantillaHTML.Replace("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
+            PlantillaHTML = PlantillaHTML.Replace("{{FechaEstado}}", balance.Caratula.FechaDeCierre.ToShortDateString());
+            PlantillaHTML = PlantillaHTML.Replace("{{Domicilio}}", balance.Caratula.Entidad.Domicilio);
+
+
+
+            return PlantillaHTML;
+
+        }
+
+        private string GetPlantillaHtml(string plantilla)
+        {
+            var path = _webHostEnvironment.ContentRootPath + "/Plantillas";
+            var Plantilla = path + "/" + plantilla;
+
+            var PlantillaHTML = File.ReadAllText(Plantilla);
+            return PlantillaHTML;
+        }
+
+        public MimeMessage CrearEmaiInicioTramite(BalanceDto balance, string html)
+        {
+            var mime = new MimeMessage()
+            {
+                //    To = balance.Caratula.Email,
+                Subject = $"Presentacion Generada - {balance.Caratula.Entidad.RazonSocial} ",
+                //  Body = html,
+
+            };
+
+            mime.To.Add(new MailboxAddress("", balance.Caratula.Email));
+
+            var builder = new BodyBuilder();
+            var pathImage = _webHostEnvironment.ContentRootPath + "/Plantillas/Imagenes";
+
+            /* A G R E G AM O S   I M A G E N E S   H E A D E R */
+            var imgIGJ = builder.LinkedResources.Add("igj.png", File.ReadAllBytes(pathImage + "/igj.png"));
+            imgIGJ.ContentId = MimeUtils.GenerateMessageId();
+            html = html.Replace("{{igjImage}}", imgIGJ.ContentId);
+
+            var imgMIN = builder.LinkedResources.Add("ministerio.png", File.ReadAllBytes(pathImage + "/ministerio.png"));
+            imgMIN.ContentId = MimeUtils.GenerateMessageId();
+            html = html.Replace("{{MinImage}}", imgMIN.ContentId);
+
+
+
+            builder.HtmlBody = html;
+
+
+
+            mime.Body = builder.ToMessageBody();
+
+            return mime;
         }
 
         private Caratula MapearCaratula(CaratulaDto modelo)

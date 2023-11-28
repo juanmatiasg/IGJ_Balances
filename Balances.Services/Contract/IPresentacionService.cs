@@ -9,6 +9,6 @@ namespace Balances.Services.Contract
 
         BalanceDtoPresentacion GetBalanceAutoridadySocioFirmante(BalanceDto balance);
 
-        string CrearMailPresentacion(BalanceDtoPresentacion balance, string qr);
+        string CrearPlantillaPresentacion(BalanceDtoPresentacion balance, string qr);
     }
 }
