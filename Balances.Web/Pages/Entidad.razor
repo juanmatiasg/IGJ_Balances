@@ -3,6 +3,8 @@
 @using Balances.Web.Services.Implementation;
 @using Microsoft.JSInterop
 @using Balances.Web.Services
+@using System.Text.RegularExpressions;
+@using Newtonsoft.Json;
 @inject IJSRuntime JS
 @inject ICaratulaService caratulaService
 
@@ -75,15 +77,13 @@
                     
                         <div class="col">
                             <label for="busqueda">Nro.Correlativo/CUIT/CUIL</label>
-                            <input type="text"  @bind="nroCorrelativo" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top">
+                            <input type="text"  @bind="@nroCorrelativo" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top">
                             <small id="busquedaError" class="text-danger">@busquedaError</small>
                         </div>
                  
                         <div class="col mt-4">
                             <button type="submit" id="btnBuscar" class="btn btn-primary" @onclick="FindEntities">Buscar</button>
                         </div>
-                
-   
                     </div>
 
 
@@ -92,7 +92,7 @@
                             <p class="control texto">Razón Social:</p>
                         </div>
                         <div class="col">
-                            <p id="@razonSocial"></p>
+                        <p id="razonSocial">@razonSocial</p>
                         </div>                       
                     </div>
                     <div class="row mt-2">
@@ -100,7 +100,7 @@
                             <p class="control texto">Tipo de Entidad:</p>
                         </div>
                         <div class="col">
-                            <p id="@tipoEntidad"></p>
+                        <p id="tipoEntidad">@tipoEntidad</p>
                         </div>
                     </div>
 
@@ -119,59 +119,107 @@
                 
                 </div>
             </div>
+        </div>
             <!--Datos Personales -->
-            <div class="card mx-auto mt-4 " style="width: 800px;">
-                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                    Datos Personales
+
+    <div class="card mx-auto mt-4 " style="width: 800px;">
+        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+            Datos Personales
+        </div>
+        @if (entidadEncontrada)
+        {
+            <div class="row ps-3 pt-3">
+                <div class="form-group col">
+                    <label for="location">Domicilio</label>
+                    <input type="text" @bind=@domicilio class="form-control" id="domicilio" placeholder="Domicilio">
                 </div>
 
-                <div class="row ps-3 pt-3">
-                    <div class="form-group col">
-                        <label for="location">Domicilio</label>
-                        <input type="text" class="form-control" id="domicilio" placeholder="Domicilio">
-
+                <div class="col mt-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@sedeSocialInscripta">
+                        <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
                     </div>
-
-                    <div class="col mt-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta">
-                            <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row  ps-3 pt-3 pe-3">
-                    <div class="col">
-                        <label for="domicilio">Fecha de inicio</label>
-                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" />
-                        <small id="fechaError" class="text-danger"></small>
-
-                    </div>
-                    <div class="col">
-                        <label for="domicilio">Fecha de Cierre</label>
-                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" />
-                        <small id="fechaError" class="text-danger"></small>
-                    </div>
-                </div>
-
-                <div class="row  ps-3 pt-3 pe-3">
-                    <div class="col mb-4">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top"/>
-                        <small id="emailError" class="text-danger"></small>
-                    </div>
-                </div>
-              
-                <div class="col mt-4 mb-4 d-flex justify-content-center">
-                    <button type="button" id="btnInit" class="btn btn-secondary w-50" onclick="sendmail()">Iniciar Trámite</button>
                 </div>
             </div>
-        
-        </div>
 
-   
+            <div class="row  ps-3 pt-3 pe-3">
+                <div class="col">
+                    <label for="domicilio">Fecha de inicio</label>
+                    <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" @bind=@fechaDeInicio/>
+                    <small id="fechaError" class="text-danger">@fechaError</small>
 
-        <!-- Loading Modal -->
+                </div>
+                <div class="col">
+                    <label for="domicilio">Fecha de Cierre</label>
+                    <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" @bind=@fechaDeCierre />
+                    <small id="fechaError" class="text-danger">@fechaError</small>
+                </div>
+            </div>
+
+            <div class="row  ps-3 pt-3 pe-3">
+                <div class="col mb-4">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" @bind=@email data-bs-placement="top" />
+                    <small id="emailError" class="text-danger">@emailError</small>
+                </div>
+            </div>
+
+            <div class="col mt-4 mb-4 d-flex justify-content-center">
+                <button type="button" id="btnInit" class="btn btn-primary w-50" onclick="@IniciarTramites">Iniciar Trámite</button>
+            </div>
+
+        }
+        else
+        {
+            <div class="row ps-3 pt-3">
+                <div class="form-group col">
+                    <label for="location">Domicilio</label>
+                    <input type="text" class="form-control" id="domicilio" placeholder="Domicilio" disabled>
+
+                </div>
+
+                <div class="col mt-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" disabled>
+                        <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row  ps-3 pt-3 pe-3">
+                <div class="col">
+                    <label for="domicilio">Fecha de inicio</label>
+                    <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" disabled />
+                    <small id="fechaError" class="text-danger"></small>
+
+                </div>
+                <div class="col">
+                    <label for="domicilio">Fecha de Cierre</label>
+                    <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" disabled />
+                    <small id="fechaError" class="text-danger"></small>
+                </div>
+            </div>
+
+            <div class="row  ps-3 pt-3 pe-3">
+                <div class="col mb-4">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled />
+                    <small id="emailError" class="text-danger"></small>
+                </div>
+            </div>
+
+            <div class="col mt-4 mb-4 d-flex justify-content-center">
+                <button type="button" id="btnInit" class="btn btn-secondary w-50"  disabled>Iniciar Trámite</button>
+            </div>
+        }
+
+
+    </div>
+
+
+
+
+    <!-- Loading Modal -->
         <div class="modal" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -208,13 +256,13 @@
         <script>
         
 
-             window.renderReCAPTCHA = (dotnetHelper, callbackFunction) => {
+             /*window.renderReCAPTCHA = (dotnetHelper, callbackFunction) => {
                 grecaptcha.render('ReCaptchContainer', {
                     'sitekey': '6LePUbckAAAAANujg3w19MhoacQjXACvi8hzRwGz',
                     'callback': () => dotnetHelper.invokeMethodAsync(callbackFunction, grecaptcha.getResponse())
                     // Otros parámetros según sea necesario
                 });
-            };
+            };*/
 
             var entityId = sessionStorage.getItem('idSession');
             //var modifiedIdBalanced = entityId.replace(/['"]+/g, '');
@@ -275,7 +323,7 @@
                            
                             // ... (update other UI elements)
                             document.getElementById("email").disabled = true;
-                            //document.getElementById("busqueda").disabled = true;
+                            document.getElementById("busqueda").disabled = true;
                             document.getElementById("domicilio").disabled = true;
                             document.getElementById("fechaDeInicio").disabled = true;
                             document.getElementById("fechaDeCierre").disabled = true;
@@ -676,24 +724,35 @@
     private string razonSocial = "";
     private string tipoEntidad = "";
     private string entidad = "";
+    private string email;
+    private bool sedeSocialInscripta = false;
+    private string domicilio;
+    private DateTime fechaDeInicio;
+    private DateTime fechaDeCierre;
+    private string fechaError ="";
+    private string emailError="";
+    private bool entidadEncontrada;
+    private Entidad entity;
+
+    private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
 
 
 
     [JSInvokable("OnReCAPTCHASuccess")]
     private async Task OnReCAPTCHASuccess(string token)
-        {
+    {
         // Set the reCAPTCHA token
         reCAPTCHAToken = token;
 
         // Your implementation
         if (!string.IsNullOrEmpty(reCAPTCHAToken))
-            {
-        await FindEntities();
-    }
+        {
+            await FindEntities();
+        }
     }
 
     private async Task RenderReCAPTCHA()
-        {
+    {
         // Invoke the JavaScript function
         await JS.InvokeVoidAsync("renderReCAPTCHA", DotNetObjectReference.Create(this), "OnReCAPTCHASuccess");
     }
@@ -720,10 +779,9 @@
 
                 if (response != null)
                 {
-                    /*razonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
-                    tipoEntidad = response.Result.TipoEntidad;*/ 
-                    
-                    Console.WriteLine($"Datos: {response.Result}");
+                    razonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
+                    tipoEntidad = response.Result.TipoEntidad;
+                    entidadEncontrada = true;
 
                 }
             }
@@ -737,46 +795,39 @@
             busquedaError = "El campo tiene que ser numérico";
         }
 
- 
+
     }
-    
 
-    /*private async Task FindEntities()
+    private async Task IniciarTramites()
     {
-           
-            int numericBusqueda;
 
-            if (string.IsNullOrEmpty(nroCorrelativo))
+
+        try
+        {
+            var response = await caratulaService.initTramite(email, fechaDeInicio, fechaDeCierre, razonSocial, tipoEntidad, domicilio, sedeSocialInscripta, nroCorrelativo);
+
+            if (response.IsSuccess)
             {
-                busquedaError = "El campo no puede estar vacío";
-                return;
-            }
 
-            if (int.TryParse(nroCorrelativo, out numericBusqueda))
-            {
-                busquedaError = "";
-
-
-                try
-                {
-                    var response = await caratulaService
-
-                    if (response != null)
-                    {
-                        razonSocial = response.RazonSocial ?? "Entidad no encontrada";
-                        tipoEntidad = response.TipoEntidad;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                }
+                await 
             }
             else
             {
-                busquedaError = "El campo tiene que ser numérico";
+                Console.WriteLine($"Datos" + response.Message);
             }
         }
-    }*/
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+        }
+
+        
+
+      
+    }
+
+  
+
+   
 }
 

@@ -1,3 +1,4 @@
+using Balances.DTO;
 using Balances.Model;
 using BuscarIGJ;
 using Microsoft.AspNetCore.Authorization;
@@ -14,49 +15,68 @@ namespace WebApi.Controllers
 
 
         [HttpGet("BusquedaByCuilOrCorrelativo")]
-        public async Task<IActionResult> BusquedaByCuilOrCorrelativo(string cuitcorrelativo)
+        public async Task<IActionResult> BusquedaByCuilOrCorrelativo(string nroCorrelativo)
         {
-            var entidadService = new WebService.Entidad();
-
-            string filtro = cuitcorrelativo.Replace("-", "").Replace(" ", "");
-
-            if (filtro.Length == 11)
+            try
             {
-                entidadService = await BusquedaEntidadService.GetByCuit(Convert.ToInt64(filtro));
-                EntidadModel oEntidad = new EntidadModel()
+                var entidadService = new WebService.Entidad();
+
+         
+
+                if (!string.IsNullOrEmpty(nroCorrelativo))
                 {
-                    NroCorrelativo = entidadService.NroCorrelativo.ToString(),
-                    TipoEntidad = entidadService.TipoSoc,
-                    RazonSocial = entidadService.RazonSocial
-                };
+                    string filtro = nroCorrelativo.Replace("-", "").Replace(" ", "");
+
+                    if (filtro.Length == 11)
+                    {
+
+                        var response = new ResponseDTO<BusquedaEntidadResponse>
+                        {
+                            Result = new BusquedaEntidadResponse
+                            {
+                                NroCorrelativo = entidadService.NroCorrelativo.ToString(),
+                                TipoEntidad = entidadService.TipoSoc,
+                                RazonSocial = entidadService.RazonSocial
+                            },
+                            IsSuccess = true,
+                            Message = "Entidad encontrada"
+                        };
+
+                        return Ok(response);
+
+                    }
+                    else
+                    {
+                        entidadService = await BusquedaEntidadService.BusquedaEntidadByCorrelativo(Convert.ToInt32(filtro));
+                        var response = new ResponseDTO<BusquedaEntidadResponse>
+                        {
+                            Result = new BusquedaEntidadResponse
+                            {
+                                NroCorrelativo = entidadService.NroCorrelativo.ToString(), 
+                                TipoEntidad = entidadService.TipoSoc,
+                                RazonSocial = entidadService.RazonSocial
+                            },
+                            IsSuccess = true,
+                            Message = "Entidad encontrada"
+                        };
+
+                        return Ok(response);
 
 
 
-                return Ok(oEntidad);
-            }
-            else
-            {
-                entidadService = await BusquedaEntidadService.BusquedaEntidadByCorrelativo(Convert.ToInt32(filtro));
-                //var oEntidad = _mapper.Map<EntidadModel>(entidadService);
-                EntidadModel oEntidad = new EntidadModel()
+                    }
+                }
+                else
                 {
-                    NroCorrelativo = entidadService.NroCorrelativo.ToString(),
-                    TipoEntidad = entidadService.TipoSoc,
-                    RazonSocial = entidadService.RazonSocial
-                };
-
-
-
-                return Ok(oEntidad);
+                    return BadRequest("El parámetro cuitcorrelativo es nulo o vacío.");
+                }
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error en la acción BusquedaByCuilOrCorrelativo: {ex.Message}");
+                return StatusCode(500, "Error interno del servidor");
             }
 
-            
         }
-
-
-
-
-
 
     }
 }

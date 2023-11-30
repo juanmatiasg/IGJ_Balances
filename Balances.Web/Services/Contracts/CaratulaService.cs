@@ -1,10 +1,12 @@
 ﻿using Balances.DTO;
 using Balances.Model;
 using Balances.Web.Services.Implementation;
-using com.sun.org.apache.xml.@internal.resolver.helpers;
-using javax.jws;
+
 using Newtonsoft.Json;
 using System.Net.Http.Json;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
 
 namespace Balances.Web.Services.Contracts
 {
@@ -18,35 +20,66 @@ namespace Balances.Web.Services.Contracts
 
         }
 
+
         public async Task<ResponseDTO<BusquedaEntidadResponse>> findEntities(string nroCorrelativo)
+        {
+            return await _httpClient.GetFromJsonAsync<ResponseDTO<BusquedaEntidadResponse>>($"BusquedaByCuilOrCorrelativo?nroCorrelativo={nroCorrelativo}");
+        }
+
+        public async Task<ResponseDTO<BalanceDto>> initTramite(string email, DateTime fechaInicio, DateTime fechaDeCierre, string razonSocial, string tipoEntidad, string domicilio, bool sedeSocialInscripta, string nroCorrelativo)
         {
             try
             {
-
-                var response = await _httpClient.GetFromJsonAsync<ResponseDTO<BusquedaEntidadResponse>>($"BusquedaByCuilOrCorrelativo?cuitOrCorrelativo={nroCorrelativo}");
-
-
-                return response;
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"Error en la solicitud HTTP: {ex.Message}");
-                return new ResponseDTO<BusquedaEntidadResponse>
+                var caratulaDto = new CaratulaDto
                 {
-                    IsSuccess = false,
-                    Message = "Error en la solicitud HTTP"
+                    Email = email,
+                    FechaInicio = fechaInicio,
+                    FechaDeCierre = fechaDeCierre,
+                    Entidad = new Entidad
+                    {
+                        RazonSocial = razonSocial,
+                        TipoEntidad = tipoEntidad,
+                        Domicilio = domicilio,
+                        SedeSocialInscripta = sedeSocialInscripta,
+                        Correlativo = nroCorrelativo
+                    }
                 };
-            }
-            catch (JsonException ex)
-            {
-                Console.WriteLine($"Error de deserialización JSON: {ex.Message}");
-                return new ResponseDTO<BusquedaEntidadResponse>
+
+
+
+                // Enviar la solicitud POST directamente con PostAsJsonAsync
+                var response = await _httpClient.PostAsJsonAsync("Caratula/InsertCaratula", caratulaDto);
+
+                // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
+                var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
+                
+                return new ResponseDTO<BalanceDto>
                 {
+                    Result = result.Result,
+                    IsSuccess = true,
+                    Message = "Balance insertado correctamente"
+                };
+
+              
+            }
+            catch (Exception ex)
+            {
+                // Manejar cualquier excepción que pueda ocurrir durante la solicitud
+                return new ResponseDTO<BalanceDto>
+                {
+                    Result = null,
                     IsSuccess = false,
-                    Message = "Error de deserialización JSON"
+                    Message = "Error in the request"
                 };
             }
         }
+
+        public Task<ResponseDTO<string>> setSession(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+      
     }
 
 }
