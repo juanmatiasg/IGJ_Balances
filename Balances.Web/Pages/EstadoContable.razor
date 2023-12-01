@@ -234,34 +234,6 @@
         </div>
     </div>
 
-
-    <button type="button" class="btn btn-primary d-flex justify-content-center" onclick="validarCampos()">Validar Campos</button>
-
-
-    <!-- Agrega el siguiente script al final de la página, después del modal y los enlaces a los scripts de Bootstrap y otros recursos -->
-    <script>
-        function validarCampos() {
-            const formElements = document.querySelectorAll('input[type="text"]');
-            let allFieldsFilled = true;
-
-            formElements.forEach((element) => {
-                if (element.value.trim() === '') {
-                    allFieldsFilled = false;
-                }
-            });
-
-            if (allFieldsFilled) {
-                alert('Todos los campos están completos.');
-                window.location.href = '/Libros';
-            } else {
-                $('#errorModal').modal('show');
-            }
-        }
-    </script>
-
-    <!-- Agrega los enlaces a los scripts de Bootstrap y otros recursos aquí -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
 

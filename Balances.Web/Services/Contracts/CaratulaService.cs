@@ -26,6 +26,12 @@ namespace Balances.Web.Services.Contracts
             return await _httpClient.GetFromJsonAsync<ResponseDTO<BusquedaEntidadResponse>>($"BusquedaByCuilOrCorrelativo?nroCorrelativo={nroCorrelativo}");
         }
 
+        public async Task<ResponseDTO<BalanceDto>> getBalance(string id)
+        {
+            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Balance/{id}");
+
+        }
+
         public async Task<ResponseDTO<BalanceDto>> initTramite(string email, DateTime fechaInicio, DateTime fechaDeCierre, string razonSocial, string tipoEntidad, string domicilio, bool sedeSocialInscripta, string nroCorrelativo)
         {
             try

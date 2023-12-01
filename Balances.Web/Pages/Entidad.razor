@@ -7,6 +7,10 @@
 @using Newtonsoft.Json;
 @inject IJSRuntime JS
 @inject ICaratulaService caratulaService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject NavigationManager NavigationManager
+
+
 
 
 <!DOCTYPE html>
@@ -119,597 +123,112 @@
                 
                 </div>
             </div>
-        </div>
+        
             <!--Datos Personales -->
 
-    <div class="card mx-auto mt-4 " style="width: 800px;">
-        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-            Datos Personales
-        </div>
-        @if (entidadEncontrada)
-        {
-            <div class="row ps-3 pt-3">
-                <div class="form-group col">
-                    <label for="location">Domicilio</label>
-                    <input type="text" @bind=@domicilio class="form-control" id="domicilio" placeholder="Domicilio">
-                </div>
-
-                <div class="col mt-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@sedeSocialInscripta">
-                        <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+       <div class="card mx-auto mt-4 " style="width: 800px;">
+ 
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Datos Personales
+            </div>
+            
+            @if (@entidadEncontrada)
+            {
+                <div class="row ps-3 pt-3">
+                    <div class="form-group col">
+                        <label for="location">Domicilio</label>
+                        <input type="text" @bind=@domicilio class="form-control" id="domicilio" placeholder="Domicilio">
                     </div>
-                </div>
-            </div>
 
-            <div class="row  ps-3 pt-3 pe-3">
-                <div class="col">
-                    <label for="domicilio">Fecha de inicio</label>
-                    <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" @bind=@fechaDeInicio/>
-                    <small id="fechaError" class="text-danger">@fechaError</small>
-
-                </div>
-                <div class="col">
-                    <label for="domicilio">Fecha de Cierre</label>
-                    <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" @bind=@fechaDeCierre />
-                    <small id="fechaError" class="text-danger">@fechaError</small>
-                </div>
-            </div>
-
-            <div class="row  ps-3 pt-3 pe-3">
-                <div class="col mb-4">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" @bind=@email data-bs-placement="top" />
-                    <small id="emailError" class="text-danger">@emailError</small>
-                </div>
-            </div>
-
-            <div class="col mt-4 mb-4 d-flex justify-content-center">
-                <button type="button" id="btnInit" class="btn btn-primary w-50" onclick="@IniciarTramites">Iniciar Trámite</button>
-            </div>
-
-        }
-        else
-        {
-            <div class="row ps-3 pt-3">
-                <div class="form-group col">
-                    <label for="location">Domicilio</label>
-                    <input type="text" class="form-control" id="domicilio" placeholder="Domicilio" disabled>
-
-                </div>
-
-                <div class="col mt-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" disabled>
-                        <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row  ps-3 pt-3 pe-3">
-                <div class="col">
-                    <label for="domicilio">Fecha de inicio</label>
-                    <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" disabled />
-                    <small id="fechaError" class="text-danger"></small>
-
-                </div>
-                <div class="col">
-                    <label for="domicilio">Fecha de Cierre</label>
-                    <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" disabled />
-                    <small id="fechaError" class="text-danger"></small>
-                </div>
-            </div>
-
-            <div class="row  ps-3 pt-3 pe-3">
-                <div class="col mb-4">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled />
-                    <small id="emailError" class="text-danger"></small>
-                </div>
-            </div>
-
-            <div class="col mt-4 mb-4 d-flex justify-content-center">
-                <button type="button" id="btnInit" class="btn btn-secondary w-50"  disabled>Iniciar Trámite</button>
-            </div>
-        }
-
-
-    </div>
-
-
-
-
-    <!-- Loading Modal -->
-        <div class="modal" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body text-center">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                    <div class="col mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@sedeSocialInscripta">
+                            <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
                         </div>
-                        <p class="mt-2">Cargando...</p>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="modal" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="errorModalTitle"></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col">
+                        <label for="domicilio">Fecha de inicio</label>
+                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" @bind=@fechaDeInicio />
+                        <small id="fechaError" class="text-danger">@fechaError</small>
+
                     </div>
-                    <div class="modal-body">
-                        <p id="errorModalMessage"></p>
+                    <div class="col">
+                        <label for="domicilio">Fecha de Cierre</label>
+                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" @bind=@fechaDeCierre />
+                        <small id="fechaError" class="text-danger">@fechaError</small>
                     </div>
                 </div>
-            </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col mb-4">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" @bind=@email data-bs-placement="top" />
+                        <small id="emailError" class="text-danger">@emailError</small>
+                    </div>
+                </div>
+
+                <div class="col mt-4 mb-4 d-flex justify-content-center">
+                    <button type="button" id="btnInit" class="btn btn-primary w-50" onclick="@IniciarTramites">Iniciar Trámite</button>
+                </div>
+           
+            }
+            else
+            {
+                <div class="row ps-3 pt-3">
+                    <div class="form-group col">
+                        <label for="location">Domicilio</label>
+                        <input type="text" class="form-control" id="domicilio" placeholder="Domicilio" disabled>
+
+                    </div>
+
+                    <div class="col mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" disabled>
+                            <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col">
+                        <label for="domicilio">Fecha de inicio</label>
+                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" disabled />
+                        <small id="fechaError" class="text-danger"></small>
+
+                    </div>
+                    <div class="col">
+                        <label for="domicilio">Fecha de Cierre</label>
+                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" disabled />
+                        <small id="fechaError" class="text-danger"></small>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col mb-4">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled />
+                        <small id="emailError" class="text-danger"></small>
+                    </div>
+                </div>
+
+                <div class="col mt-4 mb-4 d-flex justify-content-center">
+                    <button type="button" id="btnInit" class="btn btn-secondary w-50" disabled>Iniciar Trámite</button>
+                </div>
+        
+            }
+             </div>
         </div>
 
 
-        <!-- ReCAPTCHA script -->
-        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-     
-    
 
-        <script>
+
         
 
-             /*window.renderReCAPTCHA = (dotnetHelper, callbackFunction) => {
-                grecaptcha.render('ReCaptchContainer', {
-                    'sitekey': '6LePUbckAAAAANujg3w19MhoacQjXACvi8hzRwGz',
-                    'callback': () => dotnetHelper.invokeMethodAsync(callbackFunction, grecaptcha.getResponse())
-                    // Otros parámetros según sea necesario
-                });
-            };*/
 
-            var entityId = sessionStorage.getItem('idSession');
-            //var modifiedIdBalanced = entityId.replace(/['"]+/g, '');
-           
-            console.log("sessionID" + entityId);
-
-            if(entityId!=null){
-                fetchDataBalance(entityId);
-            }
-
-        function fetchDataBalance(entityId) {
-            const url = `https://localhost:7172/Balance/${entityId}`;
-
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Error en la solicitud');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Handle the fetched data and update the UI
-                        console.log(data);
-                        // Example: Update UI elements with the fetched data
-
-                 
-
-                        const caratula = data.result.caratula;
-                        const id = data.result.id;
-
-                        if (caratula) {
-                            const entidad = caratula.entidad;
-
-                           
-                            // Obtener las partes de la fecha en el formato "yyyy-MM-dd"
-                            const fechaInicioFormateada = formatearFecha(caratula.fechaInicio);
-                            const fechaDeCierreFormateada = formatearFecha(caratula.fechaDeCierre);
-
-                            console.log("FechaFormateadaInicio" + fechaInicioFormateada);
-                            console.log("FechaFormateadaDeCierre" + fechaDeCierreFormateada);
-
-                            /*
-                            
-                            
-                            */
-
-
-                            // Actualizar los elementos HTML
-                            //document.getElementById('busqueda').value = id;
-                            document.getElementById('razonSocial').textContent = entidad.razonSocial;
-                            document.getElementById('tipoEntidad').textContent = entidad.tipoEntidad;
-                            document.getElementById('entidad').textContent = entidad.tipoEntidad;
-                            document.getElementById('domicilio').value = entidad.domicilio;
-                            document.getElementById('fechaDeInicio').value = fechaInicioFormateada;
-                            document.getElementById('fechaDeCierre').value = fechaDeCierreFormateada;
-                            document.getElementById('email').value = caratula.email;
-                            document.getElementById('sedeInscripta').checked = caratula.sedeSocialInscripta;
-                           
-                            // ... (update other UI elements)
-                            document.getElementById("email").disabled = true;
-                            document.getElementById("busqueda").disabled = true;
-                            document.getElementById("domicilio").disabled = true;
-                            document.getElementById("fechaDeInicio").disabled = true;
-                            document.getElementById("fechaDeCierre").disabled = true;
-                            document.getElementById("email").disabled = true;
-                            document.getElementById("sedeInscripta").disabled = true;
-                   
-                            document.getElementById("btnBuscar").classList.add("d-none"); 
-                            document.getElementById("btnInit").classList.add("d-none");
-
-                  
-
-
-                        } else {
-                            console.error('La propiedad "caratula" no está definida en la respuesta JSON.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Hubo un problema con la solicitud fetch:', error);
-                    });
-            }
-           
-            //document.getElementById("busqueda").addEventListener("input", enableSubmitButton);
-            document.getElementById("domicilio").addEventListener("input", enableSubmitButton);
-            document.getElementById("fechaDeInicio").addEventListener("input", enableSubmitButton);
-            document.getElementById("fechaDeCierre").addEventListener("input", enableSubmitButton);
-            document.getElementById("email").addEventListener("input", enableSubmitButton);
-
-     
-            document.getElementById("domicilio").disabled = true;
-            document.getElementById("fechaDeInicio").disabled = true;
-            document.getElementById("fechaDeCierre").disabled = true;
-            document.getElementById("email").disabled = true;
-            document.getElementById("sedeInscripta").disabled = true;
-
-
-
-            
-            // Función para formatear fechas
-            function formatearFecha(fecha) {
-            
-                const partes = fecha.split('/');
-            let fechaFormateada;
-    
-            if (partes.length === 3) {
-                // Si hay tres partes en la fecha (día, mes, año), intenta formatearla
-                fechaFormateada = new Date(`${partes[2]}-${partes[1]}-${partes[0]}`);
-            } else {
-                // Si no, intenta parsear directamente
-                fechaFormateada = new Date(fecha);
-            }
-
-            if (isNaN(fechaFormateada.getTime())) {
-                console.error('Fecha no válida:', fecha);
-                return null;
-            }
-    
-            // Formatea la fecha utilizando el formato local
-            const fechaFormateadaLocal = fechaFormateada.toLocaleDateString();
-            return fechaFormateadaLocal;
-            }
-
-
-            /*function onReCAPTCHASuccess(token) {
-                // La verificación del reCAPTCHA fue exitosa, ahora puedes llamar a la función findEntities
-                if (token != null) {
-                    findEntities();
-                }
-
-            }
-
-            // Actualizar la función renderReCAPTCHA para aceptar una función de devolución de llamada
-            function renderReCAPTCHA() {
-                grecaptcha.render('ReCaptchContainer', {
-                    'sitekey': '6LePUbckAAAAANujg3w19MhoacQjXACvi8hzRwGz',
-                    'callback': onReCAPTCHASuccess // Se ejecutará cuando se complete el reCAPTCHA
-                    // Otros parámetros según sea necesario
-                });
-            }*/
-
-
-
-            function enableSubmitButton() {
-                //const busqueda = document.getElementById("busqueda").value;
-                const domicilio = document.getElementById("domicilio").value;
-                const fechaDeInicio = document.getElementById("fechaDeInicio").value;
-                const fechaDeCierre = document.getElementById("fechaDeCierre").value;
-                const email = document.getElementById("email").value;
-
-                const submitButton = document.getElementById("btnInit");
-
-          
-
-                if (busqueda && domicilio && fechaDeInicio && fechaDeCierre && email) {
-                    submitButton.disabled = false;
-                    submitButton.classList.remove("btn-secondary");
-                    submitButton.classList.add("btn-primary");
-                } else {
-                    submitButton.disabled = true;
-                    submitButton.classList.remove("btn-primary");
-                    submitButton.classList.add("btn-secondary");
-                }
-            }
-
-
-
-
-            /*function findEntities() {
-                let localhost = "https://localhost:7172/";
-
-
-                //const busqueda = document.getElementById("busqueda").value;
-                const busquedaError = document.getElementById("busquedaError");
-
-         
-                const endpoint = `BusquedaByCuilOrCorrelativo?cuitcorrelativo=${busqueda}`;
-                const numericBusqueda = parseInt(busqueda, 10);
-                const url = localhost + endpoint;
-
-          
-
-                if (busqueda != "" || busqueda == null) {
-                    busquedaError.innerText = "";
-
-                    if (!isNaN(numericBusqueda)) {
-                   
-                        busquedaError.innerText = "";
-
-                        fetch(url)
-                            .then(response => {
-
-
-                                if (!response.ok) {
-
-                                    throw new Error('Error en la solicitud');
-                                }
-                                return response.json();
-                            }
-                            ).then(data => {
-
-
-                                if (data.razonSocial) {
-                                    document.getElementById('razonSocial').textContent = data.razonSocial;
-                                } else {
-                                    document.getElementById('razonSocial').textContent = "Entidad no encontrada";
-                                }
-
-                                if (data.tipoEntidad) {
-                                    document.getElementById('tipoEntidad').textContent = data.tipoEntidad;
-                                    document.getElementById('entidad').textContent = data.tipoEntidad;
-
-                                    document.getElementById("domicilio").disabled = false;
-                                    document.getElementById("fechaDeInicio").disabled = false;
-                                    document.getElementById("fechaDeCierre").disabled = false;
-                                    document.getElementById("email").disabled = false;
-                                    document.getElementById("sedeInscripta").disabled = false;
-
-
-
-                                } else {
-                                    document.getElementById('tipoEntidad').textContent = "";
-                                    document.getElementById('entidad').textContent = "";
-                                }
-
-
-                                console.log(data);
-
-                            }).catch(error => {
-
-
-                                console.error('Hubo un problema con la solicitud fetch:', error);
-                            }
-                            );
-                    } else {
-                        busquedaError.innerText = "El campo tiene que ser numérico";
-
-                    }
-                }else{
-                    busquedaError.innerText = "El campo no puede estar vacío";
-
-                }
-           
-            }*/
-
-            function sendmail() {
-
-                let localhost = "https://localhost:7172/";
-
-                const razonSocial = document.getElementById("razonSocial").textContent
-                const tipoEntidad = document.getElementById("tipoEntidad").textContent
-                const fechaDeInicio = document.getElementById("fechaDeInicio").value;
-                const fechaDeCierre = document.getElementById("fechaDeCierre").value;
-                const email = document.getElementById("email").value;
-                const endpoint = `mail?email=${email}`;
-                const btnInit = document.getElementById("btnInit");
-
-
-                const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
-
-                const fechaError = document.getElementById("fechaError");
-                const emailError = document.getElementById("emailError");
-
-
-
-                fechaError.innerText = "";
-                emailError.innerText = ""
-
-
-                const url = localhost + endpoint;
-
-                if (razonSocial == "" || razonSocial == null && tipoEntidad == "" || tipoEntidad == null) {
-                    fechaError.innerText = "";
-                    emailError.innerText = ""
-                } else if (new Date(fechaDeInicio) >= new Date(fechaDeCierre)) {
-                    fechaError.innerText = "La fecha de inicio debe ser anterior a la fecha de cierre.";
-                } else if (!emailRegex.test(email)) {
-                    emailError.innerText = "Por favor, ingrese un correo electrónico válido."
-                } else {
-
-
-                    fetch(url)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Error en la solicitud');
-                            }
-                            else {
-
-                                hideLoadingModal();
-
-
-                                btnInit.classList.add("d-none");
-                                enableNavLinks();
-                                insertEntity();
-
-
-
-                                //document.getElementById("busqueda").disabled = true;
-                                document.getElementById("domicilio").disabled = true;
-                                document.getElementById("fechaDeInicio").disabled = true;
-                                document.getElementById("fechaDeCierre").disabled = true;
-                                document.getElementById("email").disabled = true;
-                                document.getElementById("sedeInscripta").disabled = true;
-
-                                document.getElementById("btnBuscar").disabled = true;
-                                document.getElementById("btnBuscar").classList.remove("btn-primary"); // Remove btn-primary class
-                                document.getElementById("btnBuscar").classList.add("btn-secondary"); // Add btn-secondary class
-
-
-
-                                alert("Se envio el correo");
-
-                                document.getElementById('ReCaptchContainer').style.display = 'none';
-
-
-                            }
-                            return response.json();
-
-                        }
-                        )
-                        .then(data => {
-                            console.log(data);
-                        }).catch(error => {
-                            hideLoadingModal();
-
-                            console.log(error);
-                        }
-
-                        );
-
-                }
-
-
-
-                function insertEntity() {
-
-                    let localhost = "https://localhost:7172/";
-
-                    var razonSocial = document.getElementById("razonSocial").textContent
-                    var tipoEntidad = document.getElementById("tipoEntidad").textContent
-                    var domicilio = document.getElementById("domicilio").value;
-                    var fechaInicio = document.getElementById("fechaDeInicio").value;
-                    var fechaDeCierre = document.getElementById("fechaDeCierre").value
-                    var email = document.getElementById("email").value;
-                    var sedeSocialInscripta = document.getElementById("sedeInscripta").checked;
-
-                    const endpoint = "Caratula/InsertCaratula"; 
-                    const url = localhost + endpoint;
-
-                    // Datos para enviar en la solicitud POST
-                    var data = {
-                        id: "",
-                        email: email,
-                        entidad: {
-                            razonSocial: razonSocial,
-                            tipoEntidad: tipoEntidad,
-                            domicilio: domicilio,
-                            sedeSocialInscripta: sedeSocialInscripta,
-                            fechaInicio: fechaInicio,
-                            fechaDeCierre: fechaDeCierre,
-                        }
-                        
-                    };
-
-
-
-                    // Realizar la solicitud POST
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-
-                    }).then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-
-                        return response.json();
-                    })
-                        .then(data => {
-                            console.log(data);
-                            // Manejar la respuesta del servidor aquí
-                            var idBalance = JSON.stringify(data['result']['id']);
-                            //const modifiedIdBalanced = idBalance.replace(/['"]+/g, ''); 
-
-                            sessionStorage.setItem("idSession", idBalance);
-
-                            console.log("IdBalanced" + idBalance);
-
-                        })
-                        .catch(error => {
-                            // Manejar los errores aquí
-                            console.error('Error:', error);
-                        });
-
-                    }
-
-                
-                   
-                
-
-              
-                function enableNavLinks() {
-                    const navLinks = document.querySelectorAll(".nav-link");
-                    for (let i = 0; i < navLinks.length; i++) {
-                        navLinks[i].classList.remove("text-secondary");
-                        navLinks[i].classList.add("text-primary");
-                        navLinks[i].removeAttribute("disabled");
-                    }
-                }
-
-              
-
-
-                // Mostrar el modal de carga
-                function showLoadingModal() {
-                    var loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'), {
-                        backdrop: 'static', // Evita que se cierre haciendo clic fuera del modal
-                        keyboard: false // Evita que se cierre al presionar la tecla Esc
-                    });
-                    loadingModal.show();
-                }
-
-                // Ocultar el modal de carga
-                function hideLoadingModal() {
-                    var loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-                    loadingModal.hide();
-                }
-
-
-
-                // Function to show error modal
-                function showErrorModal(title, message) {
-                    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'), {
-                        backdrop: 'static', // Evita que se cierre haciendo clic fuera del modal
-                        keyboard: false // Evita que se cierre al presionar la tecla Esc
-                    });
-
-                    document.getElementById('errorModalTitle').innerText = title;
-                    document.getElementById('errorModalMessage').innerText = message;
-
-                    errorModal.show();
-                }
-            }
-        
-        </script>
+       
 
     </body>
 
@@ -732,12 +251,65 @@
     private string fechaError ="";
     private string emailError="";
     private bool entidadEncontrada;
-    private Entidad entity;
+    private const string KEY_SESSION = "idSession";
 
     private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
 
 
 
+    protected override async Task OnInitializedAsync()
+    {
+        fechaDeInicio = DateTime.Now;
+        fechaDeCierre = DateTime.Now;
+
+
+        var idBalance = await sessionStorage.GetItemAsync<string>(KEY_SESSION);
+
+        if (idBalance != null)
+        {
+            await getBalance(idBalance);
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task getBalance(string idBalance)
+    {
+
+        var response = await caratulaService.getBalance(idBalance);
+        try
+        {
+            if (response.IsSuccess)
+            {
+                email = response.Result.Caratula.Email;
+                fechaDeInicio = response.Result.Caratula.FechaInicio;
+                fechaDeCierre = response.Result.Caratula.FechaDeCierre;
+                domicilio = response.Result.Caratula.Entidad.Domicilio;
+                nroCorrelativo = response.Result.Caratula.Entidad.Correlativo;
+                razonSocial = response.Result.Caratula.Entidad.RazonSocial;
+                tipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+                sedeSocialInscripta = response.Result.Caratula.Entidad.SedeSocialInscripta;
+
+                entidadEncontrada = true;
+            }
+
+            else
+            {
+                entidadEncontrada = false;
+
+            }
+            StateHasChanged();
+
+
+        }
+        catch (Exception ex)
+        {
+            
+            Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+        }
+    }
+    
+    
     [JSInvokable("OnReCAPTCHASuccess")]
     private async Task OnReCAPTCHASuccess(string token)
     {
@@ -808,8 +380,9 @@
 
             if (response.IsSuccess)
             {
+                await sessionStorage.SetItemAsync(KEY_SESSION, response.Result.Id);
+                NavigationManager.NavigateTo("EstadoContable");
 
-                await 
             }
             else
             {
