@@ -1,0 +1,269 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Manifiesto de Presentación de Estados Contables Digitales IGJ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin-left: 40px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .box {
+            border: 1px solid;
+            padding: 8px;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 2px solid #37bbed;
+        }
+
+        .logo {
+            max-height: 100px;
+            width: auto;
+        }
+
+        .membrete {
+            text-align: right;
+            font-size: small;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .seccion {
+            font-family: 'Encode Sans', sans-serif;
+            font-size: large;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .titulo {
+            font-family: 'Encode Sans', sans-serif;
+            font-size: xx-large;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subtitulo {
+            font-family: 'Encode Sans', sans-serif;
+            opacity: 0.7;
+            font-size: x-large;
+            font-weight: oblique;
+            margin-top: 5px;
+        }
+
+        .mono {
+            font-family: 'Roboto Mono';
+        }
+
+        .error {
+            color: red;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #333333;
+        }
+
+        th {
+            border: 1px solid #333333;
+            padding: 8px;
+            text-align: left;
+            background-color: #f2f2f2;
+            font-size: small;
+        }
+
+        td {
+            border: 1px solid #333333;
+            padding: 8px;
+            text-align: left;
+            font-size: small;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="encabezado">
+        <img class="logo" src="https://iili.io/HDQRcil.png" alt="Logo IGJ">
+        <img class="logo" src="https://iili.io/HDQRMJ9.png" alt="Logo MJDH">
+    </div>
+    <div class="membrete">
+        <p><b><i>1983/2023 - 40 Años de Democracia</i></b></p>
+    </div>
+    <div>
+        <p class="titulo">Regimen de Presentación de Estados Contables</p>
+
+    </div>
+    <div>
+        <p class="titulo">Datos De presentacion</p>
+
+    </div>
+
+    <br />
+    <div>
+        <p>     <b>Denominación         :</b> {{RazonSocial}}</p>
+        <p>     <b>Tipo Societario         :</b> {{TipoEntidad}}</p>
+        <p>     <b>Nro Correlativo      :</b> {{NroCorrelativo}}</p>
+        <p>     <b>Domicilio            :</b> {{Domicilio}}</p>
+        <p>     <b>Estados contables al :</b> {{FechaEstado}}</p>
+    </div>
+    <br />
+    <div>
+        <p class="seccion">Manifestación del Representante Legal </p>
+        <p>  En mi carácter de representante legal de la sociedad {{RazonSocial}} {{TipoEntidad}}, manifiesto que los datos contenidos en los archivos de hash {{Hash}}, se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al {{FechaEstado}} obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
+    </div>
+    <br />
+    <div class="box">
+        <p><span class="error">Debe utilizar el id del representante que tenga EsFirmante = True</span></p>
+        <p>   Lugar y Fecha     : </p>
+        <p>   Apellido y Nombre : {{RepresentanteLegal.RepresentanteApellido}} {{RepresentanteLegal.RepresentanteNombre}}              </p>
+        <p>   CUIT              : {{representanteLegal.RepresentanteNroFiscal}}   </p>
+        <p>   Firma             : </p>
+    </div>
+    <br />
+    <div>
+        <p class="seccion">Certificación del Auditor Externo sobre Información Requerida por la Resolución General IGJ <span class="error">A DEFINIR</span></p>
+        <p>En mi carácter de contador público independiente y auditor externo de {{RazonSocial}} {{TipoEntidad}}, certifico la información detallada en el apartado siguiente.</p>
+    </div>
+    <div>
+        <p><b>1) Información Objeto de la Certificación</b></p>
+        <table>
+            <tr>
+                <th>Asiento</th>
+                <th>Libro</th>
+                <th>Datos de Rúbrica</th>
+                <th>Datos de Última Registración</th>
+            </tr>
+            <tr>
+                <td>Memoria</td>
+                <td>{{LibrosDigitales[0].Nombre}}</td>
+                <td>{{LibrosDigitales[0].NumeroRl}}</td>
+                <td>{{LibrosDigitales[0].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Acta del Órgano de Administración</td>
+                <td>{{LibrosDigitales[1].Nombre}}</td>
+                <td>{{LibrosDigitales[1].NumeroRl}}</td>
+                <td>{{LibrosDigitales[1].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Acta de Reunión de Socios</td>
+                <td>{{LibrosDigitales[2].Nombre}}</td>
+                <td>{{LibrosDigitales[2].NumeroRl}}</td>
+                <td>{{LibrosDigitales[2].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Estado de Situación Patrimonial</td>
+                <td>{{LibrosDigitales[3].Nombre}}</td>
+                <td>{{LibrosDigitales[3].NumeroRl}}</td>
+                <td>{{LibrosDigitales[3].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Estado de Resultados</td>
+                <td>{{LibrosDigitales[4].Nombre}}</td>
+                <td>{{LibrosDigitales[4].NumeroRl}}</td>
+                <td>{{LibrosDigitales[4].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Estado de Evolución del Patrimonio Neto</td>
+                <td>{{LibrosDigitales[5].Nombre}}</td>
+                <td>{{LibrosDigitales[5].NumeroRl}}</td>
+                <td>{{LibrosDigitales[5].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Estado de Flujo de Efectivo</td>
+                <td>{{LibrosDigitales[6].Nombre}}</td>
+                <td>{{LibrosDigitales[6].NumeroRl}}</td>
+                <td>{{LibrosDigitales[6].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Información Complementaria</td>
+                <td>{{LibrosDigitales[7].Nombre}}</td>
+                <td>{{LibrosDigitales[7].NumeroRl}}</td>
+                <td>{{LibrosDigitales[7].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Estado Contable Consolidado</td>
+                <td>{{LibrosDigitales[8].Nombre}}</td>
+                <td>{{LibrosDigitales[8].NumeroRl}}</td>
+                <td>{{LibrosDigitales[8].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Informe de Órgano de Fiscalización</td>
+                <td>{{LibrosDigitales[9].Nombre}}</td>
+                <td>{{LibrosDigitales[9].NumeroRl}}</td>
+                <td>{{LibrosDigitales[9].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Informe del Auditor Externo</td>
+                <td>{{LibrosDigitales[10].Nombre}}</td>
+                <td>{{LibrosDigitales[10].NumeroRl}}</td>
+                <td>{{LibrosDigitales[10].Folio}}</td>
+            </tr>
+            <tr>
+                <td>Registro de asistencia</td>
+                <td>{{LibrosDigitales[11].Nombre}}</td>
+                <td>{{LibrosDigitales[11].NumeroRl}}</td>
+                <td>{{LibrosDigitales[11].Folio}}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Libro Diario</td>
+                <td>{{LibrosDigitales[12].NumeroRl}}</td>
+                <td>{{LibrosDigitales[12].Folio}}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>IVA Compras</td>
+                <td>{{LibrosDigitales[13].NumeroRl}}</td>
+                <td>{{LibrosDigitales[13].Folio}}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>IVA Ventas</td>
+                <td>{{LibrosDigitales[14].NumeroRl}}</td>
+                <td>{{LibrosDigitales[14].Folio}}</td>
+            </tr>
+            <tr>
+                <td colspan="4">Informe de Auditoria: Opinión <span class="error">FALTAN CAMPOS</span></td>
+            </tr>
+            <tr>
+                <td colspan="4">Fecha del Informe del Auditor Externo {{Contador.FechaInformeAuditorExt}}</td>
+            </tr>
+            <tr>
+                <td colspan="4">Nro de Legalización del Auditor Externo {{Contador.NroLegalInfoAudExt}}</td>
+            </tr>
+            <tr>
+                <td colspan="4">Observaciones <span class="error">FALTAN CAMPOS</span></td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <p><b>2) Tarea Profesional Realizada</b></p>
+        <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el {{FechaEstado}} e Informe de Auditor Externo de fecha {{Contador.FechaInformeAuditorExt}} con los datos incluidos en <span class="error">FALTAN CAMPOS</span>.</p>
+    </div>
+    <div>
+        <p><b>3) Certificación</b></p>
+        <p>  Sobre la base delas tareas descriptas CERTIFICO que la información contenida en los documentos detallados en 1. concuerda en un todo con lo declarado en el hash y surge de registros rubricados/medios ópticos/mecánicos/digitales  llevados en legal forma.-</p>
+    </div>
+    <br />
+    <div class="box">
+        <p>   Lugar y Fecha     : </p>
+        <p>   Apellido y Nombre : {{Contador.ContadorApellido}} {{Contador.ContadorNombre}}              </p>
+        <p>   CUIT              : {{Contador.ContadorNroFiscal}} - T° {{Contador.Tomo}} F° {{Contador.Folio}}  </p>
+        <p>En carácter de Socio de la Soc Tº <span class="error">FALTAN CAMPOS</span> Fº <span class="error">FALTAN CAMPOS   (ésta línea solo debe aparecer si "Actúa en carácter de Socio de Estudio Contable" = True)</span></p>
+        <p>   Firma             : </p>
+    </div>
+
+</body>
+</html>

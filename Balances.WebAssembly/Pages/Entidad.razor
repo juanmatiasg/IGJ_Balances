@@ -1,270 +1,565 @@
 ﻿@page "/Entidad"
 @using Balances.DTO;
-@using Balances.WebAssembly.Services.Contract;
+
 
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búsqueda de Entidad</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Búsqueda de Entidad</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 
-    <!-- Vue.js -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+        <!-- Vue.js -->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap 5 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Bootstrap-Vue CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.21.2/dist/bootstrap-vue.min.css" rel="stylesheet">
+        <!-- Bootstrap-Vue CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.21.2/dist/bootstrap-vue.min.css" rel="stylesheet">
 
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap 5 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Bootstrap-Vue JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.21.2/dist/bootstrap-vue.min.js"></script>
+        <!-- Bootstrap-Vue JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.21.2/dist/bootstrap-vue.min.js"></script>
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
-    </div>
-    <ul class="nav nav-tabs d-flex justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/Entidad">Entidad</a>
-        </li>
-        <li class="nav-item" disabled id="estado">
-            <a class="nav-link" href="/EstadoContable">Estado</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Contador">Contador</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
-        </li>
-    </ul>
-
-
-    <!---------------------------------------------------------------->
-    <!--Entidad-->
-
-    <div class="container mt-2">
-        <div class="card mx-auto" style="width: 800px;">
-            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                Entidad
-            </div>
+        <!--Navegacion-->
+        <div class="d-flex justify-content-center align-items-center">
+            <h3 class="fs-2 font-weight mt-4 mb-4">
+                 <p>Entidad:&nbsp; <h3 id="entidad"></h3></p>
+            </h3>
+        </div>
+        <ul class="nav nav-tabs d-flex justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link text-primary active" aria-current="page" href="/Entidad">Entidad</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/EstadoContable">Estado</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Libros">Libros</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Contador">Contador</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Autoridad">Autoridad</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Integrante">Integrante</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Archivos">Archivos</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Confirmacion">Confirmación DJ</a>
+            </li>
+        </ul>
 
 
-            <div class="card-body">
-                <div class="row">
-                    <div class="col w-100">
-                        <label for="busqueda">Número Correlativo/CUIT/CUIL</label>
-                        <input type="text"  id="busqueda" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" title="Por favor, ingrese un CUIT válido (solo números).">
-                           
-                    </div>
-                    <div class="col mt-4">
-                        <button type="submit" class="btn btn-primary" onclick="findEntities()">Buscar</button>
-                    </div>
+        <!---------------------------------------------------------------->
+        <!--Entidad-->
+
+        <div class="container mt-2 mb-3">
+            <div class="card mx-auto" style="width: 800px;">
+                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                    Entidad
                 </div>
 
-                <div class="row mt-2">
-                    <div class="col-12 col-md-4 ml-2">
-                        <p class="control texto">Razón Social:</p>
+
+                <div class="card-body">
+                    <div class="row d-flex justify-content-center align-items-end position-relative">
+                    
+                        <div class="col">
+                            <label for="busqueda">Nro.Correlativo/CUIT/CUIL</label>
+                            <input type="text"  id="busqueda" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top">
+                            <small id="busquedaError" class="text-danger"></small>
+                        </div>
+                 
+                        <div class="col mt-4">
+                        <button type="submit" id="btnBuscar" class="btn btn-primary" onclick="renderReCAPTCHA()">Buscar</button>
+                        </div>
+                
+   
                     </div>
-                    <div class="col-12 col-md-5">
-                        <p id="razonSocial"></p>
+
+
+                    <div class="row mt-2">
+                        <div class="col-12 col-md-3">
+                            <p class="control texto">Razón Social:</p>
+                        </div>
+                        <div class="col">
+                            <p id="razonSocial"></p>
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-12 col-md-4 ml-2">
-                        <p class="control texto">Tipo de Entidad:</p>
+                    <div class="row mt-2">
+                        <div class="col-12 col-md-3">
+                            <p class="control texto">Tipo de Entidad:</p>
+                        </div>
+                        <div class="col">
+                            <p id="tipoEntidad"></p>
+                        </div>
                     </div>
-                    <div class="col-12 col-md-5">
-                        <p id="tipoEntidad"></p>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-12 col-md-5">
+
+                    <div class="col mt-4 d-flex justify-content-center align-items-center">
                         <div id="ReCaptchContainer" class="control texto" lang="es"></div>
                     </div>
-                    <div class="col-6 col-md-4"></div>
-                </div>
-                <div class="row">
 
-                    <div class="form-group col mb-4">
+
+           
+                
+                </div>
+            </div>
+            <!--Datos Personales -->
+            <div class="card mx-auto mt-4 " style="width: 800px;">
+                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                    Datos Personales
+                </div>
+
+                <div class="row ps-3 pt-3">
+                    <div class="form-group col">
                         <label for="location">Domicilio</label>
-                        <input type="text" class="form-control" id="location" placeholder="Domicilio">
+                        <input type="text" class="form-control" id="domicilio" placeholder="Domicilio">
+
                     </div>
 
-                    <div class="col mt-4 mb-4">
+                    <div class="col mt-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta">
                             <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col mb-4">
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col">
                         <label for="domicilio">Fecha de inicio</label>
                         <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" />
+                        <small id="fechaError" class="text-danger"></small>
+
                     </div>
-                    <div class="col mb-4">
+                    <div class="col">
                         <label for="domicilio">Fecha de Cierre</label>
                         <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" />
+                        <small id="fechaError" class="text-danger"></small>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!--Mail-->
-    <div class="container mt-2">
-        <div class="card mx-auto" style="width: 800px;">
-            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                Ingreso de Mail
-            </div>
-            <div class="card-body">
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col mb-4">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top"/>
+                        <small id="emailError" class="text-danger"></small>
+                    </div>
+                </div>
                 <div class="row">
-                    <div class="col-12 col-md-10">
-                        <p style="margin-top: 4px; margin-left: -5px; color: #444; font-size: 18px; font-weight: normal;">
-                            Una carga de balance puede resultar muy extensa. Si agrega su dirección de e-mail, le enviaremos un vínculo de continuación con el cual podrá retomar la carga en cualquier momento.
-                        </p>
+                    <div class="col pe-3 d-flex justify-content-center d-none" id="nroIdentificacionContent">
+                        <h5>
+                            Nro Identificacion: 12341231231254                   
+                        </h5>
                     </div>
+                </div>
+                <div class="col mt-4 mb-4 d-flex justify-content-center">
+                    <button type="button" id="btnInit" class="btn btn-secondary w-50" onclick="sendmail()">Iniciar Trámite</button>
+                </div>
+            </div>
+        
+        </div>
 
-                    <div class="row mt-2">
-                        <div class="col-12 col-md-7">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" title="Por favor, ingrese un correo electrónico válido." />
+   
+
+        <!-- Loading Modal -->
+        <div class="modal" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                        <div class="col mt-4">
-                            <button type="button" class="btn btn-primary" onclick="sendmail()">Enviar Mail</button>
-                        </div>
+                        <p class="mt-2">Cargando...</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-
-
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">Error de validación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Por favor, complete todos los campos.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <div class="modal" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="errorModalTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="errorModalMessage"></p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
-    @*
-    <script src="~/js/validarCamposEntidad.js"></script>
-    <script src="~/js/buscarEntidad.js"></script>
+        <!-- ReCAPTCHA script -->
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-    *@
+        <script>
 
-    <script>
-        const localhost = "https://localhost:7172/";
+            document.getElementById("busqueda").addEventListener("input", enableSubmitButton);
+            document.getElementById("domicilio").addEventListener("input", enableSubmitButton);
+            document.getElementById("fechaDeInicio").addEventListener("input", enableSubmitButton);
+            document.getElementById("fechaDeCierre").addEventListener("input", enableSubmitButton);
+            document.getElementById("email").addEventListener("input", enableSubmitButton);
+
+     
+            document.getElementById("domicilio").disabled = true;
+            document.getElementById("fechaDeInicio").disabled = true;
+            document.getElementById("fechaDeCierre").disabled = true;
+            document.getElementById("email").disabled = true;
+            document.getElementById("sedeInscripta").disabled = true;
 
 
-        function findEntities() {
 
-            const busqueda = document.getElementById("busqueda").value;
-            const endpoint = `BusquedaByCuilOrCorrelativo?cuitcorrelativo=${busqueda}`;
-
-            const url = localhost + endpoint;
-
-
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la solicitud');
-                    }
-                    return response.json();
+            function onReCAPTCHASuccess(token) {
+                // La verificación del reCAPTCHA fue exitosa, ahora puedes llamar a la función findEntities
+                if (token != null) {
+                    findEntities();
                 }
-                )
-                .then(data => {
-                    if (data.razonSocial) {
-                        document.getElementById('razonSocial').textContent = data.razonSocial;
+
+            }
+
+            // Actualizar la función renderReCAPTCHA para aceptar una función de devolución de llamada
+            function renderReCAPTCHA() {
+                grecaptcha.render('ReCaptchContainer', {
+                    'sitekey': '6LePUbckAAAAANujg3w19MhoacQjXACvi8hzRwGz',
+                    'callback': onReCAPTCHASuccess // Se ejecutará cuando se complete el reCAPTCHA
+                    // Otros parámetros según sea necesario
+                });
+            }
+
+
+
+            function enableSubmitButton() {
+                const busqueda = document.getElementById("busqueda").value;
+                const domicilio = document.getElementById("domicilio").value;
+                const fechaDeInicio = document.getElementById("fechaDeInicio").value;
+                const fechaDeCierre = document.getElementById("fechaDeCierre").value;
+                const email = document.getElementById("email").value;
+
+                const submitButton = document.getElementById("btnInit");
+
+          
+
+                if (busqueda && domicilio && fechaDeInicio && fechaDeCierre && email) {
+                    submitButton.disabled = false;
+                    submitButton.classList.remove("btn-secondary");
+                    submitButton.classList.add("btn-primary");
+                } else {
+                    submitButton.disabled = true;
+                    submitButton.classList.remove("btn-primary");
+                    submitButton.classList.add("btn-secondary");
+                }
+            }
+
+
+            const localhost = "https://localhost:7172/";
+
+
+            function findEntities() {
+
+                const busqueda = document.getElementById("busqueda").value;
+                const busquedaError = document.getElementById("busquedaError");
+
+         
+                const endpoint = `BusquedaByCuilOrCorrelativo?cuitcorrelativo=${busqueda}`;
+                const numericBusqueda = parseInt(busqueda, 10);
+                const url = localhost + endpoint;
+
+          
+
+                if (busqueda != "" || busqueda == null) {
+                    busquedaError.innerText = "";
+
+                    if (!isNaN(numericBusqueda)) {
+                   
+                        busquedaError.innerText = "";
+
+                        fetch(url)
+                            .then(response => {
+
+
+                                if (!response.ok) {
+
+                                    throw new Error('Error en la solicitud');
+                                }
+                                return response.json();
+                            }
+                            ).then(data => {
+
+
+                                if (data.razonSocial) {
+                                    document.getElementById('razonSocial').textContent = data.razonSocial;
+                                } else {
+                                    document.getElementById('razonSocial').textContent = "Entidad no encontrada";
+                                }
+
+                                if (data.tipoEntidad) {
+                                    document.getElementById('tipoEntidad').textContent = data.tipoEntidad;
+                                    document.getElementById('entidad').textContent = data.tipoEntidad;
+
+                                    document.getElementById("domicilio").disabled = false;
+                                    document.getElementById("fechaDeInicio").disabled = false;
+                                    document.getElementById("fechaDeCierre").disabled = false;
+                                    document.getElementById("email").disabled = false;
+                                    document.getElementById("sedeInscripta").disabled = false;
+
+
+
+                                } else {
+                                    document.getElementById('tipoEntidad').textContent = "";
+                                    document.getElementById('entidad').textContent = "";
+                                }
+
+
+                                console.log(data);
+
+                            }).catch(error => {
+
+
+                                console.error('Hubo un problema con la solicitud fetch:', error);
+                            }
+                            );
                     } else {
-                        document.getElementById('razonSocial').textContent = "Entidad no encontrada";
+                        busquedaError.innerText = "El campo tiene que ser numérico";
+
                     }
+                }else{
+                    busquedaError.innerText = "El campo no puede estar vacío";
 
-                    if (data.tipoEntidad) {
-                        document.getElementById('tipoEntidad').textContent = data.tipoEntidad;
-                    } else {
-                        document.getElementById('tipoEntidad').textContent = "";
-                    }
-
-                    console.log(data); // Puedes imprimir los datos en la consola o manejarlos de la manera que desees
-
-                }).catch(error => {
-                    console.error('Hubo un problema con la solicitud fetch:', error);
                 }
-                );
+           
+            }
 
-        }
-
-        function sendmail() {
-
-            const busqueda = document.getElementById("email").value;
-            const endpoint = `mail?email=${busqueda}`;
+            function sendmail() {
 
 
-            const url = localhost + endpoint; // Combinar las partes de la URL
+                const razonSocial = document.getElementById("razonSocial").textContent
+                const tipoEntidad = document.getElementById("tipoEntidad").textContent
+                const fechaDeInicio = document.getElementById("fechaDeInicio").value;
+                const fechaDeCierre = document.getElementById("fechaDeCierre").value;
+                const email = document.getElementById("email").value;
+                const endpoint = `mail?email=${email}`;
+                const btnInit = document.getElementById("btnInit");
 
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la solicitud');
-                    }
-                    else {
-                        alert("Se envio el correo");
-                    }
 
-                    return response.json();
+                const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+
+                const fechaError = document.getElementById("fechaError");
+                const emailError = document.getElementById("emailError");
+
+                const nroIdContent = document.getElementsByClassName("nroIdentificacionContent");
+
+                fechaError.innerText = "";
+                emailError.innerText = ""
+
+
+                const url = localhost + endpoint;
+
+                if (razonSocial == "" || razonSocial == null && tipoEntidad == "" || tipoEntidad == null) {
+                    fechaError.innerText = "";
+                    emailError.innerText = ""
+                } else if (new Date(fechaDeInicio) >= new Date(fechaDeCierre)) {
+                    fechaError.innerText = "La fecha de inicio debe ser anterior a la fecha de cierre.";
+                } else if (!emailRegex.test(email)) {
+                    emailError.innerText = "Por favor, ingrese un correo electrónico válido."
+                } else {
+
+
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error en la solicitud');
+                            }
+                            else {
+
+                                hideLoadingModal();
+
+
+                                btnInit.classList.add("d-none");
+                                enableNavLinks();
+                                insertEntity();
+
+
+
+                                document.getElementById("busqueda").disabled = true;
+                                document.getElementById("domicilio").disabled = true;
+                                document.getElementById("fechaDeInicio").disabled = true;
+                                document.getElementById("fechaDeCierre").disabled = true;
+                                document.getElementById("email").disabled = true;
+                                document.getElementById("sedeInscripta").disabled = true;
+
+                                document.getElementById("btnBuscar").disabled = true;
+                                document.getElementById("btnBuscar").classList.remove("btn-primary"); // Remove btn-primary class
+                                document.getElementById("btnBuscar").classList.add("btn-secondary"); // Add btn-secondary class
+
+                                document.getElementById("nroIdentificacionContent").classList.remove("d-none");
+
+
+                                alert("Se envio el correo");
+
+                                document.getElementById('ReCaptchContainer').style.display = 'none';
+
+                                var sesion = document.getElementById("nroIdentificacion").textContent;
+                                sesion = sessionStorage.getItem("idSession");
+                                console.log("idSession recuperado:", sessionStorage.getItem("idSession"));
+
+
+
+                            }
+                            return response.json();
+
+                        }
+                        )
+                        .then(data => {
+                            console.log(data);
+                        }).catch(error => {
+                            hideLoadingModal();
+
+                            console.log(error);
+                        }
+
+                        );
+
                 }
-                )
-                .then(data => {
-                    console.log(data); // Puedes imprimir los datos en la consola o manejarlos de la manera que desees
-                }).catch(error => {
-                    console.log(error);
+
+
+
+                function insertEntity() {
+                    var razonSocial = document.getElementById("razonSocial").textContent
+                    var tipoEntidad = document.getElementById("tipoEntidad").textContent
+                    var domicilio = document.getElementById("domicilio").value;
+                    var fechaInicio = document.getElementById("fechaDeInicio").value;
+                    var fechaDeCierre = document.getElementById("fechaDeCierre").value
+                    var email = document.getElementById("email").value;
+                    var sedeSocialInscripta = document.getElementById("sedeInscripta").checked;
+
+                    const endpoint = "Balance/PostBalance";
+
+                    const url = localhost + endpoint;
+
+                    // Datos para enviar en la solicitud POST
+                    var data = {
+                        id: "",
+                        email: email,
+                        entidad: {
+                            razonSocial: razonSocial,
+                            tipoEntidad: tipoEntidad,
+                            domicilio: domicilio,
+                            sedeSocialInscripta: sedeSocialInscripta,
+                            fechaInicio: fechaInicio,
+                            fechaDeCierre: fechaDeCierre,
+                        }
+                    };
+
+
+
+                    // Realizar la solicitud POST
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        return response.json();
+                    })
+                        .then(data => {
+                            console.log(data);
+                            // Manejar la respuesta del servidor aquí
+                            var idBalance = JSON.stringify(data['result']['id']);
+                            const modifiedIdBalanced = idBalance.replace(/['"]+/g, ''); // Recibo un Json de String y lo remplazamos a una variable sin ""
+
+                            console.log(modifiedIdBalanced);
+                            console.log("idSession guardado:", sessionStorage.setItem("idSession", modifiedIdBalanced));
+                            // Después de guardar el valor de la sesión
+                            sessionStorage.setItem("idSession", modifiedIdBalanced);
+                            StateHasChanged();
+                        })
+                        .catch(error => {
+                            // Manejar los errores aquí
+                            console.error('Error:', error);
+                        });
+
                 }
 
-             );
+                function enableNavLinks() {
+                    const navLinks = document.querySelectorAll(".nav-link");
+                    for (let i = 0; i < navLinks.length; i++) {
+                        navLinks[i].classList.remove("text-secondary");
+                        navLinks[i].classList.add("text-primary");
+                        navLinks[i].removeAttribute("disabled");
+                    }
+                }
 
-        }
-    </script>
+                async function setSession(modifiedIdBalanced) {
+                    const endpointSession = `Session/${modifiedIdBalanced}`;
+                    const url = localhost + endpointSession;
 
-</body>
+                    const res = await fetch(url, {
+                        "method": "POST",
+                        "headers": {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const data = await res.json();
+                    console.log(data);
+                }
+
+
+
+                // Mostrar el modal de carga
+                function showLoadingModal() {
+                    var loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'), {
+                        backdrop: 'static', // Evita que se cierre haciendo clic fuera del modal
+                        keyboard: false // Evita que se cierre al presionar la tecla Esc
+                    });
+                    loadingModal.show();
+                }
+
+                // Ocultar el modal de carga
+                function hideLoadingModal() {
+                    var loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+                    loadingModal.hide();
+                }
+
+
+
+                // Function to show error modal
+                function showErrorModal(title, message) {
+                    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'), {
+                        backdrop: 'static', // Evita que se cierre haciendo clic fuera del modal
+                        keyboard: false // Evita que se cierre al presionar la tecla Esc
+                    });
+
+                    document.getElementById('errorModalTitle').innerText = title;
+                    document.getElementById('errorModalMessage').innerText = message;
+
+                    errorModal.show();
+                }
+            }
+        
+        </script>
+
+    </body>
 
 
 </html>
@@ -272,8 +567,15 @@
 @code {
     private string hola;
 
-    private String Saludo()
+    private string direccion;
+    private double latitud;
+    private double longitud;
+
+
+
+    public void Saludo()
     {
-        return "Hola mundo";
+        Console.WriteLine("Hola");
     }
+
 }

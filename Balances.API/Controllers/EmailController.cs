@@ -20,7 +20,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> PostEmail(string email)
         {
             MailRequest mailRequest = new MailRequest();
-            mailRequest.Email = email;
+            mailRequest.To = email;
 
             await _emailSenderService.SendEmailAsync(mailRequest);
             return Ok();

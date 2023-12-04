@@ -1,65 +1,70 @@
-﻿using AutoMapper;
-using Balances.DTO;
-using Balances.Model;
+﻿using Balances.Model;
 using Balances.Repository.Contract;
 using Balances.Services.Contract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Balances.Services.Implementation
 {
     public class BalanceService : IBalanceService
     {
-        private readonly IMongoRepository _modelRepository;
-        private readonly IMapper _mapper;
+        private IMongoCollection<Balance> _balances;
 
-        public BalanceService(IMongoRepository modelRepository, IMapper mapper)
+
+        public BalanceService(IMongoDbSettings _settings)
         {
-            _modelRepository = modelRepository;
-            _mapper = mapper;
+            var cliente = new MongoClient(_settings.Server);
+            var database = cliente.GetDatabase(_settings.Database);
+            _balances = database.GetCollection<Balance>(_settings.Collection);
         }
 
-        public BalanceResponseDTO Create(BalanceRequestDTO modelo)
+        public bool DeleteArchivoBalance(string balanceId, string archivoId)
         {
-            var balance = _mapper.Map<Balance>(modelo);
-             _modelRepository.CreateBalance(balance);
-            return _mapper.Map<BalanceResponseDTO>(balance);
-        }
+            try
+            {
+                var balance = GetById(balanceId);
 
-        public bool Delete(string id)
-        {
-            var balance =  _modelRepository.GetBalance(id);
-            if (balance == null)
+                var archivo = balance.Archivos.First(d => d.Id == archivoId);
+                balance.Archivos.Remove(archivo);
+
+                UpdateBalance(balanceId, balance);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+
                 return false;
-
-            _modelRepository.DeleteBalance(id);
-            return true;
+            }
         }
 
-        public BalanceResponseDTO GetById(string id)
+        public void DeleteBalance(string id)
         {
-            var balance =  _modelRepository.GetBalance(id);
-            return _mapper.Map<BalanceResponseDTO>(balance);
+            _balances.DeleteOneAsync(d => d.Id == id);
         }
 
-        public  List<BalanceResponseDTO> GetAll()
+        public List<Balance> GetAll()
         {
-            var balances =  _modelRepository.GetAll(); 
-            return _mapper.Map<List<BalanceResponseDTO>>(balances);
+            return _balances.Find(p => true).ToList();
         }
 
-        public  bool Update(BalanceRequestDTO modelo)
+        public Balance GetById(string id)
         {
-            var balance =  _modelRepository.GetBalance(modelo.Id);
-            if (balance == null)
-                return false;
+            var balance = _balances.Find(
+                new BsonDocument { { "_id", new ObjectId(id) } }
+               ).FirstOrDefaultAsync().Result;
 
-            var updatedBalance = _mapper.Map<Balance>(modelo);
-             _modelRepository.UpdateBalance(modelo.Id, updatedBalance);
-            return true;
+            return balance;
+        }
+
+        public void InsertBalance(Balance balance)
+        {
+            _balances.InsertOneAsync(balance);
+        }
+
+        public void UpdateBalance(string id, Balance balance)
+        {
+            _balances.ReplaceOneAsync(b => b.Id == id, balance);
         }
     }
 

@@ -1,0 +1,219 @@
+﻿@page "/Contador"
+@using Balances.DTO;
+@using Balances.Web.Services.Implementation;
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject IContadorService contadorService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+
+
+@{
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos del Contador Certificante</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!--Navegacion-->
+    <div class="d-flex justify-content-center align-items-center">
+        <h3 class="fs-2 font-weight mt-4 mb-4">
+            <p>Entidad:</p>
+        </h3>
+    </div>
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" disabled href="/Entidad">Entidad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/EstadoContable">Estado</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Libros">Libros</a>
+        </li>
+        <li class="nav-item active disabled">
+            <a class="nav-link" href="/Contador">Contador</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Autoridad">Autoridad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Integrante">Integrante</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Archivos">Archivos</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+        </li>
+    </ul>
+
+    <div class="container mt-2 d-flex justify-content-center">
+        <form id="formContador" class="mt-2" onsubmit="handleSubmit(event)" oninput="handleChange(event)">
+            <div class="card" style="width: 600px;">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Datos del Contador Certificante
+                    </h5>
+                    <div>
+                        <div class="form-group">
+                            <label for="contadorNombre">Nombre</label>
+                            <input type="text" class="form-control" id="contadorNombre" :value="form.nombre" oninput="handleChange(event)" required @bind="modelo.Nombre">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ContadorApellido">Apellido</label>
+                            <input type="text" class="form-control" id="ContadorApellido" :value="form.apellido" oninput="handleChange(event)" required @bind="modelo.Apellido">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tipoDocumento">Tipo de Documento</label>
+                            <select class="form-control" @bind="modelo.TipoDocumento">
+                                <option value="DNI">DNI</option>
+                                <option value="Pasaporte">Pasaporte</option>
+                                <option value="Cédula">Cédula</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contadorNroDocumento">Número de Documento</label>
+                            <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento" oninput="handleChange(event)" required @bind="modelo.NroDocumento">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contadorNuFiscal">Nro. de Identificación Fiscal</label>
+                            <input type="number" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal" oninput="handleChange(event)" required @bind="modelo.NroFiscal">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tomo">Tomo</label>
+                            <input type="text" class="form-control" id="tomo" :value="form.tomo" oninput="handleChange(event)" required @bind="modelo.Tomo">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="folio">Folio</label>
+                            <input type="text" class="form-control" id="folio" :value="form.folio" oninput="handleChange(event)" required @bind="modelo.Folio">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="feInformeAuditorExt">Fecha del Informe del Auditor Externo</label>
+                            <input type="date" class="form-control" id="feInformeAuditorExt" :value="form.fechaInformeAuditorExt" oninput="handleChange(event)" required @bind="modelo.FechaInformeAuditorExt">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nroLegalInfoAudExt">Nro. de Legalización del Informe del Auditor Externo</label>
+                            <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt" oninput="handleChange(event)" required @bind="modelo.NroLegalInfoAudExt">
+                        </div>
+
+                        <div class="col mt-4 mb-4 d-flex justify-content-center">
+                            <button type="button" id="btnInit" class="btn btn-primary w-50" @onclick =postContador>Guardar</button>
+                        </div>
+                       
+
+                    </div>
+                    <!-- Resto del formulario -->
+                </div>
+            </div>
+        </form>
+    </div>
+  
+
+</body>
+
+</html>
+
+
+@code {
+
+    private const string KEY_SESSION = "idSession"; 
+    private string idSession = "";
+    private ResponseDTO<BalanceDto> modeloRespuesta = new ResponseDTO<BalanceDto>();
+    private ContadorDto modelo = new ContadorDto();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        modelo.FechaInformeAuditorExt = DateTime.Now;
+
+
+
+        idSession = await sessionStorage.GetItemAsync<string>(KEY_SESSION);
+
+        Console.WriteLine("Contador Id Session" + idSession.ToString());
+
+        if (idSession != null)
+        {
+            await getContador(idSession);
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task getContador(string idBalance)
+    {
+        var response = await contadorService.getBalance(idBalance);
+
+        try
+        {
+            if (response.IsSuccess)
+            {
+                modelo.id = response.Result.Id;
+                modelo.Nombre = response.Result.Contador.Nombre;
+                modelo.Apellido = response.Result.Contador.Apellido;
+                modelo.TipoDocumento = response.Result.Contador.TipoDocumento;
+                modelo.NroDocumento = response.Result.Contador.NroDocumento;
+                modelo.Tomo = response.Result.Contador.Tomo;
+                modelo.Folio = response.Result.Contador.Folio;
+                modelo.NroLegalInfoAudExt = response.Result.Contador.NroLegalInfoAudExt;
+       
+            }
+
+
+            StateHasChanged();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+        }
+    }
+
+
+
+
+    private async Task postContador()
+    {
+           
+            var response = await contadorService.postContador(modelo);
+
+            try
+            {
+                if (response.IsSuccess)
+                {
+                    Console.WriteLine("Contador" + response.Result.Contador);
+                }
+                else
+                {
+                    Console.WriteLine("Contador" + response.Message.ToString());
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error" + ex.Message);
+            }
+        
+    }
+
+
+}

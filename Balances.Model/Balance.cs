@@ -1,11 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Balances.Model
 {
@@ -15,11 +10,15 @@ namespace Balances.Model
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [BsonElement("Email")]
-        public string Email { get; set; }
-
         [DataMember]
-        [BsonElement("Entidad")]
-        public Entidad Entidad { get; set; }
+        [BsonElement("Caratula")]
+        public Caratula Caratula { get; set; }
+
+        public ICollection<Archivo> Archivos { get; set; }
+        public List<Autoridad> Autoridades { get; set; }
+        public EstadoContable EstadoContable { get; set; }
+        public Libros Libros { get; set; }
+        public Socios Socios { get; set; }
+        public Contador Contador { get; set; }
     }
 }

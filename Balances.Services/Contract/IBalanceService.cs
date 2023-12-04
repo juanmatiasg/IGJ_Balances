@@ -1,19 +1,15 @@
-﻿using Balances.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Balances.Model;
 
 namespace Balances.Services.Contract
 {
     public interface IBalanceService
     {
-        BalanceResponseDTO Create(BalanceRequestDTO modelo);
-        bool Delete(string id);
-        BalanceResponseDTO GetById(string id);
-        List<BalanceResponseDTO> GetAll();
-        bool Update(BalanceRequestDTO modelo);
+        void InsertBalance(Balance balance);
+        void DeleteBalance(string id);
+        void UpdateBalance(string id, Balance balance);
+        List<Balance> GetAll();
+        Balance GetById(string id);
+        bool DeleteArchivoBalance(string balanceId, string id);
 
     }
 }
