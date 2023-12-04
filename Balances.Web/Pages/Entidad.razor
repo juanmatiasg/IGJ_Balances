@@ -8,6 +8,7 @@
 @inject IJSRuntime JS
 @inject ICaratulaService caratulaService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager
 
 
@@ -171,6 +172,10 @@
                 </div>
 
                 <div class="col mt-4 mb-4 d-flex justify-content-center">
+                    <p>Id Session: @idSession</p>
+                </div>
+
+                <div class="col mt-4 mb-4 d-flex justify-content-center">
                     <button type="button" id="btnInit" class="btn btn-primary w-50" onclick="@IniciarTramites">Iniciar Trámite</button>
                 </div>
            
@@ -214,6 +219,7 @@
                     </div>
                 </div>
 
+               
                 <div class="col mt-4 mb-4 d-flex justify-content-center">
                     <button type="button" id="btnInit" class="btn btn-secondary w-50" disabled>Iniciar Trámite</button>
                 </div>
@@ -252,6 +258,7 @@
     private string emailError="";
     private bool entidadEncontrada;
     private const string KEY_SESSION = "idSession";
+    private string idSession = "";
 
     private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
 
@@ -263,12 +270,15 @@
         fechaDeCierre = DateTime.Now;
 
 
-        var idBalance = await sessionStorage.GetItemAsync<string>(KEY_SESSION);
+        idSession = await sessionStorage.GetItemAsync<string>(KEY_SESSION);
 
-        if (idBalance != null)
+        if (idSession != null)
         {
-            await getBalance(idBalance);
+
+            await getBalance(idSession);
         }
+
+       
 
         await base.OnInitializedAsync();
     }
@@ -304,12 +314,12 @@
         }
         catch (Exception ex)
         {
-            
+
             Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
         }
     }
-    
-    
+
+
     [JSInvokable("OnReCAPTCHASuccess")]
     private async Task OnReCAPTCHASuccess(string token)
     {
@@ -380,8 +390,9 @@
 
             if (response.IsSuccess)
             {
-                await sessionStorage.SetItemAsync(KEY_SESSION, response.Result.Id);
-                NavigationManager.NavigateTo("EstadoContable");
+                 await sessionStorage.SetItemAsync(KEY_SESSION, response.Result.Id);
+                 
+                 NavigationManager.NavigateTo("EstadoContable");
 
             }
             else

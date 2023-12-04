@@ -62,8 +62,8 @@ namespace Balances.Web.Services.Contracts
                 return new ResponseDTO<BalanceDto>
                 {
                     Result = result.Result,
-                    IsSuccess = true,
-                    Message = "Balance insertado correctamente"
+                    IsSuccess = result.IsSuccess,
+                    Message = result.Message
                 };
 
               
@@ -80,10 +80,7 @@ namespace Balances.Web.Services.Contracts
             }
         }
 
-        public Task<ResponseDTO<string>> setSession(string key)
-        {
-            throw new NotImplementedException();
-        }
+      
 
       
     }

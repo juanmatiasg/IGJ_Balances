@@ -11,5 +11,7 @@ namespace Balances.Web.Services.Implementation
 
         Task<ResponseDTO<BalanceDto>> getBalance(string id);
 
+  
+
     }
 }

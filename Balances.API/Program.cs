@@ -88,7 +88,7 @@ builder.Services.AddSingleton<IMongoDbSettings>
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromHours(3);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -128,6 +128,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors("NuevaPolitica");
 
 app.UseSession();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

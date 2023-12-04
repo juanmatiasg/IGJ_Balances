@@ -4,13 +4,14 @@ namespace Balances.Web.Services.Implementation
 {
     public interface IContadorService
     {
-        Task<ResponseDTO<ContadorDto>> postContador(string id, string nombre, string tipoDoc, string nroDoc, string nroFiscal, string tomo, string folio, DateTime fechaInformeAuditorExt, string nroLegalInfoAudExt);
+        Task<ResponseDTO<BalanceDto>> postContador(ContadorDto contador);
 
 
         Task<ResponseDTO<BalanceDto>> getBalance(string id);
-        
 
         Task<ResponseDTO<string>> setSession(string idBalance);
+
+        Task<ResponseDTO<string>> getSession();
 
 
 

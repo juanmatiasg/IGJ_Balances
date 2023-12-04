@@ -1,5 +1,7 @@
 ﻿using Balances.DTO;
+using Balances.Model;
 using Balances.Web.Services.Implementation;
+using MongoDB.Bson;
 using System.Net.Http.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -20,42 +22,34 @@ namespace Balances.Web.Services.Contracts
             return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Balance/{id}");
         }
 
-        public async Task<ResponseDTO<ContadorDto>> getContador(string idBalance)
+        public async Task<ResponseDTO<BalanceDto>> getContador(string idBalance)
         {
-            return await _httpClient.GetFromJsonAsync<ResponseDTO<ContadorDto>>($"Contador/{idBalance}");
+            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Contador/{idBalance}");
 
         }
 
-        public async Task<ResponseDTO<ContadorDto>> postContador(string id,string nombre,string tipoDoc,string nroDoc,string nroFiscal,string tomo,string folio,DateTime fechaInformeAuditorExt,string nroLegalInfoAudExt)
+        public async Task<ResponseDTO<string>> getSession()
+        {
+            return await _httpClient.GetFromJsonAsync<ResponseDTO<string>>("Session/getSession");
+        }
+
+        public async Task<ResponseDTO<BalanceDto>> postContador(ContadorDto contador)
         {
             try
             {
-                var contador = new ContadorDto
-                {
-                    id = id,
-                    Nombre = nombre,
-                    TipoDocumento = tipoDoc ,
-                    NroDocumento = nroDoc,
-                    NroFiscal = nroFiscal,
-                    Tomo= tomo,
-                    Folio= folio,
-                    FechaInformeAuditorExt =fechaInformeAuditorExt,
-                    NroLegalInfoAudExt= nroLegalInfoAudExt,
-                };
-               
-
+                
 
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
                 var response = await _httpClient.PostAsJsonAsync("Contador/Insert", contador);
 
                 // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
-                var result = await response.Content.ReadFromJsonAsync<ResponseDTO<ContadorDto>>();
+                var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
                 
-                return new ResponseDTO<ContadorDto>
+                return new ResponseDTO<BalanceDto>
                 {
                     Result = result.Result,
-                    IsSuccess = true,
-                    Message = "Contador insertado correctamente"
+                    IsSuccess = result.IsSuccess,
+                    Message = result.Message
                 };
 
               
@@ -63,7 +57,7 @@ namespace Balances.Web.Services.Contracts
             catch (Exception ex)
             {
                 // Manejar cualquier excepción que pueda ocurrir durante la solicitud
-                return new ResponseDTO<ContadorDto>
+                return new ResponseDTO<BalanceDto>
                 {
                     Result = null,
                     IsSuccess = false,

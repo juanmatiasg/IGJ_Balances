@@ -2,6 +2,7 @@
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ServiceModel.Channels;
 
 namespace Balances.API.Controllers
 {
@@ -39,20 +40,25 @@ namespace Balances.API.Controllers
         {
             var session = _sessionService.GetBalanceId();
 
+            var response = new ResponseDTO<String>();
 
-            if (session == null)
+
+ 
+
+
+            if (session != null)
             {
+                response.Result = session;
+                response.IsSuccess = true;
+                response.Message = "Session found";
+
+            }
+            else {
+                response.Result = session;
+                response.IsSuccess = false;
+                response.Message = "Session Not found";
                 NotFound();
             }
-
-
-            var response = new ResponseDTO<String>
-            {
-                Result = session,
-                IsSuccess = true,
-                Message = "Session found"
-            };
-
 
 
             return Ok(response);
