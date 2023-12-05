@@ -32,29 +32,12 @@ namespace Balances.Web.Services.Contracts
 
         }
 
-        public async Task<ResponseDTO<BalanceDto>> initTramite(string email, DateTime fechaInicio, DateTime fechaDeCierre, string razonSocial, string tipoEntidad, string domicilio, bool sedeSocialInscripta, string nroCorrelativo)
+        public async Task<ResponseDTO<BalanceDto>> initTramite(CaratulaDto caratula)
         {
             try
-            {
-                var caratulaDto = new CaratulaDto
-                {
-                    Email = email,
-                    FechaInicio = fechaInicio,
-                    FechaDeCierre = fechaDeCierre,
-                    Entidad = new Entidad
-                    {
-                        RazonSocial = razonSocial,
-                        TipoEntidad = tipoEntidad,
-                        Domicilio = domicilio,
-                        SedeSocialInscripta = sedeSocialInscripta,
-                        Correlativo = nroCorrelativo
-                    }
-                };
-
-
-
+            { 
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
-                var response = await _httpClient.PostAsJsonAsync("Caratula/InsertCaratula", caratulaDto);
+                var response = await _httpClient.PostAsJsonAsync("Caratula/InsertCaratula", caratula);
 
                 // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
                 var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
