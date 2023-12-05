@@ -27,15 +27,6 @@ namespace Balances.API.Controllers
             return Ok(rsp);
         }
 
-        //[HttpGet]
-        //[Route("{balanceId}")]
-        //public ResponseDTO<CaratulaDto> Get(string balanceId)
-        //{
 
-        //    var contadordto = _caratulaBusiness.GetById(balanceId);
-
-        //    return contadordto;
-
-        //}
     }
 }

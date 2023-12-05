@@ -15,6 +15,14 @@ namespace Balances.Model
 
         public DateTime FechaDeCierre { get; set; }
 
+        public DateTime Fecha { get; set; }
+
         public Entidad Entidad { get; set; }
+
+        public Caratula()
+        {
+
+            this.Fecha = DateTime.Now;
+        }
     }
 }

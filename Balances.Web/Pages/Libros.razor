@@ -1,5 +1,4 @@
-﻿
-@page "/Libros"
+﻿@page "/Libros"
 @{
 }
 
@@ -109,26 +108,7 @@
         </div>
     </div>
 
-    <script>
-        function validarCampos() {
-            let camposVacios = false;
-            const inputs = document.querySelectorAll('input');
-
-            inputs.forEach(input => {
-                if (input.value.trim() === '') {
-                    camposVacios = true;
-                }
-            });
-
-            if (camposVacios) {
-                $('#errorModal').modal('show');
-            } else {
-                window.location.href = "/Contador"
-            }
-        }
-    </script>
-
-
+    
 
 </body>
 </html>

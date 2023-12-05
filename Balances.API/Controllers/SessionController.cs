@@ -1,4 +1,4 @@
-﻿using Balances.DTO;
+using Balances.DTO;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,28 +38,31 @@ namespace Balances.API.Controllers
         [HttpGet("getSession")]
         public IActionResult GetSession()
         {
+
+
             var session = _sessionService.GetBalanceId();
 
             var response = new ResponseDTO<String>();
 
 
- 
 
-
-            if (session != null)
+            if (session == null)
             {
+                response.Message = "Session not found";
+                response.IsSuccess = false;
+                NotFound();
+            }
+            else
+            {
+
                 response.Result = session;
                 response.IsSuccess = true;
                 response.Message = "Session found";
-
-            }
-            else {
-                response.Result = session;
-                response.IsSuccess = false;
-                response.Message = "Session Not found";
-                NotFound();
             }
 
+
+
+        
 
             return Ok(response);
         }

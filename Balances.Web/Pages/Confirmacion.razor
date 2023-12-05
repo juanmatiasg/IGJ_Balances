@@ -64,87 +64,10 @@
         </ul>
     </div>
 
-    <!-- Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   
 </body>
 
-<script>
-    const loading = true;
-    const Ok = false;
-    const errores = [];
 
-    const rootUrl = ""; // Put your URL here
-    const pdfSource = rootUrl + 'Confirmacion/' + localStorage.getItem('BalanceId');
-
-    window.onload = function () {
-        CheckOnServer();
-    };
-
-    function CheckOnServer() {
-        showPdf();
-    }
-
-    function showPdf() {
-        console.log("SHOW PDF");
-        errores.length = 0;
-
-        // Use Axios or Fetch API for making API calls
-        // axios.get(rootUrl + 'Confirmacion/validar/' + localStorage.getItem('BalanceId'))
-        //   .then(response => {
-        //     paintPanel(response);
-        //   });
-
-        // For demo, we are using a mock function
-        mockAxiosGetRequest(rootUrl + 'Confirmacion/validar/' + localStorage.getItem('BalanceId'))
-            .then(response => {
-                paintPanel(response);
-            });
-    }
-
-    function paintPanel(response) {
-        // Process your response and errors
-
-        console.log('ARRAY IS EMPTY');
-
-        const arrayOk = arrayIsEmpty(errores) === true;
-        console.log(arrayOk);
-
-        Ok = arrayOk;
-
-        console.log("CONFIRMACION CheckOnServer errores: ");
-
-        console.log(errores);
-    }
-
-    function arrayIsEmpty(array) {
-        //If it's not an array, return FALSE.
-        if (!Array.isArray(array)) {
-            return false;
-        }
-        //If it is an array, check its length property
-        if (array.length === 0) {
-            //Return TRUE if the array is empty
-            return true;
-        }
-        //Otherwise, return FALSE.
-        return false;
-    }
-
-    // Mock Axios GET Request
-    function mockAxiosGetRequest(url) {
-        return new Promise((resolve, reject) => {
-            // Mimicking the behavior of axios.get()
-            // Replace this with your actual logic
-            setTimeout(() => {
-                const response = {
-                    data: ["Error 1", "Error 2", "Error 3"] // Example data, replace with your actual response
-                };
-                resolve(response);
-            }, 2000);
-        });
-    }
-</script>
 
 </html>
 

@@ -15,6 +15,8 @@ namespace Balances.DTO
 
         public DateTime FechaDeCierre { get; set; }
 
+        public DateTime Fecha { get; set; }
+
         public Entidad Entidad { get; set; }
     }
 }
