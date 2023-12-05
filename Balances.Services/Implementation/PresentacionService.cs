@@ -8,6 +8,8 @@ namespace Balances.Services.Implementation
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
 
+        public string PlantillaHTML { get; private set; }
+
         public PresentacionService(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
@@ -41,26 +43,44 @@ namespace Balances.Services.Implementation
             return balFilter;
         }
 
-        public string CrearPlantillaPresentacion(BalanceDtoPresentacion balance, string qr)
+        public string CrearPlantillaPresentacionEmail(BalanceDtoPresentacion balance, string qr)
         {
-            string PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalance2.html");
+            this.PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalance2.html");
 
-            PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
-            PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
-            PlantillaHTML = PlantillaHTML.Replace("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
-            PlantillaHTML = PlantillaHTML.Replace("{{FechaEstado}}", balance.Caratula.FechaDeCierre.ToShortDateString());
-            PlantillaHTML = PlantillaHTML.Replace("{{Domicilio}}", balance.Caratula.Entidad.Domicilio);
-            // PlantillaHTML = PlantillaHTML.Replace("{{QR}}", qr);
-            PlantillaHTML = PlantillaHTML.Replace("{{RepresentanteLegal.RepresentanteApellido}}", balance.Autoridad.Apellido);
-            PlantillaHTML = PlantillaHTML.Replace("{{RepresentanteLegal.RepresentanteNombre}}", balance.Autoridad.Nombre);
-            PlantillaHTML = PlantillaHTML.Replace("{{representanteLegal.RepresentanteNroFiscal}}", balance.Autoridad.NroFiscal);
-            PlantillaHTML = PlantillaHTML.Replace("{{Contador.ContadorApellido}}", balance.Contador.Apellido);
-            PlantillaHTML = PlantillaHTML.Replace("{{Contador.ContadorNombre}}", balance.Contador.Nombre);
-            PlantillaHTML = PlantillaHTML.Replace("{{Contador.ContadorNroFiscal}}", balance.Contador.NroFiscal);
-            PlantillaHTML = PlantillaHTML.Replace("{{Contador.Folio}}", balance.Contador.Folio);
-            PlantillaHTML = PlantillaHTML.Replace("{{Contador.Tomo}}", balance.Contador.Tomo);
-            PlantillaHTML = PlantillaHTML.Replace("{{Contador.FechaInformeAuditorExt}}", balance.Contador.FechaInformeAuditorExt.ToShortDateString());
-            PlantillaHTML = PlantillaHTML.Replace("{{Contador.NroLegalInfoAudExt}}", balance.Contador.NroLegalInfoAudExt);
+            SetTag("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
+            SetTag("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
+            SetTag("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
+            SetTag("{{FechaEstado}}", balance.Caratula.FechaDeCierre.ToShortDateString());
+            SetTag("{{Domicilio}}", balance.Caratula.Entidad.Domicilio);
+            // SetTagPlantilla("{{QR}}", qr);
+            SetTag("{{RepresentanteLegal.RepresentanteApellido}}", balance.Autoridad.Apellido);
+            SetTag("{{RepresentanteLegal.RepresentanteNombre}}", balance.Autoridad.Nombre);
+            SetTag("{{representanteLegal.RepresentanteNroFiscal}}", balance.Autoridad.NroFiscal);
+            SetTag("{{Contador.ContadorApellido}}", balance.Contador.Apellido);
+            SetTag("{{Contador.ContadorNombre}}", balance.Contador.Nombre);
+            SetTag("{{Contador.ContadorNroFiscal}}", balance.Contador.NroFiscal);
+            SetTag("{{Contador.Folio}}", balance.Contador.Folio);
+            SetTag("{{Contador.Tomo}}", balance.Contador.Tomo);
+            SetTag("{{Contador.FechaInformeAuditorExt}}", balance.Contador.FechaInformeAuditorExt.ToShortDateString());
+            SetTag("{{Contador.NroLegalInfoAudExt}}", balance.Contador.NroLegalInfoAudExt);
+
+            SetTag("Memoria", balance.Libros.Memoria);
+            SetTag("PatrimonioNeto", balance.Libros.PatrimonioNeto);
+            SetTag("SituacionPatrimonial", balance.Libros.SituacionPatrimonial);
+            SetTag("Auditor", balance.Libros.Auditor);
+            SetTag("Administracion", balance.Libros.Administracion);
+            SetTag("Resultados", balance.Libros.Resultados);
+            SetTag("Efectivo", balance.Libros.Efectivo);
+            SetTag("Informacion", balance.Libros.Informacion);
+            SetTag("EstadosContablesConsolidados", balance.Libros.EstadosContablesConsolidados);
+            SetTag("Fiscalizacion", balance.Libros.Fiscalizacion);
+            SetTag("AsistenciaAsamblea", balance.Libros.AsistenciaAsamblea);
+            SetTag("IVA", balance.Libros.IVA);
+            SetTag("IVACompras", balance.Libros.IVACompras);
+            SetTag("IVAVentas", balance.Libros.IVAVentas);
+
+
+
 
 
 
@@ -71,9 +91,36 @@ namespace Balances.Services.Implementation
 
         }
 
-        public string PlantillaPresentacionHtml(BalanceDtoPresentacion balance, string qr)
+        private void SetTag(string libroNombre, LibroDto libro)
         {
-            string PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalance.html");
+            if (libro.Denominacion != null)
+            {
+                SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
+                SetTag("{{" + libroNombre + ".NumeroRubrica}}", libro.NumeroRubrica);
+                SetTag("{{" + libroNombre + ".Folio}}", libro.Folio);
+                SetTag("{{" + libroNombre + ".Denominacion}}", libro.Denominacion);
+                SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", libro.FechaUltimaRegistracion.ToString("dd/MM/yyyy"));
+            }
+            else
+            {
+                SetTag("{{" + libroNombre + ".Nombre}}", "N/C");
+                SetTag("{{" + libroNombre + ".NumeroRubrica}}", "N/C");
+                SetTag("{{" + libroNombre + ".Folio}}", "N/C");
+                SetTag("{{" + libroNombre + ".Denominacion}}", "N/C");
+                SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", "N/C");
+            }
+
+        }
+
+        private void SetTag(string tag, string valor)
+        {
+            this.PlantillaHTML = PlantillaHTML.Replace(tag, valor);
+
+        }
+
+        public string CrearPlantillaPresentacionPdf(BalanceDtoPresentacion balance, string qr)
+        {
+            this.PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalance.html");
 
             PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
             PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
@@ -91,6 +138,23 @@ namespace Balances.Services.Implementation
             PlantillaHTML = PlantillaHTML.Replace("{{Contador.Tomo}}", balance.Contador.Tomo);
             PlantillaHTML = PlantillaHTML.Replace("{{Contador.FechaInformeAuditorExt}}", balance.Contador.FechaInformeAuditorExt.ToShortDateString());
             PlantillaHTML = PlantillaHTML.Replace("{{Contador.NroLegalInfoAudExt}}", balance.Contador.NroLegalInfoAudExt);
+
+
+
+            SetTag("Memoria", balance.Libros.Memoria);
+            SetTag("PatrimonioNeto", balance.Libros.PatrimonioNeto);
+            SetTag("SituacionPatrimonial", balance.Libros.SituacionPatrimonial);
+            SetTag("Auditor", balance.Libros.Auditor);
+            SetTag("Administracion", balance.Libros.Administracion);
+            SetTag("Resultados", balance.Libros.Resultados);
+            SetTag("Efectivo", balance.Libros.Efectivo);
+            SetTag("Informacion", balance.Libros.Informacion);
+            SetTag("EstadosContablesConsolidados", balance.Libros.EstadosContablesConsolidados);
+            SetTag("Fiscalizacion", balance.Libros.Fiscalizacion);
+            SetTag("AsistenciaAsamblea", balance.Libros.AsistenciaAsamblea);
+            SetTag("IVA", balance.Libros.IVA);
+            SetTag("IVACompras", balance.Libros.IVACompras);
+            SetTag("IVAVentas", balance.Libros.IVAVentas);
 
 
 

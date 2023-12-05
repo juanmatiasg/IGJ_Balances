@@ -140,98 +140,125 @@
             <tr>
                 <th>Asiento</th>
                 <th>Libro</th>
-                <th>Datos de Rúbrica</th>
-                <th>Datos de Última Registración</th>
+                <th>Numero de Rúbrica</th>
+                <th>Folio</th>
+                <th>Denominacion</th>
+                <th>Fecha Registracion</th>
             </tr>
             <tr>
                 <td>Memoria</td>
-                <td>{{LibrosDigitales[0].Nombre}}</td>
-                <td>{{LibrosDigitales[0].NumeroRl}}</td>
-                <td>{{LibrosDigitales[0].Folio}}</td>
+                <td>{{Memoria.Nombre}}</td>
+                <td>{{Memoria.NumeroRubrica}}</td>
+                <td>{{Memoria.Folio}}</td>
+                <td>{{Memoria.Denominacion}}</td>
+                <td>{{Memoria.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Acta del Órgano de Administración</td>
-                <td>{{LibrosDigitales[1].Nombre}}</td>
-                <td>{{LibrosDigitales[1].NumeroRl}}</td>
-                <td>{{LibrosDigitales[1].Folio}}</td>
+                <td>{{Administracion.Nombre}}</td>
+                <td>{{Administracion.NumeroRubrica}}</td>
+                <td>{{Administracion.Folio}}</td>
+                <td>{{Administracion.Denominacion}}</td>
+                <td>{{Administracion.FechaUltimaRegistracion}}</td>
             </tr>
-            <tr>
-                <td>Acta de Reunión de Socios</td>
-                <td>{{LibrosDigitales[2].Nombre}}</td>
-                <td>{{LibrosDigitales[2].NumeroRl}}</td>
-                <td>{{LibrosDigitales[2].Folio}}</td>
-            </tr>
+
             <tr>
                 <td>Estado de Situación Patrimonial</td>
-                <td>{{LibrosDigitales[3].Nombre}}</td>
-                <td>{{LibrosDigitales[3].NumeroRl}}</td>
-                <td>{{LibrosDigitales[3].Folio}}</td>
+                <td>{{SituacionPatrimonial.Nombre}}</td>
+                <td>{{SituacionPatrimonial.NumeroRubrica}}</td>
+                <td>{{SituacionPatrimonial.Folio}}</td>
+                <td>{{SituacionPatrimonial.Denominacion}}</td>
+                <td>{{SituacionPatrimonial.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Estado de Resultados</td>
-                <td>{{LibrosDigitales[4].Nombre}}</td>
-                <td>{{LibrosDigitales[4].NumeroRl}}</td>
-                <td>{{LibrosDigitales[4].Folio}}</td>
+                <td>{{Resultados.Nombre}}</td>
+                <td>{{Resultados.NumeroRubrica}}</td>
+                <td>{{Resultados.Folio}}</td>
+                <td>{{Resultados.Denominacion}}</td>
+                <td>{{Resultados.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Estado de Evolución del Patrimonio Neto</td>
-                <td>{{LibrosDigitales[5].Nombre}}</td>
-                <td>{{LibrosDigitales[5].NumeroRl}}</td>
-                <td>{{LibrosDigitales[5].Folio}}</td>
+                <td>{{PatrimonioNeto.Nombre}}</td>
+                <td>{{PatrimonioNeto.NumeroRubrica}}</td>
+                <td>{{PatrimonioNeto.Folio}}</td>
+                <td>{{PatrimonioNeto.Denominacion}}</td>
+                <td>{{PatrimonioNeto.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Estado de Flujo de Efectivo</td>
-                <td>{{LibrosDigitales[6].Nombre}}</td>
-                <td>{{LibrosDigitales[6].NumeroRl}}</td>
-                <td>{{LibrosDigitales[6].Folio}}</td>
+                <td>{{Efectivo.Nombre}}</td>
+                <td>{{Efectivo.NumeroRubrica}}</td>
+                <td>{{Efectivo.Folio}}</td>
+                <td>{{Efectivo.Denominacion}}</td>
+                <td>{{Efectivo.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Información Complementaria</td>
-                <td>{{LibrosDigitales[7].Nombre}}</td>
-                <td>{{LibrosDigitales[7].NumeroRl}}</td>
-                <td>{{LibrosDigitales[7].Folio}}</td>
+                <td>{{Informacion.Nombre}}</td>
+                <td>{{Informacion.NumeroRubrica}}</td>
+                <td>{{Informacion.Folio}}</td>
+                <td>{{Informacion.Denominacion}}</td>
+                <td>{{Informacion.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Estado Contable Consolidado</td>
-                <td>{{LibrosDigitales[8].Nombre}}</td>
-                <td>{{LibrosDigitales[8].NumeroRl}}</td>
-                <td>{{LibrosDigitales[8].Folio}}</td>
+                <td>{{EstadosContablesConsolidados.Nombre}}</td>
+                <td>{{EstadosContablesConsolidados.NumeroRubrica}}</td>
+                <td>{{EstadosContablesConsolidados.Folio}}</td>
+                <td>{{EstadosContablesConsolidados.Denominacion}}</td>
+                <td>{{EstadosContablesConsolidados.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Informe de Órgano de Fiscalización</td>
-                <td>{{LibrosDigitales[9].Nombre}}</td>
-                <td>{{LibrosDigitales[9].NumeroRl}}</td>
-                <td>{{LibrosDigitales[9].Folio}}</td>
+                <td>{{Fiscalizacion.Nombre}}</td>
+                <td>{{Fiscalizacion.NumeroRubrica}}</td>
+                <td>{{Fiscalizacion.Folio}}</td>
+                <td>{{Fiscalizacion.Denominacion}}</td>
+                <td>{{Fiscalizacion.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Informe del Auditor Externo</td>
-                <td>{{LibrosDigitales[10].Nombre}}</td>
-                <td>{{LibrosDigitales[10].NumeroRl}}</td>
-                <td>{{LibrosDigitales[10].Folio}}</td>
+                <td>{{Auditor.Nombre}}</td>
+                <td>{{Auditor.NumeroRubrica}}</td>
+                <td>{{Auditor.Folio}}</td>
+                <td>{{Auditor.Denominacion}}</td>
+                <td>{{Auditor.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Registro de asistencia</td>
-                <td>{{LibrosDigitales[11].Nombre}}</td>
-                <td>{{LibrosDigitales[11].NumeroRl}}</td>
-                <td>{{LibrosDigitales[11].Folio}}</td>
+                <td>{{AsistenciaAsamblea.Nombre}}</td>
+                <td>{{AsistenciaAsamblea.NumeroRubrica}}</td>
+                <td>{{AsistenciaAsamblea.Folio}}</td>
+                <td>{{AsistenciaAsamblea.Denominacion}}</td>
+                <td>{{AsistenciaAsamblea.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
-                <td></td>
+
                 <td>Libro Diario</td>
-                <td>{{LibrosDigitales[12].NumeroRl}}</td>
-                <td>{{LibrosDigitales[12].Folio}}</td>
+                <td>{{IVA.Nombre}}</td>
+                <td>{{IVA.NumeroRubrica}}</td>
+                <td>{{IVA.Folio}}</td>
+                <td>{{IVA.Denominacion}}</td>
+                <td>{{IVA.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
-                <td></td>
+
                 <td>IVA Compras</td>
-                <td>{{LibrosDigitales[13].NumeroRl}}</td>
-                <td>{{LibrosDigitales[13].Folio}}</td>
+                <td>{{IVACompras.Nombre}}</td>
+                <td>{{IVACompras.NumeroRubrica}}</td>
+                <td>{{IVACompras.Folio}}</td>
+                <td>{{IVACompras.Denominacion}}</td>
+                <td>{{IVACompras.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
-                <td></td>
                 <td>IVA Ventas</td>
-                <td>{{LibrosDigitales[14].NumeroRl}}</td>
-                <td>{{LibrosDigitales[14].Folio}}</td>
+                <td>{{IVAVentas.Nombre}}</td>
+                <td>{{IVAVentas.NumeroRubrica}}</td>
+                <td>{{IVAVentas.Folio}}</td>
+                <td>{{IVAVentas.Denominacion}}</td>
+                <td>{{IVAVentas.FechaUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td colspan="4">Informe de Auditoria: Opinión <span class="error">FALTAN CAMPOS</span></td>

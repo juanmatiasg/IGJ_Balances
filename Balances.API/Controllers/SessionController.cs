@@ -37,21 +37,29 @@ namespace Balances.API.Controllers
         [HttpGet("getSession")]
         public IActionResult GetSession()
         {
+
+
             var session = _sessionService.GetBalanceId();
+
+            var response = new ResponseDTO<String>();
 
 
             if (session == null)
             {
+                response.Message = "Session not found";
+                response.IsSuccess = false;
                 NotFound();
+            }
+            else
+            {
+
+                response.Result = session;
+                response.IsSuccess = true;
+                response.Message = "Session found";
             }
 
 
-            var response = new ResponseDTO<String>
-            {
-                Result = session,
-                IsSuccess = true,
-                Message = "Session found"
-            };
+
 
 
 

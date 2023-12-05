@@ -6,9 +6,11 @@ using Balances.Repository.Contract;
 using Balances.Services.Contract;
 using EmailSender;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Utils;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 
 namespace Balances.Bussiness
 {
@@ -21,6 +23,7 @@ namespace Balances.Bussiness
         private readonly IBalanceBusiness _balanceBusiness;
         private readonly IEmailSenderService _emailSenderService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILogger<CaratulaBusiness> _logger;
 
 
         public CaratulaBusiness(IMongoDbSettings _settings,
@@ -28,7 +31,8 @@ namespace Balances.Bussiness
                                 ISessionService sessionService,
                                 IBalanceBusiness balanceBusiness,
                                 IEmailSenderService emailSenderService,
-                                IWebHostEnvironment webHostEnvironment)
+                                IWebHostEnvironment webHostEnvironment,
+                                ILogger<CaratulaBusiness> logger)
         {
             var cliente = new MongoClient(_settings.Server);
             var database = cliente.GetDatabase(_settings.Database);
@@ -38,6 +42,7 @@ namespace Balances.Bussiness
             _balanceBusiness = balanceBusiness;
             _emailSenderService = emailSenderService;
             _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
         }
 
         public bool Delete(CaratulaDto modelo)
@@ -45,37 +50,7 @@ namespace Balances.Bussiness
             throw new NotImplementedException();
         }
 
-        //public ResponseDTO<CaratulaDto> GetById(string id)
-        //{
-        //    var respuesta = new ResponseDTO<CaratulaDto>();
-        //    respuesta.IsSuccess = false;
 
-        //    try
-        //    {
-        //        var responseDTO = _balanceBusiness.GetById(id);
-
-        //        if (responseDTO.IsSuccess)
-        //        {
-        //            var balance = responseDTO.Result;
-        //            balance.Caratula = _mapper.Map<Caratula>(caratuladto);
-        //        }
-        //        var caratuladto = balancersp.Result.Caratula;
-        //        var caratula = 
-
-
-        //        respuesta.IsSuccess = true;
-        //        respuesta.Result = caratula;
-        //        respuesta.Message = "caratula encontrada exitosamente";
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        respuesta.Message = ex.Message;
-
-        //    }
-
-        //    return respuesta;
-        //}
 
         public ResponseDTO<Balance> Insert(CaratulaDto modelo)
         {
@@ -85,6 +60,7 @@ namespace Balances.Bussiness
             try
             {
                 var balance = new Balance();
+                var balSerializado = JsonConvert.SerializeObject(balance);
 
 
                 balance.Caratula = MapearCaratula(modelo);
@@ -112,10 +88,13 @@ namespace Balances.Bussiness
                 else
                     respuesta.Message = "No se Pudo Insertar";
 
+                _logger.LogError($"No se pudo insertar el balance: \n {balSerializado} ");
+
             }
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
+                _logger.LogError($"error al insertar balance: \n {ex.Message} ");
 
 
             }
@@ -131,6 +110,7 @@ namespace Balances.Bussiness
             PlantillaHTML = PlantillaHTML.Replace("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
             PlantillaHTML = PlantillaHTML.Replace("{{FechaEstado}}", balance.Caratula.FechaDeCierre.ToShortDateString());
             PlantillaHTML = PlantillaHTML.Replace("{{Domicilio}}", balance.Caratula.Entidad.Domicilio);
+            PlantillaHTML = PlantillaHTML.Replace("{{BalanceId}}", balance.Id);
 
 
 
@@ -190,6 +170,7 @@ namespace Balances.Bussiness
                 Email = modelo.Email,
                 Entidad = modelo.Entidad,
                 FechaInicio = modelo.FechaInicio,
+                Fecha = DateTime.Now,
             };
 
             return caratula;
@@ -223,23 +204,6 @@ namespace Balances.Bussiness
 
 
 
-
-        //public CaratulaDto Insert(CaratulaDto modelo)
-        //{
-        //    try
-        //    {
-        //        var balance = _mapper.Map<Balance>(modelo);
-        //        var rsp = _balances.InsertOneAsync(balance);
-
-        //        if (rsp.Id != null) return _mapper.Map<BalanceDto>(rsp);
-        //        else throw new NotImplementedException("No se pudo crear");
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        throw ex;
-        //    }
-        //}
 
 
     }

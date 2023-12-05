@@ -5,10 +5,10 @@ namespace Balances.Services.Contract
     public interface IPresentacionService
     {
 
-        string PlantillaPresentacionHtml(BalanceDtoPresentacion balance, string qr);
+        string CrearPlantillaPresentacionPdf(BalanceDtoPresentacion balance, string qr);
 
         BalanceDtoPresentacion GetBalanceAutoridadySocioFirmante(BalanceDto balance);
 
-        string CrearPlantillaPresentacion(BalanceDtoPresentacion balance, string qr);
+        string CrearPlantillaPresentacionEmail(BalanceDtoPresentacion balance, string qr);
     }
 }

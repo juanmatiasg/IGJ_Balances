@@ -1,12 +1,13 @@
 ﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
-using Balances.Model;
 using Balances.Services.Contract;
 using Dominio.Helpers;
 using EmailSender;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Utils;
+
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -20,7 +21,7 @@ namespace Balances.Bussiness.Implementacion
 
         private readonly IPresentacionService _presentacionService;
 
-
+        private readonly ILogger<IPresentacionBusiness> _logger;
 
         private readonly IPDFService _pdfService;
 
@@ -31,8 +32,7 @@ namespace Balances.Bussiness.Implementacion
                                     IEmailSenderService emailSenderService,
                                     IQRService qRService,
                                     IPresentacionService presentacionService,
-
-
+                                    ILogger<IPresentacionBusiness> logger,
                                     IPDFService pdfService,
                                     IWebHostEnvironment webHostEnvironment
                                     )
@@ -43,11 +43,15 @@ namespace Balances.Bussiness.Implementacion
             _presentacionService = presentacionService;
             _pdfService = pdfService;
             _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
 
         }
 
         public ResponseDTO<BalanceDto> PresentarTramite()
         {
+
+            _logger.LogInformation("Metodo presentar tramite invocado");
+
             var respuesta = new ResponseDTO<BalanceDto>();
             //busco balance
             var bal = _balanceBusiness.BalanceActual;
@@ -58,14 +62,17 @@ namespace Balances.Bussiness.Implementacion
             //filtro busqueda autoridad y socio condicion firmante para llenar la plantilla
             var balPresentacion = _presentacionService.GetBalanceAutoridadySocioFirmante(bal);
             // lleno la plantilla con los datos del balance
-            var plantillahtmlpdf = _presentacionService.PlantillaPresentacionHtml(balPresentacion, qr);
+            var plantillapdf = _presentacionService.CrearPlantillaPresentacionPdf(balPresentacion, qr);
 
             //pdf
 
-            var binariopdf = _pdfService.HtmlToPDF(plantillahtmlpdf, balPresentacion);
-            bal.Presentacion = new Presentacion(binariopdf);
+            var binariopdf = _pdfService.HtmlToPDF(plantillapdf, balPresentacion);
 
-            var plantillahtml = _presentacionService.CrearPlantillaPresentacion(balPresentacion, qr);
+            //agrego la presentacion al balance
+            bal.Presentacion.Fecha = DateTime.Now;
+            bal.Presentacion.PdfBytes = binariopdf;
+
+            var plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(balPresentacion, qr);
 
             //File.WriteAllBytes("c:/prueba.pdf", pdf);
             // paso como parametro el balance y la plantilla para armar el emailRequest 
@@ -85,9 +92,10 @@ namespace Balances.Bussiness.Implementacion
             {
 
                 respuesta.Message = ex.Message;
+                _logger.LogError("PresentarTramite: SendEmailAsync", ex);
             }
 
-
+            //actualizo la base con los datos de la presentacion
             _balanceBusiness.Update(bal);
 
             return respuesta;
@@ -103,7 +111,7 @@ namespace Balances.Bussiness.Implementacion
             var qr = _qRService.QRGenerator(bal.Id);
             // lleno la plantilla con los datos del balance
             var balPresentacionfiltro = _presentacionService.GetBalanceAutoridadySocioFirmante(bal);
-            var Plantillahtml = _presentacionService.PlantillaPresentacionHtml(balPresentacionfiltro, qr);
+            var Plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(balPresentacionfiltro, qr);
 
 
 
