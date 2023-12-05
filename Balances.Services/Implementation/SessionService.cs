@@ -40,7 +40,5 @@ namespace Balances.Services.Implementation
             return _context.HttpContext.Session.GetString("idSession");
 
         }
-
-
     }
 }

@@ -84,6 +84,7 @@ try
                                  (d => d.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
 
+
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("NuevaPolitica", app =>
@@ -96,6 +97,12 @@ try
     }); //Importante 
 
 
+  builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(3);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
     builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -127,6 +134,7 @@ try
 
     app.Run();
 
+
 }
 catch (Exception e)
 {
@@ -137,5 +145,6 @@ finally
 {
     NLog.LogManager.Shutdown();
 }
+
 
 

@@ -61,7 +61,7 @@ namespace Balances.Bussiness.Implementacion
             try
             {
                 var id = _sessionService.GetBalanceId();
-                var responsedto = _balanceBusiness.GetById(id);
+                var responsedto = _balanceBusiness.GetById(modelo.id);
 
                 if (responsedto.IsSuccess)
                 {

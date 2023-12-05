@@ -1,7 +1,8 @@
-﻿using Balances.DTO;
+using Balances.DTO;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ServiceModel.Channels;
 
 namespace Balances.API.Controllers
 {
@@ -44,6 +45,7 @@ namespace Balances.API.Controllers
             var response = new ResponseDTO<String>();
 
 
+
             if (session == null)
             {
                 response.Message = "Session not found";
@@ -60,8 +62,7 @@ namespace Balances.API.Controllers
 
 
 
-
-
+        
 
             return Ok(response);
         }
