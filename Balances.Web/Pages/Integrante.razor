@@ -114,44 +114,9 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS y otras dependencias -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    
 
-    <script>
-        function openTab(evt, tabName) {
-            var i, tabcontent, navlinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            navlinks = document.getElementsByClassName("nav-link");
-            for (i = 0; i < navlinks.length; i++) {
-                navlinks[i].classList.remove("active");
-            }
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.classList.add("active");
-        }
-
-        function handleSubmit(event) {
-            event.preventDefault();
-            // Agrega la lógica de envío de formulario aquí
-        }
-
-        function handleChange(event) {
-            // Agrega la lógica de cambio de formulario aquí
-        }
-
-        function addItem(event) {
-            event.preventDefault();
-            // Agrega la lógica para agregar un elemento del formulario
-        }
-
-        function deleteItem(id) {
-            // Agrega la lógica para eliminar el elemento con el id especificado
-        }
-    </script>
+    
 
 </body>
 
