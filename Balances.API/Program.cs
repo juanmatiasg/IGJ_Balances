@@ -9,130 +9,142 @@ using Balances.Utilities;
 using Dominio.Helpers;
 using EmailSender;
 using Microsoft.Extensions.Options;
+using NLog;
+using NLog.Web;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-// Add services to the container.
+logger.Debug("init main");
 
-builder.Services.AddControllers();
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    // Add services to the container.
 
-//Serilog Logs
-//Log.Logger = new LoggerConfiguration()
-//    .ReadFrom.Configuration(builder.Configuration).CreateLogger();
+    builder.Services.AddControllers();
 
-//Log.Logger = new LoggerConfiguration()
-//            .MinimumLevel.Information()
-//            .WriteTo.Console()
-//            .WriteTo.File("Logs/Log-.txt", rollingInterval: RollingInterval.Day)
-//            .CreateLogger();
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+
+    //Logger
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
+
+    //SMTP Settings
+    builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+
+    //Balance
+
+    builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
+    builder.Services.AddScoped<ICaratulaBusiness, CaratulaBusiness>();
+    builder.Services.AddScoped<IBalanceBusiness, BalanceBusiness>();
+    builder.Services.AddScoped<IContadorBusiness, ContadorBusiness>();
+    builder.Services.AddScoped<IAutoridadesBusiness, AutoridadesBusiness>();
+    builder.Services.AddScoped<IEstadoContableBusiness, EstadoContableBusiness>();
+    builder.Services.AddScoped<IArchivoBusiness, ArchivoBusiness>();
+    builder.Services.AddScoped<ILibrosBusiness, LibrosBusiness>();
+    builder.Services.AddScoped<ISociosBusiness, SociosBusiness>();
+
+    builder.Services.AddSingleton<ISessionService, SessionService>();
+
+    builder.Services.AddSingleton<IBalanceService, BalanceService>();
+    //builder.Services.AddScoped<IContadorService, ContadorService>();
+    builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
+    //builder.Services.AddScoped<IRepresentanteLegalService, RepresentanteLegalService>();
+    builder.Services.AddScoped<IArchivoService, ArchivoService>();
+    builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
+
+    //QR
+    builder.Services.AddScoped<IQRService, QRService>();
+    //PDF
+    builder.Services.AddScoped<IPDFService, PDFService>();
+
+    //Email
+    builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
+
+    builder.Services.AddScoped<IPresentacionService, PresentacionService>();
+
+    //Session
+    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
-/// builder.Host.UseSerilog;
+    builder.Services.AddDistributedMemoryCache();
+    builder.Services.AddSession(options =>
+        options.IdleTimeout = TimeSpan.FromHours(3));
 
-//SMTP Settings
-builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+    //AUTOMAPPER
+    builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-//Balance
-
-builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
-builder.Services.AddScoped<ICaratulaBusiness, CaratulaBusiness>();
-builder.Services.AddScoped<IBalanceBusiness, BalanceBusiness>();
-builder.Services.AddScoped<IContadorBusiness, ContadorBusiness>();
-builder.Services.AddScoped<IAutoridadesBusiness, AutoridadesBusiness>();
-builder.Services.AddScoped<IEstadoContableBusiness, EstadoContableBusiness>();
-builder.Services.AddScoped<IArchivoBusiness, ArchivoBusiness>();
-builder.Services.AddScoped<ILibrosBusiness, LibrosBusiness>();
-builder.Services.AddScoped<ISociosBusiness, SociosBusiness>();
-
-builder.Services.AddSingleton<ISessionService, SessionService>();
-
-builder.Services.AddSingleton<IBalanceService, BalanceService>();
-//builder.Services.AddScoped<IContadorService, ContadorService>();
-builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
-//builder.Services.AddScoped<IRepresentanteLegalService, RepresentanteLegalService>();
-builder.Services.AddScoped<IArchivoService, ArchivoService>();
-builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
-
-//Email
-builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
+    //DB
+    builder.Services.Configure<MongoDbSettings>
+                              (builder.Configuration.GetSection(nameof(MongoDbSettings)));
+    builder.Services.AddSingleton<IMongoDbSettings>
+                                 (d => d.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
 
-//builder.Services.AddHttpContextAccessor();
-//Session
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-//builder.Services.AddSingleton<IPresentacionService, IPresentacionService>();
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-    options.IdleTimeout = TimeSpan.FromHours(3));
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("NuevaPolitica", app =>
+        {
+            app.AllowAnyOrigin().
+            AllowAnyHeader().
+            AllowAnyMethod();
 
-//AUTOMAPPER
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+        });
+    }); //Importante 
 
-//DB
-builder.Services.Configure<MongoDbSettings>
-                          (builder.Configuration.GetSection(nameof(MongoDbSettings)));
-builder.Services.AddSingleton<IMongoDbSettings>
-                             (d => d.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
-//builder.Services.AddSingleton<IMongoRepository>(provider =>
-//{
-//    var mongoClient = new MongoClient("mongodb://localhost:27017");
-//    var database = mongoClient.GetDatabase("DeclaracionJurada");
-//    return new MongoRepository(database, "Balances");
-//});
-
-builder.Services.AddSession(options =>
+  builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(3);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 
+    builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
+    var app = builder.Build();
 
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("NuevaPolitica", app =>
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
     {
-        app.AllowAnyOrigin().
-        AllowAnyHeader().
-        AllowAnyMethod();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
-    });
-}); //Importante 
+    //Session
+    app.UseSession();
+
+    //Serilog
+    //app.UseSerilogRequestLogging();
+
+    //Cors
+    app.UseCors("NuevaPolitica");
+
+    app.UseAuthentication();
+
+    app.UseAuthorization();
 
 
 
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+    app.MapControllers();
 
-var app = builder.Build();
+    app.Run();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+
+}
+catch (Exception e)
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    logger.Error(e, "Falla al iniciar la api en el Program.cs");
+    throw;
+}
+finally
+{
+    NLog.LogManager.Shutdown();
 }
 
 
-//Serilog
-//app.UseSerilogRequestLogging();
 
-//Cors
-app.UseCors("NuevaPolitica");
-
-app.UseSession();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

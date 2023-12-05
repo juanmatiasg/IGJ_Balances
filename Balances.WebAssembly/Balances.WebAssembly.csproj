@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,6 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+
+    <Content Remove="wwwroot\Plantillas\PlantillaEmail.html" />
+    <Content Remove="wwwroot\Plantillas\PlantillaPresentacionBalance.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Plantillas\PlantillaEmail.html" />
+    <None Include="wwwroot\Plantillas\PlantillaPresentacionBalance.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.2" />
+    <PackageReference Include="itext7.bouncy-castle-fips-adapter" Version="8.0.2" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.11" PrivateAssets="all" />

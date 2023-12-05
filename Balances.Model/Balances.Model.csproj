@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.2" />
+    <PackageReference Include="itext7.bouncy-castle-fips-adapter" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="MongoDB.Bson" Version="2.22.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />

@@ -1,10 +1,11 @@
-﻿using MongoDB.Bson;
+﻿using Balances.Model;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Runtime.Serialization;
 
-namespace Balances.Model
+namespace Balances.DTO
 {
-    public class Balance
+    public class BalanceDtoPresentacion
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -15,11 +16,11 @@ namespace Balances.Model
         public Caratula Caratula { get; set; }
 
         public ICollection<Archivo> Archivos { get; set; }
-        public List<Autoridad> Autoridades { get; set; }
+        public AutoridadDto Autoridad { get; set; }
         public EstadoContable EstadoContable { get; set; }
-        public Libros Libros { get; set; }
-        public Socios Socios { get; set; }
+        public LibrosDto Libros { get; set; }
         public Contador Contador { get; set; }
-        public Presentacion Presentacion { get; set; }
+        public SociosDto Socios { get; set; }
+        public PersonaHumanaDto Socio { get; set; }
     }
 }
