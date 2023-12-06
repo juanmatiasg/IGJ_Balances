@@ -1,9 +1,6 @@
 ﻿using Balances.DTO;
-using Balances.Model;
 using Balances.Web.Services.Implementation;
-using MongoDB.Bson;
 using System.Net.Http.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Balances.Web.Services.Contracts
 {
@@ -35,35 +32,32 @@ namespace Balances.Web.Services.Contracts
 
         public async Task<ResponseDTO<BalanceDto>> postContador(ContadorDto contador)
         {
+            ResponseDTO<BalanceDto> rsp = new();
+            rsp.IsSuccess = false;
             try
             {
-                
+
 
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
-                var response = await _httpClient.PostAsJsonAsync("Contador/Insert", contador);
+                var respuesta = await _httpClient.PostAsJsonAsync("Contador/Insert", contador);
 
                 // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
-                var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
-                
-                return new ResponseDTO<BalanceDto>
-                {
-                    Result = result.Result,
-                    IsSuccess = result.IsSuccess,
-                    Message = result.Message
-                };
+                var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
 
-              
+
+                rsp = result;
+                rsp.IsSuccess = true;
+
+
             }
             catch (Exception ex)
             {
                 // Manejar cualquier excepción que pueda ocurrir durante la solicitud
-                return new ResponseDTO<BalanceDto>
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = "Error in the request"
-                };
+                rsp.Message = ex.Message;
+
             }
+
+            return rsp;
         }
 
         public async Task<ResponseDTO<string>> setSession(string idBalance)
@@ -72,15 +66,15 @@ namespace Balances.Web.Services.Contracts
             {
                 var session = new ResponseDTO<string>
                 {
-                  Result = idBalance,
-                  Message ="Session Created",
-                  IsSuccess=true,
+                    Result = idBalance,
+                    Message = "Session Created",
+                    IsSuccess = true,
                 };
 
 
 
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
-                var response = await _httpClient.PostAsJsonAsync($"Session/{idBalance}",session);
+                var response = await _httpClient.PostAsJsonAsync($"Session/{idBalance}", session);
 
                 // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
                 var result = await response.Content.ReadFromJsonAsync<ResponseDTO<string>>();
