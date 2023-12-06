@@ -89,7 +89,7 @@
 
                         <div class="form-group">
                             <label for="contadorNuFiscal">Nro. de Identificación Fiscal</label>
-                            <input type="number" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal" oninput="handleChange(event)" required @bind="modelo.NroFiscal">
+                            <input type="text" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal" oninput="handleChange(event)" required @bind="modelo.NroFiscal">
                         </div>
 
                         <div class="form-group">
@@ -158,23 +158,24 @@
         await base.OnInitializedAsync();
     }
 
-    private async Task getContador(string idBalance)
+    private async Task<ResponseDTO<BalanceDto>> getContador(string idBalance)
     {
-        var response = await contadorService.getBalance(idBalance);
+        ResponseDTO<BalanceDto> rsp = new();
 
         try
         {
-            if (response.IsSuccess)
+            rsp = await contadorService.getBalance(idBalance);
+            if (rsp.IsSuccess)
             {
-                modelo.id = response.Result.Id;
-                modelo.Nombre = response.Result.Contador.Nombre;
-                modelo.Apellido = response.Result.Contador.Apellido;
-                modelo.TipoDocumento = response.Result.Contador.TipoDocumento;
-                modelo.NroDocumento = response.Result.Contador.NroDocumento;
-                modelo.Tomo = response.Result.Contador.Tomo;
-                modelo.Folio = response.Result.Contador.Folio;
-                modelo.NroLegalInfoAudExt = response.Result.Contador.NroLegalInfoAudExt;
-       
+                modelo.id = rsp.Result.Id;
+                modelo.Nombre = rsp.Result.Contador.Nombre;
+                modelo.Apellido = rsp.Result.Contador.Apellido;
+                modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
+                modelo.NroDocumento = rsp.Result.Contador.NroDocumento;
+                modelo.Tomo = rsp.Result.Contador.Tomo;
+                modelo.Folio = rsp.Result.Contador.Folio;
+                modelo.NroLegalInfoAudExt = rsp.Result.Contador.NroLegalInfoAudExt;
+
             }
 
 
@@ -183,36 +184,33 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+            rsp.Message = $"error al obtener el contador {ex.Message}";
         }
+
+        return rsp;
     }
 
 
 
 
-    private async Task postContador()
+    private async Task<ResponseDTO<BalanceDto>> postContador()
     {
-           
-            var response = await contadorService.postContador(modelo);
 
-            try
-            {
-                if (response.IsSuccess)
-                {
-                    Console.WriteLine("Contador" + response.Result.Contador);
-                }
-                else
-                {
-                    Console.WriteLine("Contador" + response.Message.ToString());
+        ResponseDTO<BalanceDto> respuesta = new();
+        respuesta.IsSuccess = false;
+        try
+        {
 
-                }
-            }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine("Error" + ex.Message);
-            }
+            respuesta = await contadorService.postContador(modelo);
+            respuesta.IsSuccess = true;
         
+        }
+        catch (Exception ex)
+        {
+
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
     }
 
 
