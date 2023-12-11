@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Balances.DTO\Balances.DTO.csproj" />
+    <ProjectReference Include="..\Balances.Utilities\Balances.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

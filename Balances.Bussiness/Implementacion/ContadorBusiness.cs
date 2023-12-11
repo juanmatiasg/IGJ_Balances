@@ -3,6 +3,7 @@ using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Model;
 using Balances.Services.Contract;
+using Balances.Utilities;
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -61,7 +62,8 @@ namespace Balances.Bussiness.Implementacion
             try
             {
                 var id = _sessionService.GetBalanceId();
-                var responsedto = _balanceBusiness.GetById(modelo.id);
+               // var id = SessionStorageHelper.GetItem<string>(Constants.KEY_SESSION);
+                var responsedto = _balanceBusiness.GetById(id);
 
                 if (responsedto.IsSuccess)
                 {

@@ -1,3 +1,4 @@
+using Balances.Utilities;
 using Balances.Web;
 using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
@@ -14,6 +15,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https:/
 
 builder.Services.AddScoped<ICaratulaService, CaratulaService>();
 builder.Services.AddScoped<IContadorService, ContadorService>();
+builder.Services.AddScoped<IAutoridadService, AutoridadService>();
 
 
 builder.Services.AddBlazoredSessionStorage();

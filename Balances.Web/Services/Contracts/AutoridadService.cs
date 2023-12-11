@@ -4,33 +4,16 @@ using System.Net.Http.Json;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class ContadorService : IContadorService
+    public class AutoridadService:IAutoridadService
     {
         private readonly HttpClient _httpClient;
-     
-
-
-        public ContadorService(HttpClient httpClient)
+      
+        public AutoridadService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-           
-
         }
 
-        public async Task<ResponseDTO<BalanceDto>> getBalance(){
-            var id = await _httpClient.GetFromJsonAsync<string>("Session/getSession");
-            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Balance/{id}");
-        }
-
-        public async Task<ResponseDTO<BalanceDto>> getContador(string id)
-        {
-            
-            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Contador/{id}");
-
-        }
-
-
-        public async Task<ResponseDTO<BalanceDto>> postContador(ContadorDto contador)
+        public async Task<ResponseDTO<BalanceDto>> insertAutoridad(AutoridadDto autoridad)
         {
             ResponseDTO<BalanceDto> rsp = new();
             rsp.IsSuccess = false;
@@ -39,9 +22,9 @@ namespace Balances.Web.Services.Contracts
 
 
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
-                var respuesta = await _httpClient.PostAsJsonAsync("Contador/Insert", contador);
+                var respuesta = await _httpClient.PostAsJsonAsync("Autoridades/Insert", autoridad);
 
-                // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
+                // Leer la respuesta JSON y deserializarla a ResponseDTO<AutoridadesDTO>
                 var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
 
 
@@ -58,6 +41,12 @@ namespace Balances.Web.Services.Contracts
             }
 
             return rsp;
+        }
+
+
+        public Task<ResponseDTO<BalanceDto>> deleteAutoridad(AutoridadDto autoridad)
+        {
+            throw new NotImplementedException();
         }
 
         

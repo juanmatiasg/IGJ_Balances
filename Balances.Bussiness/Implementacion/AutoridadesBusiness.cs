@@ -2,6 +2,7 @@
 using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Services.Contract;
+using Balances.Utilities;
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -10,6 +11,7 @@ namespace Balances.Bussiness.Implementacion
         private readonly ISessionService _sessionService;
         private readonly IBalanceBusiness _balanceBusiness;
         private readonly IMapper _mapper;
+
 
         public AutoridadesBusiness(ISessionService sessionService,
                                    IBalanceBusiness balanceBusiness,
@@ -59,6 +61,8 @@ namespace Balances.Bussiness.Implementacion
             try
             {
                 var id = _sessionService.GetBalanceId();
+
+             
                 var resultadoDto = _balanceBusiness.GetById(id);
 
                 if (resultadoDto.IsSuccess)

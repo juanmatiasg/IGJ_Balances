@@ -14,6 +14,7 @@
         public DateTime FechaInformeAuditorExt { get; set; }
         public string NroLegalInfoAudExt { get; set; }
 
+        public BalanceDto Balance { get; set; }
 
         //public CaratuloDto(Contador contador)
         //{

@@ -84,6 +84,7 @@ namespace Balances.Bussiness
                     respuesta.Message = "Caratula creada correctamente";
                     respuesta.Result = balance;
 
+
                 }
                 else
                     respuesta.Message = "No se Pudo Insertar";
@@ -199,12 +200,33 @@ namespace Balances.Bussiness
             throw new NotImplementedException();
         }
 
+        public ResponseDTO<string> getSession()
+        {
+            var session = _sessionService.GetBalanceId();
+            var response = new ResponseDTO<string>();
+            try
+            {
+                if (session != null)
+                {
+                    response.IsSuccess = true;
+                    response.Message = "Session Found";
+                    response.Result = session;
+                }
+                else {
+                    response.IsSuccess = true;
+                    response.Message = "Session Not Found";
+                    response.Result = null;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = "Error request" + ex.Message;
+                response.Result = session;
+            }
 
-
-
-
-
-
-
+           return response; ;
+        }
     }
 }

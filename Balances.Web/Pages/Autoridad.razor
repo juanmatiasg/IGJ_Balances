@@ -1,4 +1,9 @@
 ﻿@page "/Autoridad"
+@using Balances.DTO;
+@using Balances.Web.Services.Implementation;
+@inject IAutoridadService autoridadService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
 
 @{
 }
@@ -24,7 +29,7 @@
     </div>
     <ul class="nav nav-tabs d-flex justify-content-center">
         <li class="nav-item">
-            <a class="nav-link" disabled href="/Entidad">Entidad</a>
+            <a class="nav-link" disabled href="/Caratula">Caratula</a>
         </li>
         <li class="nav-item" disabled>
             <a class="nav-link" href="/EstadoContable">Estado</a>
@@ -64,80 +69,98 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="inputNombre">Nombre</label>
-                            <input type="text" class="form-control" id="inputNombre" placeholder="Nombre">
+                            <input type="text" class="form-control" id="inputNombre" placeholder="Nombre" @bind=modelo.Nombre>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="inputApellido">Apellido</label>
-                            <input type="text" class="form-control" id="inputApellido" placeholder="Apellido">
+                            <input type="text" class="form-control" id="inputApellido" placeholder="Apellido" @bind=modelo.Apellido>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="selectTipoDocumento">Tipo de Documento</label>
-                            <select id="selectTipoDocumento" class="form-control">
+                            <select id="selectTipoDocumento" class="form-control" @bind ="modelo.TipoDocumento">
                                 <option selected>Seleccionar...</option>
-                                <!-- Opciones de tipo de documento aquí -->
+                                <option value="DNI">DNI</option>
+                                <option value="Pasaporte">Pasaporte</option>
+                                <option value="Cédula">Cédula</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="inputNumeroDocumento">Número de Documento</label>
-                            <input type="text" class="form-control" id="inputNumeroDocumento" placeholder="Número de Documento">
+                            <input type="text" class="form-control" id="inputNumeroDocumento" placeholder="Número de Documento" @bind="modelo.NroDocumento">
                         </div>
                         <div class="form-group col-md-4">
                             <label for="inputNumeroFiscal">Número de Identificación Fiscal</label>
-                            <input type="text" class="form-control" id="inputNumeroFiscal" placeholder="Número de Identificación Fiscal">
+                            <input type="text" class="form-control" id="inputNumeroFiscal" placeholder="Número de Identificación Fiscal" @bind="modelo.NroFiscal">
                         </div>
                         <div class="form-group col-md-4">
                             <label for="inputCargo">Cargo</label>
-                            <input type="text" class="form-control" id="inputCargo" placeholder="Cargo">
+                            <input type="text" class="form-control" id="inputCargo" placeholder="Cargo" @bind="modelo.Cargo">
                         </div>
                     </div>
                     <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="checkboxFirmante">
+                        <input type="checkbox" class="form-check-input" id="checkboxFirmante" @bind="modelo.EsFirmante">
                         <label class="form-check-label" for="checkboxFirmante">Es Firmante</label>
                     </div>
-                    <button type="submit" class="btn btn-primary">Agregar</button>
+                    
+                    <button type="button" class="btn btn-primary w-100" @onclick="insertAutoridad">Agregar</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                Autoridades
-            </div>
-            <div class="card-body">
-                <form>
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="inputApellidoNombre">Apellido y Nombre</label>
-                            <input type="text" class="form-control" id="inputApellidoNombre" placeholder="Apellido y Nombre">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputNroDocumento">Nro Documento</label>
-                            <input type="text" class="form-control" id="inputNroDocumento" placeholder="Nro Documento">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputCUIT">CUIT</label>
-                            <input type="text" class="form-control" id="inputCUIT" placeholder="CUIT">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label for="inputCargo">Cargo</label>
-                            <input type="text" class="form-control" id="inputCargo" placeholder="Cargo">
-                        </div>
-                    </div>
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="checkboxFirma">
-                        <label class="form-check-label" for="checkboxFirma">FIRMA</label>
-                    </div>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
+    @if (isExistAuthority)
+    {
+        <div class="container mt-4">
+            <div class="card">
+                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                    Autoridades
+                </div>
+                <div class="card-body">
+                    <form>
+                        <!-- Tu formulario actual -->
+                        <!-- Bucle foreach para mostrar datos de la lista -->
+                        @foreach (var autoridad in listAutoridades)
+                        {
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="inputApellidoNombre">Apellido y Nombre</label>
+                                    <input type="text" class="form-control" id="inputApellidoNombre" placeholder="Apellido y Nombre" value="@autoridad.Apellido @autoridad.Nombre" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputNroDocumento">Nro Documento</label>
+                                    <input type="text" class="form-control" id="inputNroDocumento" placeholder="Nro Documento" value="@autoridad.NroDocumento" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputCUIT">CUIT</label>
+                                    <input type="text" class="form-control" id="inputCUIT" placeholder="CUIT" value="@autoridad.NroFiscal" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputCargo">Cargo</label>
+                                    <input type="text" class="form-control" id="inputCargo" placeholder="Cargo" value="@autoridad.Cargo" disabled>
+                                </div>
+
+                                <div class="form-group form-check col-md-2">
+                                    <input type="checkbox" class="form-check-input" id="checkboxFirma" disabled checked="@autoridad.EsFirmante">
+                                    <label class="form-check-label" for="checkboxFirma">Es Firmante</label>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-danger">Eliminar</button>
+                                </div>
+                            </div>
+                            
+     
+                        }
+                        <!-- Fin del bucle foreach -->
+
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+    }
 
-    <!-- Bootstrap JS and jQuery -->
+ 
    
 
 </body>
@@ -148,5 +171,46 @@
 
 
 @code {
+    private const string KEY_SESSION = "idSession";
+    private string idSession = "";
+    private bool isExistAuthority = false;
+    private AutoridadDto modelo = new AutoridadDto();
+    private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
+    private string resultNameAndSurname ="";
 
+    private async Task<ResponseDTO<BalanceDto>> insertAutoridad()
+    {
+
+        ResponseDTO<BalanceDto> respuesta = new();
+        respuesta.IsSuccess = false;
+
+
+        try
+        {
+            
+            respuesta = await autoridadService.insertAutoridad(modelo);
+            respuesta.IsSuccess = true;
+            isExistAuthority = true;
+            
+            resultAutoridades(respuesta.Result.Autoridades);
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+     }
+
+    private void resultAutoridades(List<AutoridadDto> listAutoridades)
+    {
+        this.listAutoridades = listAutoridades;
+    }
+    
+        
 }
+    
+
+
+
+    

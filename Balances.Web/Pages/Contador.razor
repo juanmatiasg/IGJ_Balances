@@ -1,5 +1,6 @@
 ﻿@page "/Contador"
 @using Balances.DTO;
+@using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject IContadorService contadorService
@@ -30,7 +31,7 @@
     </div>
     <ul class="nav nav-tabs d-flex justify-content-center">
         <li class="nav-item">
-            <a class="nav-link" disabled href="/Entidad">Entidad</a>
+            <a class="nav-link" disabled href="/Caratula">Caratula</a>
         </li>
         <li class="nav-item" disabled>
             <a class="nav-link" href="/EstadoContable">Estado</a>
@@ -145,26 +146,20 @@
         modelo.FechaInformeAuditorExt = DateTime.Now;
 
 
-
-        idSession = await sessionStorage.GetItemAsync<string>(KEY_SESSION);
-
-        Console.WriteLine("Contador Id Session" + idSession.ToString());
-
         if (idSession != null)
         {
-            await getContador(idSession);
+            await getContador();
         }
 
         await base.OnInitializedAsync();
     }
 
-    private async Task<ResponseDTO<BalanceDto>> getContador(string idBalance)
+    private async Task<ResponseDTO<BalanceDto>> getContador()
     {
         ResponseDTO<BalanceDto> rsp = new();
-
         try
         {
-            rsp = await contadorService.getBalance(idBalance);
+            rsp = await contadorService.getBalance();
             if (rsp.IsSuccess)
             {
                 modelo.id = rsp.Result.Id;

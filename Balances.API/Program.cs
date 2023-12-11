@@ -1,3 +1,4 @@
+using Balances.API.Controllers;
 using Balances.Bussiness;
 using Balances.Bussiness.Contrato;
 using Balances.Bussiness.Implementacion;
@@ -6,6 +7,7 @@ using Balances.Repository.Implementation;
 using Balances.Services.Contract;
 using Balances.Services.Implementation;
 using Balances.Utilities;
+using Balances.Web.Services.Implementation;
 using Dominio.Helpers;
 using EmailSender;
 using Microsoft.Extensions.Options;
@@ -35,6 +37,8 @@ try
     //SMTP Settings
     builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
+
+
     //Balance
 
     builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
@@ -56,6 +60,8 @@ try
     builder.Services.AddScoped<IArchivoService, ArchivoService>();
     builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
 
+
+
     //QR
     builder.Services.AddScoped<IQRService, QRService>();
     //PDF
@@ -67,7 +73,11 @@ try
     builder.Services.AddScoped<IPresentacionService, PresentacionService>();
 
     //Session
+    // Agrega IHttpContextAccessor a los servicios.
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+    builder.Services.AddSingleton<IStorageBalanceHelper, StorageBalanceHelper>();
+
 
 
     builder.Services.AddDistributedMemoryCache();
@@ -82,9 +92,7 @@ try
                               (builder.Configuration.GetSection(nameof(MongoDbSettings)));
     builder.Services.AddSingleton<IMongoDbSettings>
                                  (d => d.GetRequiredService<IOptions<MongoDbSettings>>().Value);
-
-
-
+  
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("NuevaPolitica", app =>
@@ -108,7 +116,7 @@ try
 
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
+    // Configure the HTTP requeContrato.IPresentacionBusiness Lifetime: Scoped st pipeline.
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
