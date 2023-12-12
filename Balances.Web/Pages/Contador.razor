@@ -23,10 +23,10 @@
 </head>
 
 <body>
-    <!--Navegacion-->
+ 
     <div class="d-flex justify-content-center align-items-center">
         <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
+            <p>Entidad:&nbsp; <h3 id="entidad">@tipoEntidad</h3></p>
         </h3>
     </div>
     <ul class="nav nav-tabs d-flex justify-content-center">
@@ -137,29 +137,61 @@
     private string idSession = "";
     private ResponseDTO<BalanceDto> modeloRespuesta = new ResponseDTO<BalanceDto>();
     private ContadorDto modelo = new ContadorDto();
+    private string tipoEntidad = "";
 
 
 
     protected override async Task OnInitializedAsync()
     {
+        await getTipoEntidad();
 
         modelo.FechaInformeAuditorExt = DateTime.Now;
 
 
         if (idSession != null)
         {
+
             await getContador();
         }
 
         await base.OnInitializedAsync();
     }
 
+    private async Task<ResponseDTO<BalanceDto>> getTipoEntidad()
+    {
+        ResponseDTO<BalanceDto> rsp = new();
+        try
+        {
+            var idSession = await contadorService.getSession();
+            rsp = await contadorService.getBalance(idSession.Result);
+
+            if (rsp.IsSuccess)
+            {
+                tipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+
+            }
+
+
+            StateHasChanged();
+
+        }
+        catch (Exception ex)
+        {
+            rsp.Message = $"error al obtener el contador {ex.Message}";
+        }
+
+        return rsp;
+    }
+
+   
     private async Task<ResponseDTO<BalanceDto>> getContador()
     {
         ResponseDTO<BalanceDto> rsp = new();
         try
         {
-            rsp = await contadorService.getBalance();
+            var idSession = await contadorService.getSession();
+            rsp = await contadorService.getBalance(idSession.Result);
+            
             if (rsp.IsSuccess)
             {
                 modelo.id = rsp.Result.Id;
@@ -167,6 +199,7 @@
                 modelo.Apellido = rsp.Result.Contador.Apellido;
                 modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
                 modelo.NroDocumento = rsp.Result.Contador.NroDocumento;
+                modelo.NroFiscal = rsp.Result.Contador.NroFiscal;
                 modelo.Tomo = rsp.Result.Contador.Tomo;
                 modelo.Folio = rsp.Result.Contador.Folio;
                 modelo.NroLegalInfoAudExt = rsp.Result.Contador.NroLegalInfoAudExt;

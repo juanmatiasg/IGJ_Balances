@@ -3,7 +3,7 @@
 @using Balances.Web.Services.Implementation;
 @inject IAutoridadService autoridadService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-
+@inject NavigationManager NavigationManager
 
 @{
 }
@@ -110,8 +110,8 @@
         </div>
     </div>
 
-    @if (isExistAuthority)
-    {
+    @if(isExistAuthority){
+   
         <div class="container mt-4">
             <div class="card">
                 <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
@@ -141,16 +141,16 @@
                                     <input type="text" class="form-control" id="inputCargo" placeholder="Cargo" value="@autoridad.Cargo" disabled>
                                 </div>
 
-                                <div class="form-group form-check col-md-2">
-                                    <input type="checkbox" class="form-check-input" id="checkboxFirma" disabled checked="@autoridad.EsFirmante">
-                                    <label class="form-check-label" for="checkboxFirma">Es Firmante</label>
+                                <div class="form-group form-check col-md-3">
+                                    <input type="checkbox" class="form-check-input" id="checkboxFirmante" @bind="@autoridad.EsFirmante" disabled>
+                                    <label class="form-check-label" for="checkboxFirmante">Es Firmante</label>
                                 </div>
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-danger">Eliminar</button>
-                                </div>
+
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-danger" @onclick="() => deleteAutoridad(autoridad)">Eliminar</button>
                             </div>
                             
-     
                         }
                         <!-- Fin del bucle foreach -->
 
@@ -159,7 +159,7 @@
             </div>
         </div>
     }
-
+   
  
    
 
@@ -178,21 +178,78 @@
     private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
     private string resultNameAndSurname ="";
 
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await Load();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        try
+        {
+            var idSession = await autoridadService.getSession();
+
+            if (idSession.IsSuccess)
+            {
+                var response = await autoridadService.getBalance(idSession.Result);
+
+                if (idSession.IsSuccess == true)
+                {
+
+                    try
+                    {
+                        resultAutoridades(response.Result.Autoridades);
+
+                        StateHasChanged();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No se ha encontrado el idSession");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+
     private async Task<ResponseDTO<BalanceDto>> insertAutoridad()
     {
 
         ResponseDTO<BalanceDto> respuesta = new();
-        respuesta.IsSuccess = false;
 
 
         try
         {
-            
+
             respuesta = await autoridadService.insertAutoridad(modelo);
-            respuesta.IsSuccess = true;
-            isExistAuthority = true;
-            
-            resultAutoridades(respuesta.Result.Autoridades);
+
+
+            if (respuesta.IsSuccess)
+            {
+
+                resultAutoridades(respuesta.Result.Autoridades);
+
+                // Limpiar los campos después de una inserción exitosa
+                cleanInputs();
+
+
+            }
 
         }
         catch (Exception ex)
@@ -200,13 +257,51 @@
             respuesta.Message = ex.Message;
         }
         return respuesta;
-     }
+    }
+
+    private void cleanInputs()
+    {
+        // Restablecer los valores de los campos a su estado inicial o vacío
+        modelo = new AutoridadDto(); 
+    }
 
     private void resultAutoridades(List<AutoridadDto> listAutoridades)
     {
-        this.listAutoridades = listAutoridades;
+        if (listAutoridades.Count > 0)
+        {
+            this.listAutoridades = listAutoridades;
+            isExistAuthority = true;
+        }
+        else
+        {
+            isExistAuthority = false;
+        }
+
     }
-    
+
+    private async Task<ResponseDTO<BalanceDto>> deleteAutoridad(AutoridadDto autoridad)
+    {
+        var respuesta = new ResponseDTO<BalanceDto>();
+        try
+        {
+            respuesta = await autoridadService.deleteAutoridad(autoridad);
+
+            if (respuesta.IsSuccess)
+            {
+               
+                listAutoridades = respuesta.Result.Autoridades;
+
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+
         
 }
     

@@ -36,7 +36,7 @@ namespace Balances.Web.Services.Contracts
         {
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<ResponseDTO<string>>($"Caratula/getSession");
+                var result = await _httpClient.GetFromJsonAsync<ResponseDTO<string>>($"Session/getSession");
 
                 return new ResponseDTO<string>
                 {

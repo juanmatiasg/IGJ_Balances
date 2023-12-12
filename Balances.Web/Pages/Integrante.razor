@@ -1,4 +1,7 @@
 ﻿@page "/Integrante"
+@using Balances.DTO;
+@using Balances.Web.Services.Implementation;
+@inject ISociosService socioService;
 
 @{
 }
@@ -98,7 +101,7 @@
                 </div>
                 <!-- Rest of the form content -->
                 <div class="form-group text-center">
-                    <button type="submit" class="btn btn-primary" onclick="addItem(event)">Agregar</button>
+                    <button type="submit" class="btn btn-primary" onclick="addPersonaHumana">Agregar</button>
                 </div>
             </div>
         </form>
@@ -109,15 +112,242 @@
         <div class="card" style="margin-top: 50px;">
             <div class="card-body">
                 <h5 class="card-title" style="color: #0375bc; font-size: larger;">Integrantes</h5>
-                <!-- ... Rest of the card content ... -->
+                <div class="container mt-5">
+                    <div class="row">
+                        <div class="col-12">
+
+                            <div class="row">
+                                <div class="card">
+
+                                    <!-- Iteración sobre inputs -->
+                                    <div v-for="input in inputs" class="row">
+
+                                        <div class="col-12 col-md-4">
+                                            <input type="text" id="apellido" name="nombrecompleto" 
+                                                   class="form-control" placeholder="Apellido y Nombre"  />
+                                        </div>
+
+                                        <div class="col-12 col-md-2">
+                                            <input type="text" id="nrodocumento" name="nrodocumento" 
+                                                   class="form-control" placeholder="Nro"  />
+                                        </div>
+
+                                        <div class="col-12 col-md-2">
+                                            <input type="text" id="cuit" name="cuit"  class="form-control"
+                                                   placeholder="CUIT"  />
+                                        </div>
+
+                                        <div class="col-12 col-md-2">
+                                            <input type="text" id="cantidad" name="cantidad" 
+                                                   class="form-control" placeholder="cuotas/votos"  />
+                                        </div>
+
+                                        <div class="col-12 col-md-1">
+                                            <span>
+                                                <button class="btn btn-danger btn-sm" style="width: 10px; padding: 0;" @click="deleteItem(input.id)">
+                                                    Eliminar
+                                                </button>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <!-- Fin de la iteración -->
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     
 
-    
-
 </body>
 
 </html>
+
+
+@code {
+    private const string KEY_SESSION = "idSession";
+    private string idSession = "";
+    private bool isExistAuthority = false;
+
+    private  PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
+    private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
+
+    private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
+    private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
+
+
+    private string resultNameAndSurname = "";
+
+
+    private async Task<ResponseDTO<BalanceDto>> addPersonaHumana()
+    {
+        ResponseDTO<BalanceDto> respuesta = new();
+
+        try
+        {
+
+            respuesta = await socioService.insertPersonaHumana(modelPersonaHumana);
+
+
+            if (respuesta.IsSuccess)
+            {
+
+                resultPersonaHumana(respuesta.Result.Socios.PersonasHumanas);
+
+                // Limpiar los campos después de una inserción exitosa
+                cleanInputsHumana();
+
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+
+    private void cleanInputsHumana()
+    {
+        // Restablecer los valores de los campos a su estado inicial o vacío
+        modelPersonaHumana = new PersonaHumanaDto();
+    }
+
+    private void resultPersonaHumana(List<PersonaHumanaDto> listPersonaHumana)
+    {
+        this.listPersonaHumana = listPersonaHumana;
+
+    }
+
+    /*protected override async Task OnInitializedAsync()
+    {
+
+        await Load();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        try
+        {
+            var idSession = await socioService.getSession();
+
+            if (idSession.IsSuccess)
+            {
+                var response = await socioService.getBalance(idSession.Result);
+
+                if (idSession.IsSuccess == true)
+                {
+
+                    try
+                    {
+                        resultAutoridades(response.Result.Autoridades);
+
+                        StateHasChanged();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No se ha encontrado el idSession");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+
+    private async Task<ResponseDTO<BalanceDto>> insertAutoridad()
+    {
+
+        ResponseDTO<BalanceDto> respuesta = new();
+
+
+        try
+        {
+
+            respuesta = await socioService.insertSocio(modelo);
+
+
+            if (respuesta.IsSuccess)
+            {
+
+                resultAutoridades(respuesta.Result.Autoridades);
+
+                // Limpiar los campos después de una inserción exitosa
+                cleanInputs();
+
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+
+    private void cleanInputs()
+    {
+        // Restablecer los valores de los campos a su estado inicial o vacío
+        modelo = new AutoridadDto();
+    }
+
+    private void resultAutoridades(List<AutoridadDto> listAutoridades)
+    {
+        if (listAutoridades.Count > 0)
+        {
+            this.listAutoridades = listAutoridades;
+            isExistAuthority = true;
+        }
+        else
+        {
+            isExistAuthority = false;
+        }
+
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> deleteAutoridad(AutoridadDto autoridad)
+    {
+        var respuesta = new ResponseDTO<BalanceDto>();
+        try
+        {
+            respuesta = await autoridadService.deleteAutoridad(autoridad);
+
+            if (respuesta.IsSuccess)
+            {
+
+                listAutoridades = respuesta.Result.Autoridades;
+
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }*/
+
+
+}

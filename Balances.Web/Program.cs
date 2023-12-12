@@ -16,7 +16,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https:/
 builder.Services.AddScoped<ICaratulaService, CaratulaService>();
 builder.Services.AddScoped<IContadorService, ContadorService>();
 builder.Services.AddScoped<IAutoridadService, AutoridadService>();
-
+builder.Services.AddScoped<ISociosService, SociosService>();
 
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredLocalStorage();

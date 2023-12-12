@@ -13,8 +13,10 @@ namespace Balances.Utilities
     public  class SessionStorageHelper
     {
         private static readonly Dictionary<string, string> Storage = new Dictionary<string, string>();
+        private static readonly Dictionary<DateTime, string> DateStorage = new Dictionary<DateTime, string>();
 
         private readonly IHttpContextAccessor _context=null;
+
 
         public SessionStorageHelper(IHttpContextAccessor context)
         {
@@ -32,6 +34,8 @@ namespace Balances.Utilities
 
 
             Storage[_context.HttpContext.Session.Id] = serializedValue;
+            DateStorage[DateTime.UtcNow] = serializedValue; 
+
         }
 
         public  string GetBalanceId()

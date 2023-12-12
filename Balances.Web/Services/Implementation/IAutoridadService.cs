@@ -8,7 +8,12 @@ namespace Balances.Web.Services.Implementation
 
         Task<ResponseDTO<BalanceDto>> deleteAutoridad(AutoridadDto autoridad);
 
-     
+        Task<ResponseDTO<BalanceDto>> getBalance(string id);
+
+        Task<ResponseDTO<string>> getSession();
+
+
+
 
     }
 }
