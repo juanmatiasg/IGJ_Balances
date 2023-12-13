@@ -98,13 +98,20 @@ namespace Balances.Web.Services.Contracts
                 {
                     // Leer la respuesta JSON y deserializarla a ResponseDTO<BalanceDto>
                     var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
-                    rsp = result;
-                    rsp.IsSuccess = true;
+                    if (result.IsSuccess)
+                    {
+                        rsp = result;
+
+                    }
+                    else {
+                        rsp.Message = $"SocioService.deletePersonaHumana. {result.Message}";
+                    }
+                  
                 }
                 else
                 {
                     // Manejar el caso en que la solicitud no fue exitosa
-                    rsp.Message = $"Error en la solicitud DELETE. Código de estado: {respuesta.StatusCode}";
+                    rsp.Message = $"Error de comunicación. Código de estado: {respuesta.StatusCode}";
                 }
             }
             catch (Exception ex)
@@ -147,30 +154,44 @@ namespace Balances.Web.Services.Contracts
         }
         public async Task<ResponseDTO<BalanceDto>> deletePersonaJuridica(PersonaJuridicaDto personaJuridica)
         {
-            ResponseDTO<BalanceDto> rsp = new();
+            ResponseDTO<BalanceDto> rsp = new ResponseDTO<BalanceDto>();
             rsp.IsSuccess = false;
+
             try
             {
+                // Crear una solicitud DELETE y adjuntar el objeto autoridad en el cuerpo (si es necesario)
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"Socios/DeletePersonaJuridica");
+                request.Content = new StringContent(JsonConvert.SerializeObject(personaJuridica), Encoding.UTF8, "application/json");
 
-                // Enviar la solicitud POST directamente con PostAsJsonAsync
-                var respuesta = await _httpClient.PostAsJsonAsync("Socios/DeletePersonaJuridica", personaJuridica);
+                // Enviar la solicitud DELETE directamente con SendAsync
+                var respuesta = await _httpClient.SendAsync(request);
 
-                // Leer la respuesta JSON y deserializarla a ResponseDTO<AutoridadesDTO>
-                var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
+                // Verificar si la solicitud fue exitosa (código 2xx)
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta JSON y deserializarla a ResponseDTO<BalanceDto>
+                    var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
+                    if (result.IsSuccess)
+                    {
+                        rsp = result;
 
-
-                rsp = result;
-                rsp.IsSuccess = true;
-
-
+                    }
+                    else
+                    {
+                        rsp.Message = $"SocioService.deletePersonaHumana. {result.Message}";
+                    }
+                }
+                else
+                {
+                    // Manejar el caso en que la solicitud no fue exitosa
+                    rsp.Message = $"Error en la solicitud DELETE. Código de estado: {respuesta.StatusCode}";
+                }
             }
             catch (Exception ex)
             {
                 // Manejar cualquier excepción que pueda ocurrir durante la solicitud
                 rsp.Message = ex.Message;
-
             }
-
             return rsp;
         }
 

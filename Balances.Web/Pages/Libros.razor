@@ -1,4 +1,7 @@
 ﻿@page "/Libros"
+@using Balances.DTO;
+@using Balances.Web.Services.Implementation;
+@inject ILibroService serviceLibro;
 @{
 }
 
@@ -46,37 +49,40 @@
     </ul>
 
     <div class="container mt-2">
-        <div class="card mx-auto" style="width: 800px;">
+        <div class="card mx-auto">
             <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                 Datos de Libros
             </div>
-            @for (int i = 1; i <= 12; i++)
+            @for (int i = 0; i <= 12; i++)
             {
                 <div class="d-flex justify-content-center align-items-center content-input">
                     <div class="col-md-2 mt-2">
                         <p style="text-align: center;">
-                            Campo @i
+                            Campo @libroModel.Tipo
                         </p>
                     </div>
 
                     <div class="col-md-3">
-                        <input name="campo@i" placeholder="Campo @i" class="form-control" />
+                        <input name="campo@i" placeholder="Nombre del Libro @i" class="form-control" @bind="libroModel.Nombre" />
                     </div>
                     <div class="col-md-3">
-                        <input name="campo@i" placeholder="Campo @i" class="form-control" />
+                        <input name="campo@i" placeholder="Nro.Rúbrica/Fecha/Folio @i" class="form-control" @bind=libroModel.NumeroRubrica />
                     </div>
                     <div class="col-md-3">
-                        <input name="campo@i" placeholder="Campo @i" class="form-control" />
+                        <input name="campo@i" placeholder="Denominación @i" class="form-control" @bind=libroModel.Denominacion />
                     </div>
-
+                    <div class="col-md-3">
+                        <input type="date" name="campo@i" placeholder="Fecha Ultima Registración @i" class="form-control" @bind=libroModel.FechaUltimaRegistracion/>
+                    </div>
+                    <div class="col-md-3">
+                        <input name="campo@i" placeholder="Folio @i" class="form-control" @bind=libroModel.Folio />
+                    </div>
                     <div class="col-md-1 m-2">
                         <div class="form-check">
-                            <input type="checkbox" v-model="input.noSabeNoContesta" class="form-check-input" />
+                            <input type="checkbox"  class="form-check-input" @bind ="libroModel.NoSabeNoContesta" />
                             <label class="form-check-label">NC</label>
                         </div>
                     </div>
-
-                    <!-- Agrega más divs y estilos según sea necesario -->
 
                 </div>
             }
@@ -86,29 +92,9 @@
 
     <div class="row mt-4">
         <div class="col d-flex justify-content-center w-100">
-            <button type="submit" class="btn btn-primary" onclick="validarCampos()">Enviar</button>
+            <button type="button" class="btn btn-primary w-100" onclick="">Enviar</button>
         </div>
     </div>
-
-    <!-- Agrega el modal al final de la página, después de los enlaces a los scripts de Bootstrap y otros recursos -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">Error de validación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Por favor, complete todos los campos.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    
 
 </body>
 </html>
@@ -116,5 +102,91 @@
 
 
 @code {
+    private LibroDto libroModel = new LibroDto();
+    
+    /*protected override async Task OnInitializedAsync()
+    {
 
+        await Load();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        try
+        {
+            var idSession = await serviceLibro.getSession();
+
+            if (idSession.IsSuccess)
+            {
+                var response = await serviceLibro.getBalance(idSession.Result);
+
+                if (idSession.IsSuccess == true)
+                {
+
+                    try
+                    {
+                      
+
+                        StateHasChanged();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No se ha encontrado el idSession");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+
+    private async Task<ResponseDTO<BalanceDto>> insertAutoridad()
+    {
+
+        ResponseDTO<BalanceDto> respuesta = new();
+
+
+        try
+        {
+
+            respuesta = await serviceLibro.insertLibro(libroModel);
+
+
+            if (respuesta.IsSuccess)
+            {
+           
+
+
+                // Limpiar los campos después de una inserción exitosa
+                cleanInputs();
+
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+
+    private void cleanInputs()
+    {
+        // Restablecer los valores de los campos a su estado inicial o vacío
+        libroModel = new LibroDto();
+    }*/
 }

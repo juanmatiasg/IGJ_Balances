@@ -1,0 +1,259 @@
+﻿@page "/IntegranteJuridico"
+@using Balances.DTO;
+@using Balances.Web.Services.Implementation;
+@inject ISociosService socioService;
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado Contable</title>
+    <!-- Agrega los enlaces a los estilos de Bootstrap y otros recursos aquí -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!--Navegacion-->
+    <div class="d-flex justify-content-center align-items-center">
+        <h3 class="fs-2 font-weight mt-4 mb-4">
+            <p>Entidad:</p>
+        </h3>
+    </div>
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" disabled href="/Caratula">Caratula</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/EstadoContable">Estado</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Libros">Libros</a>
+        </li>
+        <li class="nav-item" active disabled>
+            <a class="nav-link" href="/Contador">Contador</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Autoridad">Autoridad</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Integrante">Integrante</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Archivos">Archivos</a>
+        </li>
+        <li class="nav-item" disabled>
+            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
+        </li>
+    </ul>
+
+
+    <!---------------------------------------------------------------->
+    <!-- Tabs -->
+    <div class="container mt-4">
+        <ul class="nav nav-tabs" style="width: 1200px;">
+            <li class="nav-item">
+                <a class="nav-link" href="/Integrante">Integrante Humano</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/IntegranteJuridico">Integrante Jurídico</a>
+            </li>
+        </ul>
+        <hr style="width: 1130px;" />
+    </div>
+<!-- Formulario de Datos del Integrante -->
+<div class="container mt-4">
+    <form class="card">
+        <div class="card-body">
+            <h5 class="card-title" style="margin-bottom: 20px; color: #0375bc; font-weight: bold; text-align: center;">
+                Datos del Integrante
+            </h5>
+            <div class="form-group">
+                <label>Denominación</label>
+                <input type="text" class="form-control" @bind="modelPersonaJuridica.Denominacion">
+            </div>
+            <div class="form-group">
+                <label >Nro. de Identificación Fiscal</label>
+                <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.NroFiscal">
+            </div>
+            
+            <div class="form-group">
+                <label>Cuotas</label>
+                <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Cuotas">
+            </div>
+            <div class="form-group">
+                <label >Votos</label>
+                <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Votos">
+            </div>
+            <!-- Rest of the form content -->
+            <div class="form-group text-center mt-4">
+                <button type="button" class="btn btn-primary w-100" @onclick="addPersonaJuridica">Agregar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Lista de Integrantes -->
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+            Integrantes
+        </div>
+        <div class="card-body">
+            <form>
+                @foreach (var personaJuridica in listPersonaJuridica)
+                {
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="inputApellidoNombre">Denominación</label>
+                            <input type="text" class="form-control" id="inputApellidoNombre" placeholder="Apellido y Nombre" value="@personaJuridica.Denominacion" disabled>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputNroDocumento">Nro Fiscal</label>
+                            <input type="text" class="form-control" id="inputNroDocumento" placeholder="Nro Documento" value="@personaJuridica.NroFiscal" disabled>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputCUIT">CUIT</label>
+                            <input type="text" class="form-control" id="inputCUIT" placeholder="CUIT" value="@personaJuridica.NroFiscal" disabled>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputCargo">Cantidad</label>
+                            <input type="text" class="form-control" id="inputCargo" placeholder="Cuotas/Votos" value="@personaJuridica.Cuotas/@personaJuridica.Votos" disabled>
+                        </div>
+
+                        <div class="col">
+                            <button type="button" class="btn btn-danger" @onclick="() => deletePersonaJuridica(personaJuridica)">Eliminar</button>
+                        </div>
+                    </div>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+   
+</body>
+
+</html>
+
+
+@code {
+
+    private string idSession = "";
+    private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
+    private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await Load();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        try
+        {
+            var idSession = await socioService.getSession();
+
+            if (idSession.IsSuccess)
+            {
+                var response = await socioService.getBalance(idSession.Result);
+
+                if (idSession.IsSuccess == true)
+                {
+
+                    try
+                    {
+                        resultPersonaJuridica(response.Result.Socios.PersonasJuridicas);
+
+                        StateHasChanged();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No se ha encontrado el idSession");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> addPersonaJuridica()
+    {
+        ResponseDTO<BalanceDto> respuesta = new();
+
+        try
+        {
+
+            respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
+
+
+            if (respuesta.IsSuccess)
+            {
+
+                resultPersonaJuridica(respuesta.Result.Socios.PersonasJuridicas);
+
+                // Limpiar los campos después de una inserción exitosa
+                cleanInputsJuridica();
+
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+
+    private void cleanInputsJuridica()
+    {
+        // Restablecer los valores de los campos a su estado inicial o vacío
+        modelPersonaJuridica = new PersonaJuridicaDto();
+    }
+
+    private void resultPersonaJuridica(List<PersonaJuridicaDto> listPersonaJuridica)
+    {
+        this.listPersonaJuridica = listPersonaJuridica;
+
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> deletePersonaJuridica(PersonaJuridicaDto personaJuridicaDto)
+    {
+        var respuesta = new ResponseDTO<BalanceDto>();
+        try
+        {
+            respuesta = await socioService.deletePersonaJuridica(personaJuridicaDto);
+
+            if (respuesta.IsSuccess)
+            {
+
+                listPersonaJuridica = respuesta.Result.Socios.PersonasJuridicas;
+
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+}
+

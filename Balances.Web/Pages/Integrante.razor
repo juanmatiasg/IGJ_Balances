@@ -3,9 +3,6 @@
 @using Balances.Web.Services.Implementation;
 @inject ISociosService socioService;
 
-@{
-}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,10 +52,10 @@
     <div class="container mt-4">
         <ul class="nav nav-tabs" style="width: 1200px;">
             <li class="nav-item">
-                <a class="nav-link active" href="#humano" onclick="openTab(event, 'humano')">Integrante Humano</a>
+                <a class="nav-link active" href="#">Integrante Humano</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#juridico" onclick="openTab(event, 'juridico')">Integrante Jurídico</a>
+                <a class="nav-link" href="/IntegranteJuridico">Integrante Jurídico</a>
             </li>
         </ul>
         <hr style="width: 1130px;" />
@@ -66,42 +63,45 @@
 
     <!-- Formulario de Datos del Integrante -->
     <div class="container mt-4">
-        <form class="card" id="formAccionista" onsubmit="handleSubmit(event)" onchange="handleChange(event)">
+        <form class="card">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 20px; color: #0375bc; font-weight: bold; text-align: center;">
                     Datos del Integrante
                 </h5>
                 <div class="form-group">
                     <label for="accionistaNombre">Nombre</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
+                    <input type="text" class="form-control" @bind="modelPersonaHumana.Nombre">
                 </div>
                 <div class="form-group">
                     <label for="accionistaNombre">Apellido</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
+                    <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.Apellido">
                 </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Tipo de Documento</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
-                </div>
+                <label for="selectTipoDocumento">Tipo de Documento</label>
+                <select id="selectTipoDocumento" class="form-control" @bind="modelPersonaHumana.TipoDocumento">
+                    <option selected>Seleccionar...</option>
+                    <option value="DNI">DNI</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                    <option value="Cédula">Cédula</option>
+                </select>
                 <div class="form-group">
                     <label for="accionistaNombre">Numero de Documento</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
+                    <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroDocumento">
                 </div>
                 <div class="form-group">
                     <label for="accionistaNombre">Número de Identificación Fiscal</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
+                    <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroFiscal">
                 </div>
                 <div class="form-group">
                     <label for="accionistaNombre">Cuotas</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
+                    <input type="text" class="form-control" @bind="modelPersonaHumana.Cuotas">
                 </div>
                 <div class="form-group">
                     <label for="accionistaNombre">Votos</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
+                    <input type="text" class="form-control"@bind="modelPersonaHumana.Votos">
                 </div>
                 <!-- Rest of the form content -->
-                <div class="form-group text-center">
-                    <button type="submit" class="btn btn-primary" onclick="addPersonaHumana">Agregar</button>
+                <div class="form-group text-center mt-4">
+                    <button type="button" class="btn btn-primary w-100" @onclick="addPersonaHumana">Agregar</button>
                 </div>
             </div>
         </form>
@@ -109,81 +109,97 @@
 
     <!-- Lista de Integrantes -->
     <div class="container mt-4">
-        <div class="card" style="margin-top: 50px;">
+        <div class="card">
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Integrantes
+            </div>
             <div class="card-body">
-                <h5 class="card-title" style="color: #0375bc; font-size: larger;">Integrantes</h5>
-                <div class="container mt-5">
-                    <div class="row">
-                        <div class="col-12">
-
-                            <div class="row">
-                                <div class="card">
-
-                                    <!-- Iteración sobre inputs -->
-                                    <div v-for="input in inputs" class="row">
-
-                                        <div class="col-12 col-md-4">
-                                            <input type="text" id="apellido" name="nombrecompleto" 
-                                                   class="form-control" placeholder="Apellido y Nombre"  />
-                                        </div>
-
-                                        <div class="col-12 col-md-2">
-                                            <input type="text" id="nrodocumento" name="nrodocumento" 
-                                                   class="form-control" placeholder="Nro"  />
-                                        </div>
-
-                                        <div class="col-12 col-md-2">
-                                            <input type="text" id="cuit" name="cuit"  class="form-control"
-                                                   placeholder="CUIT"  />
-                                        </div>
-
-                                        <div class="col-12 col-md-2">
-                                            <input type="text" id="cantidad" name="cantidad" 
-                                                   class="form-control" placeholder="cuotas/votos"  />
-                                        </div>
-
-                                        <div class="col-12 col-md-1">
-                                            <span>
-                                                <button class="btn btn-danger btn-sm" style="width: 10px; padding: 0;" @click="deleteItem(input.id)">
-                                                    Eliminar
-                                                </button>
-                                            </span>
-                                        </div>
-
-                                    </div>
-                                    <!-- Fin de la iteración -->
-
-                                </div>
+                <form>
+                    @foreach (var personaHumana in listPersonaHumana)
+                    {
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="inputApellidoNombre">Apellido y Nombre</label>
+                                <input type="text" class="form-control" id="inputApellidoNombre" placeholder="Apellido y Nombre" value="@personaHumana.Apellido @personaHumana.Nombre" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="inputNroDocumento">Nro Documento</label>
+                                <input type="text" class="form-control" id="inputNroDocumento" placeholder="Nro Documento" value="@personaHumana.NroDocumento" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="inputCUIT">CUIT</label>
+                                <input type="text" class="form-control" id="inputCUIT" placeholder="CUIT" value="@personaHumana.NroFiscal" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="inputCargo">Cantidad</label>
+                                <input type="text" class="form-control" id="inputCargo" placeholder="Cuotas/Votos" value="@personaHumana.Cuotas/@personaHumana.Votos" disabled>
                             </div>
 
+                            <div class="col">
+                                <button type="button" class="btn btn-danger" @onclick="() => deletePersonaHumana(personaHumana)">Eliminar</button>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    }
+                </form>
             </div>
         </div>
     </div>
-
-    
 
 </body>
 
 </html>
 
-
 @code {
-    private const string KEY_SESSION = "idSession";
-    private string idSession = "";
-    private bool isExistAuthority = false;
 
-    private  PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
+    private string idSession = "";
+    private PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
     private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
 
-    private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
-    private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
 
+    protected override async Task OnInitializedAsync()
+    {
 
-    private string resultNameAndSurname = "";
+        await Load();
 
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        try
+        {
+            var idSession = await socioService.getSession();
+
+            if (idSession.IsSuccess)
+            {
+                var response = await socioService.getBalance(idSession.Result);
+
+                if (idSession.IsSuccess == true)
+                {
+
+                    try
+                    {
+                        resultPersonaHumana(response.Result.Socios.PersonasHumanas);
+
+                        StateHasChanged();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"GetBalance: Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                }
+            }
+          
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
 
     private async Task<ResponseDTO<BalanceDto>> addPersonaHumana()
     {
@@ -226,117 +242,17 @@
 
     }
 
-    /*protected override async Task OnInitializedAsync()
-    {
-
-        await Load();
-
-        await base.OnInitializedAsync();
-    }
-
-    private async Task Load()
-    {
-        try
-        {
-            var idSession = await socioService.getSession();
-
-            if (idSession.IsSuccess)
-            {
-                var response = await socioService.getBalance(idSession.Result);
-
-                if (idSession.IsSuccess == true)
-                {
-
-                    try
-                    {
-                        resultAutoridades(response.Result.Autoridades);
-
-                        StateHasChanged();
-
-                    }
-                    catch (Exception ex)
-                    {
-
-                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine($"No se ha encontrado el idSession");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
-
-        }
-
-    }
-
-
-    private async Task<ResponseDTO<BalanceDto>> insertAutoridad()
-    {
-
-        ResponseDTO<BalanceDto> respuesta = new();
-
-
-        try
-        {
-
-            respuesta = await socioService.insertSocio(modelo);
-
-
-            if (respuesta.IsSuccess)
-            {
-
-                resultAutoridades(respuesta.Result.Autoridades);
-
-                // Limpiar los campos después de una inserción exitosa
-                cleanInputs();
-
-
-            }
-
-        }
-        catch (Exception ex)
-        {
-            respuesta.Message = ex.Message;
-        }
-        return respuesta;
-    }
-
-    private void cleanInputs()
-    {
-        // Restablecer los valores de los campos a su estado inicial o vacío
-        modelo = new AutoridadDto();
-    }
-
-    private void resultAutoridades(List<AutoridadDto> listAutoridades)
-    {
-        if (listAutoridades.Count > 0)
-        {
-            this.listAutoridades = listAutoridades;
-            isExistAuthority = true;
-        }
-        else
-        {
-            isExistAuthority = false;
-        }
-
-    }
-
-    private async Task<ResponseDTO<BalanceDto>> deleteAutoridad(AutoridadDto autoridad)
+    private async Task<ResponseDTO<BalanceDto>> deletePersonaHumana(PersonaHumanaDto personaHumanaDto)
     {
         var respuesta = new ResponseDTO<BalanceDto>();
         try
         {
-            respuesta = await autoridadService.deleteAutoridad(autoridad);
+            respuesta = await socioService.deletePersonaHumana(personaHumanaDto);
 
             if (respuesta.IsSuccess)
             {
 
-                listAutoridades = respuesta.Result.Autoridades;
+                listPersonaHumana = respuesta.Result.Socios.PersonasHumanas;
 
             }
 
@@ -347,7 +263,5 @@
             respuesta.Message = ex.Message;
         }
         return respuesta;
-    }*/
-
-
+    }
 }

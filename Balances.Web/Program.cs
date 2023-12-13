@@ -17,6 +17,7 @@ builder.Services.AddScoped<ICaratulaService, CaratulaService>();
 builder.Services.AddScoped<IContadorService, ContadorService>();
 builder.Services.AddScoped<IAutoridadService, AutoridadService>();
 builder.Services.AddScoped<ISociosService, SociosService>();
+builder.Services.AddScoped<ILibroService, LibroService>();
 
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredLocalStorage();
