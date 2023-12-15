@@ -1,0 +1,84 @@
+﻿@using Balances.DTO;
+
+@if (!libext.Original.NoSabeNoContesta)
+{
+<div class="row">
+    <div class="col-md-1 mt-1">
+            <label>@libext.Tipo</label>
+    </div>
+    <div class="col-md-3 mt-1">
+            <input placeholder="Nombre del Libro" class="form-control" @bind="libext.Nombre" />
+    </div>
+    <div class="col-md-1  mt-1">
+            <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica />
+    </div>
+    <div class="col-md-2  mt-1">
+            <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica />
+    </div>
+    <div class="col-md-1  mt-1">
+            <input placeholder="Folio" class="form-control" @bind=libext.Folio />
+    </div>
+    <div class="col-md-2  mt-1">
+            <input type="date" placeholder="Fecha Ultima Registración" class="form-control" @bind=libext.FechaUltimaRegistracion />
+    </div>
+    <div class="col-md-2  mt-1">
+        <div class="form-check">
+                <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" />
+            <label class="form-check-label">N/C</label>
+        </div>
+    </div>
+ </div>
+
+}
+else
+{
+    <div class="row">
+        <div class="col-md-1 mt-1">
+            <label>@libext.Tipo</label>
+        </div>
+        <div class="col-md-3 mt-1">
+            <input placeholder="Nombre del Libro" class="form-control" @bind="libext.Nombre" disabled />
+        </div>
+        <div class="col-md-1  mt-1">
+            <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica disabled />
+        </div>
+        <div class="col-md-2  mt-1">
+            <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica disabled />
+        </div>
+        <div class="col-md-1  mt-1">
+            <input placeholder="Folio" class="form-control" @bind=libext.Folio disabled />
+        </div>
+        <div class="col-md-2  mt-1">
+            <input type="date" placeholder="Fecha Ultima Registración" class="form-control" @bind=libext.FechaUltimaRegistracion disabled />
+        </div>
+        <div class="col-md-2  mt-1">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" />
+                <label class="form-check-label">N/C</label>
+            </div>
+        </div>
+
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public LibroDto libroP { set { libext.Original = value;
+        }
+        get { return libext.Original; }
+    }
+
+    public LibroDtoExtended libext = new LibroDtoExtended();
+
+
+    protected override Task OnInitializedAsync()
+    {
+        libroP.FechaRubrica = DateTime.Now;
+        libroP.FechaUltimaRegistracion = DateTime.Now;
+        return base.OnInitializedAsync();
+    }
+
+ 
+
+}

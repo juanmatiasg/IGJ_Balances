@@ -6,22 +6,21 @@
         //public List<LibroDto> librosDigitales { get; set; }
         public LibrosDto()
         {
-            _Administracion = new LibroDto();
-            _Asamblea = new LibroDto();
-            _AsistenciaAsamblea = new LibroDto();
-            _Auditor = new LibroDto();
-            _Fiscalizacion = new LibroDto();
-            _Efectivo = new LibroDto();
-            _EstadosContablesConsolidados = new LibroDto();
-            _Auditor = new LibroDto();
-            _SituacionPatrimonial = new LibroDto();
-            _Informacion = new LibroDto();
-            _IVA = new LibroDto();
-            _IVACompras = new LibroDto();
-            _IVAVentas = new LibroDto();
-            _PatrimonioNeto = new LibroDto();
-            _Memoria = new LibroDto();
-            _Resultados = new LibroDto();
+            this.Administracion = new LibroDto();
+            this.Asamblea = new LibroDto();
+            this.AsistenciaAsamblea = new LibroDto();
+            this.Fiscalizacion = new LibroDto();
+            this.Efectivo = new LibroDto();
+            this.EstadosContablesConsolidados = new LibroDto();
+            this.Auditor = new LibroDto();
+            this.SituacionPatrimonial = new LibroDto();
+            this.Informacion = new LibroDto();
+            this.IVA = new LibroDto();
+            this.IVACompras = new LibroDto();
+            this.IVAVentas = new LibroDto();
+            this.PatrimonioNeto = new LibroDto();
+            this.Memoria = new LibroDto();
+            this.Resultados = new LibroDto();
 
         }
         private LibroDto _Memoria;

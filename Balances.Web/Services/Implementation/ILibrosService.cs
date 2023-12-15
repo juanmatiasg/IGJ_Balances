@@ -2,9 +2,9 @@
 
 namespace Balances.Web.Services.Implementation
 {
-    public interface ILibroService
+    public interface ILibrosService
     {
-        Task<ResponseDTO<BalanceDto>> insertLibro(LibroDto libro);
+        Task<ResponseDTO<BalanceDto>> insertLibros(LibrosDto libro);
         
         Task<ResponseDTO<BalanceDto>> getBalance(string id);
 

@@ -1,7 +1,8 @@
 ﻿@page "/Libros"
 @using Balances.DTO;
 @using Balances.Web.Services.Implementation;
-@inject ILibroService serviceLibro;
+@using System.Text;
+@inject ILibrosService serviceLibro;
 @{
 }
 
@@ -21,80 +22,42 @@
             <p>Entidad:</p>
         </h3>
     </div>
-    <ul class="nav nav-tabs d-flex justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link" disabled href="/Caratula">Caratula</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/EstadoContable">Estado</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
-        </li>
-        <li class="nav-item" active disabled>
-            <a class="nav-link" href="/Contador">Contador</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
-        </li>
-    </ul>
+
+   <Navegacion/>
 
     <div class="container mt-2">
         <div class="card mx-auto">
             <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                 Datos de Libros
             </div>
-            @for (int i = 0; i <= 12; i++)
-            {
-                <div class="d-flex justify-content-center align-items-center content-input">
-                    <div class="col-md-2 mt-2">
-                        <p style="text-align: center;">
-                            Campo @libroModel.Tipo
-                        </p>
-                    </div>
-
-                    <div class="col-md-3">
-                        <input name="campo@i" placeholder="Nombre del Libro @i" class="form-control" @bind="libroModel.Nombre" />
-                    </div>
-                    <div class="col-md-3">
-                        <input name="campo@i" placeholder="Nro.Rúbrica/Fecha/Folio @i" class="form-control" @bind=libroModel.NumeroRubrica />
-                    </div>
-                    <div class="col-md-3">
-                        <input name="campo@i" placeholder="Denominación @i" class="form-control" @bind=libroModel.Denominacion />
-                    </div>
-                    <div class="col-md-3">
-                        <input type="date" name="campo@i" placeholder="Fecha Ultima Registración @i" class="form-control" @bind=libroModel.FechaUltimaRegistracion/>
-                    </div>
-                    <div class="col-md-3">
-                        <input name="campo@i" placeholder="Folio @i" class="form-control" @bind=libroModel.Folio />
-                    </div>
-                    <div class="col-md-1 m-2">
-                        <div class="form-check">
-                            <input type="checkbox"  class="form-check-input" @bind ="libroModel.NoSabeNoContesta" />
-                            <label class="form-check-label">NC</label>
-                        </div>
-                    </div>
-
-                </div>
-            }
+            <div class="card-body">
+                <Libro libroP="modelo.Asamblea"></Libro>
+                <Libro libroP="modelo.Administracion"></Libro>
+                <Libro libroP="modelo.AsistenciaAsamblea"></Libro>
+                <Libro libroP="modelo.Auditor"></Libro>
+                <Libro libroP="modelo.Efectivo"></Libro>
+                <Libro libroP="modelo.Fiscalizacion"></Libro>
+                <Libro libroP="modelo.IVA"></Libro>
+                <Libro libroP="modelo.IVACompras"></Libro>
+                <Libro libroP="modelo.IVAVentas"></Libro>
+                <Libro libroP="modelo.Resultados"></Libro>
+                <Libro libroP="modelo.EstadosContablesConsolidados"></Libro>
+                <Libro libroP="modelo.PatrimonioNeto"></Libro>
+                <Libro libroP="modelo.SituacionPatrimonial"></Libro>
+                <Libro libroP="modelo.Memoria"></Libro>
+                <Libro libroP="modelo.Informacion"></Libro>
+            </div>
+           
+            
         </div>
 
-    </div>
-
-    <div class="row mt-4">
-        <div class="col d-flex justify-content-center w-100">
-            <button type="button" class="btn btn-primary w-100" onclick="">Enviar</button>
+        <div class="row mt-4">
+            <div class="col d-flex justify-content-center w-100">
+                <button type="button" class="btn btn-primary w-100" @onclick="() => insertLibros(modelo)">Enviar</button>
+            </div>
         </div>
     </div>
+
 
 </body>
 </html>
@@ -102,17 +65,23 @@
 
 
 @code {
-    private LibroDto libroModel = new LibroDto();
-    
-    /*protected override async Task OnInitializedAsync()
+
+    private LibrosDto modelo = new LibrosDto();
+    private LibroDto libro = new();
+
+
+    protected override Task OnInitializedAsync()
     {
-
-        await Load();
-
-        await base.OnInitializedAsync();
+        //Load();
+        return base.OnInitializedAsync();
     }
 
-    private async Task Load()
+    /*public string GetHtmlLibro(string nombre)
+    {
+        string html =
+
+    }*/
+            /*private async Task Load()
     {
         try
         {
@@ -127,7 +96,9 @@
 
                     try
                     {
-                      
+
+                        obtener(response.Result.Libros.obtenerListaDeLibros);
+                        
 
                         StateHasChanged();
 
@@ -150,10 +121,10 @@
 
         }
 
-    }
+    }*/
 
 
-    private async Task<ResponseDTO<BalanceDto>> insertAutoridad()
+    private async Task<ResponseDTO<BalanceDto>> insertLibros(LibrosDto libros)
     {
 
         ResponseDTO<BalanceDto> respuesta = new();
@@ -162,20 +133,10 @@
         try
         {
 
-            respuesta = await serviceLibro.insertLibro(libroModel);
-
-
-            if (respuesta.IsSuccess)
-            {
+                respuesta = await serviceLibro.insertLibros(libros);
            
 
-
-                // Limpiar los campos después de una inserción exitosa
-                cleanInputs();
-
-
-            }
-
+           
         }
         catch (Exception ex)
         {
@@ -187,6 +148,14 @@
     private void cleanInputs()
     {
         // Restablecer los valores de los campos a su estado inicial o vacío
-        libroModel = new LibroDto();
-    }*/
+        modelo = new LibrosDto();
+    }
+  
+
+   
+
 }
+
+
+    
+

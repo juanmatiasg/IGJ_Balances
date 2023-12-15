@@ -4,10 +4,10 @@ using System.Net.Http.Json;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class LibroService : ILibroService
+    public class LibrosService : ILibrosService
     {
         private readonly HttpClient _httpClient;
-        public LibroService(HttpClient httpClient) {
+        public LibrosService(HttpClient httpClient) {
             _httpClient = httpClient;
         }
 
@@ -42,14 +42,14 @@ namespace Balances.Web.Services.Contracts
 
         }
 
-        public async Task<ResponseDTO<BalanceDto>> insertLibro(LibroDto libro)
+        public async Task<ResponseDTO<BalanceDto>> insertLibros(LibrosDto libros)
         {
             ResponseDTO<BalanceDto> rsp = new();
             rsp.IsSuccess = false;
             try
             {
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
-                var respuesta = await _httpClient.PostAsJsonAsync("Libros/InsertLibros", libro);
+                var respuesta = await _httpClient.PostAsJsonAsync("Libros/InsertLibros", libros);
 
                 // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
                 var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
