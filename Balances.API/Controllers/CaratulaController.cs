@@ -27,13 +27,7 @@ namespace Balances.API.Controllers
             return Ok(rsp);
         }
 
-        [HttpGet("getSession")]
-        public IActionResult getSession()
-
-        {
-            var rsp = _caratulaBusiness.getSession();
-            return Ok(rsp);
-        }
+      
 
 
     }

@@ -18,34 +18,35 @@
             <p>Entidad:</p>
         </h3>
     </div>
-    <ul class="nav nav-tabs d-flex justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link" disabled aria-current="page" href="/Caratula">Caratula</a>
-        </li>
-        <li class="nav-item" enabled id="estado">
-            <a class="nav-link" active aria-current="page" href="/EstadoContable">Estado</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Contador">Contador</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
-        </li>
-    </ul>
+    <Navegacion></Navegacion>
 
+   
 
+    "cajaYBancos": 0,
+    "inversionesActivoCorriente": 0,
+    "bienesDeCambio": 0,
+    "activoCorrienteRestante": 0,
+    "activoCorriente": 0,
+    "bienesDeUso": 0,
+    "propiedadesDeInversion": 0,
+    "inversionesActivoNoCorriente": 0,
+    "activoNoCorrienteRestante": 0,
+    "activoNoCorriente": 0,
+    "totalActivo": 0,
+    "deudorPasivoCorriente": 0,
+    "pasivoCorriente": 0,
+    "deudorPasivoNoCorriente": 0,
+    "pasivoNoCorriente": 0,
+    "totalPasivo": 0,
+    "patrimonioNeto": 0,
+    "capitalSuscripto": 0,
+    "ajusteCapital": 0,
+    "aportesIrrevocables": 0,
+    "primaEmision": 0,
+    "gananciasReservadas": 0,
+    "perdidasAcumuladas": 0,
+    "gananciasPerdidasEjercicio": 0,
+    "reservaLegal": 0,
     <!---------------------------------------------------------------->
     <div class="container mt-4">
         <h2 class="text-center">Estado Contable</h2>
@@ -55,18 +56,20 @@
                 <div class="card-body">
                     <h5 class="card-title">Período</h5>
                     <div class="form-group">
-                        <label for="tipoBalance">Tipo de Balance</label>
-                        <select class="form-control" id="tipoBalance">
-                            <!-- Agrega las opciones aquí -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="fechaInicio">Fecha de Inicio</label>
+                        <label for="tipoDebalance">Tipo de balance</label>
                         <input type="text" class="form-control" id="fechaInicio" placeholder="Fecha de Inicio">
                     </div>
                     <div class="form-group">
+                        <label for="fechaInicio">Fecha de Inicio</label>
+                        <input type="text" class="form-control" id="fechaInicio" placeholder="Fecha Estado">
+                    </div>
+                    <div class="form-group">
                         <label for="fechaEstado">Fecha de Cierre</label>
-                        <input type="text" class="form-control" id="fechaEstado" placeholder="Fecha de Cierre">
+                        <input type="text" class="form-control" id="fechaEstado" placeholder="Fecha Reunion Directorio">
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaEstado">Fecha de Cierre</label>
+                        <input type="text" class="form-control" id="fechaEstado" placeholder="Fecha Asamblea">
                     </div>
                 </div>
             </div>

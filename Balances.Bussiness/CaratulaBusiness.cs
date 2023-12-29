@@ -200,7 +200,7 @@ namespace Balances.Bussiness
             throw new NotImplementedException();
         }
 
-        public ResponseDTO<string> getSession()
+        /*public ResponseDTO<string> getSession()
         {
             var session = _sessionService.GetBalanceId();
             var response = new ResponseDTO<string>();
@@ -227,6 +227,6 @@ namespace Balances.Bussiness
             }
 
            return response; ;
-        }
+        }*/
     }
 }

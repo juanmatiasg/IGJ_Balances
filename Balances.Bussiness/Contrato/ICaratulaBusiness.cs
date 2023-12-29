@@ -16,6 +16,6 @@ namespace Balances.Bussiness.Contrato
 
         IEnumerable<CaratulaDto> List();
 
-        ResponseDTO<string> getSession();
+        //ResponseDTO<string> getSession();
     }
 }

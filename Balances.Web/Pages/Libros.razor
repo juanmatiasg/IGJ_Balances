@@ -16,12 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
-    </div>
+   
 
    <Navegacion/>
 
@@ -46,9 +41,7 @@
                 <Libro libroP="modelo.SituacionPatrimonial"></Libro>
                 <Libro libroP="modelo.Memoria"></Libro>
                 <Libro libroP="modelo.Informacion"></Libro>
-            </div>
-           
-            
+            </div>  
         </div>
 
         <div class="row mt-4">
@@ -67,21 +60,16 @@
 @code {
 
     private LibrosDto modelo = new LibrosDto();
-    private LibroDto libro = new();
-
 
     protected override Task OnInitializedAsync()
     {
-        //Load();
+       Load();
+        
         return base.OnInitializedAsync();
     }
 
-    /*public string GetHtmlLibro(string nombre)
-    {
-        string html =
 
-    }*/
-            /*private async Task Load()
+    private async Task Load()
     {
         try
         {
@@ -91,16 +79,21 @@
             {
                 var response = await serviceLibro.getBalance(idSession.Result);
 
-                if (idSession.IsSuccess == true)
+                if (response.IsSuccess == true)
                 {
 
                     try
                     {
 
-                        obtener(response.Result.Libros.obtenerListaDeLibros);
-                        
-
-                        StateHasChanged();
+                        if (response.Result.Libros != null)
+                        {
+                            getLibros(response.Result.Libros);
+                            StateHasChanged();
+                        }
+                        else
+                        {
+                            Console.WriteLine("La propiedad Libros en la respuesta es nula.");
+                        }
 
                     }
                     catch (Exception ex)
@@ -121,8 +114,13 @@
 
         }
 
-    }*/
+    }
 
+
+    private void getLibros(LibrosDto libros)
+    {
+        this.modelo= libros;
+    }
 
     private async Task<ResponseDTO<BalanceDto>> insertLibros(LibrosDto libros)
     {
@@ -133,7 +131,7 @@
         try
         {
 
-                respuesta = await serviceLibro.insertLibros(libros);
+             respuesta = await serviceLibro.insertLibros(libros);
            
 
            

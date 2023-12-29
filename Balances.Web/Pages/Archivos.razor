@@ -1,4 +1,14 @@
 ﻿@page "/Archivos"
+@using Balances.DTO;
+@using Balances.Model;
+@using Balances.Web.Services.Implementation;
+@using Microsoft.AspNetCore.Http;
+@using BlazorInputFileExtended;
+@using Microsoft.AspNetCore.Http.Internal;
+@using System.Net.Http.Headers;
+@using Microsoft.Extensions.Primitives;
+@inject IArchivosService archivoService
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,8 +19,9 @@
     <title>Archivos</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
 
+
+</head>
 
 <body>
     <!--Navegacion-->
@@ -19,33 +30,8 @@
             <p>Entidad:</p>
         </h3>
     </div>
-    <ul class="nav nav-tabs d-flex justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/Caratula">Caratula</a>
-        </li>
-        <li class="nav-item" disabled id="estado">
-            <a class="nav-link" href="/EstadoContable">Estado</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Contador">Contador</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
-        </li>
-    </ul>
 
+   <Navegacion></Navegacion>
 
     <!---------------------------------------------------------------->
     <div class="container mt-5">
@@ -54,7 +40,7 @@
         </h2>
         <div class="row">
             <!-- Tarjeta: Enviar Archivos -->
-            <div class="col-md-6">
+            <div class="col">
                 <div class="card">
                     <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                         Enviar Archivos
@@ -63,34 +49,68 @@
                         <form>
                             <div class="form-group">
                                 <label for="tipoArchivo">Tipo de Archivo</label>
-                                <select class="form-control" id="tipoArchivo">
-                                    <option value="Declaraciones de Accionista">Declaraciones de Accionista</option>
-                                    <option value="Estatuto">Estatuto</option>
+                                <select class="form-select" @bind="@categoria">
+                                    <option selected>Seleccionar...</option>
+                                    <option value="Estado Contable">Estado Contable</option>
+                                    <option value="Acta reunión organo">Acta reunión organo</option>
+                                    <option value="Acta reunión administradores">Acta reunión administradores</option>
+                                    <option value="Registro Asistencia">Registro Asistencia</option>
+                                    <option value="Informe Fiscalizacion">Informe Fiscalizacion</option>
+                                    <option value="Otro">Otro</option>
                                 </select>
                             </div>
+                            <div class="col">
+                                <InputFile OnChange="@HandleFileUpload" multiple />
+                                <button type = "button"  @onclick="UploadFile">Subir Archivo</button>
+                            </div>
+
                         </form>
-                        <div class="card-text text-center">
-                            <h5>Arrastre los archivos aquí o haga clic para subir</h5>
-                            <p>Los archivos deben tener un máximo de 20MB.</p>
-                        </div>
                     </div>
                 </div>
             </div>
-
+          
             <!-- Tarjeta: Archivo Recibido -->
-            <div class="col-md-6">
+            <div class="col">
                 <div class="card">
                     <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                         Archivo Recibido
                     </div>
-                    <ul class="list-group list-group-flush" id="archivosRecibidos">
-                        <!-- Los archivos recibidos se agregarán aquí -->
-                    </ul>
+                    <div class="card-body">
+                        <table class="table vh-20">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Tipo</th>
+                                    <th scope="col">Hash</th>
+                                    <th scope="col">Fecha de Creación</th>
+                                    <th scope="col">Tamaño</th>
+                                    <th scope="col">Acción</th>
+                                </tr>
+                            </thead>
+                            @foreach (var archivo in listArchivo)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"></th>
+                                        <td>@archivo.NombreArchivo</td>
+                                        <td>@(categoria.Length > 10 ? categoria.Substring(0, 10) + "..." : categoria)</td>
+                                        <td>@(archivo.Hash.Length > 10 ? archivo.Hash.Substring(0, 10) + "..." : archivo.Hash)</td>
+                                        <td>@archivo.FechaCreacion</td>
+                                        <td>@archivo.Tamaño</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger" @onclick="() => deleteArchivo(archivo)">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            }
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 
 </body>
 
@@ -98,5 +118,111 @@
 
 
 @code {
+
+    private string categoria = "";
+    private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
+    private List<Archivo> listArchivo = new List<Archivo>();
+
+
+
+    private  void HandleFileUpload(InputFileChangeEventArgs e)
+    {
+
+
+        selectedFiles = e.GetMultipleFiles();
+
+
+        foreach (var file in selectedFiles)
+        {
+            var archivo = new Archivo
+                {
+                  
+                    Categoria = categoria,
+                    NombreArchivo = file.Name,
+                    Tamaño = file.Size,
+                    ContentType = file.ContentType
+                };
+
+            listArchivo.Add(archivo);
+        }
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> UploadFile()
+    {
+        var response = new ResponseDTO<BalanceDto>();
+
+        if (selectedFiles.Count > 0 && categoria != null)
+        {
+
+           
+            response = await archivoService.uploadArchivo(selectedFiles, categoria);
+
+
+            if (response.IsSuccess)
+            {
+                resultArchivos(response.Result.Archivos);
+                StateHasChanged();
+
+            }
+            else
+            {
+                response.Message = $"Error uploading files";
+            }
+
+
+
+        }
+        else
+        {
+            response.Message = $"El campo categoria no puede estar vacio";
+        }
+
+
+        return response;
+    }
+
+
+
+
+
+    private void resultArchivos(ICollection<Archivo> files)
+    {
+        // Clear the existing elements and add the new ones
+        //listArchivo.Clear();
+        if (files != null)
+        {
+            foreach(var file in files)
+            {
+                listArchivo.Add(file);
+            }
+
+        }
+
+
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> deleteArchivo(Archivo archivo)
+    {
+        var response = new ResponseDTO<BalanceDto>();
+        try
+        {
+            response = await archivoService.deleteArchivo(archivo);
+
+            if (response.IsSuccess)
+            {
+                listArchivo.Remove(archivo);
+
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            response.Message = ex.Message;
+        }
+        return response;
+    }
+  
+
 
 }

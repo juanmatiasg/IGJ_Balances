@@ -15,7 +15,7 @@ namespace Balances.DTO
         [BsonElement("Caratula")]
         public Caratula Caratula { get; set; }
 
-        public ICollection<Archivo> Archivos { get; set; }
+        public List<Archivo> Archivos { get; set; }
         public List<AutoridadDto> Autoridades { get; set; }
         public EstadoContable EstadoContable { get; set; }
         public LibrosDto Libros { get; set; }

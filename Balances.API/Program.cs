@@ -55,7 +55,7 @@ try
 
     builder.Services.AddSingleton<IBalanceService, BalanceService>();
     //builder.Services.AddScoped<IContadorService, ContadorService>();
-    builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
+    builder.Services.AddScoped<Balances.Services.Contract.IEstadoContableService, EstadoContableService>();
     //builder.Services.AddScoped<IRepresentanteLegalService, RepresentanteLegalService>();
     builder.Services.AddScoped<IArchivoService, ArchivoService>();
     builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
