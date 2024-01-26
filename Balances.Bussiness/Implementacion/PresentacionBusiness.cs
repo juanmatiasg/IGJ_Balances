@@ -1,5 +1,6 @@
 ﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
+using Balances.Model;
 using Balances.Services.Contract;
 using Dominio.Helpers;
 using EmailSender;
@@ -65,12 +66,17 @@ namespace Balances.Bussiness.Implementacion
             var plantillapdf = _presentacionService.CrearPlantillaPresentacionPdf(balPresentacion, qr);
 
             //pdf
-
+                
             var binariopdf = _pdfService.HtmlToPDF(plantillapdf, balPresentacion);
 
             //agrego la presentacion al balance
+            if (bal.Presentacion == null)
+            {
+                bal.Presentacion = new Presentacion();
+            }
+
             bal.Presentacion.Fecha = DateTime.Now;
-            bal.Presentacion.PdfBytes = binariopdf;
+            bal.Presentacion.BinarioPdf = binariopdf;
 
             var plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(balPresentacion, qr);
 
@@ -112,13 +118,6 @@ namespace Balances.Bussiness.Implementacion
             // lleno la plantilla con los datos del balance
             var balPresentacionfiltro = _presentacionService.GetBalanceAutoridadySocioFirmante(bal);
             var Plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(balPresentacionfiltro, qr);
-
-
-
-
-
-
-
 
             return Plantillahtml;
         }

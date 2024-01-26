@@ -1,4 +1,12 @@
 ﻿@page "/EstadoContable"
+@using Balances.DTO;
+@using Balances.Model;
+@using Balances.Web.Services.Implementation;
+@using System.Globalization;
+@using System.Text.RegularExpressions;
+@using System.Reflection;
+@inject IEstadoContableService estadoContableService;
+@inject NavigationManager NavigationManager
 @{
 }
 
@@ -10,232 +18,402 @@
     <title>Estado Contable</title>
     <!-- Agrega los enlaces a los estilos de Bootstrap y otros recursos aquí -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+ 
 </head>
 <body>
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
-    </div>
-    <Navegacion></Navegacion>
 
-   
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="EstadoContable" TramiteIniciado = "true" ></Navegacion>
 
-    "cajaYBancos": 0,
-    "inversionesActivoCorriente": 0,
-    "bienesDeCambio": 0,
-    "activoCorrienteRestante": 0,
-    "activoCorriente": 0,
-    "bienesDeUso": 0,
-    "propiedadesDeInversion": 0,
-    "inversionesActivoNoCorriente": 0,
-    "activoNoCorrienteRestante": 0,
-    "activoNoCorriente": 0,
-    "totalActivo": 0,
-    "deudorPasivoCorriente": 0,
-    "pasivoCorriente": 0,
-    "deudorPasivoNoCorriente": 0,
-    "pasivoNoCorriente": 0,
-    "totalPasivo": 0,
-    "patrimonioNeto": 0,
-    "capitalSuscripto": 0,
-    "ajusteCapital": 0,
-    "aportesIrrevocables": 0,
-    "primaEmision": 0,
-    "gananciasReservadas": 0,
-    "perdidasAcumuladas": 0,
-    "gananciasPerdidasEjercicio": 0,
-    "reservaLegal": 0,
     <!---------------------------------------------------------------->
     <div class="container mt-4">
         <h2 class="text-center">Estado Contable</h2>
-        <form>
-            <!-- Período -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Período</h5>
-                    <div class="form-group">
-                        <label for="tipoDebalance">Tipo de balance</label>
-                        <input type="text" class="form-control" id="fechaInicio" placeholder="Fecha de Inicio">
+         <div class="row">
+            <div class="col">
+           
+                    <!-- Período -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title d-flex justify-content-center">Período</h5>
+                            <div class="form-group">
+
+                            <input type="text" class="form-control" id="fechaInicio" placeholder="Tipo de balance" @bind=estadoContableDto.tipoBalance @onblur="insertEECC">
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaInicio">Fecha de Inicio</label>
+                                <input type="date" class="form-control" id="fechaInicio" placeholder="Fecha de Inicio" @bind=estadoContableDto.fechaInicio @onblur="insertEECC">
+                            </div>
+                   
+                            <div class="form-group">
+                                <label for="fechaEstado">Fecha de Cierre</label>
+                            <input type="date" class="form-control" id="fechaEstado" placeholder="Fecha de Cierre" @bind=estadoContableDto.fechaEstado @onblur="insertEECC">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="fechaInicio">Fecha de Inicio</label>
-                        <input type="text" class="form-control" id="fechaInicio" placeholder="Fecha Estado">
+
+                    <!-- Aprobado por -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-center">Aprobado por</h5>
+                            <div class="form-group">
+                                <label for="fechaReunionDirectorio">Fecha de Acta de Reunión de Autoridades</label>
+                            <input type="date" class="form-control" id="fechaReunionDirectorio" placeholder="Fecha de Acta de Renión de Autoridades" @bind=estadoContableDto.fechaReunionDirectorio @onblur="insertEECC">
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaAsamblea">Fecha de Acta de Reunión de Socios</label>
+                                <input type="date" class="form-control" id="fechaAsamblea" placeholder="Fecha de Acta de Reunión de Socios" @bind=estadoContableDto.fechaAsamblea @onblur="insertEECC">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="fechaEstado">Fecha de Cierre</label>
-                        <input type="text" class="form-control" id="fechaEstado" placeholder="Fecha Reunion Directorio">
-                    </div>
-                    <div class="form-group">
-                        <label for="fechaEstado">Fecha de Cierre</label>
-                        <input type="text" class="form-control" id="fechaEstado" placeholder="Fecha Asamblea">
+
+                    <!-- Rubros del Balance -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-center">Rubros del Balance</h5>
+
+                            <div class="row">
+                            <!--Columna 1-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="activoCorriente">Caja Y Bancos</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">ARS $</span>
+                                            </div>
+                                        <input type="text" class="form-control" id="numero" @bind-value=estadoContableDto.cajaYBancos @onblur="insertEECC" />
+                                        
+                                    </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="activoCorriente">Inversiones</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">ARS $</span>
+                                            </div>
+                                            <input type="text" class="form-control" @bind="estadoContableDto.inversionesActivoCorriente" placeholder="$00.000" @onblur="insertEECC" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inversionesActivoCorriente">Bienes de Cambios</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">ARS $</span>
+                                            </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeCambio"  placeholder="0.000,00" @onblur="insertEECC" />
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="inversionesActivoCorriente">Activo Corriente Restante</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">ARS $</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorrienteRestante"  placeholder="0.000,00" @onblur="insertEECC" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inversionesActivoCorriente">Total Activo Corriente</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">ARS $</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorriente"  placeholder="0.000,00" @onblur="insertEECC" disabled/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inversionesActivoCorriente">Bienes de Uso</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">ARS $</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeUso"  placeholder="0.000,00" @onblur="insertEECC"  />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inversionesActivoCorriente">Propiedades de Inversión</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">ARS $</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.propiedadesDeInversion"  placeholder="0.000,00" @onblur="insertEECC"  />
+                                        </div>
+                                    </div>
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Inversiones</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.inversionesActivoNoCorriente" placeholder="0.000,00" @onblur="insertEECC"  />
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Activo No Corriente Restante</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorrienteRestante" placeholder="0.000,00" @onblur="insertEECC"  />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Total Activo No Corriente</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorriente" placeholder="0.000,00" @onblur="insertEECC" disabled />
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Total Activo</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalActivo"  placeholder="0.000,00" @onblur="insertEECC" disabled />
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Deudas del Pasivo Corriente</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoCorriente"  placeholder="0.000,00" @onblur="insertEECC" />
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Deudas del Pasivo No Corriente</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoNoCorriente"  placeholder="0.000,00" @onblur="insertEECC" />
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Total Pasivo</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalPasivo"placeholder="0.000,00" @onblur="insertEECC" disabled />
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Patrimonio Neto</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.patrimonioNeto"  placeholder="0.000,00" @onblur="insertEECC" disabled />
+                                    </div>
+                                </div>
+
+                                @if (statusPatrimonioNeto)
+                                {
+                                    <div class="alert alert-danger" role="alert">
+                                        No coinciden el Patrimonio Neto de Activo y Pasivo con 
+                                        el Detalle del Patrimonio Neto
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Aprobado por -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Aprobado por</h5>
-                    <div class="form-group">
-                        <label for="fechaReunionDirectorio">Fecha de Acta de Renión de Autoridades</label>
-                        <input type="text" class="form-control" id="fechaReunionDirectorio" placeholder="Fecha de Acta de Renión de Autoridades">
-                    </div>
-                    <div class="form-group">
-                        <label for="fechaAsamblea">Fecha de Acta de Reunión de Socios</label>
-                        <input type="text" class="form-control" id="fechaAsamblea" placeholder="Fecha de Acta de Reunión de Socios">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Rubros del Balance -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Rubros del Balance</h5>
-                    <!-- Repite esta estructura para otros campos -->
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="bienesDeCambio">Bienes de Cambio</label>
-                        <input type="text" class="form-control" id="bienesDeCambio" placeholder="Bienes de Cambio">
-                    </div>
-                    <div class="form-group">
-                        <label for="activoCorriente">Activo Corriente</label>
-                        <input type="text" class="form-control" id="activoCorriente" placeholder="Activo Corrientee">
-                    </div>
-                    <div class="form-group">
-                        <label for="bienesDeUso">Bienes de Uso</label>
-                        <input type="text" class="form-control" id="bienesDeUso" placeholder="Bienes de Uso">
-                    </div>
-                    <div class="form-group">
-                        <label for="propiedadesDeInversion">Inversiones Activo No Corriente</label>
-                        <input type="text" class="form-control" id="propiedadesDeInversion" placeholder="Inversiones Activo No Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="activoNoCorrienteRestante">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="activoNoCorrienteRestante" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                    <div class="form-group">
-                        <label for="inversionesActivoCorriente">Inversiones Activo Corriente</label>
-                        <input type="text" class="form-control" id="inversionesActivoCorriente" placeholder="Inversiones Activo Corriente">
-                    </div>
-                </div>
-            </div>
-
             <!-- Rubros del Patrimonio Neto -->
-            <div class="card mb-4">
+            <div class="col">
+                <div class="card mb-4">
+                    <div class="card-body">
+
+                        <h5 class="card-title d-flex justify-content-center">Rubros del Patrimonio Neto</h5>
+                        <!-- Repite esta estructura para otros campos -->
+
+
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Capital Suscripto</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
+                                </div>
+                                <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.capitalSuscripto"  placeholder="0.000,00" @onblur="insertEECC" />
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="inversionesActivoCorriente">Ajuste de Capital</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">ARS $</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.ajusteCapital"  placeholder="0.000,00" @onblur="insertEECC" />
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="inversionesActivoCorriente">Aportes Irrevocables</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">ARS $</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.aportesIrrevocables"  placeholder="0.000,00" @onblur="insertEECC" />
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="inversionesActivoCorriente">Prima Emisión</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">ARS $</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.primaEmision" placeholder="0.000,00" @onblur="insertEECC" />
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="inversionesActivoCorriente">Ganancias Reservadas</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">ARS $</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasReservadas" placeholder="0.000,00" @onblur="insertEECC" />
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="inversionesActivoCorriente">Pérdidas Acumuladas</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">ARS $</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.perdidasAcumuladas"  placeholder="0.000,00" @onblur="insertEECC" />
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="inversionesActivoCorriente">Ganancias / Pérdidas del Ejercicio</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">ARS $</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasPerdidasEjercicio" placeholder="0.000,00" @onblur="insertEECC" />
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="inversionesActivoCorriente">Reserva Legal</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">ARS $</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.reservaLegal" placeholder="0.000,00" @onblur="insertEECC"  />
+                                </div>
+                            </div>     
+                        </div>
+                    </div>
+
+                </div>
+                <!--Otros Rubros PN -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <h5 class="card-title d-flex justify-content-center">
+                                Otros Rubros del Patrimonio Neto
+                            </h5>
+
+                            <label for="capitalSuscripto">Denominación</label>
+                            <input type="text" class="form-control" id="capitalSuscripto"  @bind ="rubroDto.denominacion">
+                        </div>
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Pasivo No Corriente</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
+                                </div>
+                                <input type="text" class="form-control" id="activoCorriente" @bind="rubroDto.importe"  placeholder="$00.000" />
+                            </div>
+                        </div>
+
+
+                        <button type="button" class="btn btn-primary w-100" @onclick ="insertRubro">Agregar</button>
+                    </div>
+                </div>
+
                 <div class="card-body">
-                    <h5 class="card-title">Rubros del Patrimonio Neto</h5>
-                    <!-- Repite esta estructura para otros campos -->
-                    <div class="form-group">
-                        <label for="capitalSuscripto">Capital Suscripto</label>
-                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
-                    </div>
-                    <div class="form-group">
-                        <label for="capitalSuscripto">Capital Suscripto</label>
-                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
-                    </div>
-                    <div class="form-group">
-                        <label for="capitalSuscripto">Capital Suscripto</label>
-                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
-                    </div>
-                    <div class="form-group">
-                        <label for="capitalSuscripto">Capital Suscripto</label>
-                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
-                    </div>
-                    <div class="form-group">
-                        <label for="capitalSuscripto">Capital Suscripto</label>
-                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
-                    </div>
-                    <div class="form-group">
-                        <label for="capitalSuscripto">Capital Suscripto</label>
-                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
-                    </div>
-                    <div class="form-group">
-                        <label for="capitalSuscripto">Capital Suscripto</label>
-                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
-                    </div>
+                    @if (lista.Count > 0)
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Denominación</th>
+                                    <th scope="col">Importe</th>
+                                    <th scope="col">Acción</th>
+
+                                </tr>
+                            </thead>
+                            @foreach (var rubro in lista)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"></th>
+                                        <td>@rubro.Denominacion</td>
+                                        <td>$@rubro.Importe</td>
+
+                                        <td>
+                                            <button type="button" class="btn btn-danger" @onclick="() => deleteRubro(rubro)">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            }
+                        </table>
+                    }
                 </div>
             </div>
 
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Datos Adicionales</h5>
-                    <!-- Repite esta estructura para otros campos -->
-                    <div class="form-group">
-                        <h5 class="card-title">
-                            Otros Rubros del Patrimonio Neto
-                        </h5>
-
-                        <label for="capitalSuscripto">Capital Suscripto</label>
-                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
-                    </div>
-                    <div class="form-group">
-                        <label for="capitalSuscripto">Capital Suscripto</label>
-                        <input type="text" class="form-control" id="capitalSuscripto" placeholder="Capital Suscripto">
-                    </div>
-                    <button type="submit" class="btn btn-primary d-flex justify-content-center">Agregar +</button>
-                </div>
-            </div>
-
-        </form>
-    </div>
-    <!-- Agrega el modal al final de la página, después de los enlaces a los scripts de Bootstrap y otros recursos -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">Error de validación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Por favor, complete todos los campos.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
         </div>
     </div>
+   
+
+
 
 </body>
 </html>
@@ -243,5 +421,384 @@
 
 
 @code {
+    [Parameter] public string? TipoEntidad { get; set; }
+
+
+
+
+    private EstadoContableDto estadoContableDto = new EstadoContableDto();
+    private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
+    private List<RubroPatrimonioNeto> lista = new List<RubroPatrimonioNeto>();
+    private Boolean statusPatrimonioNeto = false;
+
+    private string otraCosa = "";
+
+
+    decimal cantidad;
+    string cantidadStr;
+    private bool firstTimeInput = true;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        setDate();
+
+        await Load();
+
+        await base.OnInitializedAsync();
+    }
+
+
+
+
+
+    private void setDate()
+    {
+        estadoContableDto.fechaInicio = DateTime.UtcNow;
+        estadoContableDto.fechaAsamblea = DateTime.UtcNow;
+        estadoContableDto.fechaEstado = DateTime.UtcNow;
+        estadoContableDto.fechaReunionDirectorio = DateTime.UtcNow;
+
+
+    }
+
+
+    private async Task Load()
+    {
+        try
+        {
+            var idSession = await estadoContableService.getSession();
+
+            if (idSession.IsSuccess)
+            {
+                var response = await estadoContableService.getBalance(idSession.Result);
+
+                if (idSession.IsSuccess == true)
+                {
+
+                    try
+                    {
+                        var rsp = response.Result.EstadoContable;
+                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
+                        estadoContableDto = new EstadoContableDto(rsp);
+
+                        setListOtrosRubros(rsp.otrosRubros);
+
+                        StateHasChanged();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No se ha encontrado el idSession");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+    private EstadoContableDto convertToEstadoContableDTO(Model.EstadoContable estadoContable) => new EstadoContableDto(estadoContable);
+
+
+
+    private async Task<ResponseDTO<BalanceDto>> insertEECC()
+    {
+
+        setFormatMiles();
+        sumatoriaTotalActivoCorriente();
+        sumatoriaTotalActivoNoCorriente();
+        sumatorialTotalActivo();
+        sumatoriaTotalPasivo();
+        resultadoPatrimonioNeto();
+        resultadoPatNetDetailPatNeto();
+
+
+
+        ResponseDTO<BalanceDto> respuesta = new();
+
+        try
+        {
+
+            respuesta = await estadoContableService.insertEEC(estadoContableDto);
+
+            if (respuesta.IsSuccess)
+            {
+                respuesta.Message = "Se inserto el Estado Contable sastifactoriamente";
+
+
+            }
+            else
+            {
+                respuesta.Message = "No se inserto el Estado Contable";
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+
+        return respuesta;
+    }
+
+
+    private void sumatoriaTotalActivoCorriente()
+    {
+        var sumatoriaTotalActivoCorriente = Convert.ToDecimal(estadoContableDto.cajaYBancos) + estadoContableDto.inversionesActivoCorriente + estadoContableDto.bienesDeCambio + estadoContableDto.activoCorrienteRestante;
+        estadoContableDto.activoCorriente = sumatoriaTotalActivoCorriente;
+
+
+    }
+
+    private void sumatoriaTotalActivoNoCorriente()
+    {
+        var sumatoriaTotalActivoNoCorriente = estadoContableDto.bienesDeCambio + estadoContableDto.propiedadesDeInversion + estadoContableDto.inversionesActivoNoCorriente + estadoContableDto.activoNoCorrienteRestante;
+        estadoContableDto.activoNoCorriente = sumatoriaTotalActivoNoCorriente;
+    }
+
+    private void sumatorialTotalActivo()
+    {
+        var sumatorialTotalActivo = estadoContableDto.activoCorriente + estadoContableDto.activoNoCorriente;
+        estadoContableDto.totalActivo = sumatorialTotalActivo;
+    }
+
+    private void sumatoriaTotalPasivo()
+    {
+        var sumatoriaTotalPasivo = estadoContableDto.deudorPasivoCorriente + estadoContableDto.deudorPasivoNoCorriente;
+        estadoContableDto.totalPasivo = sumatoriaTotalPasivo;
+    }
+
+    private decimal resultadoPatrimonioNeto()
+    {
+        if (estadoContableDto.totalActivo != 0 && estadoContableDto.totalPasivo != 0)
+        {
+            return estadoContableDto.patrimonioNeto = estadoContableDto.totalActivo - estadoContableDto.totalPasivo;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    private void resultadoPatNetDetailPatNeto()
+    {
+        if (resultadoPatrimonioNeto() > 0)
+        {
+            if (!(lista.Count > 0))
+            {
+                var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio;
+
+                if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
+                {
+                    statusPatrimonioNeto = false;
+                }
+                else
+                {
+                    statusPatrimonioNeto = true;
+                }
+            }
+            else
+            {
+                foreach (var rubro in lista)
+                {
+                    var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + rubro.Importe;
+
+                    if (resultadoPatrimonioNeto() == sumatoriaDetallePatNeto)
+                    {
+                        statusPatrimonioNeto = false;
+                    }
+                    else
+                    {
+                        statusPatrimonioNeto = true;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+    private void setFormatMiles()
+    {
+        try
+        {
+            // Obtener todas las propiedades públicas de EstadoContableDto
+            PropertyInfo[] propiedades = estadoContableDto.GetType().GetProperties();
+
+            foreach (PropertyInfo propiedad in propiedades)
+            {
+                switch (propiedad.PropertyType.Name)
+                {
+
+                    case "Decimal":
+                        object valorOriginal = propiedad.GetValue(estadoContableDto);
+
+                        // Verificar si el valor es un decimal
+                        if (valorOriginal != null && valorOriginal is decimal)
+                        {
+                            decimal valorDecimal = (decimal)valorOriginal;
+
+                            // Crear una nueva cultura con la configuración específica
+                            CultureInfo culturaAR = new CultureInfo("es-AR");
+                            culturaAR.NumberFormat.CurrencyDecimalSeparator = ",";
+                            culturaAR.NumberFormat.CurrencyGroupSeparator = ".";
+
+                            // Formatear el valor como cadena en la cultura modificada
+                            //string valorFormateado = valorDecimal.ToString("#,##0.00", culturaAR);
+
+                            string valorFormateado = valorDecimal.ToString("N2");
+
+                           //Intentar convertir la cadena formateada a decimal
+                            if (decimal.TryParse(valorFormateado, NumberStyles.Currency, culturaAR, out decimal valorDecimalNuevo))
+                            {
+                                // Asignar el nuevo valor decimal a la propiedad
+                                propiedad.SetValue(estadoContableDto, valorDecimalNuevo);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"No se pudo convertir la cadena a un valor decimal para {propiedad.Name}.");
+                            }
+                        }
+                        break;
+
+                    case "DateTime":
+                        object valorOriginalDate = propiedad.GetValue(estadoContableDto);
+                        // Verificar si el valor es una cadena
+                        if (valorOriginalDate != null && valorOriginalDate is string)
+                        {
+                            string valorCadena = (string)valorOriginalDate;
+
+                            // Intentar convertir la cadena a DateTime
+                            if (DateTime.TryParse(valorCadena, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime valorFecha))
+                            {
+                                // Formatear la fecha como cadena
+                                string fechaFormateada = valorFecha.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                // Asignar el valor formateado a la propiedad
+                                propiedad.SetValue(estadoContableDto, fechaFormateada);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"No se pudo convertir la cadena a DateTime para {propiedad.Name}.");
+                            }
+                        }
+                        break;
+
+                 
+
+                    // Agregar más casos según sea necesario para otros tipos
+
+                    default:
+                        // Lógica para otros tipos de propiedades si es necesario
+                        break;
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Excepción en setFormatMiles: {ex.ToString()}");
+            throw;  // Lanza la excepción original para que puedas ver el mensaje completo y la pila de llamadas.
+        }
+    }
+
+
+
+    private async Task<ResponseDTO<BalanceDto>> insertRubro()
+    {
+
+        var respuesta = new ResponseDTO<BalanceDto>();
+        try
+        {
+
+            respuesta = await estadoContableService.insertRubro(rubroDto);
+
+            if (respuesta.IsSuccess)
+            {
+                var result = respuesta.Result.EstadoContable.otrosRubros;
+
+                setListOtrosRubros(result);
+
+                Console.WriteLine("Se inserto el rubro sastifactoriamente");
+
+            }
+            else
+            {
+                Console.WriteLine("No se inserto el rubro");
+
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+
+    public void setListOtrosRubros(List<RubroPatrimonioNeto>list)
+    {
+        this.lista = list;
+    }
+    
+    private async Task<ResponseDTO<BalanceDto>> deleteRubro(RubroPatrimonioNeto rubro)
+    {
+
+        var respuesta = new ResponseDTO<BalanceDto>();
+
+
+        try
+        {
+
+            var rubroDto = ConvertToPatrimonioNetoDTO(rubro);
+            respuesta = await estadoContableService.deleteRubro(rubroDto);
+
+            if (respuesta.IsSuccess)
+            {
+                respuesta.Message = "Se eliminó el rubro sastifactoriamente";
+                this.lista.Remove(rubro);
+                StateHasChanged();
+            }
+
+            else
+            {
+                respuesta.Message = "No eliminó el rubro sastifactoriamente";
+       
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+
+
+    private RubroPatrimonioNetoDto ConvertToPatrimonioNetoDTO(RubroPatrimonioNeto rubroPatrimonioNeto) => new RubroPatrimonioNetoDto(rubroPatrimonioNeto);
+
+    private string FormatWithThousandSeparators(decimal value)
+    {
+        return string.Format("{0:N}", value);
+    }
+   
 
 }

@@ -1,4 +1,7 @@
 ﻿using Balances.Model;
+using System.Reflection;
+using System.Text;
+using System;
 
 namespace Balances.DTO
 {
@@ -50,6 +53,8 @@ namespace Balances.DTO
         public decimal reservaLegal { get; set; }
 
         public List<RubroPatrimonioNeto> otrosRubros { get; set; }
+
+
 
         public EstadoContable GetEstadoContable()
         {
@@ -156,5 +161,32 @@ namespace Balances.DTO
         public EstadoContableDto()
         {
         }
+
+    
+        public string FormatearBalance(EstadoContableDto estadoContabledto)
+        {
+            Type tipoEstadoContable = estadoContabledto.GetType();
+            PropertyInfo[] propiedades = tipoEstadoContable.GetProperties();
+
+            StringBuilder resultadoFinal = new StringBuilder();
+
+            foreach (PropertyInfo propiedad in propiedades)
+            {
+                if (propiedad.PropertyType == typeof(decimal))
+                {
+                    object valorOriginal = propiedad.GetValue(estadoContabledto);
+                    decimal valorDecimal = Math.Abs((decimal)valorOriginal);
+                    string valorFormateado = valorDecimal.ToString("N2");
+                    resultadoFinal.Append(valorFormateado);
+                }
+                else
+                {
+                    Console.WriteLine("No se puede formatear el formato decimal");
+                }
+            }
+
+            return resultadoFinal.ToString();
+        }
+
     }
 }

@@ -8,9 +8,10 @@ namespace Balances.Utilities
 {
     public class AutoMapperProfile : Profile
     {
+     
         public AutoMapperProfile()
         {
-       
+
             CreateMap<CaratulaDto, BalanceDto>().ReverseMap();
             CreateMap<Balance, BalanceDto>().ReverseMap();
             CreateMap<BalanceDto, Balance>().ReverseMap();

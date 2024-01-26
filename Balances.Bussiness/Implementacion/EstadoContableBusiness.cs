@@ -68,49 +68,17 @@ namespace Balances.Bussiness.Implementacion
 
                 if (resultadoDto.IsSuccess)
                 {
-                    var balanceDto = resultadoDto.Result;
+                   var balanceDto = resultadoDto.Result;
+     
+                    balanceDto.EstadoContable = _mapper.Map<EstadoContable>(modelo);
 
-
-
-                    if (balanceDto.EstadoContable.otrosRubros == null)
-                        balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();
-
-
-                    foreach (var rubro in balanceDto.EstadoContable.otrosRubros.ToList())
-                    {
-
-                        rubro.Codigo = Guid.NewGuid().ToString();
-                        balanceDto.EstadoContable.otrosRubros.Add(rubro);
-                        //balanceDto.EstadoContable.otrosRubros.AddRange(rubro);
-                    }
-
-                    //balanceDto.EstadoContable.otrosRubros.Add(rubro);
 
                     var rsp = _balanceBusiness.Update(balanceDto);
 
                     respuesta = rsp;
                 }
 
-                //if (resultadoDto.IsSuccess)
-                //{
-                //    var balanceDto = resultadoDto.Result;
-
-                //    /*ACTUALIZAR BALANCE CON EL DTO*/
-                //    balanceDto.EstadoContable = _mapper.Map<EstadoContable>(modelo);
-
-                //    if (balanceDto.EstadoContable.otrosRubros == null)
-                //        balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();
-
-                //    foreach (var rubro in balanceDto.EstadoContable.otrosRubros.ToList())
-                //    {
-                //        rubro.Codigo = Guid.NewGuid().ToString();
-                //        balanceDto.EstadoContable.otrosRubros.Add(rubro);
-                //    }
-
-                //    var rsp = _balanceBusiness.Update(balanceDto);
-
-                //    respuesta = rsp;
-                //}
+            
             }
             catch (Exception ex)
             {
@@ -136,50 +104,15 @@ namespace Balances.Bussiness.Implementacion
                 {
                     var balanceDto = resultadoDto.Result;
 
-
-
-                    if (balanceDto.EstadoContable.otrosRubros == null)
-                        balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();
-
-
-                    /*foreach (var rubro in balanceDto.EstadoContable.otrosRubros.ToList())
-                    {
-
-                        rubro.Codigo = Guid.NewGuid().ToString();
-                        balanceDto.EstadoContable.otrosRubros.Add(rubro);
-                        //balanceDto.EstadoContable.otrosRubros.AddRange(rubro);
-                    }*/
                     var rubro = _mapper.Map<RubroPatrimonioNeto>(modelo);
                     rubro.Codigo = Guid.NewGuid().ToString();
                     balanceDto.EstadoContable.otrosRubros.Add(rubro);
-
-                    //balanceDto.EstadoContable.otrosRubros.Add(rubro);
-
                     var rsp = _balanceBusiness.Update(balanceDto);
 
                     respuesta = rsp;
                 }
 
-                //if (resultadoDto.IsSuccess)
-                //{
-                //    var balanceDto = resultadoDto.Result;
-
-                //    /*ACTUALIZAR BALANCE CON EL DTO*/
-                //    balanceDto.EstadoContable = _mapper.Map<EstadoContable>(modelo);
-
-                //    if (balanceDto.EstadoContable.otrosRubros == null)
-                //        balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();
-
-                //    foreach (var rubro in balanceDto.EstadoContable.otrosRubros.ToList())
-                //    {
-                //        rubro.Codigo = Guid.NewGuid().ToString();
-                //        balanceDto.EstadoContable.otrosRubros.Add(rubro);
-                //    }
-
-                //    var rsp = _balanceBusiness.Update(balanceDto);
-
-                //    respuesta = rsp;
-                //}
+          
             }
             catch (Exception ex)
             {
@@ -190,49 +123,6 @@ namespace Balances.Bussiness.Implementacion
 
         }
 
-
-
-
-        private EstadoContable MappToContador(EstadoContableDto modelo)
-        {
-
-            var estadoContable = new EstadoContable()
-            {
-                FechaAsamblea = modelo.fechaAsamblea,
-                CapitalSuscripto = modelo.capitalSuscripto,
-                ActivoCorriente = modelo.activoCorriente,
-                ActivoCorrienteRestante = modelo.activoCorrienteRestante,
-                ActivoNoCorriente = modelo.activoNoCorriente,
-                ActivoNoCorrienteRestante = modelo.activoNoCorrienteRestante,
-                AjusteCapital = modelo.ajusteCapital,
-                AportesIrrevocables = modelo.aportesIrrevocables,
-                InversionesActivoCorriente = modelo.inversionesActivoCorriente,
-                DeudorPasivoCorriente = modelo.deudorPasivoNoCorriente,
-                BienesDeCambio = modelo.bienesDeCambio,
-                BienesDeUso = modelo.bienesDeUso,
-                InversionesActivoNoCorriente = modelo.inversionesActivoNoCorriente,
-                PerdidasAcumuladas = modelo.perdidasAcumuladas,
-                TotalActivo = modelo.totalActivo,
-                CajaYBancos = modelo.cajaYBancos,
-                DeudorPasivoNoCorriente = modelo.deudorPasivoNoCorriente,
-                FechaEstado = modelo.fechaEstado,
-                FechaInicio = modelo.fechaInicio,
-                FechaReunionDirectorio = modelo.fechaReunionDirectorio,
-                GananciasPerdidasEjercicio = modelo.gananciasPerdidasEjercicio,
-                GananciasReservadas = modelo.gananciasReservadas,
-                PasivoCorriente = modelo.pasivoCorriente,
-                PasivoNoCorriente = modelo.pasivoNoCorriente,
-                PatrimonioNeto = modelo.patrimonioNeto,
-                ReservaLegal = modelo.reservaLegal,
-                PropiedadesDeInversion = modelo.propiedadesDeInversion,
-                PrimaEmision = modelo.primaEmision,
-                TipoBalance = modelo.tipoBalance,
-                TotalPasivo = modelo.totalPasivo,
-
-
-            };
-
-            return estadoContable;
-        }
+       
     }
 }

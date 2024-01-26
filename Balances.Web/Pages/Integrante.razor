@@ -1,5 +1,6 @@
 ﻿@page "/Integrante"
 @using Balances.DTO;
+@using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @inject ISociosService socioService;
 
@@ -13,19 +14,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
-    </div>
-    <Navegacion></Navegacion>
 
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true"></Navegacion>
 
     <!---------------------------------------------------------------->
     <!-- Tabs -->
-    <div class="container mt-4">
-        <ul class="nav nav-tabs" style="width: 1200px;">
+    <div class="container-fluid mt-4">
+        <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link active" href="#">Integrante Humano</a>
             </li>
@@ -33,92 +28,111 @@
                 <a class="nav-link" href="/IntegranteJuridico">Integrante Jurídico</a>
             </li>
         </ul>
-        <hr style="width: 1130px;" />
+        
     </div>
 
     <!-- Formulario de Datos del Integrante -->
-    <div class="container mt-4">
-        <form class="card">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 20px; color: #0375bc; font-weight: bold; text-align: center;">
-                    Datos del Integrante
-                </h5>
-                <div class="form-group">
-                    <label for="accionistaNombre">Nombre</label>
-                    <input type="text" class="form-control" @bind="modelPersonaHumana.Nombre">
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Apellido</label>
-                    <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.Apellido">
-                </div>
-                <label for="selectTipoDocumento">Tipo de Documento</label>
-                <select id="selectTipoDocumento" class="form-control" @bind="modelPersonaHumana.TipoDocumento">
-                    <option selected>Seleccionar...</option>
-                    <option value="DNI">DNI</option>
-                    <option value="Pasaporte">Pasaporte</option>
-                    <option value="Cédula">Cédula</option>
-                </select>
-                <div class="form-group">
-                    <label for="accionistaNombre">Numero de Documento</label>
-                    <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroDocumento">
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Número de Identificación Fiscal</label>
-                    <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroFiscal">
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Cuotas</label>
-                    <input type="text" class="form-control" @bind="modelPersonaHumana.Cuotas">
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Votos</label>
-                    <input type="text" class="form-control"@bind="modelPersonaHumana.Votos">
-                </div>
-                <!-- Rest of the form content -->
-                <div class="form-group text-center mt-4">
-                    <button type="button" class="btn btn-primary w-100" @onclick="addPersonaHumana">Agregar</button>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    <!-- Lista de Integrantes -->
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                Integrantes
-            </div>
-            <div class="card-body">
-                <form>
-                    @foreach (var personaHumana in listPersonaHumana)
-                    {
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="inputApellidoNombre">Apellido y Nombre</label>
-                                <input type="text" class="form-control" id="inputApellidoNombre" placeholder="Apellido y Nombre" value="@personaHumana.Apellido @personaHumana.Nombre" disabled>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputNroDocumento">Nro Documento</label>
-                                <input type="text" class="form-control" id="inputNroDocumento" placeholder="Nro Documento" value="@personaHumana.NroDocumento" disabled>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputCUIT">CUIT</label>
-                                <input type="text" class="form-control" id="inputCUIT" placeholder="CUIT" value="@personaHumana.NroFiscal" disabled>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputCargo">Cantidad</label>
-                                <input type="text" class="form-control" id="inputCargo" placeholder="Cuotas/Votos" value="@personaHumana.Cuotas/@personaHumana.Votos" disabled>
-                            </div>
-
-                            <div class="col">
-                                <button type="button" class="btn btn-danger" @onclick="() => deletePersonaHumana(personaHumana)">Eliminar</button>
-                            </div>
+    <div class="container-fluid mt-4 mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <form class="card">
+                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Datos del Integrante
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="accionistaNombre">Nombre</label>
+                            <input type="text" class="form-control" @bind="modelPersonaHumana.Nombre">
+                            <small id="msgError" class="text-danger">@msgErrorNombre</small>
                         </div>
-                    }
+                        <div class="form-group">
+                            <label for="accionistaNombre">Apellido</label>
+                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.Apellido">
+                            <small id="msgError" class="text-danger">@msgErrorApellido</small>
+                        </div>
+                        <label for="selectTipoDocumento">Tipo de Documento</label>
+                        <select id="selectTipoDocumento" class="form-control" @bind="modelPersonaHumana.TipoDocumento">
+                            <option selected>Seleccionar...</option>
+                            <option value="DNI">DNI</option>
+                            <option value="Pasaporte">Pasaporte</option>
+                            <option value="Cédula">Cédula</option>
+                        </select>
+                        <div class="form-group">
+                            <label for="accionistaNombre">Numero de Documento</label>
+                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroDocumento">
+                            <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="accionistaNombre">Número de Identificación Fiscal</label>
+                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroFiscal">
+                            <small id="msgError" class="text-danger">@msgErrorCuit</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="accionistaNombre">Cuotas</label>
+                            <input type="text" class="form-control" @bind="modelPersonaHumana.Cuotas">
+                            <small id="msgError" class="text-danger">@msgErrorCuotas</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="accionistaNombre">Votos</label>
+                            <input type="text" class="form-control" @bind="modelPersonaHumana.Votos">
+                            <small id="msgError" class="text-danger">@msgErrorVotos</small>
+                        </div>
+                        <!-- Rest of the form content -->
+                        <div class="form-group text-center mt-4">
+                            <button type="button" class="btn btn-primary w-100" @onclick="addPersonaHumana">Agregar</button>
+                        </div>
+                    </div>
                 </form>
             </div>
+            <div class="col-md-6">
+                <!-- Lista de Integrantes -->
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                            Integrantes
+                        </div>
+                        <div class="card-body">
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                      
+                                        <th scope="col">Apellido y Nombre</th>
+                                        <th scope="col">Nro Documento</th>
+                                        <th scope="col">CUIT</th>
+                                        <th scope="col">Cantidad</th>
+                                        <th scope="col">Acción</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var personaHumana in listPersonaHumana)
+                                {
+                                    <tbody>
+                                        <tr>
+                                        
+                                            <td>@personaHumana.Apellido @personaHumana.Nombre</td>
+                                            <td>@personaHumana.NroDocumento</td>
+                                            <td>@personaHumana.NroFiscal</td>
+                                            <td>@personaHumana.Cuotas / @personaHumana.Votos </td>
+
+                                            <td>
+                                                <button type="button" class="btn btn-danger" @onclick="() => deletePersonaHumana(personaHumana)">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                }
+                            </table>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        
     </div>
+
+   
 
 </body>
 
@@ -126,9 +140,21 @@
 
 @code {
 
+    [Parameter] public string? TipoEntidad { get; set; }
     private string idSession = "";
     private PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
     private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
+
+    private string msgErrorNombre = "";
+    private string msgErrorApellido = "";
+    private string msgErrorNroDoc = "";
+    private string msgErrorCuit = "";
+    private string msgErrorCuotas = "";
+    private string msgErrorVotos = "";
+
+
+
+
 
 
     protected override async Task OnInitializedAsync()
@@ -154,6 +180,8 @@
 
                     try
                     {
+                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
                         resultPersonaHumana(response.Result.Socios.PersonasHumanas);
 
                         StateHasChanged();
@@ -166,7 +194,7 @@
                     }
                 }
             }
-          
+
         }
         catch (Exception ex)
         {
@@ -178,31 +206,31 @@
 
     private async Task<ResponseDTO<BalanceDto>> addPersonaHumana()
     {
-        ResponseDTO<BalanceDto> respuesta = new();
-
-        try
+        if (checkData())
         {
+            ResponseDTO<BalanceDto> respuesta = new();
 
-            respuesta = await socioService.insertPersonaHumana(modelPersonaHumana);
-
-
-            if (respuesta.IsSuccess)
+            try
             {
+                respuesta = await socioService.insertPersonaHumana(modelPersonaHumana);
 
-                resultPersonaHumana(respuesta.Result.Socios.PersonasHumanas);
-
-                // Limpiar los campos después de una inserción exitosa
-                cleanInputsHumana();
-
+                if (respuesta.IsSuccess)
+                {
+                    resultPersonaHumana(respuesta.Result.Socios.PersonasHumanas);
+                    cleanInputsHumana();
+                }
 
             }
-
+            catch (Exception ex)
+            {
+                respuesta.Message = ex.Message;
+            }
+            return respuesta;
         }
-        catch (Exception ex)
+        else
         {
-            respuesta.Message = ex.Message;
+            return null;    
         }
-        return respuesta;
     }
 
     private void cleanInputsHumana()
@@ -214,7 +242,6 @@
     private void resultPersonaHumana(List<PersonaHumanaDto> listPersonaHumana)
     {
         this.listPersonaHumana = listPersonaHumana;
-
     }
 
     private async Task<ResponseDTO<BalanceDto>> deletePersonaHumana(PersonaHumanaDto personaHumanaDto)
@@ -238,5 +265,145 @@
             respuesta.Message = ex.Message;
         }
         return respuesta;
+    }
+
+    private bool checkData()
+    {
+
+        // Nombre
+        if (!string.IsNullOrEmpty(modelPersonaHumana.Nombre))
+        {
+            if (Validator.IsNumeric(modelPersonaHumana.Nombre))
+            {
+                msgErrorNombre = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorNombre = "";
+            }
+        }
+        else
+        {
+            msgErrorNombre = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+        // Apellido
+        if (!string.IsNullOrEmpty(modelPersonaHumana.Apellido))
+        {
+            if (Validator.IsNumeric(modelPersonaHumana.Apellido))
+            {
+                msgErrorApellido = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorApellido = "";
+            }
+        }
+        else
+        {
+            msgErrorApellido = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+        // NroDocumento
+        if (!string.IsNullOrEmpty(modelPersonaHumana.NroDocumento))
+        {
+            if (!Validator.IsNumeric(modelPersonaHumana.NroDocumento))
+            {
+                msgErrorNroDoc = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorNroDoc = "";
+            }
+        }
+        else
+        {
+            msgErrorNroDoc = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+        // CUIT
+        if (!string.IsNullOrEmpty(modelPersonaHumana.NroFiscal))
+        {
+            if (!Validator.IsNumeric(modelPersonaHumana.NroFiscal))
+            {
+                msgErrorCuit = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorCuit = "";
+            }
+        }
+        else
+        {
+            msgErrorCuit = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+
+        // Cuotas
+        if (!string.IsNullOrEmpty(modelPersonaHumana.Cuotas))
+        {
+            if (!Validator.IsNumeric(modelPersonaHumana.Cuotas))
+            {
+                msgErrorCuotas = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorCuotas = "";
+            }
+        }
+        else
+        {
+            msgErrorCuotas = "El campo no puede estar vacio";
+            return false;
+        }
+
+        // Votos
+        if (!string.IsNullOrEmpty(modelPersonaHumana.Votos))
+        {
+            if (!Validator.IsNumeric(modelPersonaHumana.Votos))
+            {
+                msgErrorVotos = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorVotos = "";
+            }
+        }
+        else
+        {
+            msgErrorVotos = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+
+
+        // Si todos los campos pasan la validación, devuelve true
+
+        msgErrorNombre = "";
+        msgErrorApellido = "";
+        msgErrorNroDoc = "";
+        msgErrorCuit = "";
+        msgErrorCuotas = "";
+        msgErrorVotos = "";
+
+        return true;
     }
 }

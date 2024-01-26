@@ -15,5 +15,7 @@ namespace Balances.Bussiness.Contrato
         ResponseDTO<BalanceDto> GetById(string id);
 
         ResponseDTO<IEnumerable<BalanceDto>> List();
+
+
     }
 }

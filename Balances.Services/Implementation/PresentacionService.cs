@@ -66,6 +66,7 @@ namespace Balances.Services.Implementation
 
             SetTag("Memoria", balance.Libros.Memoria);
             SetTag("PatrimonioNeto", balance.Libros.PatrimonioNeto);
+            SetTag("Asamblea", balance.Libros.Asamblea);
             SetTag("SituacionPatrimonial", balance.Libros.SituacionPatrimonial);
             SetTag("Auditor", balance.Libros.Auditor);
             SetTag("Administracion", balance.Libros.Administracion);
@@ -80,19 +81,19 @@ namespace Balances.Services.Implementation
             SetTag("IVAVentas", balance.Libros.IVAVentas);
 
 
-
-
-
-
-
-
-
             return PlantillaHTML;
 
         }
 
         private void SetTag(string libroNombre, LibroDto libro)
         {
+            // Esto lo agrego Juan Fecha 18/07/2024
+            SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
+            SetTag("{{" + libroNombre + ".NumeroRubrica}}", libro.NumeroRubrica);
+            SetTag("{{" + libroNombre + ".Folio}}", libro.Folio);
+            SetTag("{{" + libroNombre + ".Denominacion}}", libro.Denominacion);
+            SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", libro.FechaUltimaRegistracion.ToString("dd/MM/yyyy"));
+
             if (libro.Denominacion != null)
             {
                 SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
@@ -110,6 +111,8 @@ namespace Balances.Services.Implementation
                 SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", "N/C");
             }
 
+      
+
         }
 
         private void SetTag(string tag, string valor)
@@ -120,7 +123,7 @@ namespace Balances.Services.Implementation
 
         public string CrearPlantillaPresentacionPdf(BalanceDtoPresentacion balance, string qr)
         {
-            this.PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalance.html");
+            this.PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalance2.html");
 
             PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
             PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);

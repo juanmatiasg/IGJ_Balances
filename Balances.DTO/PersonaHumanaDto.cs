@@ -10,7 +10,7 @@
         public string TipoDocumento { get; set; }
         public string NroFiscal { get; set; }
 
-        public int Cuotas { get; set; }
+        public string Cuotas { get; set; }
         public string Votos { get; set; }
 
         public bool EsFirmante { get; set; }

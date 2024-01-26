@@ -1,36 +1,41 @@
 ﻿@using Balances.DTO;
 @using Balances.Web.Pages;
 
+<div>
+    <h3 class="fs-2 font-weight mt-4 mb-4 d-flex justify-content-center">
+        <p>Entidad:&nbsp;</p> @Entidad
+    </h3>
+</div>
 
 <ul class="nav nav-tabs d-flex justify-content-center">
     <li class="nav-item">
-        <a class="nav-link text-primary active" aria-current="page" href="/Caratula">Caratula</a>
+        <a class="nav-link text-primary @(PaginaActiva == "Caratula" ? "active" : "")" href="/Caratula">Caratula</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary" href="/EstadoContable">Estado</a>
+        <a class="nav-link text-primary @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "EstadoContable" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/EstadoContable">Estado Contable</a>
+    </li>
+      <li class="nav-item">
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Libros" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Libros">Libros</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary" href="/Libros">Libros</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Contador" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Contador">Contador</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary" href="/Contador">Contador</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Autoridad" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Autoridad">Autoridad</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary" href="/Autoridad">Autoridad</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Integrante" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Integrante">Integrante</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary" href="/Integrante">Integrante</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Archivos" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Archivos">Archivos</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary" href="/Archivos">Archivos</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-primary" href="/Confirmacion">Confirmación DJ</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Confirmacion" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Confirmacion">Confirmación</a>
     </li>
 </ul>
 
-
 @code {
-  
-
+    [Parameter] public string? Entidad { get; set; }
+    [Parameter] public string? PaginaActiva { get; set; } = "Caratula";
+    [Parameter] public bool TramiteIniciado { get; set; } 
 }

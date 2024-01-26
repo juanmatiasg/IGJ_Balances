@@ -1,5 +1,6 @@
 ﻿@page "/IntegranteJuridico"
 @using Balances.DTO;
+@using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @inject ISociosService socioService;
 
@@ -15,19 +16,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
-    </div>
 
-   <Navegacion></Navegacion>
-
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true"></Navegacion>
 
     <!---------------------------------------------------------------->
     <!-- Tabs -->
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
         <ul class="nav nav-tabs" style="width: 1200px;">
             <li class="nav-item">
                 <a class="nav-link" href="/Integrante">Integrante Humano</a>
@@ -36,93 +30,115 @@
                 <a class="nav-link active" href="/IntegranteJuridico">Integrante Jurídico</a>
             </li>
         </ul>
-        <hr style="width: 1130px;" />
+      
     </div>
-<!-- Formulario de Datos del Integrante -->
-<div class="container mt-4">
-    <form class="card">
-        <div class="card-body">
-            <h5 class="card-title" style="margin-bottom: 20px; color: #0375bc; font-weight: bold; text-align: center;">
-                Datos del Integrante
-            </h5>
-            <div class="form-group">
-                <label>Denominación</label>
-                <input type="text" class="form-control" @bind="modelPersonaJuridica.Denominacion">
-            </div>
-            <div class="form-group">
-                <label >Nro. de Identificación Fiscal</label>
-                <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.NroFiscal">
-            </div>
-            
-            <div class="form-group">
-                <label>Cuotas</label>
-                <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Cuotas">
-            </div>
-            <div class="form-group">
-                <label >Votos</label>
-                <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Votos">
-            </div>
-            <!-- Rest of the form content -->
-            <div class="form-group text-center mt-4">
-                <button type="button" class="btn btn-primary w-100" @onclick="addPersonaJuridica">Agregar</button>
-            </div>
-        </div>
-    </form>
-</div>
 
-<!-- Lista de Integrantes -->
-<div class="container mt-4">
-    <div class="card">
-        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-            Integrantes
-        </div>
-        <div class="card-body">
-            <form>
-                @foreach (var personaJuridica in listPersonaJuridica)
-                {
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="inputApellidoNombre">Denominación</label>
-                            <input type="text" class="form-control" id="inputApellidoNombre" placeholder="Apellido y Nombre" value="@personaJuridica.Denominacion" disabled>
+
+    <!-- Formulario de Datos del Integrante -->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <form class="card">
+                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Datos del Integrante
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Denominación</label>
+                            <input type="text" class="form-control" @bind="modelPersonaJuridica.Denominacion">
+                            <small id="msgError" class="text-danger">@msgErrorDenominacion</small>
+
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputNroDocumento">Nro Fiscal</label>
-                            <input type="text" class="form-control" id="inputNroDocumento" placeholder="Nro Documento" value="@personaJuridica.NroFiscal" disabled>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputCUIT">CUIT</label>
-                            <input type="text" class="form-control" id="inputCUIT" placeholder="CUIT" value="@personaJuridica.NroFiscal" disabled>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputCargo">Cantidad</label>
-                            <input type="text" class="form-control" id="inputCargo" placeholder="Cuotas/Votos" value="@personaJuridica.Cuotas/@personaJuridica.Votos" disabled>
+                        <div class="form-group">
+                            <label>Nro. de Identificación Fiscal</label>
+                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.NroFiscal">
+                            <small id="msgError" class="text-danger">@msgErrorCuit</small>
+
                         </div>
 
-                        <div class="col">
-                            <button type="button" class="btn btn-danger" @onclick="() => deletePersonaJuridica(personaJuridica)">Eliminar</button>
+                        <div class="form-group">
+                            <label>Cuotas</label>
+                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Cuotas">
+                            <small id="msgError" class="text-danger">@msgErrorCuotas</small>
+
+                        </div>
+                        <div class="form-group">
+                            <label>Votos</label>
+                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Votos">
+                            <small id="msgError" class="text-danger">@msgErrorVotos</small>
+
+                        </div>
+                        <!-- Rest of the form content -->
+                        <div class="form-group text-center mt-4">
+                            <button type="button" class="btn btn-primary w-100" @onclick="addPersonaJuridica">Agregar</button>
                         </div>
                     </div>
-                }
-            </form>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <!-- Lista de Integrantes -->
+                <div class="card">
+                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Integrantes
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                   
+                                    <th scope="col">Denominación</th>
+                                    <th scope="col">Nro Documento</th>
+                                    <th scope="col">CUIT</th>
+                                    <th scope="col">Cantidad</th>
+                                    <th scope="col">Acción</th>
+                                </tr>
+                            </thead>
+                            @foreach (var personaJuridica in listPersonaJuridica)
+                            {
+                                <tbody>
+                                    <tr>
+                                       
+                                        <td>@personaJuridica.Denominacion</td>
+                                        <td>@personaJuridica.NroFiscal</td>
+                                        <td>@personaJuridica.NroFiscal</td>
+                                        <td>@personaJuridica.Cuotas / @personaJuridica.Votos </td>
+
+                                        <td>
+                                            <button type="button" class="btn btn-danger" @onclick="() => deletePersonaJuridica(personaJuridica)">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
-   
+
+
+
 </body>
 
 </html>
 
 
 @code {
-
+    [Parameter] public string? TipoEntidad { get; set; }
     private string idSession = "";
     private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
     private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
 
 
+    private string msgErrorDenominacion = "";
+    private string msgErrorCuit = "";
+    private string msgErrorCuotas = "";
+    private string msgErrorVotos = "";
+
     protected override async Task OnInitializedAsync()
     {
-
         await Load();
 
         await base.OnInitializedAsync();
@@ -143,6 +159,8 @@
 
                     try
                     {
+                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
                         resultPersonaJuridica(response.Result.Socios.PersonasJuridicas);
 
                         StateHasChanged();
@@ -170,31 +188,38 @@
 
     private async Task<ResponseDTO<BalanceDto>> addPersonaJuridica()
     {
-        ResponseDTO<BalanceDto> respuesta = new();
-
-        try
+        if (checkData())
         {
+            ResponseDTO<BalanceDto> respuesta = new();
 
-            respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
-
-
-            if (respuesta.IsSuccess)
+            try
             {
 
-                resultPersonaJuridica(respuesta.Result.Socios.PersonasJuridicas);
+                respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
 
-                // Limpiar los campos después de una inserción exitosa
-                cleanInputsJuridica();
 
+                if (respuesta.IsSuccess)
+                {
+
+                    resultPersonaJuridica(respuesta.Result.Socios.PersonasJuridicas);
+
+                    // Limpiar los campos después de una inserción exitosa
+                    cleanInputsJuridica();
+
+
+                }
 
             }
-
+            catch (Exception ex)
+            {
+                respuesta.Message = ex.Message;
+            }
+            return respuesta;
         }
-        catch (Exception ex)
+        else
         {
-            respuesta.Message = ex.Message;
+            return null;    
         }
-        return respuesta;
     }
 
     private void cleanInputsJuridica()
@@ -230,6 +255,104 @@
             respuesta.Message = ex.Message;
         }
         return respuesta;
+    }
+
+    private bool checkData()
+    {
+
+
+        // Apellido
+        if (!string.IsNullOrEmpty(modelPersonaJuridica.Denominacion))
+        {
+            if (Validator.IsNumeric(modelPersonaJuridica.Denominacion))
+            {
+                msgErrorDenominacion = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorDenominacion = "";
+            }
+        }
+        else
+        {
+            msgErrorDenominacion = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+        // Nro id Fiscal
+        if (!string.IsNullOrEmpty(modelPersonaJuridica.NroFiscal))
+        {
+            if (!Validator.IsNumeric(modelPersonaJuridica.NroFiscal))
+            {
+                msgErrorCuit = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorCuit = "";
+            }
+        }
+        else
+        {
+            msgErrorCuit = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+
+        // Cuotas
+        if (!string.IsNullOrEmpty(modelPersonaJuridica.Cuotas))
+        {
+            if (!Validator.IsNumeric(modelPersonaJuridica.Cuotas))
+            {
+                msgErrorCuotas = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorCuotas = "";
+            }
+        }
+        else
+        {
+            msgErrorCuotas = "El campo no puede estar vacio";
+            return false;
+        }
+
+        // Votos
+        if (!string.IsNullOrEmpty(modelPersonaJuridica.Votos))
+        {
+            if (!Validator.IsNumeric(modelPersonaJuridica.Votos))
+            {
+                msgErrorVotos = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorVotos = "";
+            }
+        }
+        else
+        {
+            msgErrorVotos = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+
+
+        // Si todos los campos pasan la validación, devuelve true
+
+        msgErrorDenominacion = "";
+        msgErrorCuit = "";
+        msgErrorCuotas = "";
+        msgErrorVotos = "";
+
+        return true;
     }
 }
 

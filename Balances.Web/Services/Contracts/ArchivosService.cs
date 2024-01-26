@@ -62,18 +62,17 @@ namespace Balances.Web.Services.Contracts
             }
 
         }
-        public async Task<ResponseDTO<BalanceDto>> uploadArchivo (IReadOnlyList<IBrowserFile> files, string categoria)
+        public async Task<ResponseDTO<BalanceDto>> uploadArchivo(IReadOnlyList<IBrowserFile> files, string categoria)
         {
             try
             {
-                 UploadFilesDTO ufilesTO = new UploadFilesDTO();
+                UploadFilesDTO ufilesTO = new UploadFilesDTO();
 
-
-                // Loop through each file in the collection
                 foreach (var file in files)
                 {
-                    // Create a StreamContent from the file content
+                   
                     var binario = await ToByteArrayAsync(file.OpenReadStream());
+
 
                     var f = new FileDTO();
                     f.DatosBinarios = binario;
@@ -81,7 +80,6 @@ namespace Balances.Web.Services.Contracts
                     f.ContentType = file.ContentType;
                     f.Categoria = categoria;
                     f.NombreArchivo = file.Name;
-
                     f.Hash = Convert.ToHexString(SHA256.HashData(f.DatosBinarios));
 
                     ufilesTO.ListFile.Add(f);
@@ -114,6 +112,8 @@ namespace Balances.Web.Services.Contracts
             }
         }
 
+        
+
 
 
         private async Task <byte[]> ToByteArrayAsync(Stream stream)
@@ -127,7 +127,7 @@ namespace Balances.Web.Services.Contracts
 
 
         
-        public async Task<ResponseDTO<BalanceDto>> deleteArchivo(Archivo archivo)
+        public async Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO archivo)
         {
             ResponseDTO<BalanceDto> rsp = new ResponseDTO<BalanceDto>();
             rsp.IsSuccess = false;
@@ -164,10 +164,7 @@ namespace Balances.Web.Services.Contracts
             return rsp;
         }
 
-      
-
-
-
+        
     }
 
 

@@ -11,7 +11,7 @@ namespace Balances.Web.Services.Implementation
 
         Task<ResponseDTO<BalanceDto>> uploadArchivo(IReadOnlyList<IBrowserFile> files, string categoria);
 
-        Task<ResponseDTO<BalanceDto>> deleteArchivo(Archivo archivo);
+        Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO archivo);
 
         Task<ResponseDTO<BalanceDto>> getBalance(string id);
 

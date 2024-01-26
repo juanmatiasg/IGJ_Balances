@@ -48,7 +48,13 @@
         public decimal? ReservaLegal { get; set; }
 
         public List<RubroPatrimonioNeto> otrosRubros { get; set; }
-        //public string Estado { get; set; }
-        //public string OtrosRubrosEstado { get; internal set; }
+
+
+        public EstadoContable()
+        { 
+            this.otrosRubros = new List<RubroPatrimonioNeto> { };
+        }
     }
+
+
 }
