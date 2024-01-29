@@ -54,70 +54,70 @@
 
                                     <label for="tipoDocumento">Tipo de Documento</label>
 
-                                    <select class="form-select" @bind="@tipoDocumentoSeleccionado" @onblur="postContador" >
+                                    <select class="form-select" @bind="@modelo.TipoDocumento" @onblur="postContador" >
                                         @foreach (var tipoDocumento in tiposDocumentos)
-                                        {
-                                            <option value="@tipoDocumento" selected="@IsSelected(tipoDocumento)">@tipoDocumento</option>
-                                        }
-                                    </select>
+                                    {
+                                        <option value="@tipoDocumento" selected="@IsSelected(tipoDocumento)">@tipoDocumento</option>
+                                    }
+                                </select>
 
-                                    <small id="msgErrorTipoDocumento" class="text-danger">@msgErrorTipoDocumento</small>
+                                <small id="msgErrorTipoDocumento" class="text-danger">@msgErrorTipoDocumento</small>
 
-                                </div>
+                            </div>
 
-                                <div class="form-group">
-                                    <label for="contadorNroDocumento">Número de Documento</label>
-                                    <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento" oninput="handleChange(event)" required @bind="modelo.NroDocumento" @onblur=postContador>
-                                    <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
+                            <div class="form-group">
+                                <label for="contadorNroDocumento">Número de Documento</label>
+                                <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento" oninput="handleChange(event)" required @bind="modelo.NroDocumento" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
 
-                                </div>
+                            </div>
 
-                                <div class="form-group">
-                                    <label for="contadorNuFiscal">Nro. de Identificación Fiscal</label>
-                                    <input type="text" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal" oninput="handleChange(event)" required @bind="modelo.NroFiscal" @onblur=postContador>
-                                    <small id="msgError" class="text-danger">@msgErrorNroIdFiscal</small>
-
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="tomo">Tomo</label>
-                                    <input type="text" class="form-control" id="tomo" :value="form.tomo" oninput="handleChange(event)" required @bind="modelo.Tomo" @onblur=postContador>
-                                    <small id="msgError" class="text-danger">@msgErrorTomo</small>
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="folio">Folio</label>
-                                    <input type="text" class="form-control" id="folio" :value="form.folio" oninput="handleChange(event)" required @bind="modelo.Folio" @onblur=postContador>
-                                    <small id="msgError" class="text-danger">@msgErrorFolio</small>
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="feInformeAuditorExt">Fecha del Informe del Auditor Externo</label>
-                                    <input type="date" class="form-control" id="feInformeAuditorExt" :value="form.fechaInformeAuditorExt" oninput="handleChange(event)" required @bind="modelo.FechaInformeAuditorExt" @onblur=postContador>
-                                    <small id="msgErrorFechaInformeAuditorExt" class="text-danger">@msgErrorFechaInformeAuditorExt</small>
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="nroLegalInfoAudExt">Nro. de Legalización del Informe del Auditor Externo</label>
-                                    <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt" oninput="handleChange(event)" required @bind="modelo.NroLegalInfoAudExt" @onblur=postContador>
-                                    <small id="msgError" class="text-danger">@msgErrorNroLegInf</small>
-
-                                </div>
-
+                            <div class="form-group">
+                                <label for="contadorNuFiscal">Nro. de Identificación Fiscal</label>
+                                <input type="text" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal" oninput="handleChange(event)" required @bind="modelo.NroFiscal" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorNroIdFiscal</small>
 
 
                             </div>
+
+                            <div class="form-group">
+                                <label for="tomo">Tomo</label>
+                                <input type="text" class="form-control" id="tomo" :value="form.tomo" oninput="handleChange(event)" required @bind="modelo.Tomo" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorTomo</small>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="folio">Folio</label>
+                                <input type="text" class="form-control" id="folio" :value="form.folio" oninput="handleChange(event)" required @bind="modelo.Folio" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorFolio</small>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="feInformeAuditorExt">Fecha del Informe del Auditor Externo</label>
+                                <input type="date" class="form-control" id="feInformeAuditorExt" :value="form.fechaInformeAuditorExt" oninput="handleChange(event)" required @bind="modelo.FechaInformeAuditorExt" @onblur=postContador>
+                                <small id="msgErrorFechaInformeAuditorExt" class="text-danger">@msgErrorFechaInformeAuditorExt</small>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nroLegalInfoAudExt">Nro. de Legalización del Informe del Auditor Externo</label>
+                                <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt" oninput="handleChange(event)" required @bind="modelo.NroLegalInfoAudExt" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorNroLegInf</small>
+
+                            </div>
+
+
+
                         </div>
                     </div>
-
                 </div>
+
             </div>
+        </div>
     </div>
-  
+
 
 </body>
 
@@ -125,7 +125,6 @@
 
 
 @code {
-
     [Parameter] public string? TipoEntidad { get; set; }
     private string[] tiposDocumentos = { "DNI", "Pasaporte", "Cédula" };
 
@@ -144,25 +143,18 @@
     private string msgErrorTipoDocumento = "";
 
 
-    private string tipoDocumentoSeleccionado; // Variable para almacenar el tipo de documento seleccionado
-
-
-
 
     protected override async Task OnInitializedAsync()
     {
-        modelo.FechaInformeAuditorExt = DateTime.ParseExact(DateTime.Now.ToString("dd/MM/yyyy"), "dd/MM/yyyy", CultureInfo.InvariantCulture); 
-        modelo.TipoDocumento = tipoDocumentoSeleccionado;
 
         await Load();
 
         await base.OnInitializedAsync();
     }
 
-    private bool IsSelected(string tipoDocumento)
-    {
-
-        return modelo.TipoDocumento == tipoDocumento;
+    private bool IsSelected(String tipoDoc){
+           
+        return  tipoDoc == modelo.TipoDocumento;
     }
 
 
@@ -172,6 +164,9 @@
         try
         {
 
+            modelo.FechaInformeAuditorExt = DateTime.ParseExact(DateTime.Now.ToString("dd/MM/yyyy"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+          
+            
             var idSession = await contadorService.getSession();
             rsp = await contadorService.getBalance(idSession.Result);
 
@@ -219,8 +214,7 @@
             respuesta.IsSuccess = false;
             try
             {
-                // Guarda el valor seleccionado actualmente
-                modelo.TipoDocumento = tipoDocumentoSeleccionado;
+             
                 respuesta = await contadorService.postContador(modelo);
                 respuesta.IsSuccess = true;
 
@@ -386,7 +380,7 @@
 
 
         // TipoDocumento
-        if (string.IsNullOrEmpty(tipoDocumentoSeleccionado))
+        if (string.IsNullOrEmpty(modelo.TipoDocumento))
         {
             msgErrorTipoDocumento = "Debes seleccionar un tipo de documento";
             return false;
@@ -418,9 +412,8 @@
         msgErrorNroIdFiscal = "";
         msgErrorNroLegInf = "";
         msgErrorNroDoc = "";
-        msgErrorFechaInformeAuditorExt = "";
         msgErrorTipoDocumento = "";
-
+        msgErrorFechaInformeAuditorExt = "";
         return true;
     }
 

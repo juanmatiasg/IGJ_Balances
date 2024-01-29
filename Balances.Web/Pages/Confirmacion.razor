@@ -573,11 +573,7 @@
                 responseDto.Message = response.Message;
                 responseDto.Result = response.Result;
 
-
-
                 return responseDto;
-
-
             }
             else
             {
@@ -587,12 +583,6 @@
 
                 return responseDto;
             }
-
-
-
-
-
-
 
         }
         catch (Exception ex)
@@ -645,7 +635,7 @@
      
         this.contador.Nombre = contador.Nombre;
         this.contador.Apellido = contador.Apellido;
-        this.contador.TipoDocumento = contador.TipoDocumento;
+        this.contador.TipoDocumento = balance.Contador.TipoDocumento;
         this.contador.NroDocumento = contador.NroDocumento;
         this.contador.NroFiscal = contador.NroFiscal;
         this.contador.Tomo = contador.Tomo;
