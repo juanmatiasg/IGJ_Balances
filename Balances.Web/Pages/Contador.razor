@@ -47,24 +47,19 @@
                                     <label for="ContadorApellido">Apellido</label>
                                     <input type="text" class="form-control" id="ContadorApellido" :value="form.apellido" oninput="handleChange(event)" required @bind="modelo.Apellido" @onblur=postContador>
                                     <small id="msgError" class="text-danger">@msgErrorApellido</small>
-
                                 </div>
 
-                                <div class="form-group">
 
-                                    <label for="tipoDocumento">Tipo de Documento</label>
-
-                                    <select class="form-select" @bind="@modelo.TipoDocumento" @onblur="postContador" >
-                                        @foreach (var tipoDocumento in tiposDocumentos)
-                                    {
-                                        <option value="@tipoDocumento" selected="@IsSelected(tipoDocumento)">@tipoDocumento</option>
-                                    }
+                            <div class="form-group">
+                                <label for="tipoDocumento">Tipo de Documento</label>
+                                <select class="form-select" @bind="modelo.TipoDocumento" @onblur="postContador">
+                                    <option value="DNI">DNI</option>
+                                    <option value="Pasaporte">Pasaporte</option>
+                                    <option value="Cedula">Cédula</option>
                                 </select>
-
                                 <small id="msgErrorTipoDocumento" class="text-danger">@msgErrorTipoDocumento</small>
-
                             </div>
-
+                            
                             <div class="form-group">
                                 <label for="contadorNroDocumento">Número de Documento</label>
                                 <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento" oninput="handleChange(event)" required @bind="modelo.NroDocumento" @onblur=postContador>
@@ -127,6 +122,8 @@
 @code {
     [Parameter] public string? TipoEntidad { get; set; }
     private string[] tiposDocumentos = { "DNI", "Pasaporte", "Cédula" };
+    private string tipoDocSeleccionado = "";
+
 
     private ResponseDTO<BalanceDto> modeloRespuesta = new ResponseDTO<BalanceDto>();
     private ContadorDto modelo = new ContadorDto();
@@ -146,16 +143,19 @@
 
     protected override async Task OnInitializedAsync()
     {
+        modelo.FechaInformeAuditorExt = DateTime.ParseExact(DateTime.Now.ToString("dd/MM/yyyy"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
         await Load();
 
         await base.OnInitializedAsync();
     }
 
-    private bool IsSelected(String tipoDoc){
-           
-        return  tipoDoc == modelo.TipoDocumento;
+
+    private bool IsSelected(string value)
+    {
+        return modelo.TipoDocumento == value;
     }
+
 
 
     private async Task<ResponseDTO<BalanceDto>> Load()
@@ -163,26 +163,27 @@
         ResponseDTO<BalanceDto> rsp = new();
         try
         {
-
-            modelo.FechaInformeAuditorExt = DateTime.ParseExact(DateTime.Now.ToString("dd/MM/yyyy"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-          
-            
             var idSession = await contadorService.getSession();
             rsp = await contadorService.getBalance(idSession.Result);
 
+
+
             if (rsp.IsSuccess)
             {
+                
+
                 TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
                 modelo.id = rsp.Result.Id;
                 modelo.Nombre = rsp.Result.Contador.Nombre;
-                modelo.Apellido = rsp.Result.Contador.Apellido;
-                modelo.TipoDocumento =rsp.Result.Contador.TipoDocumento;
+                modelo.Apellido = rsp.Result.Contador.Apellido;   
+                modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
                 modelo.NroDocumento = rsp.Result.Contador.NroDocumento;
                 modelo.NroFiscal = rsp.Result.Contador.NroFiscal;
                 modelo.Tomo = rsp.Result.Contador.Tomo;
                 modelo.Folio = rsp.Result.Contador.Folio;
                 modelo.FechaInformeAuditorExt = rsp.Result.Contador.FechaInformeAuditorExt;
                 modelo.NroLegalInfoAudExt = rsp.Result.Contador.NroLegalInfoAudExt;
+
 
             }
             else
@@ -203,8 +204,6 @@
     }
 
 
-
-
     private async Task<ResponseDTO<BalanceDto>> postContador()
     {
 
@@ -214,7 +213,7 @@
             respuesta.IsSuccess = false;
             try
             {
-             
+                //modelo.TipoDocumento = tipoDocSeleccionado;
                 respuesta = await contadorService.postContador(modelo);
                 respuesta.IsSuccess = true;
 
@@ -281,6 +280,17 @@
             return false;
         }
 
+        // TipoDocumento
+        if (string.IsNullOrEmpty(modelo.TipoDocumento))
+        {
+            msgErrorTipoDocumento = "Debes seleccionar un tipo de documento";
+            return false;
+        }
+        else
+        {
+            msgErrorTipoDocumento = "";
+        }
+
         // NroDocumento
         if (!string.IsNullOrEmpty(modelo.NroDocumento))
         {
@@ -299,6 +309,10 @@
             msgErrorNroDoc = "El campo no puede estar vacio";
             return false;
         }
+
+       
+       
+
 
         // NroFiscal
         if (!string.IsNullOrEmpty(modelo.NroFiscal))
@@ -369,7 +383,8 @@
             }
             else
             {
-                msgErrorNroLegInf = "";            }
+                msgErrorNroLegInf = "";           
+            }
         }
         else
         {
@@ -379,28 +394,17 @@
 
 
 
-        // TipoDocumento
-        if (string.IsNullOrEmpty(modelo.TipoDocumento))
-        {
-            msgErrorTipoDocumento = "Debes seleccionar un tipo de documento";
-            return false;
-        }
-        else
-        {
-            msgErrorTipoDocumento = "";
-        }
+      
 
         // FechaInformeAuditorExt
-        if (modelo.FechaInformeAuditorExt == DateTime.MinValue)
+        if (modelo.FechaInformeAuditorExt == null || modelo.FechaInformeAuditorExt == DateTime.MinValue)
         {
-            // La fecha no puede ser DateTime.MinValue, que indica una fecha no válida
-            msgErrorFechaInformeAuditorExt = "Debes seleccionar una fecha válida";
+           
+            msgErrorFechaInformeAuditorExt = "Por favor, selecciona una fecha correspondiente";
+
             return false;
         }
-        else
-        {
-            msgErrorFechaInformeAuditorExt = "";
-        }
+       
 
      
 

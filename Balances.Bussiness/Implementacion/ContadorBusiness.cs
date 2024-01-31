@@ -113,7 +113,7 @@ namespace Balances.Bussiness.Implementacion
             var contadordto = new ContadorDto()
             {
                 NroDocumento = modelo.NroDocumento,
-                Apellido = modelo.Nombre,
+                Apellido = modelo.Apellido,
                 FechaInformeAuditorExt = modelo.FechaInformeAuditorExt,
                 Folio = modelo.Folio,
                 Nombre = modelo.Nombre,

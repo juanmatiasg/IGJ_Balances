@@ -296,7 +296,7 @@
                         <td>@libros.Memoria.NumeroRubrica</td>
                         <td>@libros.Memoria.Folio</td>
                         <td>@libros.Memoria.Denominacion</td>
-                    <td>@libros.Memoria.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Memoria.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
 
                     <tr>
@@ -482,14 +482,22 @@
 
     [Parameter] public string? TipoEntidad { get; set; }
 
+    private BalanceDto balance = new BalanceDto();
+
     private AutoridadDto autoridades = new AutoridadDto();
+    private EstadoContableDto estadoContable = new EstadoContableDto();
     private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
-    private LibroDto libro = new LibroDto();
+
     private LibrosDto libros = new LibrosDto();
+    private LibroDto libro = new LibroDto();
+
     private ContadorDto contador = new ContadorDto();
     private List<Archivo> listArchivo = new List<Archivo>();
+    private SociosDto socios = new SociosDto();
+    private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
+    private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
 
-    private BalanceDto balance = new BalanceDto();
+
 
 
     protected override async void OnInitialized()
@@ -498,6 +506,7 @@
         await ValidarCampos();
         await base.OnInitializedAsync();
     }
+
     private async Task Load()
     {
         try
@@ -519,12 +528,61 @@
 
                             TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
 
-                            setBalance(response.Result);
-                            setAutoridades(balance.Autoridades);
-                            setLibros(balance.Libros);
-                            setContador(balance.Contador);
-                            setArchivos(balance.Archivos);
+                            this.balance = response.Result;
 
+                            //EstadoContable
+                            this.estadoContable.tipoBalance = response.Result.EstadoContable.TipoBalance;
+                            this.estadoContable.fechaInicio = response.Result.EstadoContable.FechaInicio;
+                            this.estadoContable.fechaEstado = response.Result.EstadoContable.FechaEstado;
+                            this.estadoContable.fechaAsamblea = response.Result.EstadoContable.FechaAsamblea;
+                            this.estadoContable.fechaReunionDirectorio = response.Result.EstadoContable.FechaReunionDirectorio;
+                            this.estadoContable.cajaYBancos = response.Result.EstadoContable.CajaYBancos;
+                            this.estadoContable.inversionesActivoCorriente = response.Result.EstadoContable.InversionesActivoCorriente;
+                            this.estadoContable.otrosRubros = response.Result.EstadoContable.otrosRubros;
+
+                            //Libros
+                            /*this.libros = response.Result.Libros;
+                            this.libros.Asamblea = new LibroDto();
+
+                            this.libros.Asamblea = response.Result.Libros.Asamblea;
+                            this.libros.Administracion = response.Result.Libros.Administracion;
+                            this.libros.AsistenciaAsamblea = response.Result.Libros.AsistenciaAsamblea;
+                            this.libros.Auditor = response.Result.Libros.Auditor;
+                            this.libros.Efectivo = response.Result.Libros.Efectivo;
+                            this.libros.Fiscalizacion = response.Result.Libros.Fiscalizacion;
+                            this.libros.IVA = response.Result.Libros.IVA;
+                            this.libros.IVACompras = response.Result.Libros.IVACompras;
+                            this.libros.IVAVentas = response.Result.Libros.IVAVentas;
+                            this.libros.Resultados = response.Result.Libros.Resultados;
+                            this.libros.EstadosContablesConsolidados = response.Result.Libros.EstadosContablesConsolidados;
+                            this.libros.PatrimonioNeto = response.Result.Libros.PatrimonioNeto;
+                            this.libros.SituacionPatrimonial = response.Result.Libros.SituacionPatrimonial;
+                            this.libros.Memoria = response.Result.Libros.Memoria;
+                            this.libros.Informacion = response.Result.Libros.Informacion;*/
+
+
+
+                         
+
+
+                            //Integrante
+                            /*this.socios = response.Result.Socios;
+                            this.listPersonaHumana = response.Result.Socios.PersonasHumanas;  
+                            this.listPersonaJuridica = response.Result.Socios.PersonasJuridicas;*/
+
+
+
+
+
+                            //setBalance(response.Result);
+                            //setEstadoContable(balance.EstadoContable);
+                            //setLibros(balance.Libros);
+                            //setContador(balance.Contador);
+                            //setAutoridades(balance.Autoridades);
+                            //setSocios(balance.Socios);
+                            //setIntegranteHumana(balance.Socios.PersonasHumanas);
+                            //setIntegranteJuridica(balance.Socios.PersonasJuridicas);
+                            //setArchivos(balance.Archivos);
 
                             StateHasChanged();
 
@@ -554,6 +612,8 @@
         }
 
     }
+
+
 
     private async Task<ResponseDTO<BalanceDto>> generarPresentacion()
     {
@@ -601,6 +661,21 @@
         }
     }
 
+
+    private void setEstadoContable(Model.EstadoContable estadoContable)
+    {
+
+        this.estadoContable.tipoBalance = estadoContable.TipoBalance;
+        this.estadoContable.fechaInicio = estadoContable.FechaInicio;
+        this.estadoContable.fechaEstado = estadoContable.FechaEstado;
+        this.estadoContable.fechaAsamblea = estadoContable.FechaAsamblea;
+        this.estadoContable.fechaReunionDirectorio = estadoContable.FechaReunionDirectorio;
+        this.estadoContable.cajaYBancos = estadoContable.CajaYBancos;
+        this.estadoContable.inversionesActivoCorriente = estadoContable.CajaYBancos;
+
+    }
+
+
     private void setBalance(BalanceDto balance)
     {     
         this.balance = balance;
@@ -628,14 +703,47 @@
 
     }
 
+    private void setSocios(SociosDto socios)
+    {
+
+        this.socios = socios;
+
+
+    }
+
+
+
+    private void setIntegranteHumana(List<PersonaHumanaDto> listPersonaHumana)
+    {
+
+        this.listPersonaHumana = listPersonaHumana;
+
+    }
+    private void setIntegranteJuridica(List<PersonaJuridicaDto> listPersonaJuridica)
+    {
+
+        this.listPersonaJuridica = listPersonaJuridica;
+
+    }
+
+    private List<PersonaHumanaDto> getIntegranteHumana()
+    {
+
+        return this.listPersonaHumana;
+
+    }
+
+
+
+
 
 
     private void setContador(Model.Contador contador)
     {
-     
+
         this.contador.Nombre = contador.Nombre;
         this.contador.Apellido = contador.Apellido;
-        this.contador.TipoDocumento = balance.Contador.TipoDocumento;
+        this.contador.TipoDocumento = contador.TipoDocumento;
         this.contador.NroDocumento = contador.NroDocumento;
         this.contador.NroFiscal = contador.NroFiscal;
         this.contador.Tomo = contador.Tomo;
@@ -649,50 +757,76 @@
 
     private async Task<bool> ValidarCampos()
     {
-        if (balance != null)
-        {
+            this.libros = new LibrosDto();
+            this.libros.Asamblea = new LibroDto();
+
+
+       
             // Limpiar la lista de mensajes de error antes de cada validación
             mensajesError.Clear();
 
             // Validar propiedades de Entidad
             //ValidarPropiedades(balance.Caratula.Entidad, "Entidad");
 
-            // Validar propiedades de Entidad
-            //  ValidarPropiedades(balance.EstadoContable, "EstadoContable");
 
-            // Validar propiedades de Socios
-            //ValidarPropiedades(balance.Socios, "Socios");
+            //Validar propiedades de EstadoContable
+            ValidarPropiedades(this.estadoContable, "Estado Contable");
 
-            // Validar propiedades de Contador
-            ValidarPropiedades(contador, "Contador");
 
-            // Validar propiedades de Libros
-            //ValidarPropiedades(balance.Libros, "Libros");
+            //Validar propiedades de Socios 
+
+            // ValidarPropiedades(this.listPersonaHumana, "Integrante - Persona Humana");
+
+            // ValidarPropiedades(this.listPersonaJuridica, "Integrante - Persona Jurídica");
+
+            //Validar propiedades de Contador
+            // ValidarPropiedades(contador, "Contador");
+
+            //Libros
+             /*ValidarPropiedades(this.libros, "Libros");
+        
+             ValidarPropiedades(this.libros.Asamblea, "Libros - Asamblea");
+             ValidarPropiedades(this.libros.Administracion, "Libros - Administracion");
+             ValidarPropiedades(this.libros.AsistenciaAsamblea, "Libros - AsistenciaAsamblea");
+             ValidarPropiedades(this.libros.Auditor, "Libros - Auditor");
+             ValidarPropiedades(this.libros.Efectivo, "Libros - Efectivo");
+             ValidarPropiedades(this.libros.Fiscalizacion, "Libros - Fiscalizacion");
+             ValidarPropiedades(this.libros.IVA, "Libros - IVA");
+             ValidarPropiedades(this.libros.IVACompras, "Libros - IVACompras");
+             ValidarPropiedades(this.libros.IVAVentas, "Libros - IVAVentas");
+             ValidarPropiedades(this.libros.Resultados, "Libros - Resultados");
+             ValidarPropiedades(this.libros.EstadosContablesConsolidados, "Libros - EstadosContablesConsolidados");
+             ValidarPropiedades(this.libros.PatrimonioNeto, "Libros - PatrimonioNeto");
+             ValidarPropiedades(this.libros.SituacionPatrimonial, "Libros - SituacionPatrimonial");
+             ValidarPropiedades(this.libros.Memoria, "Libros - Memoria");
+             ValidarPropiedades(this.libros.Informacion, "Libros - Informacion");*/
+
+           
+
 
             // Validar propiedades de Autoridades
-            //ValidarPropiedades(balance.Autoridades, "Autoridades");
+            // ValidarPropiedades(balance.Autoridades, "Autoridades");
 
-            // Validar propiedades de Archivos
-            //ValidarPropiedades(balance.Archivos, "Archivos");
+            // // Validar propiedades de Archivos
+            // ValidarPropiedades(balance.Archivos, "Archivos");
 
             // Verificar si hay mensajes de error y mostrarlos
 
             if (mensajesError.Any())
             {
-
                 StateHasChanged();
                 return false;
             }
-        }
-        else
-        {
-            return false;
-        }
+        
+        
 
         return true;
+        
     }
 
-   
+
+
+
 
     private string GetTitulo(string mensaje)
     {
@@ -701,13 +835,96 @@
         {
             return "Contador";
         }
-        else if (mensaje.Contains("Libros"))
+
+        /*else if (mensaje.Contains("Libros"))
         {
             return "Libros";
+        }*/
+        else if (mensaje.Contains("Libros - Asamblea"))
+        {
+            return "Libros - Asamblea";
+        }
+        else if (mensaje.Contains("Libros - Administracion"))
+        {
+            return "Libros - Administracion";
+        }
+        else if (mensaje.Contains("Libros - AsistenciaAsamblea"))
+        {
+            return "Libros - AsistenciaAsamblea";
+        }
+        else if (mensaje.Contains("Libros - Efectivo"))
+        {
+            return "Libros - Efectivo";
+        }
+
+        else if (mensaje.Contains("Libros - Fiscalizacion"))
+        {
+            return "Libros - Fiscalizacion";
+        }
+
+        else if (mensaje.Contains("Libros - IVA"))
+        {
+            return "Libros - IVA";
+        }
+        else if (mensaje.Contains("Libros - IVAVentas"))
+        {
+            return "Libros - IVAVentas";
+        }
+        else if (mensaje.Contains("Libros - IVACompras"))
+        {
+            return "Libros - IVACompras";
+        }
+        else if (mensaje.Contains("Libros - EstadosContablesConsolidados"))
+        {
+            return "Libros - EstadosContablesConsolidados";
+        }
+        else if (mensaje.Contains("Libros - PatrimonioNeto"))
+        {
+            return "Libros - PatrimonioNeto";
+        }
+        else if (mensaje.Contains("Libros - SituacionPatrimonial"))
+        {
+            return "Libros - SituacionPatrimonial";
+        }
+        else if (mensaje.Contains("Libros - Memoria"))
+        {
+            return "Libros - Memoria";
+        } 
+        else if (mensaje.Contains("Libros - Informacion"))
+        {
+            return "Libros - Informacion";
+        }
+        else if (mensaje.Contains("Libros - Auditor"))
+        {
+            return "Libros - Auditor";
+        }
+
+        else if (mensaje.Contains("Libros - Resultados"))
+        {
+            return "Libros - Resultados";
         }
         else if (mensaje.Contains("Autoridades"))
         {
             return "Autoridades";
+        }
+
+        else if (mensaje.Contains("Integrante - Persona Humana"))
+        {
+            return "Integrante / Persona Humana";
+        }
+
+        else if (mensaje.Contains("Integrante - Persona Jurídica"))
+        {
+            return "Integrante / Persona Juridica";
+        }
+
+        else if (mensaje.Contains("Estado Contable"))
+        {
+            return "Estado Contable";
+        }
+        else if (mensaje.Contains("Archivos"))
+        {
+            return "Archivos";
         }
         // Add more conditions as needed
         else
@@ -732,42 +949,58 @@
 
     private void ValidarPropiedades(object entidad, string nombreEntidad)
     {
-        foreach (var propiedad in entidad.GetType().GetProperties())
-        {
-            var valor = propiedad.GetValue(entidad);
-
-            if (propiedad.Name == "id" || propiedad.Name == "Id" || propiedad.Name == "Balance")
-            {
-                // Omitir la validación para la propiedad "Id"
-                continue;
-            }
-
-
-
-            if (valor == null)
-            {
-                mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
-                
-
-            }
-            else if (valor is string && string.IsNullOrEmpty((string)valor))
-            {
-                mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
-            
-
-            }
-            else if (valor is int && (int)valor == 0)
-            {
-                mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser un valor numérico");
-  
-
-            }
-            else if (valor is DateTime && (DateTime)valor == DateTime.MinValue)
-            {
-                mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser una fecha válida.");
-              
-            }
+        try
+        {  // Bandera para verificar si ya se ha agregado un mensaje para la entidad
+            bool mensajeAgregado = false;
            
+            foreach (var propiedad in entidad.GetType().GetProperties())
+            {
+                var valor = propiedad.GetValue(entidad);
+
+                if (propiedad.Name == "id" || propiedad.Name == "Id" || propiedad.Name == "Balance")
+                {
+                    // Omitir la validación para la propiedad "Id"
+                    continue;
+                }
+
+
+                if (valor == null)
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
+
+
+                }
+                else if (valor is string && string.IsNullOrEmpty((string)valor))
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
+
+
+                }
+                else if (valor is int && (int)valor == 0 && propiedad.Name != "Count" && propiedad.Name != "Capacity")
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser un valor numérico");
+
+
+                }
+                else if (valor is DateTime && (DateTime)valor == DateTime.MinValue)
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser una fecha válida.");
+
+                }
+
+                // Si la propiedad es Count o Capacity y el valor es cero, y no se ha agregado mensaje
+                if ((propiedad.Name == "Count" || propiedad.Name == "Capacity") && valor is int && (int)valor == 0 && !mensajeAgregado)
+                {
+                    mensajesError.Add($"{nombreEntidad} está vacía");
+                    // Establecer la bandera para indicar que se ha agregado el mensaje
+                    mensajeAgregado = true;
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error:ValidarPropiedades" + ex.Message);
         }
     }
     // Método para mostrar el modal de carga

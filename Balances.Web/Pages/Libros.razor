@@ -1,5 +1,6 @@
 ﻿@page "/Libros"
 @using Balances.DTO;
+@using Balances.Model;
 @using Balances.Web.Services.Implementation;
 @using System.Text;
 @inject ILibrosService serviceLibro;
@@ -25,32 +26,37 @@
             <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                 Datos de Libros
             </div>
-          
-                <div class="card-body">
-                    <Libro libroP="modelo.Asamblea"></Libro>
-                    <Libro libroP="modelo.Administracion"></Libro>
-                    <Libro libroP="modelo.AsistenciaAsamblea"></Libro>
-                    <Libro libroP="modelo.Auditor"></Libro>
-                    <Libro libroP="modelo.Efectivo"></Libro>
-                    <Libro libroP="modelo.Fiscalizacion"></Libro>
-                    <Libro libroP="modelo.IVA"></Libro>
-                    <Libro libroP="modelo.IVACompras"></Libro>
-                    <Libro libroP="modelo.IVAVentas"></Libro>
-                    <Libro libroP="modelo.Resultados"></Libro>
-                    <Libro libroP="modelo.EstadosContablesConsolidados"></Libro>
-                    <Libro libroP="modelo.PatrimonioNeto"></Libro>
-                    <Libro libroP="modelo.SituacionPatrimonial"></Libro>
-                    <Libro libroP="modelo.Memoria"></Libro>
-                    <Libro libroP="modelo.Informacion"></Libro>
-                </div>
+
+            <div class="card-body">
+                <Libro libroP="modelo.Asamblea"></Libro>
+                <Libro libroP="modelo.Administracion"></Libro>
+                <Libro libroP="modelo.AsistenciaAsamblea"></Libro>
+                <Libro libroP="modelo.Auditor"></Libro>
+                <Libro libroP="modelo.Efectivo"></Libro>
+                <Libro libroP="modelo.Fiscalizacion"></Libro>
+                <Libro libroP="modelo.IVA"></Libro>
+                <Libro libroP="modelo.IVACompras"></Libro>
+                <Libro libroP="modelo.IVAVentas"></Libro>
+                <Libro libroP="modelo.Resultados"></Libro>
+                <Libro libroP="modelo.EstadosContablesConsolidados"></Libro>
+                <Libro libroP="modelo.PatrimonioNeto"></Libro>
+                <Libro libroP="modelo.SituacionPatrimonial"></Libro>
+                <Libro libroP="modelo.Memoria"></Libro>
+                <Libro libroP="modelo.Informacion"></Libro>
+
+            </div >
             
            
         </div>
 
-       <div class="row mt-4">
+        <div class="row mt-4">
             <div class="col d-flex justify-content-center w-100">
                 <button type="button" class="btn btn-primary w-100" @onclick="() => insertLibros(modelo)">Enviar</button>
             </div>
+         </div>
+
+        <div class="mt-3">
+            <button class="btn btn-primary w-100" @onclick="ToggleSelectAll">Seleccionar/Deseleccionar Todos</button>
         </div>
     </div>
 
@@ -66,6 +72,8 @@
 
     [Parameter] public string? TipoEntidad { get; set; }
 
+    private bool allSelected = false;
+
 
     protected override async void OnInitialized()
     {
@@ -78,7 +86,28 @@
         await insertLibros(libro);
     }
 
+    private void ToggleSelectAll()
+    {
+        // Cambiar el estado de la selección
+        allSelected = !allSelected;
 
+        // Actualizar el estado de selección de cada libro en el modelo
+        modelo.Asamblea.NoSabeNoContesta = allSelected;
+        modelo.Administracion.NoSabeNoContesta = allSelected;
+        modelo.AsistenciaAsamblea.NoSabeNoContesta = allSelected;
+        modelo.Auditor.NoSabeNoContesta = allSelected;
+        modelo.Efectivo.NoSabeNoContesta = allSelected;
+        modelo.Fiscalizacion.NoSabeNoContesta = allSelected;
+        modelo.IVA.NoSabeNoContesta = allSelected;
+        modelo.IVACompras.NoSabeNoContesta = allSelected;
+        modelo.IVAVentas.NoSabeNoContesta = allSelected;
+        modelo.Resultados.NoSabeNoContesta = allSelected;
+        modelo.EstadosContablesConsolidados.NoSabeNoContesta = allSelected;
+        modelo.PatrimonioNeto.NoSabeNoContesta = allSelected;
+        modelo.SituacionPatrimonial.NoSabeNoContesta = allSelected;
+        modelo.Memoria.NoSabeNoContesta = allSelected;
+        modelo.Informacion.NoSabeNoContesta = allSelected;
+    }
     private async Task Load()
     {
         try
@@ -136,14 +165,11 @@
 
         ResponseDTO<BalanceDto> respuesta = new();
 
-
         try
         {
 
-             respuesta = await serviceLibro.insertLibros(libros);
-           
+            respuesta = await serviceLibro.insertLibros(libros);
 
-           
         }
         catch (Exception ex)
         {
@@ -151,6 +177,7 @@
         }
         return respuesta;
     }
+ 
 
     private void cleanInputs()
     {

@@ -18,8 +18,8 @@
         <div class="col-md-2 mt-1">
             <input placeholder="Nombre del Libro" class="form-control" @bind="libext.Nombre" />
             <small id="msgError" class="text-danger">@msgErrorNombre</small>
-
         </div>
+
         <div class="col-md-1  mt-1">
             <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica />
             <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
@@ -101,8 +101,6 @@ else
     {
         await OnBlur.InvokeAsync(libext);
     }
-
-
 
   
     protected override Task OnInitializedAsync()
