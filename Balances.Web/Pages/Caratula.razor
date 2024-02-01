@@ -1,0 +1,476 @@
+﻿@page "/Caratula/{balid?}"
+@using Balances.DTO;
+@using Balances.Utilities;
+@using Balances.Web.Services.Implementation;
+@using Microsoft.JSInterop
+@using Balances.Web.Services
+@using System.Text.RegularExpressions;
+@using Newtonsoft.Json;
+@inject IJSRuntime JS
+@inject ICaratulaService caratulaService
+@inject NavigationManager NavigationManager
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Búsqueda de Entidad</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+        <!-- Bootstrap 5 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
+        <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
+
+        <script src="_content/Blazorise.Bootstrap5/modal.js?v=1.4.1.0" type="module"></script>
+        <script src="_content/Blazorise.Bootstrap5/tooltip.js?v=1.4.1.0" type="module"></script>
+
+
+    </head>
+
+    <body>
+
+        <!--Navegacion-->
+
+
+    <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado"></Navegacion>
+
+        <!--Loading-->
+
+        <Modal @ref="modalRef">
+            <ModalContent>
+                <ModalBody>
+                    <div class="d-flex justify-content-center align-items-center" >
+                        <div class="text-center">
+                            <div class="spinner-grow text-primary" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                            <div class="spinner-grow text-secondary" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                            <div class="spinner-grow text-success" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                            <div class="spinner-grow text-danger" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                            <div class="spinner-grow text-warning" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                            <div class="spinner-grow text-info" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                            <div class="spinner-grow text-light" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                            <div class="spinner-grow text-dark" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                            <div>
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+                </ModalBody>
+            </ModalContent>
+        </Modal>
+     
+
+        <!---------------------------------------------------------------->
+        <!--Entidad-->
+
+        <div class="container mt-2 mb-3">
+            <div class="card mx-auto">
+                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                    Entidad
+                </div>
+
+
+                <div class="card-body">
+                    <div class="row d-flex justify-content-center align-items-end position-relative">
+                    
+                        <div class="col">
+                            <label for="busqueda">Nro.Correlativo/CUIT/CUIL</label>
+                            <input type="text w-50"  @bind="@modelo.Entidad.Correlativo" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled ="@tramiteIniciado" >
+                           
+                        </div>
+
+                        <div class="col mt-4">
+                            <button type="submit" id="btnBuscar" class="btn btn-primary" @onclick="FindEntities" disabled="@entidadEncontrada">Buscar</button>
+                        </div>
+                    </div>
+                    <small id="busquedaError" class="text-danger">@busquedaError</small>
+                    
+                   
+                    <div class="row mt-2">
+                        <div class="col-12 col-md-3">
+                            <p class="control texto">Razón Social:</p>
+                        </div>
+                        <div class="col">
+                        <p id="razonSocial">@modelo.Entidad.RazonSocial</p>
+                        </div>                       
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12 col-md-3">
+                            <p class="control texto">Tipo de Entidad:</p>
+                        </div>
+                        <div class="col">
+                        <p id="tipoEntidad">@modelo.Entidad.TipoEntidad</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!--Datos Personales -->
+
+       <div class="card mx-auto mt-4 ">
+ 
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Datos Personales
+            </div>
+            
+            @if (@entidadEncontrada)
+            {
+                <div class="row ps-3 pt-3">
+                    <div class="form-group col">
+                        <label for="location">Domicilio</label>
+                        <input type="text" @bind=@modelo.Entidad.Domicilio class="form-control" id="domicilio" placeholder="Domicilio" disabled="@tramiteIniciado">
+                        <small id="fechaError" class="text-danger">@domicilioError</small>
+
+                    </div>
+
+                    <div class="col mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@modelo.Entidad.SedeSocialInscripta" disabled="@tramiteIniciado">
+                            <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col">
+                        <label for="domicilio">Fecha de inicio</label>
+                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" @bind=@modelo.FechaInicio disabled="@tramiteIniciado" />
+                        <small id="fechaError" class="text-danger">@fechaError</small>
+
+                    </div>
+                    <div class="col">
+                        <label for="domicilio">Fecha de Cierre</label>
+                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" @bind=@modelo.FechaDeCierre disabled="@tramiteIniciado" />
+                        <small id="fechaError" class="text-danger">@fechaError</small>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col mb-4">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" @bind=@modelo.Email data-bs-placement="top" disabled="@tramiteIniciado" />
+                        <small id="emailError" class="text-danger">@emailError</small>
+                    </div>
+                </div>
+
+                <div class="col mt-4 mb-4 d-flex justify-content-center">
+                    <button type="button" id="btnInit" class="btn btn-primary w-50 @(!entidadEncontrada || tramiteIniciado ? "btn-secondary" : "btn-primary")" @onclick="@IniciarTramites" disabled="@(!entidadEncontrada ||tramiteIniciado )">Iniciar trámite</button>
+                </div>
+
+             
+                
+           
+            }
+            else
+            {
+                <div class="row ps-3 pt-3">
+                    <div class="form-group col">
+                        <label for="location">Domicilio</label>
+                        <input type="text" class="form-control" id="domicilio" placeholder="Domicilio" disabled>
+
+                    </div>
+
+                    <div class="col mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" disabled>
+                            <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col">
+                        <label for="domicilio">Fecha de inicio</label>
+                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" disabled />
+                        <small id="fechaError" class="text-danger"></small>
+
+                    </div>
+                    <div class="col">
+                        <label for="domicilio">Fecha de Cierre</label>
+                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" disabled />
+                        <small id="fechaError" class="text-danger"></small>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col mb-4">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled />
+                        <small id="emailError" class="text-danger"></small>
+                    </div>
+                </div>
+
+               
+                <div class="col mt-4 mb-4 d-flex justify-content-center">
+                    <button type="button" id="btnInit" class="btn btn-secondary w-50" disabled>Iniciar Trámite</button>
+                </div>
+        
+            }
+
+             
+             </div>
+        </div>
+    </body>
+
+
+</html>
+
+@code {
+
+
+    private string busquedaError = "";
+    private string emailError = "";
+    private string fechaError ="";
+    private string domicilioError = "";
+
+    private bool entidadEncontrada;
+    private string idSession = "";
+    public static bool isActive = false;
+
+    // reference to the modal component
+    private Modal modalRef;
+
+    [Parameter]
+    public string balid { get; set; }
+
+
+    [Parameter] public string? TipoEntidad { get; set; }
+   // [Parameter] public string? RazonSocial { get; set; }
+
+    private bool tramiteIniciado = false;
+
+
+    private CaratulaDto modelo = new CaratulaDto
+        {
+            Entidad = new Model.Entidad()
+
+        };
+
+    private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        modelo.FechaInicio = DateTime.Now;
+        modelo.FechaDeCierre = DateTime.Now;
+        await Load();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        try
+        {
+
+
+            var idSessionResponse = await caratulaService.getSession();
+            idSession = idSessionResponse.Result;
+
+
+            if (idSessionResponse.IsSuccess)
+            {
+                var response = await caratulaService.getBalance(idSessionResponse.Result);
+
+                if (response.IsSuccess)
+                {
+
+
+                    Model.Caratula caratula = response.Result.Caratula;
+
+                    modelo.Email = caratula.Email;
+                    modelo.FechaInicio = caratula.FechaInicio;
+                    modelo.FechaDeCierre = caratula.FechaDeCierre;
+                    modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
+                    modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
+                    modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+                    modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+                    modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+
+                    TipoEntidad = caratula.Entidad.TipoEntidad;
+                  //  RazonSocial = caratula.Entidad.RazonSocial;
+
+
+                    entidadEncontrada = true;
+                    tramiteIniciado = true;
+                }
+
+                else
+                {
+                    entidadEncontrada = false;
+
+                }
+
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine($"No se ha encontrado el idSession");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+
+
+
+    private async Task FindEntities()
+    {
+        await ShowLoadingModal();
+
+        int numericNroCorrelativo;
+
+        if (modelo != null)
+        {
+            if (string.IsNullOrEmpty(modelo.Entidad.Correlativo))
+            {
+                busquedaError = "El campo no puede estar vacío";
+                return;
+            }
+
+            if (int.TryParse(modelo.Entidad.Correlativo, out numericNroCorrelativo))
+            {
+                busquedaError = "";
+
+
+                try
+                {
+                    var response = await caratulaService.findEntities(modelo.Entidad.Correlativo);
+
+                    if (response != null)
+                    {
+                        modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
+                        modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
+                        
+                        TipoEntidad = response.Result.TipoEntidad;
+                     //   RazonSocial = response.Result.RazonSocial;
+
+                        entidadEncontrada = true;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                }
+                finally
+                {
+                    await HideLoadingModal();    
+                }
+
+            } 
+            else
+            {
+                busquedaError = "El campo tiene que ser numérico";
+            }
+        }
+        else
+        {
+            modelo = new CaratulaDto();    
+        }
+
+    }
+
+    private async Task IniciarTramites()
+    {
+
+        await ShowLoadingModal();
+
+        try
+        {
+            if (modelo.Entidad.Domicilio != null)
+            {
+
+                domicilioError = "";
+
+                if (modelo.Email != null)
+                {
+
+                    emailError = "";
+
+                    if (Validator.IsEmail(modelo.Email))
+                    {
+                        var response = await caratulaService.initTramite(modelo);
+                        if (response.IsSuccess)
+                        {
+                            var idSessionResponse = await caratulaService.getSession();
+                            idSession = idSessionResponse.Result;
+                            isActive = true;
+                            tramiteIniciado = true;
+
+
+                        }
+                    }
+                    else
+                    {
+                        emailError = "Ingresa tu mail correcto";
+                    }
+                }
+                else
+                {
+                    emailError = "El campo no puede estar vacío";
+                }
+            }
+            else
+            {
+                domicilioError = "El campo no puede estar vacío";
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: IniciarTramites {ex.Message}");
+    }
+
+        finally
+        {
+            await HideLoadingModal();    
+        }
+
+    }
+
+
+    // Método para mostrar el modal de carga
+    private Task ShowLoadingModal()
+    {
+        return modalRef.Show();
+    }
+
+    // Método para ocultar el modal de carga
+    private Task HideLoadingModal()
+    {
+        return modalRef.Hide();
+    }
+
+  
+
+   
+}
+
