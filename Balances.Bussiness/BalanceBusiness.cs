@@ -4,7 +4,7 @@ using Balances.DTO;
 using Balances.Model;
 using Balances.Repository.Contract;
 using Balances.Services.Contract;
-using MongoDB.Bson;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace Balances.Bussiness
@@ -17,6 +17,24 @@ namespace Balances.Bussiness
         protected IMongoCollection<Balance> _balances;
         protected IMapper _mapper;
         private ISessionService _sessionService;
+        private readonly ILogger<BalanceBusiness> _logger;
+        private readonly IBalanceService _balanceService;
+
+
+        public BalanceBusiness(IMongoDbSettings _settings,
+                               IMapper mapper,
+                               ISessionService sessionService,
+                               ILogger<BalanceBusiness> logger,
+                               IBalanceService balanceService)
+        {
+            var cliente = new MongoClient(_settings.Server);
+            var database = cliente.GetDatabase(_settings.Database);
+            _balances = database.GetCollection<Balance>(_settings.Collection);
+            _mapper = mapper;
+            _sessionService = sessionService;
+            _logger = logger;
+            _balanceService = balanceService;
+        }
 
         public BalanceDto BalanceActual
         {
@@ -26,21 +44,15 @@ namespace Balances.Bussiness
 
                 if (responseDto.IsSuccess)
                 {
+                    _logger.LogInformation("BalanceBusiness.BalanceActual GetById : exitoso");
                     return responseDto.Result;
+
                 }
                 else
-                    return null;
+
+                    _logger.LogError($"BalanceBusiness.BalanceActual: null");
+                return null;
             }
-        }
-
-        public BalanceBusiness(IMongoDbSettings _settings, IMapper mapper, ISessionService sessionService)
-        {
-            var cliente = new MongoClient(_settings.Server);
-            var database = cliente.GetDatabase(_settings.Database);
-            _balances = database.GetCollection<Balance>(_settings.Collection);
-            _mapper = mapper;
-            _sessionService = sessionService;
-
         }
 
         public ResponseDTO<bool> Delete(string id)
@@ -52,19 +64,21 @@ namespace Balances.Bussiness
             try
             {
 
-
-                var delete = _balances.DeleteOneAsync(d => d.Id == id);
-                if (delete != null)
+                var delete = _balanceService.DeleteBalance(id);
+                //var delete = _balances.DeleteOneAsync(d => d.Id == id);
+                if (delete)
                 {
 
                     respuesta.IsSuccess = true;
                     respuesta.Message = "balance eliminado correctamente";
                     respuesta.Result = true;
+                    _logger.LogInformation("BalanceBusiness.Delete: exitoso");
                 }
             }
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
+                _logger.LogError($"BalanceBusiness.Delete: \n {ex}");
             }
 
             return respuesta;
@@ -77,26 +91,24 @@ namespace Balances.Bussiness
 
             try
             {
-                var balance = _balances.Find(
-             new BsonDocument { { "_id", new ObjectId(id) } }
-            ).FirstOrDefaultAsync().Result;
+                var balance = _balanceService.GetById(id);
+                //    var balance = _balances.Find(
+                // new BsonDocument { { "_id", new ObjectId(id) } }
+                //).FirstOrDefaultAsync().Result;
 
                 var balancedto = _mapper.Map<BalanceDto>(balance);
 
                 respuesta.Result = balancedto;
                 respuesta.IsSuccess = true;
                 respuesta.Message = "balance encontrado exitosamente";
-
+                _logger.LogInformation("BalanceBusiness.GetById: correctamente");
 
             }
             catch (Exception ex)
             {
-                //conoces el parametro
 
-
-                /*_LogService.Error("GetbyId", ex,);
-                */
                 respuesta.Message = ex.Message;
+                _logger.LogError($"BalanceBusiness.GetById: \n {ex}");
 
             }
             return respuesta;
@@ -111,42 +123,44 @@ namespace Balances.Bussiness
             respuesta.IsSuccess = false;
             try
             {
-                var listaBalance = _balances.Find(p => true).ToList();
+                var listaBalance = _balanceService.GetAll();
+                //var listaBalance = _balances.Find(p => true).ToList();
                 var listabalanceDto = _mapper.Map<List<BalanceDto>>(listaBalance);
 
                 respuesta.IsSuccess = true;
                 respuesta.Result = listabalanceDto;
                 respuesta.Message = "Listado de balances cargados correctamente";
+                _logger.LogInformation("BalanceBusiness.List: correctamente");
 
 
             }
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
-
+                _logger.LogError($"BalanceBusiness.List: \n {ex}");
             }
             return respuesta;
         }
 
-        public ResponseDTO<BalanceDto> Insert(BalanceDto modelo)
+        public ResponseDTO<Balance> Insert(Balance modelo)
         {
 
-            ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
+            ResponseDTO<Balance> respuesta = new ResponseDTO<Balance>();
             respuesta.IsSuccess = false;
 
             try
             {
                 var balance = _mapper.Map<Balance>(modelo);
-                var rsp = _balances.InsertOneAsync(balance);
+
+                var rsp = _balanceService.InsertBalance(balance);
 
                 // si inserto correctamente
-                if (rsp != null)
+                if (rsp)
                 {
                     var balancedto = _mapper.Map<BalanceDto>(balance);
-                    //balance.Id = rsp.Id.ToString();
                     respuesta.IsSuccess = true;
-                    respuesta.Result = balancedto;
-
+                    respuesta.Result = balance;
+                    _logger.LogInformation("BalanceBusiness.Insert: correctamente");
                 }
 
                 return respuesta;
@@ -155,6 +169,7 @@ namespace Balances.Bussiness
             {
 
                 respuesta.Message = ex.Message;
+                _logger.LogError($"BalanceBusiness.Insert: \n {ex}");
                 return respuesta;
             }
 
@@ -171,16 +186,19 @@ namespace Balances.Bussiness
             try
             {
                 var balance = _mapper.Map<Balance>(modelo);
-                _balances.ReplaceOneAsync(b => b.Id == balance.Id, balance);
+                _balanceService.UpdateBalance(balance);
+                //_balances.ReplaceOneAsync(b => b.Id == balance.Id, balance);
                 var balancedto = _mapper.Map<BalanceDto>(balance);
 
                 respuesta.IsSuccess = true;
                 respuesta.Result = balancedto;
                 respuesta.Message = "balance actualizado correctamente";
+                _logger.LogInformation("BalanceBusiness.Update: correctamente");
             }
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
+                _logger.LogError($"BalanceBusiness.Update: \n {ex}");
             }
 
             return respuesta;

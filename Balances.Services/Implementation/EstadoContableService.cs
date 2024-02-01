@@ -22,7 +22,7 @@ namespace Balances.Services.Implementation
 
             //balance.EstadoContable.Estado = _validation.GetEstado(balance.EstadoContable);
             //balance.EstadoContable.OtrosRubros = otrosRubros;
-            _balanceService.UpdateBalance(balance.Id, balance);
+            _balanceService.UpdateBalance(balance);
 
             return balance.EstadoContable;
         }

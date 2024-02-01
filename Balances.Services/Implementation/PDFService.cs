@@ -1,33 +1,47 @@
 ﻿using Balances.DTO;
 using Balances.Services.Contract;
 using iText.Html2pdf;
+using Microsoft.Extensions.Logging;
 
 namespace Balances.Services.Implementation
 {
     public class PDFService : IPDFService
     {
+        private readonly ILogger<QRService> _logger;
+
+
+        public PDFService(ILogger<QRService> logger)
+        {
+            _logger = logger;
+        }
+
         public byte[] HtmlToPDF(string html, BalanceDtoPresentacion balance)
         {
 
-
-            byte[] bytes;
-
-            using (var memoryStream = new MemoryStream())
+            try
             {
+                byte[] bytes;
+
+                using (var memoryStream = new MemoryStream())
+                {
 
 
-                HtmlConverter.ConvertToPdf(html.ToString(), memoryStream);
-                //iText.Html2pdf.HtmlConverter.ConvertToPdf(html, memoryStream);
+                    HtmlConverter.ConvertToPdf(html.ToString(), memoryStream);
 
-                bytes = memoryStream.ToArray();
+
+                    bytes = memoryStream.ToArray();
+                }
+
+
+                return bytes;
             }
-            // writing PDF output to file for testing
+            catch (Exception ex)
+            {
+                _logger.LogError($"PDFService.HtmlToPDF : \n {ex}");
+                throw ex;
+            }
 
-            //string base64PDF = System.Convert.ToBase64String(bytes, 0, bytes.Length);
-            //string str = "<embed src='data:application/pdf;base64, " + base64PDF + "' type='application/pdf' width='500px' height='800px' />";
-            //pdfdiv.InnerHtml = str;
 
-            return bytes;
         }
     }
 }

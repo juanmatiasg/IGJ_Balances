@@ -1,5 +1,6 @@
 ﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
+using Balances.Model;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ namespace Balances.API.Controllers
         }
 
         [HttpPost("InsertBalance")]
-        public IActionResult Create(BalanceDto balance)
+        public IActionResult Create(Balance balance)
         {
             var rsp = _balanceBusiness.Insert(balance);
 

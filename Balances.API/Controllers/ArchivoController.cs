@@ -17,7 +17,7 @@ namespace Balances.API.Controllers
 
         [HttpPost]
         [Route("InsertArchivos")]
-        public ResponseDTO<BalanceDto> InsertArchivos(IFormFileCollection files)
+        public ResponseDTO<BalanceDto> InsertArchivos([FromBody] UploadFilesDTO files)
         {
 
             var rsp = _archivoBusiness.Upload(files);

@@ -2,6 +2,8 @@
 using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Services.Contract;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -10,18 +12,23 @@ namespace Balances.Bussiness.Implementacion
         private readonly ISessionService _sessionService;
         private readonly IBalanceBusiness _balanceBusiness;
         private readonly IMapper _mapper;
+        private readonly ILogger<AutoridadesBusiness> _logger;
+
 
         public AutoridadesBusiness(ISessionService sessionService,
                                    IBalanceBusiness balanceBusiness,
-                                   IMapper mapper)
+                                   IMapper mapper,
+                                   ILogger<AutoridadesBusiness> logger)
         {
             _sessionService = sessionService;
             _balanceBusiness = balanceBusiness;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public ResponseDTO<BalanceDto> Delete(AutoridadDto modelo)
         {
+            var autoridadSerializada = JsonConvert.SerializeObject(modelo);
             var resultadoDto = new ResponseDTO<BalanceDto>();
             resultadoDto.IsSuccess = false;
             try
@@ -37,13 +44,14 @@ namespace Balances.Bussiness.Implementacion
 
                 _balanceBusiness.Update(bal);
 
+                _logger.LogInformation($"AutoridadesBusiness.Delete: --> {autoridadSerializada}");
                 resultadoDto.IsSuccess = true;
                 resultadoDto.Message = "Autoridad eliminada correctamente";
                 resultadoDto.Result = bal;
             }
             catch (Exception ex)
             {
-
+                _logger.LogError($"AutoridadesBusiness.Delete: \n {ex}");
                 resultadoDto.Message = ex.Message;
             }
 
@@ -55,7 +63,7 @@ namespace Balances.Bussiness.Implementacion
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
             respuesta.IsSuccess = false;
-
+            var autoridadSerializada = JsonConvert.SerializeObject(modelo);
             try
             {
                 var id = _sessionService.GetBalanceId();
@@ -73,13 +81,14 @@ namespace Balances.Bussiness.Implementacion
                     balanceDto.Autoridades.Add(modelo);
 
                     var rsp = _balanceBusiness.Update(balanceDto);
-
+                    _logger.LogInformation($"AutoridadesBusiness.Insert --> {autoridadSerializada}");
                     respuesta = rsp;
                 }
 
             }
             catch (Exception ex)
             {
+                _logger.LogError($"AutoridadesBusiness.Insert: \n {ex}");
                 respuesta.Message = ex.Message;
             }
 

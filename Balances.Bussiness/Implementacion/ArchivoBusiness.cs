@@ -2,8 +2,8 @@
 using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Model;
-using Balances.Utilities;
-using Microsoft.AspNetCore.Http;
+using Balances.Services.Contract;
+using Microsoft.Extensions.Logging;
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -12,11 +12,18 @@ namespace Balances.Bussiness.Implementacion
         private readonly IBalanceBusiness _balanceBusiness;
         private readonly IMapper _mapper;
         private const string _baseDir = @"c:\datos\balances";
+        private readonly ILogger<ArchivoBusiness> _logger;
+        private readonly ISessionService _sessionService;
 
-        public ArchivoBusiness(IBalanceBusiness balanceBusiness, IMapper mapper)
+        public ArchivoBusiness(IBalanceBusiness balanceBusiness,
+                               ISessionService sessionService,
+                               IMapper mapper,
+                               ILogger<ArchivoBusiness> logger)
         {
             _balanceBusiness = balanceBusiness;
             _mapper = mapper;
+            _logger = logger;
+            _sessionService = sessionService;
         }
 
         public ResponseDTO<BalanceDto> Delete(ArchivoDTO modelo)
@@ -29,6 +36,7 @@ namespace Balances.Bussiness.Implementacion
 
                 //RECUPERO BALANCE
                 var bal = _balanceBusiness.BalanceActual;
+
 
                 //BUSCO EL ARCHIVO EN EL BALANCE
                 var archivo = bal.Archivos.FirstOrDefault(x => x.Id == modelo.Id);
@@ -46,24 +54,28 @@ namespace Balances.Bussiness.Implementacion
                 resultadoDto.IsSuccess = true;
                 resultadoDto.Message = "archivo eliminado correctamente";
                 resultadoDto.Result = bal;
+                _logger.LogInformation("ArchivoBusiness.Delete: correcto");
             }
             catch (Exception ex)
             {
 
                 resultadoDto.Message = ex.Message;
+                _logger.LogError($"ArchivoBusiness.Delete: \n {ex}");
             }
 
             return resultadoDto;
         }
 
-        public ResponseDTO<BalanceDto> Upload(IFormFileCollection files)
+        public ResponseDTO<BalanceDto> Upload(UploadFilesDTO ufDto)
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
+
             var bDto = _balanceBusiness.BalanceActual;
+
             var listaArchivos = new List<Archivo>();
             try
             {
-                foreach (var file in files)
+                foreach (var file in ufDto.ListFile)
                 {
 
 
@@ -71,44 +83,40 @@ namespace Balances.Bussiness.Implementacion
                     {
                         Id = Guid.NewGuid().ToString(),
                         FechaCreacion = DateTime.Now,
-                        Categoria = file.Name,
-                        NombreArchivo = file.FileName,
+                        Categoria = file.Categoria,
+                        NombreArchivo = file.NombreArchivo,
                         ContentType = file.ContentType,
-                        Tamaño = file.Length / 1024
+                        Tamaño = file.Tamaño / 1024
                     };
 
-                    if (file.Length > 0)
+                    if (file.Tamaño > 0)
                     {
                         string Periodo = CalcularPeriodo();
                         Directory.CreateDirectory(_baseDir + Periodo);
-                        string fullPath = $@"{_baseDir}\{Periodo}\{newFile.Id}{Path.GetExtension(file.FileName)}";
-                        using (var ms = new MemoryStream())
-                        {
-                            file.CopyTo(ms);
+                        string fullPath = $@"{_baseDir}\{Periodo}\{newFile.Id}{Path.GetExtension(file.NombreArchivo)}";
 
-                            File.WriteAllBytes(fullPath, ms.ToArray());
+                        File.WriteAllBytes(fullPath, file.DatosBinarios);
 
-                            var hash = HashSha256.CalcularHash(fullPath);
-                            newFile.Hash = hash;
-                        }
-
-
+                        newFile.Hash = file.Hash;
 
                         listaArchivos.Add(newFile);
                         //balance.Archivos.Add(newFile);
 
                     }
+
                     bDto.Archivos = listaArchivos;
                     _balanceBusiness.Update(bDto);
                     respuesta.IsSuccess = true;
                     respuesta.Result = bDto;
                     respuesta.Message = "archivo guardado correctamente";
+                    _logger.LogInformation("ArchivoBusiness.Upload: correcto");
                 }
             }
             catch (Exception ex)
             {
 
                 respuesta.Message = ex.Message;
+                _logger.LogError($"ArchivoBusiness.Upload: \n {ex}");
             }
 
             return respuesta;

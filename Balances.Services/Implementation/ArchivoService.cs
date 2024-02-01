@@ -85,7 +85,7 @@ namespace Balances.Services.Implementation
                 }
                 balance.Archivos = listaArchivos;
             }
-            _balanceService.UpdateBalance(balanceId, balance);
+            _balanceService.UpdateBalance(balance);
             return true;
         }
 

@@ -61,7 +61,10 @@ namespace Balances.API.Controllers
 
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
             return Ok(response);
         }
