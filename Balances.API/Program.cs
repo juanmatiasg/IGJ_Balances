@@ -124,6 +124,8 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
     //Session
     app.UseSession();

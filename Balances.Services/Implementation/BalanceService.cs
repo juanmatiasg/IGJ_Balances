@@ -10,14 +10,15 @@ namespace Balances.Services.Implementation
     public class BalanceService : IBalanceService
     {
         private IMongoCollection<Balance> _balances;
-        private ILogger<BalanceService> _logger;
+        private readonly ILogger<BalanceService> _logger;
 
 
-        public BalanceService(IMongoDbSettings _settings)
+        public BalanceService(IMongoDbSettings _settings, ILogger<BalanceService> logger)
         {
             var cliente = new MongoClient(_settings.Server);
             var database = cliente.GetDatabase(_settings.Database);
             _balances = database.GetCollection<Balance>(_settings.Collection);
+            _logger = logger;
 
         }
 
@@ -30,20 +31,33 @@ namespace Balances.Services.Implementation
                 var archivo = balance.Archivos.First(d => d.Id == archivoId);
                 balance.Archivos.Remove(archivo);
 
-                UpdateBalance(balanceId, balance);
+                UpdateBalance(balance);
+                _logger.LogInformation("BalanceService.DeleteArchivoBalance: correcto");
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
+                _logger.LogError($"BalanceService.DeleteArchivoBalance: \n {ex}");
                 return false;
             }
         }
 
-        public void DeleteBalance(string id)
+        public bool DeleteBalance(string id)
         {
-            _balances.DeleteOneAsync(d => d.Id == id);
+            try
+            {
+                _balances.DeleteOneAsync(d => d.Id == id);
+                _logger.LogInformation("BalanceService.DeleteBalance: correcto");
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError($"BalanceService.DeleteBalance: \n {ex}");
+                return false;
+            }
+
         }
 
         public List<Balance> GetAll()
@@ -60,15 +74,39 @@ namespace Balances.Services.Implementation
             return balance;
         }
 
-        public void InsertBalance(Balance balance)
+        public bool InsertBalance(Balance balance)
         {
-            _balances.InsertOneAsync(balance);
+            try
+            {
+                _balances.InsertOneAsync(balance);
+
+                _logger.LogInformation("BalanceService.InsertBalance: correcto");
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError($"BalanceService.InsertBalance: \n {ex}");
+                return false;
+            }
+
         }
 
-        public void UpdateBalance(string id, Balance balance)
+        public void UpdateBalance(Balance balance)
         {
-            _balances.ReplaceOneAsync(b => b.Id == id, balance);
+            try
+            {
+                _balances.ReplaceOneAsync(b => b.Id == balance.Id, balance);
+                _logger.LogInformation("BalanceService.UpdateBalance: correcto");
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError($"BalanceService.UpdateBalance: \n {ex}");
+            };
         }
+
     }
-
 }
+
+

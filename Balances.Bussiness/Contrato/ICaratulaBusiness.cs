@@ -14,6 +14,7 @@ namespace Balances.Bussiness.Contrato
 
         //ResponseDTO<CaratulaDto> GetById(string id);
 
+
         IEnumerable<CaratulaDto> List();
 
         //ResponseDTO<string> getSession();

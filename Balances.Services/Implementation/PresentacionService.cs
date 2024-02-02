@@ -91,15 +91,13 @@ namespace Balances.Services.Implementation
             SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
             SetTag("{{" + libroNombre + ".NumeroRubrica}}", libro.NumeroRubrica);
             SetTag("{{" + libroNombre + ".Folio}}", libro.Folio);
-            SetTag("{{" + libroNombre + ".Denominacion}}", libro.Denominacion);
             SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", libro.FechaUltimaRegistracion.ToString("dd/MM/yyyy"));
 
-            if (libro.Denominacion != null)
+            if (libro.Nombre != null)
             {
                 SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
                 SetTag("{{" + libroNombre + ".NumeroRubrica}}", libro.NumeroRubrica);
                 SetTag("{{" + libroNombre + ".Folio}}", libro.Folio);
-                SetTag("{{" + libroNombre + ".Denominacion}}", libro.Denominacion);
                 SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", libro.FechaUltimaRegistracion.ToString("dd/MM/yyyy"));
             }
             else
@@ -107,7 +105,6 @@ namespace Balances.Services.Implementation
                 SetTag("{{" + libroNombre + ".Nombre}}", "N/C");
                 SetTag("{{" + libroNombre + ".NumeroRubrica}}", "N/C");
                 SetTag("{{" + libroNombre + ".Folio}}", "N/C");
-                SetTag("{{" + libroNombre + ".Denominacion}}", "N/C");
                 SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", "N/C");
             }
 

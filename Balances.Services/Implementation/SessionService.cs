@@ -3,13 +3,13 @@ using Balances.Services.Contract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Text;
 
 
 namespace Balances.Services.Implementation
 {
     public class SessionService : ISessionService
     {
+
         private readonly IHttpContextAccessor _context;
         private readonly ILogger<SessionService> _logger;
 

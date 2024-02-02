@@ -1,0 +1,393 @@
+﻿@page "/Entidad"
+@using Balances.DTO;
+@using Balances.Web.Services.Implementation;
+@using Microsoft.JSInterop
+@using Balances.Web.Services
+@using System.Text.RegularExpressions;
+@using Newtonsoft.Json;
+@inject IJSRuntime JS
+@inject ICaratulaService caratulaService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Búsqueda de Entidad</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+        <!-- Bootstrap 5 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+      
+
+
+    </head>
+
+    <body>
+
+        <!--Navegacion-->
+        <div class="d-flex justify-content-center align-items-center">
+            <h3 class="fs-2 font-weight mt-4 mb-4">
+                 <p>Entidad:&nbsp; <h3 id="entidad">@modelo.Entidad.TipoEntidad</h3></p>
+            </h3>
+        </div>
+        <ul class="nav nav-tabs d-flex justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link text-primary active" aria-current="page" href="/Entidad">Entidad</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/EstadoContable">Estado</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Libros">Libros</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Contador">Contador</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Autoridad">Autoridad</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Integrante">Integrante</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Archivos">Archivos</a>
+            </li>
+            <li class="nav-item" disabled>
+                <a class="nav-link text-secondary" href="/Confirmacion">Confirmación DJ</a>
+            </li>
+        </ul>
+
+
+        <!---------------------------------------------------------------->
+        <!--Entidad-->
+
+        <div class="container mt-2 mb-3">
+            <div class="card mx-auto" style="width: 800px;">
+                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                    Entidad
+                </div>
+
+
+                <div class="card-body">
+                    <div class="row d-flex justify-content-center align-items-end position-relative">
+                    
+                        <div class="col">
+                            <label for="busqueda">Nro.Correlativo/CUIT/CUIL</label>
+                            <input type="text"  @bind="@modelo.Entidad.Correlativo" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top">
+                            <small id="busquedaError" class="text-danger">@busquedaError</small>
+                        </div>
+                 
+                        <div class="col mt-4">
+                            <button type="submit" id="btnBuscar" class="btn btn-primary" @onclick="FindEntities">Buscar</button>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-2">
+                        <div class="col-12 col-md-3">
+                            <p class="control texto">Razón Social:</p>
+                        </div>
+                        <div class="col">
+                        <p id="razonSocial">@modelo.Entidad.RazonSocial</p>
+                        </div>                       
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12 col-md-3">
+                            <p class="control texto">Tipo de Entidad:</p>
+                        </div>
+                        <div class="col">
+                        <p id="tipoEntidad">@modelo.Entidad.TipoEntidad</p>
+                        </div>
+                    </div>
+
+                   
+           
+                
+                </div>
+            </div>
+        
+            <!--Datos Personales -->
+
+       <div class="card mx-auto mt-4 " style="width: 800px;">
+ 
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Datos Personales
+            </div>
+            
+            @if (@entidadEncontrada)
+            {
+                <div class="row ps-3 pt-3">
+                    <div class="form-group col">
+                        <label for="location">Domicilio</label>
+                        <input type="text" @bind=@modelo.Entidad.Domicilio class="form-control" id="domicilio" placeholder="Domicilio">
+                    </div>
+
+                    <div class="col mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@modelo.Entidad.SedeSocialInscripta">
+                            <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col">
+                        <label for="domicilio">Fecha de inicio</label>
+                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" @bind=@modelo.FechaInicio />
+                        <small id="fechaError" class="text-danger">@fechaError</small>
+
+                    </div>
+                    <div class="col">
+                        <label for="domicilio">Fecha de Cierre</label>
+                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" @bind=@modelo.FechaDeCierre />
+                        <small id="fechaError" class="text-danger">@fechaError</small>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col mb-4">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" @bind=@modelo.Email data-bs-placement="top" />
+                        <small id="emailError" class="text-danger">@emailError</small>
+                    </div>
+                </div>
+
+                <div class="col mt-4 mb-4 d-flex justify-content-center">
+                    <p>Id Session: @idBalanceSession</p>
+                </div>
+
+                <div class="col mt-4 mb-4 d-flex justify-content-center">
+                    <button type="button" id="btnInit" class="btn btn-primary w-50" onclick="@IniciarTramites">Iniciar Trámite</button>
+                </div>
+           
+            }
+            else
+            {
+                <div class="row ps-3 pt-3">
+                    <div class="form-group col">
+                        <label for="location">Domicilio</label>
+                        <input type="text" class="form-control" id="domicilio" placeholder="Domicilio" disabled>
+
+                    </div>
+
+                    <div class="col mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" disabled>
+                            <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col">
+                        <label for="domicilio">Fecha de inicio</label>
+                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" disabled />
+                        <small id="fechaError" class="text-danger"></small>
+
+                    </div>
+                    <div class="col">
+                        <label for="domicilio">Fecha de Cierre</label>
+                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" disabled />
+                        <small id="fechaError" class="text-danger"></small>
+                    </div>
+                </div>
+
+                <div class="row  ps-3 pt-3 pe-3">
+                    <div class="col mb-4">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled />
+                        <small id="emailError" class="text-danger"></small>
+                    </div>
+                </div>
+
+               
+                <div class="col mt-4 mb-4 d-flex justify-content-center">
+                    <button type="button" id="btnInit" class="btn btn-secondary w-50" disabled>Iniciar Trámite</button>
+                </div>
+        
+            }
+             </div>
+        </div>
+
+
+
+
+        
+
+
+       
+
+    </body>
+
+
+</html>
+
+@code {
+
+    
+    private string busquedaError = "";
+    private string fechaError ="";
+    private string emailError="";
+    private bool entidadEncontrada;
+    private const string KEY_SESSION = "keyBalanceIdSession";
+    private string idBalanceSession = "";
+
+
+    private CaratulaDto modelo = new CaratulaDto
+        {
+            Entidad = new Model.Entidad()
+
+        };
+
+    private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        modelo.FechaInicio = DateTime.Now;
+        modelo.FechaDeCierre = DateTime.Now;
+
+
+        idBalanceSession = await sessionStorage.GetItemAsync<string>(KEY_SESSION);
+
+        if (idBalanceSession != null)
+        {
+
+            await getBalance(idBalanceSession);
+        }
+
+
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task getBalance(string idBalance)
+    {
+
+        var response = await caratulaService.getBalance(idBalance);
+        try
+        {
+            if (response.IsSuccess)
+            {
+                modelo.Email = response.Result.Caratula.Email;
+                modelo.FechaInicio = response.Result.Caratula.FechaInicio;
+                modelo.FechaDeCierre = response.Result.Caratula.FechaDeCierre;
+                modelo.Entidad.Domicilio = response.Result.Caratula.Entidad.Domicilio;
+                modelo.Entidad.Correlativo = response.Result.Caratula.Entidad.Correlativo;
+                modelo.Entidad.RazonSocial = response.Result.Caratula.Entidad.RazonSocial;
+                modelo.Entidad.TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+                modelo.Entidad.SedeSocialInscripta = response.Result.Caratula.Entidad.SedeSocialInscripta;
+
+                entidadEncontrada = true;
+            }
+
+            else
+            {
+                entidadEncontrada = false;
+
+            }
+            StateHasChanged();
+
+
+        }
+        catch (Exception ex)
+        {
+
+            Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+        }
+    }
+
+
+    
+
+    private async Task FindEntities()
+    {
+        int numericNroCorrelativo;
+
+        if (modelo != null)
+        {
+            if (string.IsNullOrEmpty(modelo.Entidad.Correlativo))
+            {
+                busquedaError = "El campo no puede estar vacío";
+                return;
+            }
+
+            if (int.TryParse(modelo.Entidad.Correlativo, out numericNroCorrelativo))
+            {
+                busquedaError = "";
+
+
+                try
+                {
+                    var response = await caratulaService.findEntities(modelo.Entidad.Correlativo);
+
+                    if (response != null)
+                    {
+                        modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
+                        modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
+                        entidadEncontrada = true;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                }
+            }
+            else
+            {
+                busquedaError = "El campo tiene que ser numérico";
+            }
+        }
+        else
+        {
+            modelo = new CaratulaDto();    
+        }
+
+    }
+
+    private async Task IniciarTramites()
+    {
+
+
+        try
+        {
+            
+            var response = await caratulaService.initTramite(modelo);
+
+            if (response.IsSuccess)
+            {
+                 await sessionStorage.SetItemAsync(KEY_SESSION, response.Result.Id);
+                 
+                
+
+            }
+            else
+            {
+                Console.WriteLine($"Datos" + response.Message);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+        }
+
+        
+
+      
+    }
+
+  
+
+   
+}
+

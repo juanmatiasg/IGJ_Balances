@@ -3,7 +3,8 @@ using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Model;
 using Balances.Services.Contract;
-using Balances.Utilities;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -11,45 +12,29 @@ namespace Balances.Bussiness.Implementacion
 
     {
 
-        //protected IMongoCollection<Balance> _balance;
+
         private readonly ISessionService _sessionService;
         private readonly IBalanceBusiness _balanceBusiness;
         private readonly IMapper _mapper;
+        private readonly ILogger<ContadorBusiness> _logger;
 
 
-        public ContadorBusiness(/*IMongoDbSettings _settings*/ ISessionService sessionService,
-                               IBalanceBusiness balanceBusiness, IMapper mapper)
+        public ContadorBusiness(ISessionService sessionService,
+                               IBalanceBusiness balanceBusiness,
+                               IMapper mapper,
+                               ILogger<ContadorBusiness> logger)
         {
             _sessionService = sessionService;
             _balanceBusiness = balanceBusiness;
             _mapper = mapper;
-            //var cliente = new MongoClient(_settings.Server);
-            //var database = cliente.GetDatabase(_settings.Database);
-            //_balance = database.GetCollection<Balance>(_settings.Collection);
+            _logger = logger;
+
         }
 
 
 
         public ResponseDTO<BalanceDto> Delete(ContadorDto modelo)
         {
-            ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
-            respuesta.IsSuccess = false;
-
-            try
-            {
-                //BUSCO BALANCE
-
-
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-
-
 
             throw new NotImplementedException();
         }
@@ -58,7 +43,7 @@ namespace Balances.Bussiness.Implementacion
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
             respuesta.IsSuccess = false;
-
+            var contadorSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
                 var id = _sessionService.GetBalanceId();
@@ -80,8 +65,8 @@ namespace Balances.Bussiness.Implementacion
                         //_sessionService.SetBalanceId(balancedto.Result.Id);
 
                         respuesta.IsSuccess = true;
-                        respuesta.Message = "Contador generado correctamente";
-
+                        respuesta.Message = "Contador generado correctamente:";
+                        _logger.LogInformation($"ContadorBusiness.Insert: --> {contadorSerializado}");
                         respuesta.Result = balance;
 
                     }
@@ -93,6 +78,7 @@ namespace Balances.Bussiness.Implementacion
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
+                _logger.LogError($"ContadorBusiness.Insert: \n {ex}");
             }
 
             return respuesta;
@@ -129,7 +115,6 @@ namespace Balances.Bussiness.Implementacion
         public ContadorDto GetById(string id)
         {
 
-
             try
             {
                 var balance = _balanceBusiness.GetById(id);
@@ -138,14 +123,11 @@ namespace Balances.Bussiness.Implementacion
 
                 return contadordto;
 
-
-
-
-
             }
             catch (Exception ex)
             {
 
+                _logger.LogError($"ContadorBusiness.GetById: \n {ex}");
                 throw ex;
             }
 

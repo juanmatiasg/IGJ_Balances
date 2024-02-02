@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Utils;
-
+using Newtonsoft.Json;
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -84,6 +84,7 @@ namespace Balances.Bussiness.Implementacion
             // paso como parametro el balance y la plantilla para armar el emailRequest 
             var EmailRequest = CrearEmailPresentacion(bal, plantillahtml, binariopdf, qr);
 
+            var presentacionSerializada = JsonConvert.SerializeObject(balPresentacion);
             try
             {
                 //Envio el email con los datos del EmailRequest
@@ -92,13 +93,14 @@ namespace Balances.Bussiness.Implementacion
                 respuesta.Message = "Presentacion generada y enviada correctamente";
                 respuesta.Result = bal;
                 respuesta.IsSuccess = true;
+                _logger.LogInformation($" PresentacionBusiness.PresentarTramite: ---> {presentacionSerializada}");
 
             }
             catch (Exception ex)
             {
 
                 respuesta.Message = ex.Message;
-                _logger.LogError("PresentarTramite: SendEmailAsync", ex);
+                _logger.LogError($"PresentacionBusiness.PresentarTramite: \n {ex}");
             }
 
             //actualizo la base con los datos de la presentacion

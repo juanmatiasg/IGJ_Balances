@@ -3,6 +3,7 @@
 @using Balances.Model;
 @using Balances.Web.Services.Implementation;
 @using System.Text;
+@using System.Reflection;
 @inject ILibrosService serviceLibro;
 @{
 }
@@ -28,35 +29,36 @@
             </div>
 
             <div class="card-body">
-                <Libro libroP="modelo.Asamblea"></Libro>
-                <Libro libroP="modelo.Administracion"></Libro>
-                <Libro libroP="modelo.AsistenciaAsamblea"></Libro>
-                <Libro libroP="modelo.Auditor"></Libro>
-                <Libro libroP="modelo.Efectivo"></Libro>
-                <Libro libroP="modelo.Fiscalizacion"></Libro>
-                <Libro libroP="modelo.IVA"></Libro>
-                <Libro libroP="modelo.IVACompras"></Libro>
-                <Libro libroP="modelo.IVAVentas"></Libro>
-                <Libro libroP="modelo.Resultados"></Libro>
-                <Libro libroP="modelo.EstadosContablesConsolidados"></Libro>
-                <Libro libroP="modelo.PatrimonioNeto"></Libro>
-                <Libro libroP="modelo.SituacionPatrimonial"></Libro>
-                <Libro libroP="modelo.Memoria"></Libro>
-                <Libro libroP="modelo.Informacion"></Libro>
+
+                <Libro libroP="modelo.Asamblea" OnBlur="() => HandleBlur(modelo.Asamblea)"></Libro>
+                <Libro libroP="modelo.Administracion" OnBlur="() => HandleBlur(modelo.Administracion)"></Libro>
+                <Libro libroP="modelo.AsistenciaAsamblea" OnBlur="() => HandleBlur(modelo.AsistenciaAsamblea)"></Libro>
+                <Libro libroP="modelo.Auditor" OnBlur="() => HandleBlur(modelo.Auditor)"></Libro>
+                <Libro libroP="modelo.Efectivo" OnBlur="() => HandleBlur(modelo.Efectivo)"></Libro>
+                <Libro libroP="modelo.Fiscalizacion" OnBlur="() => HandleBlur(modelo.Fiscalizacion)"></Libro>
+                <Libro libroP="modelo.IVA" OnBlur="() => HandleBlur(modelo.IVA)"></Libro>
+                <Libro libroP="modelo.IVACompras" OnBlur="() => HandleBlur(modelo.IVACompras)"></Libro>
+                <Libro libroP="modelo.IVAVentas" OnBlur="() => HandleBlur(modelo.IVAVentas)"></Libro>
+                <Libro libroP="modelo.Resultados" OnBlur="() => HandleBlur(modelo.Resultados)"></Libro>
+                <Libro libroP="modelo.EstadosContablesConsolidados" OnBlur="() => HandleBlur(modelo.EstadosContablesConsolidados)"></Libro>
+                <Libro libroP="modelo.PatrimonioNeto" OnBlur="() => HandleBlur(modelo.PatrimonioNeto)"></Libro>
+                <Libro libroP="modelo.SituacionPatrimonial" OnBlur="() => HandleBlur(modelo.SituacionPatrimonial)"></Libro>
+                <Libro libroP="modelo.Memoria" OnBlur="() => HandleBlur(modelo.Memoria)"></Libro>
+                <Libro libroP="modelo.Informacion" OnBlur="() => HandleBlur(modelo.Informacion)"></Libro>
 
             </div >
             
            
         </div>
 
-        <div class="row mt-4">
+        <!--<div class="row mt-4">
             <div class="col d-flex justify-content-center w-100">
                 <button type="button" class="btn btn-primary w-100" @onclick="() => insertLibros(modelo)">Enviar</button>
             </div>
-         </div>
+         </div>-->
 
-        <div class="mt-3">
-            <button class="btn btn-primary w-100" @onclick="ToggleSelectAll">Seleccionar/Deseleccionar Todos</button>
+        <div class="mt-3 mb-4">
+            <button class="btn btn-primary w-100" @onclick="ToggleSelectAll">Seleccionar/Deseleccionar todos</button>
         </div>
     </div>
 
@@ -80,34 +82,165 @@
         await Load();
         base.OnInitialized();
     }
-    private async Task HandleBlur(LibrosDto libro)
+
+
+    private async Task HandleBlur(LibroDto libro)
     {
 
-        await insertLibros(libro);
+        // Encuentra el libro correspondiente en el modelo y actualiza sus valores
+        if (libro != null)
+        {
+            if (modelo.Asamblea == libro)
+            {
+                modelo.Asamblea = libro;
+            }
+            else if (modelo.Administracion == libro)
+            {
+                modelo.Administracion = libro;
+            }
+            else if (modelo.AsistenciaAsamblea == libro)
+            {
+                modelo.AsistenciaAsamblea = libro;
+            }
+            else if (modelo.Auditor == libro)
+            {
+                modelo.Auditor = libro;
+            }
+
+            else if (modelo.Efectivo == libro)
+            {
+                modelo.Efectivo = libro;
+            }
+            else if (modelo.Fiscalizacion == libro)
+            {
+                modelo.Fiscalizacion = libro;
+            }
+            else if (modelo.IVA == libro)
+            {
+                modelo.IVA = libro;
+            }
+
+            else if (modelo.IVACompras == libro)
+            {
+                modelo.IVACompras = libro;
+            }
+            else if (modelo.IVAVentas == libro)
+            {
+                modelo.IVAVentas = libro;
+            }
+            else if (modelo.Resultados == libro)
+            {
+                modelo.Resultados = libro;
+            }
+
+            else if (modelo.EstadosContablesConsolidados == libro)
+            {
+                modelo.EstadosContablesConsolidados = libro;
+            }
+            else if (modelo.PatrimonioNeto == libro)
+            {
+                modelo.PatrimonioNeto = libro;
+            }
+            else if (modelo.SituacionPatrimonial == libro)
+            {
+                modelo.SituacionPatrimonial = libro;
+            }
+            else if (modelo.Memoria == libro)
+            {
+                modelo.Memoria = libro;
+            }
+            else if (modelo.Informacion == libro)
+            {
+                modelo.Informacion = libro;
+            }   
+
+
+
+        }   
+        await insertLibros(modelo);
     }
 
-    private void ToggleSelectAll()
+
+
+    private async Task ToggleSelectAll()
     {
         // Cambiar el estado de la selección
         allSelected = !allSelected;
 
-        // Actualizar el estado de selección de cada libro en el modelo
-        modelo.Asamblea.NoSabeNoContesta = allSelected;
-        modelo.Administracion.NoSabeNoContesta = allSelected;
-        modelo.AsistenciaAsamblea.NoSabeNoContesta = allSelected;
-        modelo.Auditor.NoSabeNoContesta = allSelected;
-        modelo.Efectivo.NoSabeNoContesta = allSelected;
-        modelo.Fiscalizacion.NoSabeNoContesta = allSelected;
-        modelo.IVA.NoSabeNoContesta = allSelected;
-        modelo.IVACompras.NoSabeNoContesta = allSelected;
-        modelo.IVAVentas.NoSabeNoContesta = allSelected;
-        modelo.Resultados.NoSabeNoContesta = allSelected;
-        modelo.EstadosContablesConsolidados.NoSabeNoContesta = allSelected;
-        modelo.PatrimonioNeto.NoSabeNoContesta = allSelected;
-        modelo.SituacionPatrimonial.NoSabeNoContesta = allSelected;
-        modelo.Memoria.NoSabeNoContesta = allSelected;
-        modelo.Informacion.NoSabeNoContesta = allSelected;
+
+
+        foreach (var libro in ObtenerTodosLosLibros())
+        {
+            if (!LibroEstaCompleto(libro))
+            {
+                libro.NoSabeNoContesta = allSelected;
+                libro.Nombre = allSelected ? "NC" : libro.Nombre;
+                libro.NumeroRubrica = allSelected ? "NC" : libro.NumeroRubrica;
+                libro.FechaUltimaRegistracion = allSelected ? DateTime.MinValue : DateTime.Now;
+                libro.FechaRubrica = allSelected ? DateTime.MinValue : DateTime.Now;
+                libro.Folio = allSelected ? "NC" : libro.Folio;
+            }
+
+           
+
+        }
+        
+        // Insertar los libros actualizados
+        await insertLibros(modelo);
+
+
+       
     }
+
+    private bool LibroEstaCompleto(LibroDto libro)
+    {
+        // Aquí debes implementar la lógica para verificar si todas las propiedades del libro están completas
+        // Devuelve true si todas las propiedades están completas, de lo contrario, devuelve false
+
+        // Por ejemplo, podrías verificar si todas las propiedades tienen valores distintos de "NC" o si las propiedades de fecha no están en su valor mínimo
+
+        bool estaCompleto = !string.IsNullOrEmpty(libro.Nombre) &&
+                            !string.IsNullOrEmpty(libro.NumeroRubrica) &&
+                            libro.FechaUltimaRegistracion != DateTime.MinValue &&
+                            libro.FechaRubrica != DateTime.MinValue &&
+                            !string.IsNullOrEmpty(libro.Folio);
+
+        return estaCompleto;
+    }
+
+    private List<LibroDto> ObtenerTodosLosLibros()
+    {
+        // Aquí debes implementar la lógica para obtener todos los libros del modelo
+        // Devuelve una lista que contenga todos los libros
+        var todosLosLibros = new List<LibroDto>
+    {
+        modelo.Asamblea,
+        modelo.Administracion,
+        modelo.AsistenciaAsamblea,
+        modelo.Auditor,
+        modelo.Efectivo,
+        modelo.Fiscalizacion,
+        modelo.IVA,
+        modelo.IVACompras,
+        modelo.IVAVentas,
+        modelo.Resultados,
+        modelo.EstadosContablesConsolidados,
+        modelo.PatrimonioNeto,
+        modelo.SituacionPatrimonial,
+        modelo.Memoria,
+        modelo.Informacion
+    };
+
+        return todosLosLibros;
+    }
+
+    private async Task HandleBlur(LibrosDto libro)
+    {
+        await insertLibros(libro); // Llama al método que deseas ejecutar cuando se produce el evento onblur
+    }
+
+
+
     private async Task Load()
     {
         try
@@ -124,8 +257,8 @@
                     try
                     {
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
                         setLibros(response.Result.Libros);
-                        
 
                         StateHasChanged();
 
@@ -151,14 +284,10 @@
     {
         if (libros != null)
         {
-            this.modelo = libros;
+            this.modelo = libros;  
         }
     }
 
-    private void getLibros(LibrosDto libros)
-    {
-        this.modelo= libros;
-    }
 
     private async Task<ResponseDTO<BalanceDto>> insertLibros(LibrosDto libros)
     {
@@ -167,7 +296,7 @@
 
         try
         {
-
+          
             respuesta = await serviceLibro.insertLibros(libros);
 
         }
@@ -179,11 +308,7 @@
     }
  
 
-    private void cleanInputs()
-    {
-        // Restablecer los valores de los campos a su estado inicial o vacío
-        modelo = new LibrosDto();
-    }
+   
   
 
    

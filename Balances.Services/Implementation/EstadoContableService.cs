@@ -19,7 +19,10 @@ namespace Balances.Services.Implementation
           
             balance.EstadoContable = estadoContable.estadoContable.GetEstadoContable();
 
-            _balanceService.UpdateBalance(balance.Id, balance);
+
+            //balance.EstadoContable.Estado = _validation.GetEstado(balance.EstadoContable);
+            //balance.EstadoContable.OtrosRubros = otrosRubros;
+            _balanceService.UpdateBalance(balance);
 
             return balance.EstadoContable;
         }
