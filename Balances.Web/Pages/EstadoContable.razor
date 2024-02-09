@@ -579,7 +579,6 @@
 
     private async Task<ResponseDTO<BalanceDto>> insertEECC()
     {
-
         setFormatMiles();
         sumatoriaTotalActivoCorriente();
         sumatoriaTotalActivoNoCorriente();
@@ -588,27 +587,25 @@
         resultadoPatrimonioNeto();
         resultadoPatNetDetailPatNeto();
 
-
-
         ResponseDTO<BalanceDto> respuesta = new();
 
         try
         {
             if (checkData())
             {
+                
                 respuesta = await estadoContableService.insertEEC(estadoContableDto);
 
                 if (respuesta.IsSuccess)
                 {
                     respuesta.Message = "Se inserto el Estado Contable sastifactoriamente";
-
-
                 }
                 else
                 {
                     respuesta.Message = "No se inserto el Estado Contable";
 
                 }
+                
             }
 
         }
@@ -659,21 +656,29 @@
         }
     }
 
-    private void resultadoPatNetDetailPatNeto()
+    private  void resultadoPatNetDetailPatNeto()
     {
+        
+        
         if (resultadoPatrimonioNeto() > 0)
         {
             if (!(lista.Count > 0))
             {
-                var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio;
+                if (estadoContableDto.reservaLegal > 0)
+                {
+                    var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio;
 
-                if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
-                {
-                    statusPatrimonioNeto = false;
-                }
-                else
-                {
-                    statusPatrimonioNeto = true;
+
+                    if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
+                    {
+                        statusPatrimonioNeto = false;
+                       
+                    }
+                    else
+                    {
+                        statusPatrimonioNeto = true;
+                      
+                    }
                 }
             }
             else
@@ -681,25 +686,24 @@
                 foreach (var rubro in lista)
                 {
                     var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + rubro.Importe;
-
-                    if (resultadoPatrimonioNeto() == sumatoriaDetallePatNeto)
+                    if (estadoContableDto.reservaLegal > 0)
                     {
-                        statusPatrimonioNeto = false;
-                    }
-                    else
-                    {
-                        statusPatrimonioNeto = true;
+                        if (resultadoPatrimonioNeto() == sumatoriaDetallePatNeto)
+                        {
+                            statusPatrimonioNeto = false;
+                            
+                        }
+                        else
+                        {
+                            statusPatrimonioNeto = true;
+                           
+                        }
                     }
                 }
             }
         }
+
     }
-
-
-
-
-
-
 
     private void setFormatMiles()
     {
@@ -894,7 +898,7 @@
         // Fecha Inicio
         if (estadoContableDto.fechaInicio == DateTime.MinValue)
 
-        {       
+        {
             fechaInicioError = "Seleccioná la fecha correspondiente";
         }
 
@@ -918,7 +922,7 @@
 
         //Caja y Bancos
 
-        if (!string.IsNullOrEmpty(estadoContableDto.cajaYBancos.ToString()) && estadoContableDto.cajaYBancos != 0)
+        if (!string.IsNullOrEmpty(estadoContableDto.cajaYBancos.ToString()))
         {
             if (Validator.IsNumeric(estadoContableDto.cajaYBancos.ToString()))
             {
@@ -938,8 +942,8 @@
 
 
 
-        //InVersiones
-        if (!string.IsNullOrEmpty(estadoContableDto.inversionesActivoCorriente.ToString()) && estadoContableDto.inversionesActivoCorriente != 0)
+        //Inversiones
+        if (!string.IsNullOrEmpty(estadoContableDto.inversionesActivoCorriente.ToString()))
         {
             if (Validator.IsNumeric(estadoContableDto.inversionesActivoCorriente.ToString()))
             {
@@ -958,7 +962,7 @@
         }
 
         //Bienes de Cambio
-        if (!string.IsNullOrEmpty(estadoContableDto.bienesDeCambio.ToString()) && estadoContableDto.bienesDeCambio != 0)
+        if (!string.IsNullOrEmpty(estadoContableDto.bienesDeCambio.ToString()))
         {
             if (Validator.IsNumeric(estadoContableDto.bienesDeCambio.ToString()))
             {
@@ -975,13 +979,15 @@
             bienesDeCambioError = "El campo no puede estar vacio";
             return false;
         }
+    
 
+        //Activo  Corriente Restante
 
-        if (!string.IsNullOrEmpty(estadoContableDto.activoCorrienteRestante.ToString()) && estadoContableDto.activoCorrienteRestante != 0)
+        if (!string.IsNullOrEmpty(estadoContableDto.activoCorrienteRestante.ToString()))
         {
             if (Validator.IsNumeric(estadoContableDto.activoCorrienteRestante.ToString()))
             {
-                activoCorrienteRestanteError = "No puedes ingresar caracteres en el campo ";
+                activoCorrienteRestanteError = "No puedes ingresar caracteres en el campo";
                 return false;
             }
             else
@@ -994,64 +1000,10 @@
             activoCorrienteRestanteError = "El campo no puede estar vacio";
             return false;
         }
+  
 
-
-        if (!string.IsNullOrEmpty(estadoContableDto.activoNoCorrienteRestante.ToString()) && estadoContableDto.activoNoCorrienteRestante != 0)
-        {
-            if (Validator.IsNumeric(estadoContableDto.activoNoCorrienteRestante.ToString()))
-            {
-                activoNoCorrienteRestanteError = "No puedes ingresar caracteres en el campo";
-                return false;
-            }
-            else
-            {
-                activoNoCorrienteRestanteError = "";
-            }
-        }
-        else
-        {
-            activoNoCorrienteRestanteError = "El campo no puede estar vacio";
-            return false;
-        }
-
-        if (!string.IsNullOrEmpty(estadoContableDto.ajusteCapital.ToString()) && estadoContableDto.ajusteCapital != 0)
-        {
-            if (Validator.IsNumeric(estadoContableDto.ajusteCapital.ToString()))
-            {
-                ajusteCapitalError = "No puedes ingresar caracteres en el campo";
-                return false;
-            }
-            else
-            {
-                ajusteCapitalError = "";
-            }
-        }
-        else
-        {
-            ajusteCapitalError = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-        if (!string.IsNullOrEmpty(estadoContableDto.aportesIrrevocables.ToString()) && estadoContableDto.aportesIrrevocables != 0)
-        {
-            if (Validator.IsNumeric(estadoContableDto.aportesIrrevocables.ToString()) )
-            {
-                aportesIrrevocablesError = "No puedes ingresar caracteres en el campo";
-                return false;
-            }
-            else
-            {
-                aportesIrrevocablesError = "";
-            }
-        }
-        else
-        {
-            aportesIrrevocablesError = "El campo no puede estar vacio";
-            return false;
-        }
-
-        if (!string.IsNullOrEmpty(estadoContableDto.bienesDeUso.ToString()) && estadoContableDto.bienesDeUso != 0)
+        //Bienes de Uso
+        if (!string.IsNullOrEmpty(estadoContableDto.bienesDeUso.ToString()))
         {
             if (Validator.IsNumeric(estadoContableDto.bienesDeUso.ToString()))
             {
@@ -1069,25 +1021,51 @@
             return false;
         }
 
-        if (!string.IsNullOrEmpty(estadoContableDto.capitalSuscripto.ToString()) &&  estadoContableDto.capitalSuscripto != 0)
+        //Propiedades de Inversion
+
+        if (!string.IsNullOrEmpty(estadoContableDto.propiedadesDeInversion.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
+            if (Validator.IsNumeric(estadoContableDto.propiedadesDeInversion.ToString()))
             {
-                capitalSuscriptoError = "No puedes ingresar caracteres en el campo";
+                propiedadesDeInversionError = "No puedes ingresar caracteres en el campo";
                 return false;
             }
             else
             {
-                capitalSuscriptoError = "";
+                propiedadesDeInversionError = "";
             }
         }
         else
         {
-            capitalSuscriptoError = "El campo no puede estar vacio";
+            propiedadesDeInversionError = "El campo no puede estar vacio";
             return false;
         }
 
-        if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoCorriente.ToString()) && estadoContableDto.deudorPasivoCorriente != 0)
+        //Activo No Corriente Restante
+
+        if (!string.IsNullOrEmpty(estadoContableDto.activoNoCorrienteRestante.ToString()))
+        {
+            if (Validator.IsNumeric(estadoContableDto.activoNoCorrienteRestante.ToString()))
+            {
+                activoNoCorrienteRestanteError = "No puedes ingresar caracteres en el campo";
+                return false;
+            }
+            else
+            {
+                activoNoCorrienteRestanteError = "";
+            }
+        }
+        else
+        {
+            activoNoCorrienteRestanteError = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+        //Deudas del Pasivo Corriente
+
+        if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoCorriente.ToString()))
         {
             if (Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
             {
@@ -1105,8 +1083,9 @@
             return false;
         }
 
+        //Deudas del Pasivo No Corriente
 
-        if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoNoCorriente.ToString()) && estadoContableDto.deudorPasivoNoCorriente != 0)
+        if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoNoCorriente.ToString()))
         {
             if (Validator.IsNumeric(estadoContableDto.deudorPasivoNoCorriente.ToString()))
             {
@@ -1125,67 +1104,68 @@
         }
 
 
+        //Capital Sucripto
 
-        if (!string.IsNullOrEmpty(estadoContableDto.gananciasPerdidasEjercicio.ToString()) && estadoContableDto.gananciasPerdidasEjercicio != 0)
+        if (!string.IsNullOrEmpty(estadoContableDto.capitalSuscripto.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
+            if (Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
             {
-                gananciasPerdidasEjercicioError = "No puedes ingresar caracteres en el campo";
+                capitalSuscriptoError = "No puedes ingresar caracteres en el campo";
                 return false;
             }
             else
             {
-                gananciasPerdidasEjercicioError = "";
+                capitalSuscriptoError = "";
             }
         }
         else
         {
-            gananciasPerdidasEjercicioError = "El campo no puede estar vacio";
+            capitalSuscriptoError = "El campo no puede estar vacio";
             return false;
         }
 
-        if (!string.IsNullOrEmpty(estadoContableDto.gananciasReservadas.ToString()) && estadoContableDto.gananciasReservadas != 0)
+        //Ajuste al capital
+        if (!string.IsNullOrEmpty(estadoContableDto.ajusteCapital.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.gananciasReservadas.ToString()))
+            if (Validator.IsNumeric(estadoContableDto.ajusteCapital.ToString()))
             {
-                gananciasReservadasError = "No puedes ingresar caracteres en el campo";
+                ajusteCapitalError = "No puedes ingresar caracteres en el campo";
                 return false;
             }
             else
             {
-                gananciasReservadasError = "";
+                ajusteCapitalError = "";
             }
         }
         else
         {
-            gananciasReservadasError = "El campo no puede estar vacio";
+            ajusteCapitalError = "El campo no puede estar vacio";
             return false;
         }
 
-
-
-        if (!string.IsNullOrEmpty(estadoContableDto.perdidasAcumuladas.ToString()) &&  estadoContableDto.perdidasAcumuladas != 0)
+        //Aporte Irrevocables
+        if (!string.IsNullOrEmpty(estadoContableDto.aportesIrrevocables.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.perdidasAcumuladas.ToString()))
+            if (Validator.IsNumeric(estadoContableDto.aportesIrrevocables.ToString()) )
             {
-                perdidasAcumuladasError = "No puedes ingresar caracteres en el campo";
+                aportesIrrevocablesError = "No puedes ingresar caracteres en el campo";
                 return false;
             }
             else
             {
-                perdidasAcumuladasError = "";
+                aportesIrrevocablesError = "";
             }
         }
         else
         {
-            perdidasAcumuladasError = "El campo no puede estar vacio";
+            aportesIrrevocablesError = "El campo no puede estar vacio";
             return false;
         }
 
- 
+     
+        //Prima Emision
 
-
-        if (!string.IsNullOrEmpty(estadoContableDto.primaEmision.ToString()) && estadoContableDto.primaEmision != 0)
+        if (!string.IsNullOrEmpty(estadoContableDto.primaEmision.ToString()))
         {
             if (Validator.IsNumeric(estadoContableDto.primaEmision.ToString()))
             {
@@ -1203,28 +1183,69 @@
             return false;
         }
 
-   
+        //Ganancias Reservadas
 
-        if (!string.IsNullOrEmpty(estadoContableDto.propiedadesDeInversion.ToString()) && estadoContableDto.propiedadesDeInversion != 0)
+        if (!string.IsNullOrEmpty(estadoContableDto.gananciasReservadas.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.propiedadesDeInversion.ToString()))
+            if (Validator.IsNumeric(estadoContableDto.gananciasReservadas.ToString()))
             {
-                propiedadesDeInversionError = "No puedes ingresar caracteres en el campo";
+                gananciasReservadasError = "No puedes ingresar caracteres en el campo";
                 return false;
             }
             else
             {
-                propiedadesDeInversionError = "";
+                gananciasReservadasError = "";
             }
         }
         else
         {
-            propiedadesDeInversionError = "El campo no puede estar vacio";
+            gananciasReservadasError = "El campo no puede estar vacio";
+            return false;
+        }
+
+        //Perdidas Acumuladas
+        if (!string.IsNullOrEmpty(estadoContableDto.perdidasAcumuladas.ToString()))
+        {
+            if (Validator.IsNumeric(estadoContableDto.perdidasAcumuladas.ToString()))
+            {
+                perdidasAcumuladasError = "No puedes ingresar caracteres en el campo";
+                return false;
+            }
+            else
+            {
+                perdidasAcumuladasError = "";
+            }
+        }
+        else
+        {
+            perdidasAcumuladasError = "El campo no puede estar vacio";
             return false;
         }
 
 
-        if (!string.IsNullOrEmpty(estadoContableDto.reservaLegal.ToString()) &&  estadoContableDto.reservaLegal != 0)
+        //Ganancias  Perdidas del Ejercicio
+        if (!string.IsNullOrEmpty(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
+        {
+            if (Validator.IsNumeric(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
+            {
+                gananciasPerdidasEjercicioError = "No puedes ingresar caracteres en el campo";
+                return false;
+            }
+            else
+            {
+                gananciasPerdidasEjercicioError = "";
+            }
+        }
+        else
+        {
+            gananciasPerdidasEjercicioError = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+        //Reserva Legal
+
+        if (!string.IsNullOrEmpty(estadoContableDto.reservaLegal.ToString()))
         {
             if (Validator.IsNumeric(estadoContableDto.reservaLegal.ToString()))
             {
@@ -1241,6 +1262,7 @@
             reservaLegalError = "El campo no puede estar vacio";
             return false;
         }
+
 
         tipoBalanceError = "";
         fechaInicioError = "";

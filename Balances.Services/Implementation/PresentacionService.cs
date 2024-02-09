@@ -140,7 +140,6 @@ namespace Balances.Services.Implementation
             PlantillaHTML = PlantillaHTML.Replace("{{Contador.NroLegalInfoAudExt}}", balance.Contador.NroLegalInfoAudExt);
 
 
-
             SetTag("Memoria", balance.Libros.Memoria);
             SetTag("PatrimonioNeto", balance.Libros.PatrimonioNeto);
             SetTag("SituacionPatrimonial", balance.Libros.SituacionPatrimonial);

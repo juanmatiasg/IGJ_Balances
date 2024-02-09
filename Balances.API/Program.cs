@@ -119,7 +119,7 @@ try
     var app = builder.Build();
 
     // Configure the HTTP requeContrato.IPresentacionBusiness Lifetime: Scoped st pipeline.
-    if (app.Environment.IsDevelopment())
+    if (app.Environment.IsProduction())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
@@ -133,13 +133,14 @@ try
     //Serilog
     //app.UseSerilogRequestLogging();
 
-    //Cors
+
+    app.UseRouting();
     app.UseCors("NuevaPolitica");
+    app.UseAuthorization();
+    //Cors
+    //app.UseCors("NuevaPolitica");
 
     app.UseAuthentication();
-
-    app.UseAuthorization();
-
 
 
     app.MapControllers();

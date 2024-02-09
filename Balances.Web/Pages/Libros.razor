@@ -46,20 +46,16 @@
                 <Libro libroP="modelo.Memoria" OnBlur="() => HandleBlur(modelo.Memoria)"></Libro>
                 <Libro libroP="modelo.Informacion" OnBlur="() => HandleBlur(modelo.Informacion)"></Libro>
 
-            </div >
-            
-           
-        </div>
-
-        <!--<div class="row mt-4">
-            <div class="col d-flex justify-content-center w-100">
-                <button type="button" class="btn btn-primary w-100" @onclick="() => insertLibros(modelo)">Enviar</button>
             </div>
-         </div>-->
 
-        <div class="mt-3 mb-4">
-            <button class="btn btn-primary w-100" @onclick="ToggleSelectAll">Seleccionar/Deseleccionar todos</button>
+
         </div>
+
+     
+
+        <!--<div class="mt-3 mb-4">
+            <button class="btn btn-primary w-100" @onclick="ToggleSelectAll">Seleccionar/Deseleccionar todos</button>
+        </div>-->
     </div>
 
 
@@ -152,44 +148,124 @@
             else if (modelo.Informacion == libro)
             {
                 modelo.Informacion = libro;
-            }   
+            }
 
 
 
-        }   
+        }
         await insertLibros(modelo);
+    }
+
+    private async Task ToggleSelectAll()
+    {
+        allSelected = !allSelected;
+
+        foreach (var libro in ObtenerTodosLosLibros())
+        {
+            // Verificar si el libro está completo
+            bool isComplete = LibroEstaCompleto(libro);
+
+            // Si el libro está completo o no está marcado como "N/C", actualizar según la operación de selección/deselección en masa
+            if (isComplete || libro.Nombre != "N/C")
+            {
+                libro.NoSabeNoContesta = allSelected;
+                libro.Nombre = allSelected ? libro.Nombre : libro.Nombre;
+                libro.NumeroRubrica = allSelected ? libro.NumeroRubrica : libro.NumeroRubrica;
+                libro.FechaUltimaRegistracion = allSelected ? DateTime.Now : libro.FechaUltimaRegistracion;
+                libro.FechaRubrica = allSelected ? DateTime.Now : libro.FechaRubrica;
+                libro.Folio = allSelected ? libro.Folio : libro.Folio;
+
+
+            }
+            else
+            {
+                // Si el libro está marcado como "N/C" y se realiza una deselección en masa, eliminar el libro del modelo
+                if (!allSelected)
+                {
+                    libro.NoSabeNoContesta = allSelected;
+                    libro.Nombre = allSelected ? "N/C" : libro.Nombre;
+                    libro.NumeroRubrica = allSelected ? "N/C" : libro.NumeroRubrica;
+                    libro.FechaUltimaRegistracion = allSelected ? DateTime.Now : libro.FechaUltimaRegistracion;
+                    libro.FechaRubrica = allSelected ? DateTime.Now : libro.FechaRubrica;
+                    libro.Folio = allSelected ? "N/C" : libro.Folio;
+
+                    //EliminarLibro(libro);
+                }
+            }
+        }
+
+        // Actualizar el modelo con los cambios
+        await insertLibros(modelo);
+        StateHasChanged(); // Notificar a Blazor que se ha actualizado el estado
     }
 
 
 
-    private async Task ToggleSelectAll()
+    private void EliminarLibro(LibroDto libro)
     {
-        // Cambiar el estado de la selección
-        allSelected = !allSelected;
-
-
-
-        foreach (var libro in ObtenerTodosLosLibros())
+        if (modelo.Asamblea == libro)
         {
-            if (!LibroEstaCompleto(libro))
-            {
-                libro.NoSabeNoContesta = allSelected;
-                libro.Nombre = allSelected ? "NC" : libro.Nombre;
-                libro.NumeroRubrica = allSelected ? "NC" : libro.NumeroRubrica;
-                libro.FechaUltimaRegistracion = allSelected ? DateTime.MinValue : DateTime.Now;
-                libro.FechaRubrica = allSelected ? DateTime.MinValue : DateTime.Now;
-                libro.Folio = allSelected ? "NC" : libro.Folio;
-            }
-
-           
-
+            modelo.Asamblea = null;
         }
-        
-        // Insertar los libros actualizados
-        await insertLibros(modelo);
+        else if (modelo.Administracion == libro)
+        {
+            modelo.Administracion = null;
+        }
+        else if (modelo.AsistenciaAsamblea == libro)
+        {
+            modelo.AsistenciaAsamblea = null;
+        }
+        else if (modelo.Auditor == libro)
+        {
+            modelo.Auditor = null;
+        }
 
+        else if (modelo.Efectivo == libro)
+        {
+            modelo.Efectivo = null;
+        }
+        else if (modelo.Fiscalizacion == libro)
+        {
+            modelo.Fiscalizacion = null;
+        }
+        else if (modelo.IVA == libro)
+        {
+            modelo.IVA = null;
+        }
 
-       
+        else if (modelo.IVACompras == libro)
+        {
+            modelo.IVACompras = null;
+        }
+        else if (modelo.IVAVentas == libro)
+        {
+            modelo.IVAVentas = null;
+        }
+        else if (modelo.Resultados == libro)
+        {
+            modelo.Resultados = null;
+        }
+
+        else if (modelo.EstadosContablesConsolidados == libro)
+        {
+            modelo.EstadosContablesConsolidados = null;
+        }
+        else if (modelo.PatrimonioNeto == libro)
+        {
+            modelo.PatrimonioNeto = null;
+        }
+        else if (modelo.SituacionPatrimonial == libro)
+        {
+            modelo.SituacionPatrimonial = null;
+        }
+        else if (modelo.Memoria == libro)
+        {
+            modelo.Memoria = null;
+        }
+        else if (modelo.Informacion == libro)
+        {
+            modelo.Informacion = libro;
+        }
     }
 
     private bool LibroEstaCompleto(LibroDto libro)
@@ -199,10 +275,10 @@
 
         // Por ejemplo, podrías verificar si todas las propiedades tienen valores distintos de "NC" o si las propiedades de fecha no están en su valor mínimo
 
-        bool estaCompleto = !string.IsNullOrEmpty(libro.Nombre) &&
-                            !string.IsNullOrEmpty(libro.NumeroRubrica) &&
-                            libro.FechaUltimaRegistracion != DateTime.MinValue &&
-                            libro.FechaRubrica != DateTime.MinValue &&
+        bool estaCompleto = !string.IsNullOrEmpty(libro.Nombre)  &&
+                            !string.IsNullOrEmpty(libro.NumeroRubrica)  &&
+                            libro.FechaUltimaRegistracion != DateTime.Now &&
+                            libro.FechaRubrica != DateTime.Now &&
                             !string.IsNullOrEmpty(libro.Folio);
 
         return estaCompleto;
@@ -284,7 +360,7 @@
     {
         if (libros != null)
         {
-            this.modelo = libros;  
+            this.modelo = libros;
         }
     }
 
@@ -296,7 +372,7 @@
 
         try
         {
-          
+
             respuesta = await serviceLibro.insertLibros(libros);
 
         }
@@ -306,15 +382,4 @@
         }
         return respuesta;
     }
- 
-
-   
-  
-
-   
-
 }
-
-
-    
-

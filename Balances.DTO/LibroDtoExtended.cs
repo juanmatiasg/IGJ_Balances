@@ -38,8 +38,8 @@ namespace Balances.DTO
             this.Nombre = "N/C";
            // this.Denominacion = "N/C";
             this.NumeroRubrica = "N/C";
-            this.FechaRubrica = DateTime.MinValue;
-            this.FechaUltimaRegistracion = DateTime.MinValue;
+            this.FechaRubrica = DateTime.Now;
+            this.FechaUltimaRegistracion = DateTime.Now;
             this.Folio = "N/C";
             
 

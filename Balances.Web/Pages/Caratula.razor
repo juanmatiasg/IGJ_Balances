@@ -6,9 +6,11 @@
 @using Balances.Web.Services
 @using System.Text.RegularExpressions;
 @using Newtonsoft.Json;
+@using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 @inject IJSRuntime JS
 @inject ICaratulaService caratulaService
-@inject NavigationManager NavigationManager
+@inject NavigationManager NavigationManager;
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 
 
 
@@ -26,10 +28,6 @@
 
         <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
         <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
-
-        <script src="_content/Blazorise.Bootstrap5/modal.js?v=1.4.1.0" type="module"></script>
-        <script src="_content/Blazorise.Bootstrap5/tooltip.js?v=1.4.1.0" type="module"></script>
-
 
     </head>
 
@@ -248,6 +246,8 @@
     private string idSession = "";
     public static bool isActive = false;
 
+    private const string KEY_SESSION = "idSession";
+
     // reference to the modal component
     private Modal modalRef;
 
@@ -256,7 +256,7 @@
 
 
     [Parameter] public string? TipoEntidad { get; set; }
-   // [Parameter] public string? RazonSocial { get; set; }
+    // [Parameter] public string? RazonSocial { get; set; }
 
     private bool tramiteIniciado = false;
 
@@ -287,18 +287,19 @@
         {
 
 
-            var idSessionResponse = await caratulaService.getSession();
-            idSession = idSessionResponse.Result;
+            idSession = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
 
+
+            var idSessionResponse = await caratulaService.getSession();
+
+            //idSession = idSessionResponse.Result;
 
             if (idSessionResponse.IsSuccess)
             {
-                var response = await caratulaService.getBalance(idSessionResponse.Result);
+                var response = await caratulaService.getBalance(idSessionResponse.Result!);
 
                 if (response.IsSuccess)
                 {
-
-
                     Model.Caratula caratula = response.Result.Caratula;
 
                     modelo.Email = caratula.Email;
@@ -311,7 +312,7 @@
                     modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
 
                     TipoEntidad = caratula.Entidad.TipoEntidad;
-                  //  RazonSocial = caratula.Entidad.RazonSocial;
+                    //  RazonSocial = caratula.Entidad.RazonSocial;
 
 
                     entidadEncontrada = true;
@@ -344,7 +345,7 @@
 
     private async Task FindEntities()
     {
-        await ShowLoadingModal();
+
 
         int numericNroCorrelativo;
 
@@ -369,9 +370,9 @@
                     {
                         modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
                         modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
-                        
+
                         TipoEntidad = response.Result.TipoEntidad;
-                     //   RazonSocial = response.Result.RazonSocial;
+                        //   RazonSocial = response.Result.RazonSocial;
 
                         entidadEncontrada = true;
 
@@ -380,10 +381,6 @@
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                }
-                finally
-                {
-                    await HideLoadingModal();    
                 }
 
             } 
@@ -419,12 +416,23 @@
                     if (Validator.IsEmail(modelo.Email))
                     {
                         var response = await caratulaService.initTramite(modelo);
+
                         if (response.IsSuccess)
                         {
-                            var idSessionResponse = await caratulaService.getSession();
-                            idSession = idSessionResponse.Result;
-                            isActive = true;
-                            tramiteIniciado = true;
+
+                            var serviceSession = await caratulaService.setSession(response.Result.Id);
+
+                            if (serviceSession.IsSuccess)
+                            {
+                                //var idSessionResponse = await caratulaService.getSession();
+
+                                // idSession = idSessionResponse.Result;
+
+                                await SetSessionValue(KEY_SESSION, response.Result!.Id);
+
+                                isActive = true;
+                                tramiteIniciado = true;
+                            }
 
 
                         }
@@ -447,7 +455,7 @@
         catch (Exception ex)
         {
             Console.WriteLine($"Error: IniciarTramites {ex.Message}");
-    }
+        }
 
         finally
         {
@@ -469,7 +477,17 @@
         return modalRef.Hide();
     }
 
-  
+
+    private async Task<string> GetSessionValue(string key)
+    {
+        return await SessionStorage.GetItemAsync<string>(key);
+    }
+   
+    private async Task SetSessionValue(string key, string value)
+    {
+        await SessionStorage.SetItemAsync(key, value);
+    }
+
 
    
 }

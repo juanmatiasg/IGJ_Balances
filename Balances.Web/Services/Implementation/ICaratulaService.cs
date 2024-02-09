@@ -12,6 +12,9 @@ namespace Balances.Web.Services.Implementation
         Task<ResponseDTO<BalanceDto>> getBalance(string id);
 
         Task<ResponseDTO<string>> getSession();
+
+        Task<ResponseDTO<string>> setSession(string id);
+
         Task<ResponseDTO<string>> loadCaratula(string id);
 
 

@@ -21,7 +21,6 @@ namespace Balances.Web.Services.Contracts
 
         }
 
-
         public async Task<ResponseDTO<BusquedaEntidadResponse>> findEntities(string nroCorrelativo)
         {
             return await _httpClient.GetFromJsonAsync<ResponseDTO<BusquedaEntidadResponse>>($"BusquedaByCuilOrCorrelativo?nroCorrelativo={nroCorrelativo}");
@@ -51,7 +50,7 @@ namespace Balances.Web.Services.Contracts
                 {
                     Result = null,
                     IsSuccess = false,
-                    Message = ex.Message
+                    Message = $"{"Error:GetSession" + ex.Message}"
                 };
             }
 
@@ -115,7 +114,10 @@ namespace Balances.Web.Services.Contracts
 
                 // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
                 var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
-                
+
+                await _httpClient.PostAsJsonAsync($"Session/{result.Result.Id}", result.Result.Id);
+
+
                 return new ResponseDTO<BalanceDto>
                 {
                     Result = result.Result,
@@ -137,9 +139,43 @@ namespace Balances.Web.Services.Contracts
             }
         }
 
-      
+        public async Task<ResponseDTO<string>> setSession(string id)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"Session/{id}", id);
 
-      
+                // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
+                var result = await response.Content.ReadFromJsonAsync<ResponseDTO<string>>();
+
+                if (result.IsSuccess)
+                {
+                    return new ResponseDTO<string> { 
+                        Result = result.Result,
+                        Message = result.Message,
+                        IsSuccess = result.IsSuccess
+                    };
+                }
+                else
+                {
+                    return new ResponseDTO<string>
+                    {
+                        Result = result.Result,
+                        Message = result.Message,
+                        IsSuccess = result.IsSuccess
+                    };
+                }
+            }
+            catch(Exception ex) {
+                return new ResponseDTO<string>
+                {
+                    Result = null,
+                    Message = $"{"Error:SetSession"+ex.Message}",
+                    IsSuccess = false
+                };
+            }
+            
+        }
     }
 
 }

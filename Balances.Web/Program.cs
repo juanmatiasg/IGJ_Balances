@@ -14,9 +14,12 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7172/") });
 
@@ -31,7 +34,6 @@ builder.Services.AddScoped<IPresentacionService, PresentacionService >();
 builder.Services.AddScoped<IPresentacionService, PresentacionService>();
 
 
-
 builder.Services
     .AddBlazorise(options =>
     {
@@ -40,17 +42,12 @@ builder.Services
     .AddBootstrapProviders()
     .AddFontAwesomeIcons();
 
+
 builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 6000000; // Set the limit to a larger value (e.g., 6 MB)
 });
 
-
-
-/*builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2MB
-});*/
 
 
 builder.Services.AddBlazoredSessionStorage();

@@ -4,6 +4,7 @@
 @using Org.BouncyCastle.Asn1.Ocsp;
 @inject NavigationManager NavigationManager
 @inject ICaratulaService caratulaService
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 
 <h3>No se encontró el id de Balance</h3>
 
@@ -15,6 +16,7 @@
     {
         /*cargar la caratula*/
 
+      
         var rlt = await caratulaService.loadCaratula(balid);
 
         if (rlt.IsSuccess)
@@ -24,6 +26,11 @@
      
 
         //Else a una pagina de error
+    }
+
+    private async Task<string> GetSessionValue(string key)
+    {
+        return await SessionStorage.GetItemAsync<string>(key);
     }
 
 }

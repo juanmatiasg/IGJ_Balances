@@ -18,9 +18,6 @@
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
 
-    <script src="_content/Blazorise.Bootstrap5/modal.js?v=1.4.1.0" type="module"></script>
-    <script src="_content/Blazorise.Bootstrap5/tooltip.js?v=1.4.1.0" type="module"></script>
-
     <style>
         body {
             margin-left: 40px;
@@ -210,15 +207,15 @@
     </div>
     <br />
 
-    @if (balance.Caratula != null && balance.Caratula.Entidad != null)
+    @if (this.caratula != null && this.caratula.Entidad != null)
     {
         <div>
-            <p>     <b>Denominación         :</b>  @this.balance.Caratula.Entidad.RazonSocial</p>
-            <p>     <b>Tipo Societario      :</b>  @this.balance.Caratula.Entidad.TipoEntidad</p>
-            <p>     <b>Nro Correlativo      :</b>  @this.balance.Caratula.Entidad.Correlativo</p>
-            <p>     <b>CUIT                 :</b>  @this.balance.Caratula.Entidad.RazonSocial</p>
-            <p>     <b>Domicilio            :</b>  @this.balance.Caratula.Entidad.Domicilio</p>
-            <p>     <b>Estados contables al :</b>  @this.balance.Caratula.FechaInicio.ToString("dd/MM/yyyy")</p>
+            <p>     <b>Denominación         :</b>  @this.caratula.Entidad.RazonSocial</p>
+                <p>     <b>Tipo Societario      :</b>  @this.caratula.Entidad.TipoEntidad</p>
+                <p>     <b>Nro Correlativo      :</b>  @this.caratula.Entidad.Correlativo</p>
+                <p>     <b>CUIT                 :</b>  @this.caratula.Entidad.RazonSocial</p>
+                <p>     <b>Domicilio            :</b>  @this.caratula.Entidad.Domicilio</p>
+                <p>     <b>Estados contables al :</b>  @this.caratula.FechaInicio.ToString("dd/MM/yyyy")</p>
         </div>
     }
     else
@@ -232,15 +229,17 @@
             <p>     <b>Estados contables al :</b>    <span class="error">Fecha de inicio no disponible</span></p>
         </div>
     }
-    <br />
-    <div>
+        <br />
+        <div>
 
 
-        <p class="seccion">Manifestación del Representante Legal </p>
+            <p class="seccion">Manifestación del Representante Legal </p>
 
-        @if (balance.Caratula != null && balance.Caratula.Entidad != null)
-        {
-            <p>  En mi carácter de representante legal de la sociedad  @this.balance.Caratula.Entidad.RazonSocial  @this.balance.Caratula.Entidad.TipoEntidad, manifiesto que los datos contenidos en los archivos de hash {archivo.Hash} , se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al @this.balance.Caratula.FechaDeCierre.ToString("dd/MM/yyyy") obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
+            @if (this.caratula != null && this.caratula.Entidad != null)
+            {
+                @foreach (var file in this.listArchivo) { 
+                    <p>  En mi carácter de representante legal de la sociedad  @this.caratula.Entidad.RazonSocial  @this.caratula.Entidad.TipoEntidad, manifiesto que los datos contenidos en los archivos de hash @file.Hash , se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al @this.caratula.FechaDeCierre.ToString("dd/MM/yyyy") obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
+                }
         }
         else
         {
@@ -256,7 +255,7 @@
             if (autoridad.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
             {
                 <p><span class="error"> </span></p>
-                <p>   Lugar y Fecha     : @balance.Caratula.Entidad.Domicilio @balance.Caratula.FechaInicio.ToString("dd/MM/yyyy") </p>
+                <p>   Lugar y Fecha     : @this.caratula.Entidad.Domicilio @this.caratula.FechaInicio.ToString("dd/MM/yyyy") </p>
                 <p>   Apellido y Nombre : @autoridad.Apellido @autoridad.Nombre </p>
                 <p>   CUIT              : @autoridad.NroFiscal   </p>
                 <p>   Firma             : </p>
@@ -267,9 +266,9 @@
     <div>
         <p class="seccion">Certificación del Auditor Externo sobre Información Requerida por la Resolución General IGJ <span class="error">A DEFINIR</span></p>
 
-        @if (balance.Caratula != null && balance.Caratula.Entidad != null)
+        @if (this.caratula != null && this.caratula.Entidad != null)
         {
-            <p>En mi carácter de contador público independiente y auditor externo de @balance.Caratula.Entidad.RazonSocial  @balance.Caratula.Entidad.TipoEntidad, certifico la información detallada en el apartado siguiente.</p>
+                <p>En mi carácter de contador público independiente y auditor externo de @this.caratula.Entidad.RazonSocial  @this.caratula.Entidad.TipoEntidad, certifico la información detallada en el apartado siguiente.</p>
         }
         else
         {
@@ -283,10 +282,9 @@
             <table>
                 <tr>
                     <th>Asiento</th>
-                    <th>Libro</th>
+                    <th>Denominación</th>
                     <th>Numero de Rúbrica</th>
                     <th>Folio</th>
-                    <th>Denominacion</th>
                     <th>Fecha Registracion</th>
                 </tr>
                
@@ -295,8 +293,17 @@
                         <td>@libros.Memoria.Nombre</td>
                         <td>@libros.Memoria.NumeroRubrica</td>
                         <td>@libros.Memoria.Folio</td>
-                        <td>@libros.Memoria.Nombre</td>
                         <td>@libros.Memoria.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td>Asamblea</td>
+                        <td>@libros.Asamblea.Nombre</td>
+                        <td>@libros.Asamblea.NumeroRubrica</td>
+                        <td>@libros.Asamblea.Folio</td>
+                        <td>@libros.Asamblea.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
 
                     <tr>
@@ -304,7 +311,7 @@
                         <td>@libros.Administracion.Nombre</td>
                         <td>@libros.Administracion.NumeroRubrica</td>
                         <td>@libros.Administracion.Folio</td>
-                        <td>@libros.Administracion.Nombre</td>
+                   
                     <td>@libros.Administracion.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
 
@@ -321,7 +328,6 @@
                         <td>@libros.Resultados.Nombre</td>
                         <td>@libros.Resultados.NumeroRubrica</td>
                         <td>@libros.Resultados.Folio</td>
-                      
                         <td>@libros.Resultados.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
@@ -329,7 +335,6 @@
                         <td>@libros.PatrimonioNeto.Nombre</td>
                         <td>@libros.PatrimonioNeto.NumeroRubrica</td>
                         <td>@libros.PatrimonioNeto.Folio</td>
-                      
                         <td>@libros.PatrimonioNeto.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
@@ -337,7 +342,6 @@
                         <td>@libros.Efectivo.Nombre</td>
                         <td>@libros.Efectivo.NumeroRubrica</td>
                         <td>@libros.Efectivo.Folio</td>
-                       
                         <td>@libros.Efectivo.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
@@ -345,7 +349,6 @@
                         <td>@libros.Informacion.Nombre</td>
                         <td>@libros.Informacion.NumeroRubrica</td>
                         <td>@libros.Informacion.Folio</td>
-                  
                         <td>@libros.Informacion.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
@@ -353,7 +356,6 @@
                         <td>@libros.EstadosContablesConsolidados.Nombre</td>
                         <td>@libros.EstadosContablesConsolidados.NumeroRubrica</td>
                         <td>@libros.EstadosContablesConsolidados.Folio</td>
-                     
                         <td>@libros.EstadosContablesConsolidados.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
@@ -369,15 +371,14 @@
                         <td>@libros.Auditor.Nombre</td>
                         <td>@libros.Auditor.NumeroRubrica</td>
                         <td>@libros.Auditor.Folio</td>
-                       
-                    <td>@libros.Auditor.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Auditor.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
+
                     <tr>
                         <td>Registro de asistencia</td>
                         <td>@libros.AsistenciaAsamblea.Nombre</td>
                         <td>@libros.AsistenciaAsamblea.NumeroRubrica</td>
                         <td>@libros.AsistenciaAsamblea.Folio</td>
-                      
                         <td>@libros.AsistenciaAsamblea.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
@@ -386,8 +387,7 @@
                         <td>@libros.IVA.Nombre</td>
                         <td>@libros.IVA.NumeroRubrica</td>
                         <td>@libros.IVA.Folio</td>
-                        
-                    <td>@libros.IVA.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.IVA.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
 
@@ -395,21 +395,21 @@
                         <td>@libros.IVACompras.Nombre</td>
                         <td>@libros.IVACompras.NumeroRubrica</td>
                         <td>@libros.IVACompras.Folio</td>
-                
-                    <td>@libros.IVACompras.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.IVACompras.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
+                    
                     <tr>
                         <td>IVA Ventas</td>
                         <td>@libros.IVACompras.Nombre</td>
                         <td>@libros.IVACompras.NumeroRubrica</td>
-                        <td>@libros.IVACompras.Folio</td>
-                        
+                        <td>@libros.IVACompras.Folio</td>  
                         <td>@libros.IVACompras.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
                         <td colspan="4">Informe de Auditoria: Opinión <span class="error">FALTAN CAMPOS</span></td>
                     </tr>
-                    @if (contador != null)
+                    
+                    @if (this.contador != null)
                     {
                         <tr>
                             <td colspan="4">Fecha del Informe del Auditor Externo @contador.FechaInformeAuditorExt</td>
@@ -443,9 +443,9 @@
     <div>
         <p><b>2) Tarea Profesional Realizada</b></p>
         
-        @if (balance.Caratula != null && contador != null)
+        @if (this.caratula != null && this.contador != null)
         {
-            <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el @balance.Caratula.FechaDeCierre e Informe de Auditor Externo de fecha @contador.FechaInformeAuditorExt con los datos incluidos en <span class="error">FALTAN CAMPOS</span>.</p>
+                <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el @this.caratula.FechaDeCierre.ToString("dd/MM/yyyy") e Informe de Auditor Externo de fecha @this.contador.FechaInformeAuditorExt.ToString("dd/MM/yyyy") con los datos incluidos en <span class="error">FALTAN CAMPOS</span>.</p>
         }
     </div>
     <div>
@@ -454,12 +454,13 @@
     </div>
     <br />
     <div class="box">
-        @if (contador != null)
+        @if (this.contador != null)
         {
             <p>   Lugar y Fecha     : </p>
             <p>   Apellido y Nombre : @contador.Apellido @contador.Nombre </p>
             <p>   CUIT              : @contador.NroFiscal - T° @contador.Tomo F° @contador.Folio  </p>
             <p>   En carácter de Socio de la Soc Tº <span class="error">FALTAN CAMPOS</span> Fº <span class="error">FALTAN CAMPOS   (ésta línea solo debe aparecer si "Actúa en carácter de Socio de Estudio Contable" = True)</span></p>
+            
             <p>   Firma             : </p>
         }
     </div>
@@ -484,8 +485,12 @@
 
     private BalanceDto balance = new BalanceDto();
 
+    private CaratulaDto caratula = new CaratulaDto();
+
     private AutoridadDto autoridades = new AutoridadDto();
+
     private EstadoContableDto estadoContable = new EstadoContableDto();
+
     private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
 
     private LibrosDto libros = new LibrosDto();
@@ -493,6 +498,8 @@
 
     private ContadorDto contador = new ContadorDto();
     private List<Archivo> listArchivo = new List<Archivo>();
+
+
     private SociosDto socios = new SociosDto();
     private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
     private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
@@ -525,10 +532,27 @@
 
                         if (response.Result != null)
                         {
+
+                            //TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
                             setBalance(balance);
 
-                            TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+                            //Caratula
+                            setCaratula(response.Result.Caratula);
 
+                            //EstadoContable
+                            //setEstadoContable(response.Result.EstadoContable);
+
+                            this.estadoContable.tipoBalance = response.Result.EstadoContable.TipoBalance;
+                            this.estadoContable.fechaInicio = response.Result.EstadoContable.FechaInicio;
+                            this.estadoContable.fechaEstado = response.Result.EstadoContable.FechaEstado;
+                            this.estadoContable.fechaAsamblea = response.Result.EstadoContable.FechaAsamblea;
+                            this.estadoContable.fechaReunionDirectorio = response.Result.EstadoContable.FechaReunionDirectorio;
+                            this.estadoContable.cajaYBancos = response.Result.EstadoContable.CajaYBancos;
+                            this.estadoContable.inversionesActivoCorriente = response.Result.EstadoContable.InversionesActivoCorriente;
+                            this.estadoContable.otrosRubros = response.Result.EstadoContable.otrosRubros;
+
+                            // this.balance.Caratula = response.Result.Caratula;
                             this.libros.Asamblea = response.Result.Libros.Asamblea;
                             this.libros.Administracion = response.Result.Libros.Administracion;
                             this.libros.AsistenciaAsamblea = response.Result.Libros.AsistenciaAsamblea;
@@ -545,31 +569,20 @@
                             this.libros.Memoria = response.Result.Libros.Memoria;
                             this.libros.Informacion = response.Result.Libros.Informacion;
 
-                            /*//EstadoContable
-                            this.estadoContable.tipoBalance = response.Result.EstadoContable.TipoBalance;
-                            this.estadoContable.fechaInicio = response.Result.EstadoContable.FechaInicio;
-                            this.estadoContable.fechaEstado = response.Result.EstadoContable.FechaEstado;
-                            this.estadoContable.fechaAsamblea = response.Result.EstadoContable.FechaAsamblea;
-                            this.estadoContable.fechaReunionDirectorio = response.Result.EstadoContable.FechaReunionDirectorio;
-                            this.estadoContable.cajaYBancos = response.Result.EstadoContable.CajaYBancos;
-                            this.estadoContable.inversionesActivoCorriente = response.Result.EstadoContable.InversionesActivoCorriente;
-                            this.estadoContable.otrosRubros = response.Result.EstadoContable.otrosRubros;
+                            //Contador
+                            setContador(response.Result.Contador);
+
+                            //Autoridades
+                            setAutoridades(response.Result.Autoridades);
+
                             //Integrante
-                            /*this.socios = response.Result.Socios;
-                            this.listPersonaHumana = response.Result.Socios.PersonasHumanas;  
-                            this.listPersonaJuridica = response.Result.Socios.PersonasJuridicas;*/
+
+                            this.listPersonaHumana = response.Result.Socios.PersonasHumanas;
+                            this.listPersonaJuridica = response.Result.Socios.PersonasJuridicas;
 
 
-
-                            //setLibros(balance.Libros);
-                            //setEstadoContable(balance.EstadoContable);
-                            //setLibros(balance.Libros);
-                            //setContador(balance.Contador);
-                            //setAutoridades(balance.Autoridades);
-                            //setSocios(balance.Socios);
-                            //setIntegranteHumana(balance.Socios.PersonasHumanas);
-                            //setIntegranteJuridica(balance.Socios.PersonasJuridicas);
-                            //setArchivos(balance.Archivos);*/
+                            //Archivos
+                            setArchivos(response.Result.Archivos);
 
                             StateHasChanged();
 
@@ -648,6 +661,21 @@
         }
     }
 
+    private void setCaratula(Model.Caratula caratula)
+    {
+        this.caratula.Entidad = caratula.Entidad;
+        this.caratula.Entidad.Domicilio = caratula.Entidad.Domicilio;
+        this.caratula.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+        this.caratula.FechaInicio = caratula.FechaInicio;
+        this.caratula.FechaDeCierre = caratula.FechaDeCierre;
+        this.caratula.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+        this.caratula.Entidad.Correlativo = caratula.Entidad.Correlativo;
+        this.caratula.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+
+
+        TipoEntidad = caratula.Entidad.TipoEntidad;
+
+    }
 
     private void setEstadoContable(Model.EstadoContable estadoContable)
     {
@@ -692,14 +720,6 @@
 
     }
 
-    private void setSocios(SociosDto socios)
-    {
-
-        this.socios = socios;
-
-
-    }
-
 
 
     private void setIntegranteHumana(List<PersonaHumanaDto> listPersonaHumana)
@@ -715,15 +735,7 @@
 
     }
 
-    private List<PersonaHumanaDto> getIntegranteHumana()
-    {
-
-        return this.listPersonaHumana;
-
-    }
-
-
-
+    
 
 
 
@@ -751,20 +763,11 @@
         mensajesError.Clear();
 
         // Validar propiedades de Entidad
-        //ValidarPropiedades(balance.Caratula.Entidad, "Entidad");
+        ValidarPropiedades(this.caratula.Entidad, "Entidad");
 
         //Validar propiedades de EstadoContable
-        //ValidarPropiedades(this.estadoContable, "Estado Contable");
+        ValidarPropiedades(this.estadoContable, "Estado Contable");
 
-
-        //Validar propiedades de Socios 
-
-        // ValidarPropiedades(this.listPersonaHumana, "Integrante - Persona Humana");
-
-        // ValidarPropiedades(this.listPersonaJuridica, "Integrante - Persona Jurídica");
-
-        //Validar propiedades de Contador
-        // ValidarPropiedades(contador, "Contador");
 
         //Libros
         if (this.libro != null)
@@ -786,11 +789,21 @@
             ValidarPropiedades(this.libros.Informacion, "Libros - Informacion");
         }
 
-            // Validar propiedades de Autoridades
-            // ValidarPropiedades(balance.Autoridades, "Autoridades");
+        //Validar propiedades de Contador
+        ValidarPropiedades(contador, "Contador");
 
-            // // Validar propiedades de Archivos
-            // ValidarPropiedades(balance.Archivos, "Archivos");
+        // Validar propiedades de Autoridades
+        ValidarPropiedades(this.listAutoridades, "Autoridades");
+
+
+        //Validar propiedades de Socios
+
+        ValidarPropiedades(this.listPersonaHumana, "Integrante - Persona Humana");
+        ValidarPropiedades(this.listPersonaJuridica, "Integrante - Persona Jurídica");
+        
+
+         // Validar propiedades de Archivos
+        ValidarPropiedades(this.listArchivo, "Archivos");
 
             // Verificar si hay mensajes de error y mostrarlos
 
@@ -899,6 +912,7 @@
         {
             return "Integrante / Persona Juridica";
         }
+
 
         else if (mensaje.Contains("Estado Contable"))
         {
