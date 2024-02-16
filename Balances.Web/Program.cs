@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http.Features;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -32,6 +34,14 @@ builder.Services.AddScoped<IArchivosService, ArchivosService>();
 builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
 builder.Services.AddScoped<IPresentacionService, PresentacionService >();
 builder.Services.AddScoped<IPresentacionService, PresentacionService>();
+
+// Ejemplo de configuración para ASP.NET Core
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
+
 
 
 builder.Services

@@ -9,8 +9,8 @@
 @using Blazorise.Extensions;
 @inject IEstadoContableService estadoContableService;
 @inject NavigationManager NavigationManager
-@{
-}
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -502,6 +502,9 @@
     string cantidadStr;
     private bool firstTimeInput = true;
 
+    private const string KEY_SESSION = "idSession";
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -532,13 +535,15 @@
     {
         try
         {
-            var idSession = await estadoContableService.getSession();
+            var idSession = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
 
-            if (idSession.IsSuccess)
+            //var idSession = await estadoContableService.getSession();
+
+            if (idSession!=null)
             {
-                var response = await estadoContableService.getBalance(idSession.Result);
+                var response = await estadoContableService.getBalance(idSession);
 
-                if (idSession.IsSuccess == true)
+                if (response.IsSuccess)
                 {
 
                     try

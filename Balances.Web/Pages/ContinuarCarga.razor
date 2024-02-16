@@ -6,7 +6,7 @@
 @inject ICaratulaService caratulaService
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 
-<h3>No se encontró el id de Balance</h3>
+<h3>Cargando....</h3>
 
 @code {
     [Parameter]
@@ -28,9 +28,6 @@
         //Else a una pagina de error
     }
 
-    private async Task<string> GetSessionValue(string key)
-    {
-        return await SessionStorage.GetItemAsync<string>(key);
-    }
+   
 
 }

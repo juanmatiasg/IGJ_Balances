@@ -134,13 +134,16 @@ try
     //app.UseSerilogRequestLogging();
 
 
-    app.UseRouting();
+    app.UseRouting(); 
     app.UseCors("NuevaPolitica");
     app.UseAuthorization();
-    //Cors
+        //Cors
     //app.UseCors("NuevaPolitica");
 
     app.UseAuthentication();
+
+    app.UseAuthorization();
+
 
 
     app.MapControllers();

@@ -2,6 +2,7 @@
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.JSInterop
 @using Balances.Web.Services
 @using System.Text.RegularExpressions;
@@ -11,7 +12,8 @@
 @inject ICaratulaService caratulaService
 @inject NavigationManager NavigationManager;
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage
-
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject IHttpContextAccessor httpContextAccessor
 
 
 
@@ -36,7 +38,7 @@
         <!--Navegacion-->
 
 
-    <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado"></Navegacion>
+        <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado"></Navegacion>
 
         <!--Loading-->
 
@@ -229,8 +231,9 @@
              
              </div>
         </div>
+   
     </body>
-
+    
 
 </html>
 
@@ -271,11 +274,11 @@
 
 
 
-
     protected override async Task OnInitializedAsync()
     {
         modelo.FechaInicio = DateTime.Now;
         modelo.FechaDeCierre = DateTime.Now;
+
         await Load();
 
         await base.OnInitializedAsync();
@@ -287,16 +290,18 @@
         {
 
 
-            idSession = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
+            // if(sessionStorage!=null)
 
+           // var idSessionResponse = await caratulaService.getSession();
+            var idSessionStorage = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
+            //var idLocalSessionStorage = await LocalStorage.GetItemAsync<string>(KEY_SESSION);
+ 
 
-            var idSessionResponse = await caratulaService.getSession();
+            idSession = idSessionStorage;
 
-            //idSession = idSessionResponse.Result;
-
-            if (idSessionResponse.IsSuccess)
+            if (idSession !=null)
             {
-                var response = await caratulaService.getBalance(idSessionResponse.Result!);
+                var response = await caratulaService.getBalance(idSession);
 
                 if (response.IsSuccess)
                 {
@@ -331,6 +336,7 @@
             {
                 Console.WriteLine($"No se ha encontrado el idSession");
             }
+
         }
         catch (Exception ex)
         {
@@ -415,26 +421,23 @@
 
                     if (Validator.IsEmail(modelo.Email))
                     {
+                        
                         var response = await caratulaService.initTramite(modelo);
-
+                        
                         if (response.IsSuccess)
                         {
+                            //No encuentra el archivo de emailPlantillas
+                            //await caratulaService.setSession(response.Result.Id);
+                            await SessionStorage.SetItemAsync(KEY_SESSION,response.Result.Id);
+                            //await LocalStorage.SetItemAsync(KEY_SESSION, response.Result.Id);
 
-                            var serviceSession = await caratulaService.setSession(response.Result.Id);
-
-                            if (serviceSession.IsSuccess)
-                            {
-                                //var idSessionResponse = await caratulaService.getSession();
-
-                                // idSession = idSessionResponse.Result;
-
-                                await SetSessionValue(KEY_SESSION, response.Result!.Id);
-
-                                isActive = true;
-                                tramiteIniciado = true;
-                            }
+                            isActive = true;
+                            tramiteIniciado = true;
 
 
+                            StateHasChanged();
+
+                           
                         }
                     }
                     else
@@ -456,12 +459,13 @@
         {
             Console.WriteLine($"Error: IniciarTramites {ex.Message}");
         }
-
         finally
         {
-            await HideLoadingModal();    
+            await HideLoadingModal();
+            StateHasChanged();
         }
 
+        
     }
 
 
@@ -478,15 +482,7 @@
     }
 
 
-    private async Task<string> GetSessionValue(string key)
-    {
-        return await SessionStorage.GetItemAsync<string>(key);
-    }
-   
-    private async Task SetSessionValue(string key, string value)
-    {
-        await SessionStorage.SetItemAsync(key, value);
-    }
+  
 
 
    
