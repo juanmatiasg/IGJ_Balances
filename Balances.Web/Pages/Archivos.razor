@@ -54,17 +54,11 @@
                                     <option value="Otro">Otro</option>
                                 </select>
                             </div>
-                            <!-- Add a loading message -->
-                            @if (isUploading)
-                            {
-                                <div class="progress mt-3">
-                                    <div class="progress-bar" role="progressbar" style="width: @uploadProgress%" aria-valuenow="@uploadProgress" aria-valuemin="0" aria-valuemax="100">@uploadProgress%</div>
-                                </div>
-                            }
+                           
 
                             <div class="col">
                                 <InputFile OnChange="@HandleFileUpload" multiple />
-                                <button type="button" @onclick="UploadFile" disabled="@isUploading">Subir Archivo</button>
+                                <button type="button" @onclick="UploadFile">Subir Archivo</button>
                             </div>
 
                         </form>
@@ -104,7 +98,7 @@
                                             <td>@(archivo.Categoria.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
                                             <td>@archivo.Hash</td>
                                             <td>@archivo.FechaCreacion.ToString("dd/MM/yyyy")</td>
-                                            <td>@archivo.Tamaño</td>
+                                            <td>@archivo.Tamaño @conversionesDeArchivos(archivo.Tamaño)</td>
                                             <td>
                                                 <button type="button" class="btn btn-danger" @onclick="() => deleteArchivo(archivo)">Eliminar</button>
                                             </td>
@@ -113,6 +107,7 @@
                                 }
                             }
                         </table>
+                        <small id="fechaError" class="text-danger">@msgError</small>
                     </div>
                 </div>
             </div>
@@ -132,8 +127,7 @@
     private string msgError = "";
     private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
     private List<FileDTO> listArchivo = new List<FileDTO>();
-    private bool isUploading = false;
-    private int uploadProgress = 0;
+
 
     protected override async void OnInitialized()
     {
@@ -157,8 +151,7 @@
                     try
                     {
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
-
-                       
+                        var rspArchivos = response.Result.Archivos;
 
                         StateHasChanged();
 
@@ -166,7 +159,7 @@
                     catch (Exception ex)
                     {
 
-                        Console.WriteLine($"GetBalance: Hubo un problema con la solicitud fetch: {ex.Message}");
+                       response.Message = $"GetBalance: Hubo un problema con la solicitud fetch: {ex.Message}";
                     }
                 }
             }
@@ -180,8 +173,65 @@
 
     }
 
- 
-        
+    private void setListArchivos(List<Archivo> list)
+    {
+        if(list.Count>0){
+
+            var archivo = new FileDTO();
+
+            list.ForEach(x =>
+            {
+                archivo.NombreArchivo = x.NombreArchivo;
+                archivo.Categoria = x.Categoria;
+                archivo.Hash = x.Hash;
+                archivo.Tamaño = x.Tamaño;
+                archivo.FechaCreacion = x.FechaCreacion;
+
+            });
+
+            this.listArchivo.Add(archivo);
+        }
+    }
+
+    private string conversionesDeArchivos(long file)
+    {
+        // Tamaño del archivo en bytes (esto podría provenir de tu archivo subido)
+        long fileSizeInBytes = file;
+
+
+        if (fileSizeInBytes < 1024)
+        {
+
+            return "Bytes";
+        }
+        else if (fileSizeInBytes < 1024 * 1024)
+        {
+            double fileSizeInKB = (double)fileSizeInBytes / 1024;
+            return "KB";
+
+        }
+        else if (fileSizeInBytes < 1024L * 1024 * 1024)
+        {
+            double fileSizeInMB = (double)fileSizeInBytes / (1024 * 1024);
+            return "MB";
+
+        }
+        else if (fileSizeInBytes < 1024L * 1024 * 1024 * 1024)
+        {
+            double fileSizeInGB = (double)fileSizeInBytes / (1024 * 1024 * 1024);
+            return "GB";
+
+        }
+        else
+        {
+            double fileSizeInTB = (double)fileSizeInBytes / (1024L * 1024 * 1024 * 1024);
+            return "TB";
+        }
+
+    }
+
+
+
 
     private  void HandleFileUpload(InputFileChangeEventArgs e)
     {
@@ -211,8 +261,8 @@
 
     private async Task<ResponseDTO<BalanceDto>> UploadFile()
     {
-        isUploading = true; // Set the flag to indicate that the upload is in progress
-        uploadProgress = 0;
+ 
+       
 
         var response = new ResponseDTO<BalanceDto>();
 
@@ -220,10 +270,9 @@
         {
             if (selectedFiles.Count > 0 && !string.IsNullOrEmpty(categoria))
             {
-                var totalSize = selectedFiles.Sum(file => file.Size);
-                var uploadedSize = 0L;
+                //var totalSize = selectedFiles.Sum(file => file.Size);
 
-                var archivos = new List<FileDTO>();
+                var archivos = new FileDTO();
 
                 foreach (var file in selectedFiles)
                 {
@@ -231,30 +280,27 @@
                     if (file.Size > 2097152)
                     {
                         response.Message = $"File '{file.Name}' exceeds the maximum allowed size.";
+                        msgError = $"File '{file.Name}' exceeds the maximum allowed size.";
+
                         return response;
                     }
 
                     var binario = await ToByteArrayAsync(file.OpenReadStream());
 
-                    var f = new FileDTO
-                        {
-                            DatosBinarios = binario,
-                            Tamaño = binario.Length,
-                            ContentType = file.ContentType,
-                            Categoria = categoria,
-                            NombreArchivo = file.Name,
-                            Hash = Convert.ToHexString(SHA256.HashData(binario))
-                        };
 
-                    archivos.Add(f);
-                    uploadedSize += f.Tamaño;
-                    uploadProgress = (int)((uploadedSize * 100) / totalSize);
+                    archivos.DatosBinarios = binario;
+                    archivos.Tamaño = binario.Length;
+                    archivos.ContentType = file.ContentType;
+                    archivos.Categoria = categoria;
+                    archivos.NombreArchivo = file.Name;
+                    archivos.Hash = Convert.ToHexString(SHA256.HashData(binario));
 
+
+                    //archivos.Add(f);
+                    listArchivo.Add(archivos);
+                 
                 }
-
-                listArchivo.AddRange(archivos);
-         
-
+    
                 response = await archivoService.uploadArchivo(selectedFiles, categoria);
 
                 if (response.IsSuccess)
@@ -277,12 +323,7 @@
         }
       
             
-        finally
-        {
-            isUploading = false; // Reset the flag when the upload is complete (whether successful or not)
-            uploadProgress = 0;
-        }
-
+       
 
         return response;
     }

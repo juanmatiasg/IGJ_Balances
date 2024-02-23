@@ -19,6 +19,15 @@ namespace Balances.Utilities
             return numericRegex.IsMatch(input);
         }
 
+        public static bool IsNumericDecimal(decimal input)
+        {
+            // Expresión regular para verificar si la cadena contiene solo dígitos
+            Regex numericRegex = new Regex(@"^\d+$", RegexOptions.Compiled);
+
+            // Devuelve true si la cadena contiene solo dígitos, de lo contrario, false
+            return numericRegex.IsMatch(input.ToString());
+        }
+
 
         public static bool IsEmail(string input)
         {

@@ -83,8 +83,10 @@ namespace Balances.Bussiness.Implementacion
 
                     balanceDto.EstadoContable = _mapper.Map<EstadoContable>(modelo);
 
-                    if (balanceDto.EstadoContable.otrosRubros == null)
-                        balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();
+                    
+
+                   /*if (balanceDto.EstadoContable.otrosRubros == null)
+                       balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();
 
 
                     foreach (var rubro in balanceDto.EstadoContable.otrosRubros.ToList())
@@ -93,7 +95,7 @@ namespace Balances.Bussiness.Implementacion
                         rubro.Codigo = Guid.NewGuid().ToString();
                         balanceDto.EstadoContable.otrosRubros.Add(rubro);
                         //balanceDto.EstadoContable.otrosRubros.AddRange(rubro);
-                    }
+                    }*/
 
 
                     var rsp = _balanceBusiness.Update(balanceDto);
@@ -102,26 +104,6 @@ namespace Balances.Bussiness.Implementacion
                     respuesta = rsp;
                 }
 
-                //if (resultadoDto.IsSuccess)
-                //{
-                //    var balanceDto = resultadoDto.Result;
-
-                //    /*ACTUALIZAR BALANCE CON EL DTO*/
-
-
-                //    if (balanceDto.EstadoContable.otrosRubros == null)
-                //        balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();
-
-                //    foreach (var rubro in balanceDto.EstadoContable.otrosRubros.ToList())
-                //    {
-                //        rubro.Codigo = Guid.NewGuid().ToString();
-                //        balanceDto.EstadoContable.otrosRubros.Add(rubro);
-                //    }
-
-                //    var rsp = _balanceBusiness.Update(balanceDto);
-
-                //    respuesta = rsp;
-                //}
             }
             catch (Exception ex)
             {
@@ -149,7 +131,7 @@ namespace Balances.Bussiness.Implementacion
                     var balanceDto = resultadoDto.Result;
 
 
-                    balanceDto.EstadoContable = new EstadoContable();
+                    //balanceDto.EstadoContable = new EstadoContable();
 
                     if (balanceDto.EstadoContable.otrosRubros == null)
                         balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();

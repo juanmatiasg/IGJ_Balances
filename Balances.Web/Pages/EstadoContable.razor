@@ -397,7 +397,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">ARS $</span>
                                 </div>
-                                <input type="text" class="form-control" id="activoCorriente" @bind="rubroDto.importe"  placeholder="$00.000" />
+                                <input type="text" class="form-control" id="activoCorriente" @bind="rubroDto.importe" />
                                 <small id="tipoBalanceError" class="text-danger">@pasivoNoCorrienteError</small>
 
                             </div>
@@ -409,9 +409,9 @@
                 </div>
 
                 <div class="card-body">
-                    @if (lista.Count > 0)
+                    @if (estadoContableDto.otrosRubros != null)
                     {
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th scope="col"></th>
@@ -421,7 +421,7 @@
 
                                 </tr>
                             </thead>
-                            @foreach (var rubro in lista)
+                            @foreach (var rubro in estadoContableDto.otrosRubros)
                             {
                                 <tbody>
                                     <tr>
@@ -490,9 +490,13 @@
 
 
 
-    private EstadoContableDto estadoContableDto = new EstadoContableDto();
+    private EstadoContableDto estadoContableDto = new EstadoContableDto()
+        {
+            otrosRubros = new List<RubroPatrimonioNeto>()
+        };
+
+
     private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
-    private List<RubroPatrimonioNeto> lista = new List<RubroPatrimonioNeto>();
     private Boolean statusPatrimonioNeto = false;
 
     private string otraCosa = "";
@@ -526,8 +530,6 @@
         estadoContableDto.fechaAsamblea = DateTime.UtcNow;
         estadoContableDto.fechaEstado = DateTime.UtcNow;
         estadoContableDto.fechaReunionDirectorio = DateTime.UtcNow;
-
-
     }
 
 
@@ -535,13 +537,13 @@
     {
         try
         {
-            var idSession = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
+            // var idSession = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
 
-            //var idSession = await estadoContableService.getSession();
+            var idSession = await estadoContableService.getSession();
 
             if (idSession!=null)
             {
-                var response = await estadoContableService.getBalance(idSession);
+                var response = await estadoContableService.getBalance(idSession.Result);
 
                 if (response.IsSuccess)
                 {
@@ -550,10 +552,8 @@
                     {
                         var rsp = response.Result.EstadoContable;
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
-
                         estadoContableDto = new EstadoContableDto(rsp);
 
-                        setListOtrosRubros(rsp.otrosRubros);
 
                         StateHasChanged();
 
@@ -578,7 +578,6 @@
 
     }
 
-    private EstadoContableDto convertToEstadoContableDTO(Model.EstadoContable estadoContable) => new EstadoContableDto(estadoContable);
 
 
 
@@ -598,7 +597,7 @@
         {
             if (checkData())
             {
-                
+
                 respuesta = await estadoContableService.insertEEC(estadoContableDto);
 
                 if (respuesta.IsSuccess)
@@ -610,7 +609,7 @@
                     respuesta.Message = "No se inserto el Estado Contable";
 
                 }
-                
+
             }
 
         }
@@ -663,11 +662,11 @@
 
     private  void resultadoPatNetDetailPatNeto()
     {
-        
-        
+
+
         if (resultadoPatrimonioNeto() > 0)
         {
-            if (!(lista.Count > 0))
+            if (!(estadoContableDto.otrosRubros.Count > 0))
             {
                 if (estadoContableDto.reservaLegal > 0)
                 {
@@ -677,18 +676,18 @@
                     if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
                     {
                         statusPatrimonioNeto = false;
-                       
+
                     }
                     else
                     {
                         statusPatrimonioNeto = true;
-                      
+
                     }
                 }
             }
             else
             {
-                foreach (var rubro in lista)
+                foreach (var rubro in estadoContableDto.otrosRubros)
                 {
                     var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + rubro.Importe;
                     if (estadoContableDto.reservaLegal > 0)
@@ -696,12 +695,12 @@
                         if (resultadoPatrimonioNeto() == sumatoriaDetallePatNeto)
                         {
                             statusPatrimonioNeto = false;
-                            
+
                         }
                         else
                         {
                             statusPatrimonioNeto = true;
-                           
+
                         }
                     }
                 }
@@ -806,16 +805,19 @@
 
             if (respuesta.IsSuccess)
             {
-                var result = respuesta.Result.EstadoContable.otrosRubros;
+                var result = respuesta.Result.EstadoContable;
 
-                setListOtrosRubros(result);
 
-                Console.WriteLine("Se inserto el rubro sastifactoriamente");
+
+                setListOtrosRubros(result.otrosRubros);
+
+
+                respuesta.Message = "Se inserto el rubro sastifactoriamente";
 
             }
             else
             {
-                Console.WriteLine("No se inserto el rubro");
+                respuesta.Message = "No se inserto el rubro";
 
             }
 
@@ -828,9 +830,10 @@
         return respuesta;
     }
 
-    public void setListOtrosRubros(List<RubroPatrimonioNeto>list)
+    public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
     {
-        this.lista = list;
+        estadoContableDto.otrosRubros.Clear();
+        estadoContableDto.otrosRubros.AddRange(rubros);
     }
 
     private async Task<ResponseDTO<BalanceDto>> deleteRubro(RubroPatrimonioNeto rubro)
@@ -847,8 +850,8 @@
 
             if (respuesta.IsSuccess)
             {
+                estadoContableDto.otrosRubros.Remove(rubro);
                 respuesta.Message = "Se eliminó el rubro sastifactoriamente";
-                this.lista.Remove(rubro);
                 StateHasChanged();
             }
 
@@ -929,7 +932,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.cajaYBancos.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.cajaYBancos.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.cajaYBancos.ToString()))
             {
                 cajaYBancosError = "No puedes ingresar caracteres en el campo ";
                 return false;
@@ -950,7 +953,7 @@
         //Inversiones
         if (!string.IsNullOrEmpty(estadoContableDto.inversionesActivoCorriente.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.inversionesActivoCorriente.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.inversionesActivoCorriente.ToString()))
             {
                 inversionesError = "No puedes ingresar caracteres en el campo ";
                 return false;
@@ -969,7 +972,7 @@
         //Bienes de Cambio
         if (!string.IsNullOrEmpty(estadoContableDto.bienesDeCambio.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.bienesDeCambio.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.bienesDeCambio.ToString()))
             {
                 bienesDeCambioError = "No puedes ingresar caracteres en el campo ";
                 return false;
@@ -990,7 +993,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.activoCorrienteRestante.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.activoCorrienteRestante.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.activoCorrienteRestante.ToString()))
             {
                 activoCorrienteRestanteError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1010,7 +1013,7 @@
         //Bienes de Uso
         if (!string.IsNullOrEmpty(estadoContableDto.bienesDeUso.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.bienesDeUso.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.bienesDeUso.ToString()))
             {
                 bienesDeUsoError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1030,7 +1033,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.propiedadesDeInversion.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.propiedadesDeInversion.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.propiedadesDeInversion.ToString()))
             {
                 propiedadesDeInversionError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1050,7 +1053,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.activoNoCorrienteRestante.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.activoNoCorrienteRestante.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.activoNoCorrienteRestante.ToString()))
             {
                 activoNoCorrienteRestanteError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1072,7 +1075,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoCorriente.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
             {
                 deudasPasivoCorrienteError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1092,7 +1095,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoNoCorriente.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.deudorPasivoNoCorriente.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.deudorPasivoNoCorriente.ToString()))
             {
                 deudasPasivoNoCorrienteError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1113,7 +1116,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.capitalSuscripto.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
             {
                 capitalSuscriptoError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1132,7 +1135,7 @@
         //Ajuste al capital
         if (!string.IsNullOrEmpty(estadoContableDto.ajusteCapital.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.ajusteCapital.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.ajusteCapital.ToString()))
             {
                 ajusteCapitalError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1151,7 +1154,7 @@
         //Aporte Irrevocables
         if (!string.IsNullOrEmpty(estadoContableDto.aportesIrrevocables.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.aportesIrrevocables.ToString()) )
+            if (!Validator.IsNumeric(estadoContableDto.aportesIrrevocables.ToString()) )
             {
                 aportesIrrevocablesError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1172,7 +1175,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.primaEmision.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.primaEmision.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.primaEmision.ToString()))
             {
                 primaEmisionError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1192,7 +1195,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.gananciasReservadas.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.gananciasReservadas.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.gananciasReservadas.ToString()))
             {
                 gananciasReservadasError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1211,7 +1214,7 @@
         //Perdidas Acumuladas
         if (!string.IsNullOrEmpty(estadoContableDto.perdidasAcumuladas.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.perdidasAcumuladas.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.perdidasAcumuladas.ToString()))
             {
                 perdidasAcumuladasError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1231,7 +1234,7 @@
         //Ganancias  Perdidas del Ejercicio
         if (!string.IsNullOrEmpty(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
             {
                 gananciasPerdidasEjercicioError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1252,7 +1255,7 @@
 
         if (!string.IsNullOrEmpty(estadoContableDto.reservaLegal.ToString()))
         {
-            if (Validator.IsNumeric(estadoContableDto.reservaLegal.ToString()))
+            if (!Validator.IsNumeric(estadoContableDto.reservaLegal.ToString()))
             {
                 reservaLegalError = "No puedes ingresar caracteres en el campo";
                 return false;

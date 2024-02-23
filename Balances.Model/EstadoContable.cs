@@ -50,10 +50,7 @@
         public List<RubroPatrimonioNeto> otrosRubros { get; set; }
 
 
-        public EstadoContable()
-        { 
-            this.otrosRubros = new List<RubroPatrimonioNeto> { };
-        }
+       
     }
 
 

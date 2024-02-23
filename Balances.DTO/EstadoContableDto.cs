@@ -153,7 +153,7 @@ namespace Balances.DTO
             perdidasAcumuladas = (decimal)a.PerdidasAcumuladas;
             gananciasPerdidasEjercicio = (decimal)a.GananciasPerdidasEjercicio;
             reservaLegal = (decimal)a.ReservaLegal;
-
+            otrosRubros = a.otrosRubros;
             //otrosRubros = new RubrosPatrimonioNetoDto(a.OtrosRubros);
 
         }
@@ -163,30 +163,7 @@ namespace Balances.DTO
         }
 
     
-        public string FormatearBalance(EstadoContableDto estadoContabledto)
-        {
-            Type tipoEstadoContable = estadoContabledto.GetType();
-            PropertyInfo[] propiedades = tipoEstadoContable.GetProperties();
-
-            StringBuilder resultadoFinal = new StringBuilder();
-
-            foreach (PropertyInfo propiedad in propiedades)
-            {
-                if (propiedad.PropertyType == typeof(decimal))
-                {
-                    object valorOriginal = propiedad.GetValue(estadoContabledto);
-                    decimal valorDecimal = Math.Abs((decimal)valorOriginal);
-                    string valorFormateado = valorDecimal.ToString("N2");
-                    resultadoFinal.Append(valorFormateado);
-                }
-                else
-                {
-                    Console.WriteLine("No se puede formatear el formato decimal");
-                }
-            }
-
-            return resultadoFinal.ToString();
-        }
+      
 
     }
 }
