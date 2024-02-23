@@ -6,10 +6,7 @@ namespace Balances.Web.Services.Implementation
     {
         Task<ResponseDTO<BalanceDto>> postContador(ContadorDto contador);
 
-
         Task<ResponseDTO<BalanceDto>> getBalance(string id);
-
-        Task<ResponseDTO<string>> setSession(string idBalance);
 
         Task<ResponseDTO<string>> getSession();
 

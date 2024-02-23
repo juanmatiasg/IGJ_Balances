@@ -66,6 +66,7 @@ namespace Balances.Services.Implementation
 
             SetTag("Memoria", balance.Libros.Memoria);
             SetTag("PatrimonioNeto", balance.Libros.PatrimonioNeto);
+            SetTag("Asamblea", balance.Libros.Asamblea);
             SetTag("SituacionPatrimonial", balance.Libros.SituacionPatrimonial);
             SetTag("Auditor", balance.Libros.Auditor);
             SetTag("Administracion", balance.Libros.Administracion);
@@ -80,25 +81,23 @@ namespace Balances.Services.Implementation
             SetTag("IVAVentas", balance.Libros.IVAVentas);
 
 
-
-
-
-
-
-
-
             return PlantillaHTML;
 
         }
 
         private void SetTag(string libroNombre, LibroDto libro)
         {
-            if (libro.Denominacion != null)
+            // Esto lo agrego Juan Fecha 18/07/2024
+            SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
+            SetTag("{{" + libroNombre + ".NumeroRubrica}}", libro.NumeroRubrica);
+            SetTag("{{" + libroNombre + ".Folio}}", libro.Folio);
+            SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", libro.FechaUltimaRegistracion.ToString("dd/MM/yyyy"));
+
+            if (libro.Nombre != null)
             {
                 SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
                 SetTag("{{" + libroNombre + ".NumeroRubrica}}", libro.NumeroRubrica);
                 SetTag("{{" + libroNombre + ".Folio}}", libro.Folio);
-                SetTag("{{" + libroNombre + ".Denominacion}}", libro.Denominacion);
                 SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", libro.FechaUltimaRegistracion.ToString("dd/MM/yyyy"));
             }
             else
@@ -106,9 +105,10 @@ namespace Balances.Services.Implementation
                 SetTag("{{" + libroNombre + ".Nombre}}", "N/C");
                 SetTag("{{" + libroNombre + ".NumeroRubrica}}", "N/C");
                 SetTag("{{" + libroNombre + ".Folio}}", "N/C");
-                SetTag("{{" + libroNombre + ".Denominacion}}", "N/C");
                 SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", "N/C");
             }
+
+      
 
         }
 
@@ -120,7 +120,7 @@ namespace Balances.Services.Implementation
 
         public string CrearPlantillaPresentacionPdf(BalanceDtoPresentacion balance, string qr)
         {
-            this.PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalance.html");
+            this.PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalance2.html");
 
             PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
             PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
@@ -138,7 +138,6 @@ namespace Balances.Services.Implementation
             PlantillaHTML = PlantillaHTML.Replace("{{Contador.Tomo}}", balance.Contador.Tomo);
             PlantillaHTML = PlantillaHTML.Replace("{{Contador.FechaInformeAuditorExt}}", balance.Contador.FechaInformeAuditorExt.ToShortDateString());
             PlantillaHTML = PlantillaHTML.Replace("{{Contador.NroLegalInfoAudExt}}", balance.Contador.NroLegalInfoAudExt);
-
 
 
             SetTag("Memoria", balance.Libros.Memoria);

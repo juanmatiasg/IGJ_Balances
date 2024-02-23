@@ -1,4 +1,5 @@
 ﻿using Balances.DTO;
+using Balances.Model;
 
 namespace Balances.Bussiness.Contrato
 {
@@ -6,7 +7,7 @@ namespace Balances.Bussiness.Contrato
     {
         BalanceDto BalanceActual { get; }
 
-        ResponseDTO<BalanceDto> Insert(BalanceDto modelo);
+        ResponseDTO<Balance> Insert(Balance modelo);
 
         ResponseDTO<BalanceDto> Update(BalanceDto modelo);
 
@@ -15,5 +16,7 @@ namespace Balances.Bussiness.Contrato
         ResponseDTO<BalanceDto> GetById(string id);
 
         ResponseDTO<IEnumerable<BalanceDto>> List();
+
+
     }
 }

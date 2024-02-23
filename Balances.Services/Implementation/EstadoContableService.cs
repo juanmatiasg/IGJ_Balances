@@ -16,13 +16,13 @@ namespace Balances.Services.Implementation
         public EstadoContable ActualizarEstadoContable(ActualizarEstadoContableDto estadoContable)
         {
             var balance = _balanceService.GetById(estadoContable.balanceId);
-            //var otrosRubros = balance.EstadoContable.OtrosRubros;
+          
             balance.EstadoContable = estadoContable.estadoContable.GetEstadoContable();
 
 
             //balance.EstadoContable.Estado = _validation.GetEstado(balance.EstadoContable);
             //balance.EstadoContable.OtrosRubros = otrosRubros;
-            _balanceService.UpdateBalance(balance.Id, balance);
+            _balanceService.UpdateBalance(balance);
 
             return balance.EstadoContable;
         }

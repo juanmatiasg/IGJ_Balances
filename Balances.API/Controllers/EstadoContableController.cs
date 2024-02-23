@@ -37,7 +37,7 @@ namespace Balances.API.Controllers
 
         }
 
-        [HttpPost]
+        [HttpDelete]
         [Route("DeleteRubro")]
         public ResponseDTO<BalanceDto> DeleteRubro([FromBody] RubroPatrimonioNetoDto rubroDto)
         {

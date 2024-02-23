@@ -1,13 +1,18 @@
 ﻿using AutoMapper;
 using Balances.DTO;
 using Balances.Model;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using System;
 
 namespace Balances.Utilities
 {
     public class AutoMapperProfile : Profile
     {
+     
         public AutoMapperProfile()
         {
+
+            CreateMap<CaratulaDto, BalanceDto>().ReverseMap();
             CreateMap<Balance, BalanceDto>().ReverseMap();
             CreateMap<BalanceDto, Balance>().ReverseMap();
             CreateMap<Autoridad, AutoridadDto>().ReverseMap();

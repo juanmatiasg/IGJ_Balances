@@ -1,6 +1,8 @@
 ﻿@page "/Contador"
 @using Balances.DTO;
+@using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
+@using System.Globalization;
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject IContadorService contadorService
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
@@ -22,108 +24,95 @@
 </head>
 
 <body>
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
-    </div>
-    <ul class="nav nav-tabs d-flex justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link" disabled href="/Entidad">Entidad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/EstadoContable">Estado</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
-        </li>
-        <li class="nav-item active disabled">
-            <a class="nav-link" href="/Contador">Contador</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
-        </li>
-    </ul>
 
-    <div class="container mt-2 d-flex justify-content-center">
-        <form id="formContador" class="mt-2" onsubmit="handleSubmit(event)" oninput="handleChange(event)">
-            <div class="card" style="width: 600px;">
-                <div class="card-body">
-                    <h5 class="card-title" style="color: #0375bc; font-weight: bold; text-align: center;">
-                        Datos del Contador Certificante
-                    </h5>
-                    <div>
-                        <div class="form-group">
-                            <label for="contadorNombre">Nombre</label>
-                            <input type="text" class="form-control" id="contadorNombre" :value="form.nombre" oninput="handleChange(event)" required @bind="modelo.Nombre">
+
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Contador" TramiteIniciado="true"></Navegacion>
+
+    <div class="container-fluid">
+            <div class="col">
+                <div class="mt-4 mb-4 d-flex justify-content-center">
+                    <div class="card w-50">
+                        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                            Datos del Contador Certificante
                         </div>
+                        <div class="card-body">
+                            <div>
+                                <div class="form-group">
+                                    <label for="contadorNombre">Nombre</label>
+                                    <input type="text" class="form-control" id="contadorNombre" :value="form.nombre" oninput="handleChange(event)" required @bind="modelo.Nombre" @onblur=postContador>
+                                    <small id="msgError" class="text-danger">@msgErrorNombre</small>
+                                </div>
 
-                        <div class="form-group">
-                            <label for="ContadorApellido">Apellido</label>
-                            <input type="text" class="form-control" id="ContadorApellido" :value="form.apellido" oninput="handleChange(event)" required @bind="modelo.Apellido">
+                                <div class="form-group">
+                                    <label for="ContadorApellido">Apellido</label>
+                                    <input type="text" class="form-control" id="ContadorApellido" :value="form.apellido" oninput="handleChange(event)" required @bind="modelo.Apellido" @onblur=postContador>
+                                    <small id="msgError" class="text-danger">@msgErrorApellido</small>
+                                </div>
+
+
+                            <div class="form-group">
+                                <label for="tipoDocumento">Tipo de Documento</label>
+                                <select class="form-select" @bind="modelo.TipoDocumento" @onblur="postContador">
+                                    <option value="DNI">DNI</option>
+                                    <option value="Pasaporte">Pasaporte</option>
+                                    <option value="Cedula">Cédula</option>
+                                </select>
+                                <small id="msgErrorTipoDocumento" class="text-danger">@msgErrorTipoDocumento</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contadorNroDocumento">Número de Documento</label>
+                                <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento" oninput="handleChange(event)" required @bind="modelo.NroDocumento" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contadorNuFiscal">Nro. de Identificación Fiscal</label>
+                                <input type="text" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal" oninput="handleChange(event)" required @bind="modelo.NroFiscal" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorNroIdFiscal</small>
+
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tomo">Tomo</label>
+                                <input type="text" class="form-control" id="tomo" :value="form.tomo" oninput="handleChange(event)" required @bind="modelo.Tomo" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorTomo</small>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="folio">Folio</label>
+                                <input type="text" class="form-control" id="folio" :value="form.folio" oninput="handleChange(event)" required @bind="modelo.Folio" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorFolio</small>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="feInformeAuditorExt">Fecha del Informe del Auditor Externo</label>
+                                <input type="date" class="form-control" id="feInformeAuditorExt" :value="form.fechaInformeAuditorExt" oninput="handleChange(event)" required @bind="modelo.FechaInformeAuditorExt" @onblur=postContador>
+                                <small id="msgErrorFechaInformeAuditorExt" class="text-danger">@msgErrorFechaInformeAuditorExt</small>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nroLegalInfoAudExt">Nro. de Legalización del Informe del Auditor Externo</label>
+                                <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt" oninput="handleChange(event)" required @bind="modelo.NroLegalInfoAudExt" @onblur=postContador>
+                                <small id="msgError" class="text-danger">@msgErrorNroLegInf</small>
+
+                            </div>
+
+
+
                         </div>
-
-                        <div class="form-group">
-                            <label for="tipoDocumento">Tipo de Documento</label>
-                            <select class="form-control" @bind="modelo.TipoDocumento">
-                                <option value="DNI">DNI</option>
-                                <option value="Pasaporte">Pasaporte</option>
-                                <option value="Cédula">Cédula</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="contadorNroDocumento">Número de Documento</label>
-                            <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento" oninput="handleChange(event)" required @bind="modelo.NroDocumento">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="contadorNuFiscal">Nro. de Identificación Fiscal</label>
-                            <input type="text" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal" oninput="handleChange(event)" required @bind="modelo.NroFiscal">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="tomo">Tomo</label>
-                            <input type="text" class="form-control" id="tomo" :value="form.tomo" oninput="handleChange(event)" required @bind="modelo.Tomo">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="folio">Folio</label>
-                            <input type="text" class="form-control" id="folio" :value="form.folio" oninput="handleChange(event)" required @bind="modelo.Folio">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="feInformeAuditorExt">Fecha del Informe del Auditor Externo</label>
-                            <input type="date" class="form-control" id="feInformeAuditorExt" :value="form.fechaInformeAuditorExt" oninput="handleChange(event)" required @bind="modelo.FechaInformeAuditorExt">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="nroLegalInfoAudExt">Nro. de Legalización del Informe del Auditor Externo</label>
-                            <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt" oninput="handleChange(event)" required @bind="modelo.NroLegalInfoAudExt">
-                        </div>
-
-                        <div class="col mt-4 mb-4 d-flex justify-content-center">
-                            <button type="button" id="btnInit" class="btn btn-primary w-50" @onclick =postContador>Guardar</button>
-                        </div>
-                       
-
                     </div>
-                    <!-- Resto del formulario -->
                 </div>
+
             </div>
-        </form>
+        </div>
     </div>
-  
+
 
 </body>
 
@@ -131,51 +120,75 @@
 
 
 @code {
+    [Parameter] public string? TipoEntidad { get; set; }
+    private string[] tiposDocumentos = { "DNI", "Pasaporte", "Cédula" };
+    private string tipoDocSeleccionado = "";
 
-    private const string KEY_SESSION = "idSession"; 
-    private string idSession = "";
+
     private ResponseDTO<BalanceDto> modeloRespuesta = new ResponseDTO<BalanceDto>();
     private ContadorDto modelo = new ContadorDto();
+
+
+    private string msgErrorNombre = "";
+    private string msgErrorApellido = "";
+    private string msgErrorNroDoc = "";
+    private string msgErrorFolio = "";
+    private string msgErrorTomo = "";
+    private string msgErrorNroLegInf = "";
+    private string msgErrorNroIdFiscal = "";
+    private string msgErrorFechaInformeAuditorExt = "";
+    private string msgErrorTipoDocumento = "";
 
 
 
     protected override async Task OnInitializedAsync()
     {
+        modelo.FechaInformeAuditorExt = DateTime.ParseExact(DateTime.Now.ToString("dd/MM/yyyy"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-        modelo.FechaInformeAuditorExt = DateTime.Now;
-
-
-
-        idSession = await sessionStorage.GetItemAsync<string>(KEY_SESSION);
-
-        Console.WriteLine("Contador Id Session" + idSession.ToString());
-
-        if (idSession != null)
-        {
-            await getContador(idSession);
-        }
+        await Load();
 
         await base.OnInitializedAsync();
     }
 
-    private async Task<ResponseDTO<BalanceDto>> getContador(string idBalance)
+
+    private bool IsSelected(string value)
+    {
+        return modelo.TipoDocumento == value;
+    }
+
+
+
+    private async Task<ResponseDTO<BalanceDto>> Load()
     {
         ResponseDTO<BalanceDto> rsp = new();
-
         try
         {
-            rsp = await contadorService.getBalance(idBalance);
+            var idSession = await contadorService.getSession();
+            rsp = await contadorService.getBalance(idSession.Result);
+
+
+
             if (rsp.IsSuccess)
             {
+                
+
+                TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
                 modelo.id = rsp.Result.Id;
                 modelo.Nombre = rsp.Result.Contador.Nombre;
-                modelo.Apellido = rsp.Result.Contador.Apellido;
+                modelo.Apellido = rsp.Result.Contador.Apellido;   
                 modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
                 modelo.NroDocumento = rsp.Result.Contador.NroDocumento;
+                modelo.NroFiscal = rsp.Result.Contador.NroFiscal;
                 modelo.Tomo = rsp.Result.Contador.Tomo;
                 modelo.Folio = rsp.Result.Contador.Folio;
+                modelo.FechaInformeAuditorExt = rsp.Result.Contador.FechaInformeAuditorExt;
                 modelo.NroLegalInfoAudExt = rsp.Result.Contador.NroLegalInfoAudExt;
 
+
+            }
+            else
+            {
+                rsp.Message = $"error al obtener el contador {rsp.Message}";
             }
 
 
@@ -191,27 +204,219 @@
     }
 
 
-
-
     private async Task<ResponseDTO<BalanceDto>> postContador()
     {
 
-        ResponseDTO<BalanceDto> respuesta = new();
-        respuesta.IsSuccess = false;
-        try
+        if (checkData())
         {
+            ResponseDTO<BalanceDto> respuesta = new();
+            respuesta.IsSuccess = false;
+            try
+            {
+                //modelo.TipoDocumento = tipoDocSeleccionado;
+                respuesta = await contadorService.postContador(modelo);
+                respuesta.IsSuccess = true;
 
-            respuesta = await contadorService.postContador(modelo);
-            respuesta.IsSuccess = true;
-        
+            }
+            catch (Exception ex)
+            {
+
+                respuesta.Message = ex.Message;
+            }
+            return respuesta;
         }
-        catch (Exception ex)
+        else
         {
-
-            respuesta.Message = ex.Message;
+            return null;    
         }
-        return respuesta;
+
     }
 
+
+
+
+    private bool checkData()
+    {
+
+        // Apellido
+        if (!string.IsNullOrEmpty(modelo.Nombre))
+        {
+            if (Validator.IsNumeric(modelo.Nombre))
+            {
+                msgErrorNombre = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorNombre = "";
+
+            }
+        }
+        else
+        {
+            msgErrorNombre = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+        // Apellido
+        if (!string.IsNullOrEmpty(modelo.Apellido))
+        {
+            if (Validator.IsNumeric(modelo.Apellido))
+            {
+                msgErrorApellido = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorApellido = "";
+
+            }
+        }
+        else
+        {
+            msgErrorApellido = "El campo no puede estar vacio";
+            return false;
+        }
+
+        // TipoDocumento
+        if (string.IsNullOrEmpty(modelo.TipoDocumento))
+        {
+            msgErrorTipoDocumento = "Debes seleccionar un tipo de documento";
+            return false;
+        }
+        else
+        {
+            msgErrorTipoDocumento = "";
+        }
+
+        // NroDocumento
+        if (!string.IsNullOrEmpty(modelo.NroDocumento))
+        {
+            if (!Validator.IsNumeric(modelo.NroDocumento))
+            {
+                msgErrorNroDoc = "No puedes ingresar caracteres en el campo NroDocumento";
+                return false;
+            }
+            else
+            {
+                msgErrorNroDoc = "";
+            }
+        }
+        else
+        {
+            msgErrorNroDoc = "El campo no puede estar vacio";
+            return false;
+        }
+
+       
+       
+
+
+        // NroFiscal
+        if (!string.IsNullOrEmpty(modelo.NroFiscal))
+        {
+            if (!Validator.IsNumeric(modelo.NroFiscal))
+            {
+                msgErrorNroIdFiscal = "No puedes ingresar caracteres en el campo NroFiscal";
+                return false;
+            }
+            else
+            {
+                msgErrorNroIdFiscal = "";
+            }
+        }
+
+        else
+        {
+            msgErrorNroIdFiscal = "El campo no puede estar vacio";
+            return false;
+        }
+
+        // Tomo
+        if (!string.IsNullOrEmpty(modelo.Tomo))
+        {
+            if (Validator.IsNumeric(modelo.Tomo))
+            {
+                msgErrorTomo = "No puedes ingresar un valor numérico en el campo Tomo";
+                return false;
+            }
+            else
+            {
+                msgErrorTomo = "";
+            }
+        }
+        else
+        {
+            msgErrorTomo = "El campo no puede estar vacio";
+            return false;
+        }
+
+        // Folio
+        if (!string.IsNullOrEmpty(modelo.Folio))
+        {
+            if (Validator.IsNumeric(modelo.Folio))
+            {
+                msgErrorFolio = "No puedes ingresar un valor numérico en el campo Folio";
+                return false;
+            }
+            else
+            {
+                msgErrorFolio = "";
+            }
+        }
+        else
+        {
+            msgErrorFolio = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+        // NroLegalInfoAudExt
+        if (!string.IsNullOrEmpty(modelo.NroLegalInfoAudExt))
+        {
+            if (!Validator.IsNumeric(modelo.NroLegalInfoAudExt))
+            {
+                msgErrorNroLegInf = "No puedes ingresar caracteres en el campo NroLegalInfoAudExt";
+                return false;
+            }
+            else
+            {
+                msgErrorNroLegInf = "";           
+            }
+        }
+        else
+        {
+            msgErrorNroLegInf = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+      
+
+        // FechaInformeAuditorExt
+        if (modelo.FechaInformeAuditorExt == null || modelo.FechaInformeAuditorExt == DateTime.MinValue)
+        {
+           
+            msgErrorFechaInformeAuditorExt = "Por favor, selecciona una fecha correspondiente";
+
+            return false;
+        }
+       
+
+        msgErrorNombre = "";
+        msgErrorTomo = "";
+        msgErrorApellido = "";
+        msgErrorNroIdFiscal = "";
+        msgErrorNroLegInf = "";
+        msgErrorNroDoc = "";
+        msgErrorTipoDocumento = "";
+        msgErrorFechaInformeAuditorExt = "";
+        return true;
+    }
+
+  
 
 }

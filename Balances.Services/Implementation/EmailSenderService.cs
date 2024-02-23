@@ -5,8 +5,10 @@ using EmailSender;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using Newtonsoft.Json;
 
 namespace Balances.Services.Implementation
 {
@@ -16,13 +18,19 @@ namespace Balances.Services.Implementation
         private readonly ISessionService _sessionService;
         private readonly IBalanceService _balanceService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILogger<EmailSenderService> _logger;
 
-        public EmailSenderService(IOptions<SmtpSettings> smtpSettings, ISessionService sessionService, IBalanceService balanceService, IWebHostEnvironment webHostEnvironment)
+        public EmailSenderService(IOptions<SmtpSettings> smtpSettings,
+                                  ISessionService sessionService,
+                                  IBalanceService balanceService,
+                                  IWebHostEnvironment webHostEnvironment,
+                                   ILogger<EmailSenderService> logger)
         {
             _smtpSettings = smtpSettings.Value;
             _sessionService = sessionService;
             _balanceService = balanceService;
             _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
         }
 
 
@@ -68,6 +76,7 @@ namespace Balances.Services.Implementation
 
         public async Task<bool> SendEmailAsync(MimeMessage message)
         {
+            var emailSerializado = JsonConvert.SerializeObject(message.To.ToString());
             try
             {
                 /*
@@ -118,12 +127,13 @@ namespace Balances.Services.Implementation
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
 
+                    _logger.LogInformation($"Email enviado correctamente a: \n {emailSerializado}");
                     return true;
                 }
             }
             catch (Exception ex)
             {
-
+                _logger.LogError($"EmailSenderService.SendEmailAsync \n To: {emailSerializado} ");
                 return false;
             }
         }

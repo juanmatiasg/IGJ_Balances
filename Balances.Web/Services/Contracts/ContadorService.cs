@@ -7,27 +7,50 @@ namespace Balances.Web.Services.Contracts
     public class ContadorService : IContadorService
     {
         private readonly HttpClient _httpClient;
+     
+
 
         public ContadorService(HttpClient httpClient)
         {
             _httpClient = httpClient;
+           
 
         }
 
-        public async Task<ResponseDTO<BalanceDto>> getBalance(string id)
-        {
+        public async Task<ResponseDTO<BalanceDto>> getBalance(string id){
             return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Balance/{id}");
         }
 
-        public async Task<ResponseDTO<BalanceDto>> getContador(string idBalance)
+
+        public async Task<ResponseDTO<BalanceDto>> getContador(string id)
         {
-            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Contador/{idBalance}");
+            
+            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Contador/{id}");
 
         }
 
         public async Task<ResponseDTO<string>> getSession()
         {
-            return await _httpClient.GetFromJsonAsync<ResponseDTO<string>>("Session/getSession");
+            try
+            {
+                var result = await _httpClient.GetFromJsonAsync<ResponseDTO<string>>($"Session/getSession");
+
+                return new ResponseDTO<string>
+                {
+                    Result = result.Result,
+                    IsSuccess = result.IsSuccess,
+                    Message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<string>
+                {
+                    Result = null,
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
         }
 
         public async Task<ResponseDTO<BalanceDto>> postContador(ContadorDto contador)
@@ -60,43 +83,6 @@ namespace Balances.Web.Services.Contracts
             return rsp;
         }
 
-        public async Task<ResponseDTO<string>> setSession(string idBalance)
-        {
-            try
-            {
-                var session = new ResponseDTO<string>
-                {
-                    Result = idBalance,
-                    Message = "Session Created",
-                    IsSuccess = true,
-                };
-
-
-
-                // Enviar la solicitud POST directamente con PostAsJsonAsync
-                var response = await _httpClient.PostAsJsonAsync($"Session/{idBalance}", session);
-
-                // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
-                var result = await response.Content.ReadFromJsonAsync<ResponseDTO<string>>();
-
-                return new ResponseDTO<string>
-                {
-                    Result = result.Result,
-                    IsSuccess = true,
-                    Message = result.Message
-                };
-
-
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDTO<string>
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = "Error in the request"
-                };
-            }
-        }
+        
     }
 }

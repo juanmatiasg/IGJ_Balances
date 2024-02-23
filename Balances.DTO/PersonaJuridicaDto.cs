@@ -7,7 +7,7 @@
         public string Jurisdiccion { get; set; }
         public string Pais { get; set; }
         public string NroFiscal { get; set; }
-        public int Cuotas { get; set; }
+        public string Cuotas { get; set; }
         public string Votos { get; set; }
     }
 }

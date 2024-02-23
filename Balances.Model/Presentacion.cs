@@ -2,15 +2,18 @@
 {
     public class Presentacion
     {
-        public byte[] PdfBytes;
+     
+        public DateTime Fecha { get; set; }
+        public byte[] BinarioPdf { get; set; }
 
-        public DateTime Fecha;
-        private byte[] binariopdf;
-
-        public Presentacion(byte[] binariopdf)
+        public Presentacion()
+        {
+            Fecha = DateTime.Now;
+        }
+        /*public Presentacion(byte[] binariopdf)
         {
             this.binariopdf = binariopdf;
             this.Fecha = DateTime.Now;
-        }
+        }*/
     }
 }

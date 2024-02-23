@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Balances.Bussiness/BalanceBusiness.cs
+/Balances.Web/Pages/Caratula.razor

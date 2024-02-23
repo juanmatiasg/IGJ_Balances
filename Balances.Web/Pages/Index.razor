@@ -15,21 +15,22 @@
         <form>
             <div class="row">
                 <div class="col-12">
-                    <label for="MarcoLegalText" class="form-label">Por favor, verifique el Marco Legal</label>
+                    <label for="MarcoLegalText" class="form-label">Por favor, verifique el marco Legal</label>
                     <textarea class="form-control" id="MarcoLegalText" v-model="form.MarcoLegalText" rows="18" readonly></textarea>
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="Aceptar" :disabled="disableCheck.disabled">
+                        <input type="checkbox" class="form-check-input" id="Aceptar" :disabled="disableCheck.disabled" @bind="isChecked">
                         <label class="form-check-label" for="Aceptar">Manifiesto que he leído el Marco Legal</label>
                     </div>
+                    <small id="msgError" class="text-danger">@msgError</small>
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-12">
-                    <button type="button" id="submitButton" class="btn btn-primary" @onclick="handleAccept">Submit</button>
+                    <button type="button" id="submitButton" class="btn btn-primary" @onclick="handleAccept">Enviar</button>
                 </div>
             </div>
         </form>
@@ -41,8 +42,40 @@
 
 
 @code{
+    private string msgError = "";
+    private bool isChecked = false;
+
+    [Parameter]
+    public string balid { get; set; }
+
+    
     public void handleAccept()
     {
-        NavigationManager.NavigateTo("Entidad");
+        if (checkData())
+        {
+            if (balid != null)
+            {
+                NavigationManager.NavigateTo($"ContinuarCarga/{balid}");
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"Caratula");
+            }
+        }
+    }
+
+    private bool checkData()
+    {
+        if (!isChecked)
+        {
+            msgError = "Por favor acepta que has leído el marco legal";
+            return false;
+        }
+        else
+        {
+            msgError = "";
+        }
+        msgError = "";
+        return true;
     }
 }
