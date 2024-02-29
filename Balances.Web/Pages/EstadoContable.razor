@@ -398,9 +398,8 @@
                                     <span class="input-group-text">ARS $</span>
                                 </div>
                                 <input type="text" class="form-control" id="activoCorriente" @bind="rubroDto.importe" />
-                                <small id="tipoBalanceError" class="text-danger">@pasivoNoCorrienteError</small>
-
                             </div>
+                            <small id="tipoBalanceError" class="text-danger">@pasivoNoCorrienteError</small>
                         </div>
 
 
@@ -500,7 +499,7 @@
 
 
     decimal cantidad;
-  
+
     private bool firstTimeInput = true;
 
 
@@ -520,7 +519,7 @@
     {
         try
         {
-             var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
             //var idSession = await estadoContableService.getSession();
 
@@ -539,7 +538,7 @@
 
 
                         estadoContableDto = new EstadoContableDto(rsp);
-                       // setListOtrosRubros(rsp.OtrosRubros);
+                        // setListOtrosRubros(rsp.OtrosRubros);
 
                         StateHasChanged();
 
@@ -585,10 +584,10 @@
         {
             if (checkData())
             {
-               
+
                 respuesta = await estadoContableService.insertEEC(estadoContableDto);
 
-                
+
                 if (respuesta.IsSuccess)
                 {
                     respuesta.Message = "Se inserto el Estado Contable sastifactoriamente";
@@ -791,30 +790,32 @@
         var rsp = new ResponseDTO<BalanceDto>();
         try
         {
-            rsp = await estadoContableService.insertRubro(rubroDto);
-
-            if (rsp.IsSuccess)
+            if (checkDataOtrosRubros())
             {
-                var result = rsp.Result;
+                rsp = await estadoContableService.insertRubro(rubroDto);
 
-                if (result != null)
+                if (rsp.IsSuccess)
                 {
-                    setListOtrosRubros(result.EstadoContable.OtrosRubros);
+                    var result = rsp.Result;
 
-                    rsp.Message = "Se inserto el rubro sastifactoriamente";
+                    if (result != null)
+                    {
+                        setListOtrosRubros(result.EstadoContable.OtrosRubros);
+
+                        rsp.Message = "Se inserto el rubro sastifactoriamente";
+                    }
+                }
+                else
+                {
+                    rsp.Message = "No se inserto el rubro";
+
                 }
             }
-            else
-            {
-                rsp.Message = "No se inserto el rubro";
-
-            }
-
 
         }
         catch (Exception ex)
         {
-           
+
             rsp.Message = ex.Message;
             Console.WriteLine($"InsertRubro: Hubo un problema con la solicitud fetch: {ex.InnerException.Message}");
             Console.WriteLine($"InsertRubro: Hubo un problema con la solicitud fetch: {ex.Message}");
@@ -822,25 +823,69 @@
         return rsp;
     }
 
-    public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
+    private bool checkDataOtrosRubros()
     {
-        if (rubros != null)
+        if (estadoContableDto != null)
         {
-             estadoContableDto.otrosRubros.Clear();
-
-            
-            foreach (var rubro in rubros)
+            // Denominacion
+            if (!string.IsNullOrEmpty(rubroDto.denominacion))
             {
-                estadoContableDto.otrosRubros.Add(new RubroPatrimonioNetoDto
-                    {
-                       
-                        codigo = rubro.Codigo,
-                        denominacion = rubro.Denominacion,
-                        importe = rubro.Importe,
-                    });
+                if (Validator.IsNumeric(rubroDto.denominacion))
+                {
+                    denominacionError = "No puedes ingresar un valor numérico";
+                    return false;
+                }
+                else
+                {
+                    denominacionError = "";
+
+                }
             }
+            else
+            {
+                denominacionError = "El campo no puede estar vacio";
+                return false;
+            }
+
+            if (rubroDto.importe > 0)
+            {
+                if (!Validator.IsNumeric(rubroDto.importe.ToString()))
+                {
+                    pasivoNoCorrienteError = "No puedes ingresar con caracteres";
+                    return false;
+                }
+                else
+                {
+                    pasivoNoCorrienteError = "";
+
+                }
+            }
+            else
+            {
+                pasivoNoCorrienteError = "El campo no puede estar vacio";
+                return false;
+            }
+
+
+
+        
         }
+        else
+        {
+            denominacionError = "Por favor completá los datos anteriores";
+            pasivoNoCorrienteError = "Por favor completa los datos anteriores";
+
+            return false;    
+        }
+
+        //OtrosRubros
+        denominacionError = "";
+        pasivoNoCorrienteError = "";
+
+        return true;
     }
+
+  
 
     private async Task<ResponseDTO<BalanceDto>> deleteRubro(RubroPatrimonioNetoDto rubroDto)
     {
@@ -851,7 +896,6 @@
         try
         {
 
-           // var rubroDto = ConvertToPatrimonioNetoDTO(rubro);
             respuesta = await estadoContableService.deleteRubro(rubroDto);
 
             if (respuesta.IsSuccess)
@@ -864,7 +908,7 @@
 
             else
             {
-                respuesta.Message = "No eliminó el rubro sastifactoriamente";
+                respuesta.Message = "No se eliminó el rubro sastifactoriamente";
 
             }
 
@@ -878,7 +922,24 @@
     }
 
 
-    //private RubroPatrimonioNetoDto ConvertToPatrimonioNetoDTO(RubroPatrimonioNeto rubroPatrimonioNeto) => new RubroPatrimonioNetoDto(rubroPatrimonioNeto);
+    public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
+    {
+        if (rubros != null)
+        {
+            estadoContableDto.otrosRubros.Clear();
+
+            foreach (var rubro in rubros)
+            {
+                estadoContableDto.otrosRubros.Add(new RubroPatrimonioNetoDto
+                    {
+
+                        codigo = rubro.Codigo,
+                        denominacion = rubro.Denominacion,
+                        importe = rubro.Importe,
+                    });
+            }
+        }
+    }
 
     private string FormatWithThousandSeparators(decimal value)
     {
@@ -1334,10 +1395,7 @@
         propiedadesDeInversionError = "";
         reservaLegalError = "";
 
-        //OtrosRubros
-        denominacionError = "";
-        pasivoNoCorrienteError = "";
-
+       
 
         return true;
     }
