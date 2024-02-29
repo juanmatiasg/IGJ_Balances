@@ -5,6 +5,7 @@
 @using System.Text;
 @using System.Reflection;
 @inject ILibrosService serviceLibro;
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 @{
 }
 
@@ -22,14 +23,13 @@
 
     <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Libros" TramiteIniciado="true"></Navegacion>
 
-    <div class="container mt-2">
+    <div class="container mt-2 mb-4">
         <div class="card mx-auto">
             <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                 Datos de Libros
             </div>
 
-            <div class="card-body mb-4">
-
+            <div class="card-body">
                 <Libro libroP="modelo.Asamblea" OnBlur="() => HandleBlur(modelo.Asamblea)"></Libro>
                 <Libro libroP="modelo.Administracion" OnBlur="() => HandleBlur(modelo.Administracion)"></Libro>
                 <Libro libroP="modelo.AsistenciaAsamblea" OnBlur="() => HandleBlur(modelo.AsistenciaAsamblea)"></Libro>
@@ -45,14 +45,10 @@
                 <Libro libroP="modelo.SituacionPatrimonial" OnBlur="() => HandleBlur(modelo.SituacionPatrimonial)"></Libro>
                 <Libro libroP="modelo.Memoria" OnBlur="() => HandleBlur(modelo.Memoria)"></Libro>
                 <Libro libroP="modelo.Informacion" OnBlur="() => HandleBlur(modelo.Informacion)"></Libro>
-
             </div>
 
 
         </div>
-
-     
-
         <!--<div class="mt-3 mb-4">
             <button class="btn btn-primary w-100" @onclick="ToggleSelectAll">Seleccionar/Deseleccionar todos</button>
         </div>-->
@@ -149,14 +145,13 @@
             {
                 modelo.Informacion = libro;
             }
-
-
-
+   
         }
+
         await insertLibros(modelo);
     }
 
-    private async Task ToggleSelectAll()
+   /* private async Task ToggleSelectAll()
     {
         allSelected = !allSelected;
 
@@ -197,11 +192,11 @@
         // Actualizar el modelo con los cambios
         await insertLibros(modelo);
         StateHasChanged(); // Notificar a Blazor que se ha actualizado el estado
-    }
+    }*/
 
 
 
-    private void EliminarLibro(LibroDto libro)
+    /*private void EliminarLibro(LibroDto libro)
     {
         if (modelo.Asamblea == libro)
         {
@@ -266,9 +261,9 @@
         {
             modelo.Informacion = libro;
         }
-    }
+    }*/
 
-    private bool LibroEstaCompleto(LibroDto libro)
+    /*private bool LibroEstaCompleto(LibroDto libro)
     {
         // Aquí debes implementar la lógica para verificar si todas las propiedades del libro están completas
         // Devuelve true si todas las propiedades están completas, de lo contrario, devuelve false
@@ -313,7 +308,7 @@
     private async Task HandleBlur(LibrosDto libro)
     {
         await insertLibros(libro); // Llama al método que deseas ejecutar cuando se produce el evento onblur
-    }
+    }*/
 
 
 
@@ -323,18 +318,25 @@
         {
             var idSession = await serviceLibro.getSession();
 
+            //var idSession = await SessionStorage.GetItemAsync<string>("idSession");
+
             if (idSession.IsSuccess)
             {
-                var response = await serviceLibro.getBalance(idSession.Result);
+                var response = await serviceLibro.getBalance(idSession.Result!);
 
-                if (idSession.IsSuccess == true)
+                if (response.IsSuccess == true)
                 {
 
                     try
                     {
-                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+                        var result = response.Result;
+                        
+                        if (result != null)
+                        {
+                            TipoEntidad = result.Caratula.Entidad.TipoEntidad;
 
-                        setLibros(response.Result.Libros);
+                            setLibros(result.Libros);
+                        }
 
                         StateHasChanged();
 
@@ -373,13 +375,14 @@
         try
         {
 
-            respuesta = await serviceLibro.insertLibros(libros);
+          respuesta = await serviceLibro.insertLibros(libros);
 
         }
         catch (Exception ex)
         {
             respuesta.Message = ex.Message;
         }
+       
         return respuesta;
     }
 }

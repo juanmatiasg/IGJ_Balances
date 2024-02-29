@@ -142,7 +142,7 @@ namespace Balances.Bussiness.Implementacion
                 Nombre = modelo.Nombre,
                 NroDocumento = modelo.NroDocumento,
                 NroFiscal = modelo.NroFiscal,
-                FechaInformeAuditorExt = modelo.FechaInformeAuditorExt,
+                FechaInformeAuditorExt = (DateTime)modelo.FechaInformeAuditorExt,
                 Folio = modelo.Folio,
                 NroLegalInfoAudExt = modelo.NroLegalInfoAudExt,
                 TipoDocumento = modelo.TipoDocumento,

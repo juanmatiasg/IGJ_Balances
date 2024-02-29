@@ -48,6 +48,7 @@ namespace Balances.Web.Services.Contracts
             rsp.IsSuccess = false;
             try
             {
+                
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
                 var respuesta = await _httpClient.PostAsJsonAsync("Libros/InsertLibros", libros);
 

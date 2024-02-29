@@ -50,13 +50,18 @@
                             <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.Apellido">
                             <small id="msgError" class="text-danger">@msgErrorApellido</small>
                         </div>
-                        <label for="selectTipoDocumento">Tipo de Documento</label>
-                        <select id="selectTipoDocumento" class="form-control" @bind="modelPersonaHumana.TipoDocumento">
-                            <option selected>Seleccionar...</option>
-                            <option value="DNI">DNI</option>
-                            <option value="Pasaporte">Pasaporte</option>
-                            <option value="Cédula">Cédula</option>
-                        </select>
+                       
+                        <div class="form-group">
+                            <label for="selectTipoDocumento">Tipo de Documento</label>
+                            <select id="selectTipoDocumento" class="form-select" @bind="modelPersonaHumana.TipoDocumento">
+                                <option selected>Seleccionar...</option>
+                                <option value="DNI">DNI</option>
+                                <option value="Pasaporte">Pasaporte</option>
+                                <option value="Cédula">Cédula</option>
+                            </select>
+                            <small id="msgError" class="text-danger">@msgErrorTipoDoc</small>
+                        </div>
+                        
                         <div class="form-group">
                             <label for="accionistaNombre">Numero de Documento</label>
                             <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroDocumento">
@@ -147,10 +152,12 @@
 
     private string msgErrorNombre = "";
     private string msgErrorApellido = "";
+    private string msgErrorTipoDoc = "";
     private string msgErrorNroDoc = "";
     private string msgErrorCuit = "";
     private string msgErrorCuotas = "";
     private string msgErrorVotos = "";
+
 
 
     protected override async Task OnInitializedAsync()
@@ -307,6 +314,19 @@
         }
 
 
+        //Tipo Doc
+        if (!string.IsNullOrEmpty(modelPersonaHumana.TipoDocumento))
+        {
+            msgErrorTipoDoc = "";
+        }
+        else
+        {
+            msgErrorTipoDoc = "El campo no puede estar vacio";
+            return false;    
+        }
+
+
+
         // NroDocumento
         if (!string.IsNullOrEmpty(modelPersonaHumana.NroDocumento))
         {
@@ -395,6 +415,7 @@
 
         msgErrorNombre = "";
         msgErrorApellido = "";
+        msgErrorTipoDoc = "";
         msgErrorNroDoc = "";
         msgErrorCuit = "";
         msgErrorCuotas = "";

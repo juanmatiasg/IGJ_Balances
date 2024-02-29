@@ -8,7 +8,7 @@
         public string Apellido { get; set; }
 
         public string NroDocumento { get; set; }
-        public string TipoDocumento { get; set; }
+        public string? TipoDocumento { get; set; }
         public string NroFiscal { get; set; }
 
         public string Cargo { get; set; }

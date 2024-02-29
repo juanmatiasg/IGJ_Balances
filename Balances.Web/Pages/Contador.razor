@@ -143,7 +143,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        modelo.FechaInformeAuditorExt = DateTime.ParseExact(DateTime.Now.ToString("dd/MM/yyyy"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
         await Load();
 
@@ -170,7 +169,7 @@
 
             if (rsp.IsSuccess)
             {
-                
+
 
                 TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
                 modelo.id = rsp.Result.Id;
@@ -310,8 +309,8 @@
             return false;
         }
 
-       
-       
+
+
 
 
         // NroFiscal
@@ -372,6 +371,18 @@
             return false;
         }
 
+        // FechaInformeAuditorExt
+        if (modelo.FechaInformeAuditorExt != null)
+        {
+            msgErrorFechaInformeAuditorExt = "";
+
+        }
+        else
+        {
+            msgErrorFechaInformeAuditorExt = "Seleccioná la fecha correspondiente";
+            return false;
+        }
+
 
         // NroLegalInfoAudExt
         if (!string.IsNullOrEmpty(modelo.NroLegalInfoAudExt))
@@ -394,17 +405,10 @@
 
 
 
-      
 
-        // FechaInformeAuditorExt
-        if (modelo.FechaInformeAuditorExt == null || modelo.FechaInformeAuditorExt == DateTime.MinValue)
-        {
-           
-            msgErrorFechaInformeAuditorExt = "Por favor, selecciona una fecha correspondiente";
 
-            return false;
-        }
        
+
 
         msgErrorNombre = "";
         msgErrorTomo = "";

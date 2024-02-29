@@ -2,7 +2,7 @@
 
 namespace Balances.DTO
 {
-    public class RubrosPatrimonioNetoDto
+   public class RubrosPatrimonioNetoDto
     {
         public RubrosPatrimonioNetoDto() { }
 
@@ -16,10 +16,6 @@ namespace Balances.DTO
 
                 rubros.ForEach(x => { otrosRrubros.Add(new RubroPatrimonioNetoDto(x)); });
             }
-
-
-
-
         }
 
         public List<RubroPatrimonioNeto> GetRubrosPatrimonioNeto()

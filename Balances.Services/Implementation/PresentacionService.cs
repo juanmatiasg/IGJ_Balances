@@ -55,7 +55,7 @@ namespace Balances.Services.Implementation
             // SetTagPlantilla("{{QR}}", qr);
             SetTag("{{RepresentanteLegal.RepresentanteApellido}}", balance.Autoridad.Apellido);
             SetTag("{{RepresentanteLegal.RepresentanteNombre}}", balance.Autoridad.Nombre);
-            SetTag("{{representanteLegal.RepresentanteNroFiscal}}", balance.Autoridad.NroFiscal);
+            SetTag("{{RepresentanteLegal.RepresentanteNroFiscal}}", balance.Autoridad.NroFiscal);
             SetTag("{{Contador.ContadorApellido}}", balance.Contador.Apellido);
             SetTag("{{Contador.ContadorNombre}}", balance.Contador.Nombre);
             SetTag("{{Contador.ContadorNroFiscal}}", balance.Contador.NroFiscal);
@@ -69,7 +69,7 @@ namespace Balances.Services.Implementation
             SetTag("Asamblea", balance.Libros.Asamblea);
             SetTag("SituacionPatrimonial", balance.Libros.SituacionPatrimonial);
             SetTag("Auditor", balance.Libros.Auditor);
-            SetTag("Administracion", balance.Libros.Administracion);
+            SetTag("Acta del Órgano de Administración", balance.Libros.Administracion);
             SetTag("Resultados", balance.Libros.Resultados);
             SetTag("Efectivo", balance.Libros.Efectivo);
             SetTag("Informacion", balance.Libros.Informacion);
@@ -91,6 +91,7 @@ namespace Balances.Services.Implementation
             SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
             SetTag("{{" + libroNombre + ".NumeroRubrica}}", libro.NumeroRubrica);
             SetTag("{{" + libroNombre + ".Folio}}", libro.Folio);
+            SetTag("{{" + libroNombre + ".Denominacion}}", libro.Nombre);
             SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", libro.FechaUltimaRegistracion.ToString("dd/MM/yyyy"));
 
             if (libro.Nombre != null)
@@ -144,7 +145,7 @@ namespace Balances.Services.Implementation
             SetTag("PatrimonioNeto", balance.Libros.PatrimonioNeto);
             SetTag("SituacionPatrimonial", balance.Libros.SituacionPatrimonial);
             SetTag("Auditor", balance.Libros.Auditor);
-            SetTag("Administracion", balance.Libros.Administracion);
+            SetTag("Acta del Órgano de Administración", balance.Libros.Administracion);
             SetTag("Resultados", balance.Libros.Resultados);
             SetTag("Efectivo", balance.Libros.Efectivo);
             SetTag("Informacion", balance.Libros.Informacion);

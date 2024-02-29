@@ -2,6 +2,7 @@
 
 
 @using Balances.DTO;
+@using Balances.Utilities;
 @functions {
     string SepararMayusculas(string input)
     {
@@ -32,6 +33,7 @@
 
         <div class="col-md-2  mt-1">
             <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica @onblur="OnBlurHandler" />
+            <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
         </div>
 
         <div class="col-md-1  mt-1">
@@ -41,6 +43,8 @@
 
         <div class="col-md-2  mt-1">
             <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
+            <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
+
         </div>
 
         <div class="col-md-2 mt-1">
@@ -49,6 +53,7 @@
                 <label class="form-check-label">N/C</label>
             </div>
         </div>
+        <small id="msgError" class="text-danger"></small>
     </div>
 }
 else
@@ -58,19 +63,19 @@ else
             <label>@SepararMayusculas(@libext.Tipo)</label>
         </div>
         <div class="col-md-2 mt-1">
-            <input placeholder="N/C" class="form-control" @bind="libext.Nombre" disabled @onblur="OnBlurHandler" />
+            <input placeholder="N/C" @bind="libext.Nombre" class="form-control" disabled @onblur="OnBlurHandler" />
         </div>
         <div class="col-md-1  mt-1">
-            <input placeholder="N/C" class="form-control" @bind="libext.NumeroRubrica" disabled @onblur="OnBlurHandler" />
+            <input placeholder="N/C" @bind=libext.NumeroRubrica class="form-control" disabled @onblur="OnBlurHandler" />
         </div>
         <div class="col-md-2  mt-1">
-            <input type="date" placeholder="N/C" class="form-control" @bind=libext.FechaRubrica disabled @onblur="OnBlurHandler" />
+            <input type="date" placeholder="N/C" @bind=libext.FechaRubrica class="form-control" disabled @onblur="OnBlurHandler" />
         </div>
         <div class="col-md-1  mt-1">
-            <input placeholder="N/C" class="form-control" @bind=libext.Folio disabled @onblur="OnBlurHandler" />
+            <input placeholder="N/C" @bind=libext.Folio class="form-control" disabled @onblur="OnBlurHandler" />
         </div>
         <div class="col-md-2  mt-1">
-            <input type="date" placeholder="N/C" class="form-control" disabled @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
+            <input type="date" @bind=libext.FechaUltimaRegistracion placeholder="N/C" class="form-control" disabled @onblur="OnBlurHandler" />
         </div>
 
         <div class="col-md-2 mt-1">
@@ -86,9 +91,9 @@ else
     private string msgErrorFolio = "";
     private string msgErrorNroRubrica = "";
     private string msgErrorNombre = "";
+    private string msgErrorFechaRubrica = "";    
+    private string msgErrorFechaUltimaRegistracion = "";
 
-
-    
 
     [Parameter]
     public LibroDto libroP {
@@ -96,7 +101,7 @@ else
         get { return libext.Original; }
     }
 
-    public LibroDtoExtended libext = new LibroDtoExtended();
+    private LibroDtoExtended libext = new LibroDtoExtended();
 
 
     [Parameter]
@@ -106,21 +111,96 @@ else
 
     private async Task OnBlurHandler()
     {
-        if (libroP != null)
+        if (checkData())
         {
             await OnBlur.InvokeAsync(libroP);
         }
+        await OnBlur.InvokeAsync(libroP);
+        
     }
 
-  
-    protected override Task OnInitializedAsync()
+
+    protected override async Task OnInitializedAsync()
     {
-        libroP.FechaRubrica = DateTime.Now;
-        libroP.FechaUltimaRegistracion = DateTime.Now;
+        await base.OnInitializedAsync();
 
-        return base.OnInitializedAsync();
     }
 
- 
+    private bool checkData()
+    {
+        // Nombre
+        if (string.IsNullOrEmpty(libroP.Nombre))
+        {
+            msgErrorNombre = "El campo no puede estar vacío";
+            return false;
+        }
+        else if (Validator.IsNumeric(libroP.Nombre))
+        {
+            msgErrorNombre = "No puedes ingresar un valor numérico";
+            return false;
+        }
+        else
+        {
+            msgErrorNombre = "";
+        }
+
+        // Nro Rubrica
+        if (string.IsNullOrEmpty(libroP.NumeroRubrica))
+        {
+            msgErrorNroRubrica = "El campo no puede estar vacío";
+            return false;
+        }
+        else if (!Validator.IsNumeric(libroP.NumeroRubrica))
+        {
+            msgErrorNroRubrica = "No puedes ingresar caracteres";
+            return false;
+        }
+        else
+        {
+            msgErrorNroRubrica = "";
+        }
+
+        // Fecha Rubrica
+        if (libroP.FechaRubrica == null)
+        {
+            msgErrorFechaRubrica = "No seleccionaste la fecha correspondiente";
+            return false;
+        }
+        else
+        {
+            msgErrorFechaRubrica = "";
+        }
+
+        // Folio
+        if (string.IsNullOrEmpty(libroP.Folio))
+        {
+            msgErrorFolio = "El campo no puede estar vacío";
+            return false;
+        }
+        else if (Validator.IsNumeric(libroP.Folio))
+        {
+            msgErrorFolio = "No puedes ingresar un valor numérico";
+            return false;
+        }
+        else
+        {
+            msgErrorFolio = "";
+        }
+
+        // FechaUltimaRegistracion
+        if (libroP.FechaUltimaRegistracion == null)
+        {
+            msgErrorFechaUltimaRegistracion = "No seleccionaste la fecha correspondiente";
+            return false;
+        }
+        else
+        {
+            msgErrorFechaUltimaRegistracion = "";
+        }
+
+        // Si todos los campos pasan la validación o si algunos campos son "N/C", entonces retorna true
+        return true;
+    }
+
 
 }

@@ -1,4 +1,5 @@
 ﻿using Balances.DTO;
+using Balances.Model;
 
 namespace Balances.Web.Services.Implementation
 {

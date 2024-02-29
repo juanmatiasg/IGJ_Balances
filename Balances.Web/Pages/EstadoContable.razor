@@ -104,7 +104,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" @bind="estadoContableDto.inversionesActivoCorriente" placeholder="$00.000" @onblur="insertEECC" />
+                                            <input type="text" class="form-control" @bind="estadoContableDto.inversionesActivoCorriente"  @onblur="insertEECC" />
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@inversionesError</small>
                                     </div>
@@ -115,7 +115,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeCambio"  placeholder="0.000,00" @onblur="insertEECC" />
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeCambio"   @onblur="insertEECC" />
                                         </div>
                                     <small id="tipoBalanceError" class="text-danger">@bienesDeCambioError</small>
 
@@ -128,7 +128,7 @@
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
     
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorrienteRestante"  placeholder="0.000,00" @onblur="insertEECC" />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorrienteRestante"  @onblur="insertEECC" />
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@activoCorrienteRestanteError</small>
 
@@ -140,7 +140,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorriente"  placeholder="0.000,00" @onblur="insertEECC" disabled/>
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorriente"   @onblur="insertEECC" disabled/>
                                         </div>
                                     </div>
 
@@ -150,7 +150,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeUso"  placeholder="0.000,00" @onblur="insertEECC"  />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeUso"   @onblur="insertEECC"  />
                                         </div>
                                     <small id="tipoBalanceError" class="text-danger">@bienesDeUsoError</small>
 
@@ -162,7 +162,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.propiedadesDeInversion"  placeholder="0.000,00" @onblur="insertEECC"  />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.propiedadesDeInversion"   @onblur="insertEECC"  />
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@propiedadesDeInversionError</small>
 
@@ -174,7 +174,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorrienteRestante" placeholder="0.000,00" @onblur="insertEECC" />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorrienteRestante"  @onblur="insertEECC" />
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
                                     </div>
@@ -185,7 +185,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorriente" placeholder="0.000,00" @onblur="insertEECC" disabled />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorriente"  @onblur="insertEECC" disabled />
                                         </div>
                                     </div>
 
@@ -197,7 +197,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalActivo"  placeholder="0.000,00" @onblur="insertEECC" disabled />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalActivo"   @onblur="insertEECC" disabled />
                                         </div>
                                     </div>
 
@@ -208,7 +208,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoCorriente"  placeholder="0.000,00" @onblur="insertEECC" />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoCorriente"   @onblur="insertEECC" />
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@deudasPasivoCorrienteError</small>
 
@@ -221,7 +221,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoNoCorriente"  placeholder="0.000,00" @onblur="insertEECC" />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoNoCorriente"   @onblur="insertEECC" />
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@deudasPasivoNoCorrienteError</small>
                                     </div>
@@ -234,7 +234,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalPasivo"placeholder="0.000,00" @onblur="insertEECC" disabled />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalPasivo" @onblur="insertEECC" disabled />
                                         </div>
                                     </div>
 
@@ -245,7 +245,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">ARS $</span>
                                             </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.patrimonioNeto"  placeholder="0.000,00" @onblur="insertEECC" disabled />
+                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.patrimonioNeto"   @onblur="insertEECC" disabled />
                                         </div>
 
                                     </div>
@@ -278,7 +278,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">ARS $</span>
                                 </div>
-                                <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.capitalSuscripto"  placeholder="0.000,00" @onblur="insertEECC" />
+                                <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.capitalSuscripto"  @onblur="insertEECC" />
                             </div>
                             <small id="tipoBalanceError" class="text-danger">@capitalSuscriptoError</small>
 
@@ -289,7 +289,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">ARS $</span>
                                     </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.ajusteCapital"  placeholder="0.000,00" @onblur="insertEECC" />
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.ajusteCapital"   @onblur="insertEECC" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@ajusteCapitalError</small>
                             </div>
@@ -301,7 +301,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">ARS $</span>
                                     </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.aportesIrrevocables"  placeholder="0.000,00" @onblur="insertEECC" />
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.aportesIrrevocables"  @onblur="insertEECC" />
 
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@aportesIrrevocablesError</small>
@@ -315,7 +315,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">ARS $</span>
                                     </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.primaEmision" placeholder="0.000,00" @onblur="insertEECC" />
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.primaEmision"  @onblur="insertEECC" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@primaEmisionError</small>
 
@@ -329,7 +329,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">ARS $</span>
                                     </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasReservadas" placeholder="0.000,00" @onblur="insertEECC" />
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasReservadas"  @onblur="insertEECC" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@gananciasReservadasError</small>
 
@@ -342,7 +342,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">ARS $</span>
                                     </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.perdidasAcumuladas"  placeholder="0.000,00" @onblur="insertEECC" />
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.perdidasAcumuladas"   @onblur="insertEECC" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@perdidasAcumuladasError</small>
 
@@ -356,7 +356,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">ARS $</span>
                                     </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasPerdidasEjercicio" placeholder="0.000,00" @onblur="insertEECC" />
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasPerdidasEjercicio"  @onblur="insertEECC" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@gananciasPerdidasEjercicioError</small>
 
@@ -369,7 +369,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">ARS $</span>
                                     </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.reservaLegal" placeholder="0.000,00" @onblur="insertEECC"  />
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.reservaLegal"  @onblur="insertEECC"  />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@reservaLegalError</small>
 
@@ -414,7 +414,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col"></th>
+                                   
                                     <th scope="col">Denominación</th>
                                     <th scope="col">Importe</th>
                                     <th scope="col">Acción</th>
@@ -425,10 +425,9 @@
                             {
                                 <tbody>
                                     <tr>
-                                        <th scope="row"></th>
-                                        <td>@rubro.Denominacion</td>
-                                        <td>$@rubro.Importe</td>
-
+                                        
+                                        <td>@rubro.denominacion</td>
+                                        <td>$@rubro.importe</td>
                                         <td>
                                             <button type="button" class="btn btn-danger" @onclick="() => deleteRubro(rubro)">Eliminar</button>
                                         </td>
@@ -489,61 +488,45 @@
 
 
 
-
-    private EstadoContableDto estadoContableDto = new EstadoContableDto()
-        {
-            otrosRubros = new List<RubroPatrimonioNeto>()
-        };
-
-
     private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
+
+    private EstadoContableDto estadoContableDto = new EstadoContableDto();
+
+
+
     private Boolean statusPatrimonioNeto = false;
 
     private string otraCosa = "";
 
 
     decimal cantidad;
-    string cantidadStr;
+  
     private bool firstTimeInput = true;
 
-    private const string KEY_SESSION = "idSession";
+
 
 
 
     protected override async Task OnInitializedAsync()
     {
 
-        setDate();
 
         await Load();
 
         await base.OnInitializedAsync();
     }
 
-
-
-
-
-    private void setDate()
-    {
-        estadoContableDto.fechaInicio = DateTime.UtcNow;
-        estadoContableDto.fechaAsamblea = DateTime.UtcNow;
-        estadoContableDto.fechaEstado = DateTime.UtcNow;
-        estadoContableDto.fechaReunionDirectorio = DateTime.UtcNow;
-    }
-
-
     private async Task Load()
     {
         try
         {
-            // var idSession = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
+             var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
-            var idSession = await estadoContableService.getSession();
+            //var idSession = await estadoContableService.getSession();
 
             if (idSession!=null)
             {
-                var response = await estadoContableService.getBalance(idSession.Result);
+                var response = await estadoContableService.getBalance(idSession);
 
                 if (response.IsSuccess)
                 {
@@ -551,16 +534,21 @@
                     try
                     {
                         var rsp = response.Result.EstadoContable;
-                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
-                        estadoContableDto = new EstadoContableDto(rsp);
 
+                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
+
+                        estadoContableDto = new EstadoContableDto(rsp);
+                       // setListOtrosRubros(rsp.OtrosRubros);
 
                         StateHasChanged();
 
                     }
                     catch (Exception ex)
                     {
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.InnerException.Message}");
 
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.InnerException.Message}");
                         Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
                     }
                 }
@@ -583,13 +571,13 @@
 
     private async Task<ResponseDTO<BalanceDto>> insertEECC()
     {
-        setFormatMiles();
+        // setFormatMiles();
         sumatoriaTotalActivoCorriente();
         sumatoriaTotalActivoNoCorriente();
         sumatorialTotalActivo();
         sumatoriaTotalPasivo();
         resultadoPatrimonioNeto();
-        resultadoPatNetDetailPatNeto();
+        //resultadoPatNetDetailPatNeto();
 
         ResponseDTO<BalanceDto> respuesta = new();
 
@@ -597,9 +585,10 @@
         {
             if (checkData())
             {
-
+               
                 respuesta = await estadoContableService.insertEEC(estadoContableDto);
 
+                
                 if (respuesta.IsSuccess)
                 {
                     respuesta.Message = "Se inserto el Estado Contable sastifactoriamente";
@@ -616,6 +605,8 @@
         catch (Exception ex)
         {
             respuesta.Message = ex.Message;
+            Console.WriteLine($"InsertEEC: Hubo un problema con la solicitud fetch: {ex.InnerException.Message}");
+            Console.WriteLine($"InsertEEC: Hubo un problema con la solicitud fetch: {ex.Message}");
         }
 
         return respuesta;
@@ -689,7 +680,7 @@
             {
                 foreach (var rubro in estadoContableDto.otrosRubros)
                 {
-                    var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + rubro.Importe;
+                    var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + rubro.importe;
                     if (estadoContableDto.reservaLegal > 0)
                     {
                         if (resultadoPatrimonioNeto() == sumatoriaDetallePatNeto)
@@ -797,27 +788,25 @@
     private async Task<ResponseDTO<BalanceDto>> insertRubro()
     {
 
-        var respuesta = new ResponseDTO<BalanceDto>();
+        var rsp = new ResponseDTO<BalanceDto>();
         try
         {
+            rsp = await estadoContableService.insertRubro(rubroDto);
 
-            respuesta = await estadoContableService.insertRubro(rubroDto);
-
-            if (respuesta.IsSuccess)
+            if (rsp.IsSuccess)
             {
-                var result = respuesta.Result.EstadoContable;
+                var result = rsp.Result;
 
+                if (result != null)
+                {
+                    setListOtrosRubros(result.EstadoContable.OtrosRubros);
 
-
-                setListOtrosRubros(result.otrosRubros);
-
-
-                respuesta.Message = "Se inserto el rubro sastifactoriamente";
-
+                    rsp.Message = "Se inserto el rubro sastifactoriamente";
+                }
             }
             else
             {
-                respuesta.Message = "No se inserto el rubro";
+                rsp.Message = "No se inserto el rubro";
 
             }
 
@@ -825,18 +814,35 @@
         }
         catch (Exception ex)
         {
-            respuesta.Message = ex.Message;
+           
+            rsp.Message = ex.Message;
+            Console.WriteLine($"InsertRubro: Hubo un problema con la solicitud fetch: {ex.InnerException.Message}");
+            Console.WriteLine($"InsertRubro: Hubo un problema con la solicitud fetch: {ex.Message}");
         }
-        return respuesta;
+        return rsp;
     }
 
     public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
     {
-        estadoContableDto.otrosRubros.Clear();
-        estadoContableDto.otrosRubros.AddRange(rubros);
+        if (rubros != null)
+        {
+             estadoContableDto.otrosRubros.Clear();
+
+            
+            foreach (var rubro in rubros)
+            {
+                estadoContableDto.otrosRubros.Add(new RubroPatrimonioNetoDto
+                    {
+                       
+                        codigo = rubro.Codigo,
+                        denominacion = rubro.Denominacion,
+                        importe = rubro.Importe,
+                    });
+            }
+        }
     }
 
-    private async Task<ResponseDTO<BalanceDto>> deleteRubro(RubroPatrimonioNeto rubro)
+    private async Task<ResponseDTO<BalanceDto>> deleteRubro(RubroPatrimonioNetoDto rubroDto)
     {
 
         var respuesta = new ResponseDTO<BalanceDto>();
@@ -845,13 +851,14 @@
         try
         {
 
-            var rubroDto = ConvertToPatrimonioNetoDTO(rubro);
+           // var rubroDto = ConvertToPatrimonioNetoDTO(rubro);
             respuesta = await estadoContableService.deleteRubro(rubroDto);
 
             if (respuesta.IsSuccess)
             {
-                estadoContableDto.otrosRubros.Remove(rubro);
+                estadoContableDto.otrosRubros.Remove(rubroDto);
                 respuesta.Message = "Se eliminó el rubro sastifactoriamente";
+                
                 StateHasChanged();
             }
 
@@ -871,7 +878,7 @@
     }
 
 
-    private RubroPatrimonioNetoDto ConvertToPatrimonioNetoDTO(RubroPatrimonioNeto rubroPatrimonioNeto) => new RubroPatrimonioNetoDto(rubroPatrimonioNeto);
+    //private RubroPatrimonioNetoDto ConvertToPatrimonioNetoDTO(RubroPatrimonioNeto rubroPatrimonioNeto) => new RubroPatrimonioNetoDto(rubroPatrimonioNeto);
 
     private string FormatWithThousandSeparators(decimal value)
     {
@@ -904,29 +911,56 @@
 
 
         // Fecha Inicio
-        if (estadoContableDto.fechaInicio == DateTime.MinValue)
-
+        if (estadoContableDto.fechaInicio == null)
         {
             fechaInicioError = "Seleccioná la fecha correspondiente";
+            return false;
         }
-
-        //Fecha Asamblea
-        if (estadoContableDto.fechaAsamblea == DateTime.MinValue)
+        else
         {
-            fechaAsambleaError = "Seleccioná la fecha correspondiente";
+            fechaInicioError = "";
         }
 
         //Fecha Estado
-        if (estadoContableDto.fechaAsamblea == DateTime.MinValue)
+        if (estadoContableDto.fechaEstado == null)
         {
             fechaEstadoError = "Seleccioná la fecha correspondiente";
+            return false;
+        }
+        else
+        {
+            fechaEstadoError = "";
         }
 
+
         //Fecha Reunion Directorio
-        if (estadoContableDto.fechaReunionDirectorio == DateTime.MinValue)
+        if (estadoContableDto.fechaReunionDirectorio == null)
         {
             fechaReunionDirectorioError = "Seleccioná la fecha correspondiente";
+            return false;
         }
+        else
+        {
+            fechaReunionDirectorioError = "";
+        }
+
+
+
+
+
+        //Fecha Asamblea
+        if (estadoContableDto.fechaAsamblea == null)
+        {
+            fechaAsambleaError = "Seleccioná la fecha correspondiente";
+            return false;
+        }
+        else
+        {
+            fechaAsambleaError = "";
+        }
+
+
+       
 
         //Caja y Bancos
 

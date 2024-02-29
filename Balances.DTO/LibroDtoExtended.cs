@@ -11,8 +11,8 @@ namespace Balances.DTO
         // public string Denominacion { get { return Original.Denominacion; } set { Original.Denominacion = value; } }
         public string NumeroRubrica { get { return Original.NumeroRubrica; } set { Original.NumeroRubrica = value; } }
        
-        public DateTime FechaUltimaRegistracion { get { return Original.FechaUltimaRegistracion; } set { Original.FechaUltimaRegistracion = value; } }
-        public DateTime FechaRubrica { get { return Original.FechaRubrica; } set { Original.FechaRubrica = value; } }
+        public DateTime? FechaUltimaRegistracion { get { return Original.FechaUltimaRegistracion; } set { Original.FechaUltimaRegistracion = (DateTime)value; } }
+        public DateTime? FechaRubrica { get { return Original.FechaRubrica; } set { Original.FechaRubrica = (DateTime)value; } }
         
         public string Folio { get { return Original.Folio; } set { Original.Folio = value; } }
 
@@ -27,6 +27,7 @@ namespace Balances.DTO
                     setNC();
                 else
                     clear();
+
                 Original.NoSabeNoContesta = value;
             }
         }

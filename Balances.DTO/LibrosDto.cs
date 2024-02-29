@@ -2,8 +2,7 @@
 {
     public class LibrosDto
     {
-        //public string BalanceId { get; set; }
-        //public List<LibroDto> librosDigitales { get; set; }
+
         public LibrosDto()
         {
             this.Administracion = new LibroDto();

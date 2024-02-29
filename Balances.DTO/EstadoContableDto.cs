@@ -2,16 +2,19 @@
 using System.Reflection;
 using System.Text;
 using System;
+using Org.BouncyCastle.Crypto;
+using AutoMapper;
 
 namespace Balances.DTO
 {
     public class EstadoContableDto
     {
+      
         public string tipoBalance { get; set; }
-        public DateTime fechaEstado { get; set; }
-        public DateTime fechaInicio { get; set; }
-        public DateTime fechaReunionDirectorio { get; set; }
-        public DateTime fechaAsamblea { get; set; }
+        public DateTime? fechaEstado { get; set; }
+        public DateTime? fechaInicio { get; set; }
+        public DateTime? fechaReunionDirectorio { get; set; }
+        public DateTime? fechaAsamblea { get; set; }
 
 
         public decimal cajaYBancos { get; set; }
@@ -52,7 +55,20 @@ namespace Balances.DTO
         public decimal gananciasPerdidasEjercicio { get; set; }
         public decimal reservaLegal { get; set; }
 
-        public List<RubroPatrimonioNeto> otrosRubros { get; set; }
+        private List<RubroPatrimonioNetoDto> _otrosRubros;
+        public List<RubroPatrimonioNetoDto> otrosRubros
+        {
+            get
+            {
+                // Instanciar la lista si aún no ha sido inicializada
+                if (_otrosRubros == null)
+                {
+                    _otrosRubros = new List<RubroPatrimonioNetoDto>();
+                }
+                return _otrosRubros;
+            }
+            set { _otrosRubros = value; }
+        }
 
 
 
@@ -61,10 +77,10 @@ namespace Balances.DTO
             var estado = new EstadoContable
             {
                 TipoBalance = tipoBalance,
-                FechaEstado = fechaEstado,
-                FechaInicio = fechaInicio,
+                FechaEstado = (DateTime)fechaEstado,
+                FechaInicio = (DateTime)fechaInicio,
                 FechaReunionDirectorio = (DateTime)fechaReunionDirectorio,
-                FechaAsamblea = fechaAsamblea,
+                FechaAsamblea = (DateTime)fechaAsamblea,
 
                 CajaYBancos = cajaYBancos,
                 InversionesActivoCorriente = inversionesActivoCorriente,
@@ -95,20 +111,21 @@ namespace Balances.DTO
                 GananciasReservadas = gananciasReservadas,
                 PerdidasAcumuladas = perdidasAcumuladas,
                 GananciasPerdidasEjercicio = gananciasPerdidasEjercicio,
-                ReservaLegal = reservaLegal
+                ReservaLegal = reservaLegal,
+                OtrosRubros = ConvertirARubroPatrimonioNeto(otrosRubros),         
 
             };
-
-
-            //estado.OtrosRubros = otrosRubros.GetRubrosPatrimonioNeto();
-
-
 
             return estado;
         }
 
+        public EstadoContableDto()
+        {
+        }
+
         public EstadoContableDto(EstadoContable a)
         {
+             
             tipoBalance = a.TipoBalance;
             fechaEstado = a.FechaEstado;
             fechaInicio = a.FechaInicio;
@@ -153,17 +170,45 @@ namespace Balances.DTO
             perdidasAcumuladas = (decimal)a.PerdidasAcumuladas;
             gananciasPerdidasEjercicio = (decimal)a.GananciasPerdidasEjercicio;
             reservaLegal = (decimal)a.ReservaLegal;
-            otrosRubros = a.otrosRubros;
-            //otrosRubros = new RubrosPatrimonioNetoDto(a.OtrosRubros);
-
+            otrosRubros = ConvertirARubroPatrimonioNetoDto(a.OtrosRubros);
         }
 
-        public EstadoContableDto()
+        public static List<RubroPatrimonioNetoDto> ConvertirARubroPatrimonioNetoDto(List<RubroPatrimonioNeto> lista)
         {
+            List<RubroPatrimonioNetoDto> nuevaLista = new List<RubroPatrimonioNetoDto>();
+            foreach (var item in lista)
+            {
+                // Realizar la conversión de RubroPatrimonionNeeto a RubroPatrimonioNetoDto
+                RubroPatrimonioNetoDto nuevoItem = new RubroPatrimonioNetoDto();
+                // Realizar las asignaciones de propiedades necesarias
+                nuevoItem.codigo = item.Codigo;
+                nuevoItem.denominacion = item.Denominacion;
+                nuevoItem.importe = item.Importe;
+
+                nuevaLista.Add(nuevoItem);
+            }
+            return nuevaLista;
         }
 
-    
-      
+        public static List<RubroPatrimonioNeto> ConvertirARubroPatrimonioNeto(List<RubroPatrimonioNetoDto> listaDto)
+        {
+            List<RubroPatrimonioNeto> nuevaLista = new List<RubroPatrimonioNeto>();
+            foreach (var itemDto in listaDto)
+            {
+                // Realizar la conversión de RubroPatrimonioNetoDto a RubroPatrimonioNeto
+                RubroPatrimonioNeto nuevoItem = new RubroPatrimonioNeto();
+                // Asignar las propiedades necesarias
+                nuevoItem.Codigo = itemDto.codigo;
+                nuevoItem.Denominacion = itemDto.denominacion;
+                nuevoItem.Importe = itemDto.importe;
+
+                nuevaLista.Add(nuevoItem);
+            }
+            return nuevaLista;
+        }
+
+
+
 
     }
 }

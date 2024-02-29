@@ -173,10 +173,10 @@ namespace Balances.Bussiness
         {
             var caratula = new Caratula()
             {
-                FechaDeCierre = modelo.FechaDeCierre,
+                FechaDeCierre = (DateTime)modelo.FechaDeCierre,
                 Email = modelo.Email,
                 Entidad = modelo.Entidad,
-                FechaInicio = modelo.FechaInicio,
+                FechaInicio = (DateTime)modelo.FechaInicio,
                 Fecha = DateTime.Now,
             };
 
@@ -206,33 +206,5 @@ namespace Balances.Bussiness
             throw new NotImplementedException();
         }
 
-        /*public ResponseDTO<string> getSession()
-        {
-            var session = _sessionService.GetBalanceId();
-            var response = new ResponseDTO<string>();
-            try
-            {
-                if (session != null)
-                {
-                    response.IsSuccess = true;
-                    response.Message = "Session Found";
-                    response.Result = session;
-                }
-                else {
-                    response.IsSuccess = true;
-                    response.Message = "Session Not Found";
-                    response.Result = null;
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = "Error request" + ex.Message;
-                response.Result = session;
-            }
-
-           return response; ;
-        }*/
     }
 }

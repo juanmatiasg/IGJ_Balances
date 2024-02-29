@@ -3,9 +3,6 @@
     public class Libros
     {
 
-
-        //public List<Libro> librosDigitales { get; set; }
-
         public Libro Memoria { get; set; }
         public Libro Administracion { get; set; }
         public Libro Asamblea { get; set; }

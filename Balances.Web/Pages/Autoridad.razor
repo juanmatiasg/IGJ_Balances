@@ -54,12 +54,13 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="selectTipoDocumento">Tipo de Documento</label>
-                                    <select id="selectTipoDocumento" class="form-control" @bind="modelo.TipoDocumento">
+                                    <select id="selectTipoDocumento" class="form-select" @bind="modelo.TipoDocumento">
                                         <option selected>Seleccionar...</option>
                                         <option value="DNI">DNI</option>
                                         <option value="Pasaporte">Pasaporte</option>
                                         <option value="Cédula">Cédula</option>
                                     </select>
+                                    <small id="msgError" class="text-danger">@msgErrorTipoDeDoc</small>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -173,9 +174,10 @@
     private string msgErrorNroIdFiscal = "";
     private string msgErrorNroDoc = "";
     private string msgErrorCargo = "";
+    private string msgErrorTipoDeDoc = "";
     private string nroIdentificacionSocial = "Nro de Identificación Fiscal";
-  
-    
+
+
     // reference to the modal component
     private Modal? modalRef;
 
@@ -378,6 +380,18 @@
         }
 
 
+
+        // Apellido
+        if (!string.IsNullOrEmpty(modelo.TipoDocumento))
+        {
+            msgErrorTipoDeDoc = "";
+        }
+        else
+        {
+            msgErrorTipoDeDoc = "El campo no puede estar vacio";
+            return false;
+        }
+
         // NroDocumento
         if (!string.IsNullOrEmpty(modelo.NroDocumento))
         {
@@ -417,7 +431,7 @@
             return false;
         }
 
-        // Apellido
+        // Cargo
         if (!string.IsNullOrEmpty(modelo.Cargo))
         {
             if (Validator.IsNumeric(modelo.Cargo))
@@ -443,6 +457,7 @@
 
         // Si todos los campos pasan la validación, devuelve true
 
+        msgErrorTipoDeDoc = "";
         msgErrorNombre = "";
         msgErrorApellido = "";
         msgErrorNroIdFiscal = "";

@@ -215,7 +215,7 @@
                 <p>     <b>Nro Correlativo      :</b>  @this.caratula.Entidad.Correlativo</p>
                 <p>     <b>CUIT                 :</b>  @this.caratula.Entidad.RazonSocial</p>
                 <p>     <b>Domicilio            :</b>  @this.caratula.Entidad.Domicilio</p>
-                <p>     <b>Estados contables al :</b>  @this.caratula.FechaInicio.ToString("dd/MM/yyyy")</p>
+                <p>     <b>Estados contables al :</b>  @this.caratula.FechaInicio?.ToString("dd/MM/yyyy")</p>
         </div>
     }
     else
@@ -238,7 +238,7 @@
             @if (this.caratula != null && this.caratula.Entidad != null)
             {
                 @foreach (var file in this.listArchivo) { 
-                    <p>  En mi carácter de representante legal de la sociedad  @this.caratula.Entidad.RazonSocial  @this.caratula.Entidad.TipoEntidad, manifiesto que los datos contenidos en los archivos de hash @file.Hash , se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al @this.caratula.FechaDeCierre.ToString("dd/MM/yyyy") obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
+                    <p>  En mi carácter de representante legal de la sociedad  @this.caratula.Entidad.RazonSocial  @this.caratula.Entidad.TipoEntidad, manifiesto que los datos contenidos en los archivos de hash @file.Hash , se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al @this.caratula.FechaDeCierre?.ToString("dd/MM/yyyy") obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
                 }
         }
         else
@@ -255,7 +255,7 @@
             if (autoridad.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
             {
                 <p><span class="error"> </span></p>
-                <p>   Lugar y Fecha     : @this.caratula.Entidad.Domicilio @this.caratula.FechaInicio.ToString("dd/MM/yyyy") </p>
+                <p>   Lugar y Fecha     : @this.caratula.Entidad.Domicilio @this.caratula.FechaInicio?.ToString("dd/MM/yyyy") </p>
                 <p>   Apellido y Nombre : @autoridad.Apellido @autoridad.Nombre </p>
                 <p>   CUIT              : @autoridad.NroFiscal   </p>
                 <p>   Firma             : </p>
@@ -293,7 +293,7 @@
                         <td>@libros.Memoria.Nombre</td>
                         <td>@libros.Memoria.NumeroRubrica</td>
                         <td>@libros.Memoria.Folio</td>
-                        <td>@libros.Memoria.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Memoria.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
 
 
@@ -303,7 +303,7 @@
                         <td>@libros.Asamblea.Nombre</td>
                         <td>@libros.Asamblea.NumeroRubrica</td>
                         <td>@libros.Asamblea.Folio</td>
-                        <td>@libros.Asamblea.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Asamblea.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
 
                     <tr>
@@ -312,7 +312,7 @@
                         <td>@libros.Administracion.NumeroRubrica</td>
                         <td>@libros.Administracion.Folio</td>
                    
-                    <td>@libros.Administracion.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                    <td>@libros.Administracion.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
 
                     <tr>
@@ -321,42 +321,42 @@
                         <td>@libros.SituacionPatrimonial.NumeroRubrica</td>
                         <td>@libros.SituacionPatrimonial.Folio</td>
                        
-                        <td>@libros.SituacionPatrimonial.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.SituacionPatrimonial.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
                         <td>Estado de Resultados</td>
                         <td>@libros.Resultados.Nombre</td>
                         <td>@libros.Resultados.NumeroRubrica</td>
                         <td>@libros.Resultados.Folio</td>
-                        <td>@libros.Resultados.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Resultados.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
                         <td>Estado de Evolución del Patrimonio Neto</td>
                         <td>@libros.PatrimonioNeto.Nombre</td>
                         <td>@libros.PatrimonioNeto.NumeroRubrica</td>
                         <td>@libros.PatrimonioNeto.Folio</td>
-                        <td>@libros.PatrimonioNeto.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.PatrimonioNeto.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
                         <td>Estado de Flujo de Efectivo</td>
                         <td>@libros.Efectivo.Nombre</td>
                         <td>@libros.Efectivo.NumeroRubrica</td>
                         <td>@libros.Efectivo.Folio</td>
-                        <td>@libros.Efectivo.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Efectivo.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
                         <td>Información Complementaria</td>
                         <td>@libros.Informacion.Nombre</td>
                         <td>@libros.Informacion.NumeroRubrica</td>
                         <td>@libros.Informacion.Folio</td>
-                        <td>@libros.Informacion.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Informacion.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
                         <td>Estado Contable Consolidado</td>
                         <td>@libros.EstadosContablesConsolidados.Nombre</td>
                         <td>@libros.EstadosContablesConsolidados.NumeroRubrica</td>
                         <td>@libros.EstadosContablesConsolidados.Folio</td>
-                        <td>@libros.EstadosContablesConsolidados.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.EstadosContablesConsolidados.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
                         <td>Informe de Órgano de Fiscalización</td>
@@ -364,14 +364,14 @@
                         <td>@libros.Fiscalizacion.NumeroRubrica</td>
                         <td>@libros.Fiscalizacion.Folio</td>
                        
-                    <td>@libros.Fiscalizacion.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                    <td>@libros.Fiscalizacion.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
                         <td>Informe del Auditor Externo</td>
                         <td>@libros.Auditor.Nombre</td>
                         <td>@libros.Auditor.NumeroRubrica</td>
                         <td>@libros.Auditor.Folio</td>
-                        <td>@libros.Auditor.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Auditor.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
 
                     <tr>
@@ -379,7 +379,7 @@
                         <td>@libros.AsistenciaAsamblea.Nombre</td>
                         <td>@libros.AsistenciaAsamblea.NumeroRubrica</td>
                         <td>@libros.AsistenciaAsamblea.Folio</td>
-                        <td>@libros.AsistenciaAsamblea.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.AsistenciaAsamblea.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
 
@@ -387,7 +387,7 @@
                         <td>@libros.IVA.Nombre</td>
                         <td>@libros.IVA.NumeroRubrica</td>
                         <td>@libros.IVA.Folio</td>
-                        <td>@libros.IVA.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.IVA.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
 
@@ -395,7 +395,7 @@
                         <td>@libros.IVACompras.Nombre</td>
                         <td>@libros.IVACompras.NumeroRubrica</td>
                         <td>@libros.IVACompras.Folio</td>
-                        <td>@libros.IVACompras.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.IVACompras.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     
                     <tr>
@@ -403,7 +403,7 @@
                         <td>@libros.IVACompras.Nombre</td>
                         <td>@libros.IVACompras.NumeroRubrica</td>
                         <td>@libros.IVACompras.Folio</td>  
-                        <td>@libros.IVACompras.FechaUltimaRegistracion.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.IVACompras.FechaUltimaRegistracion!!.ToString("dd/MM/yyyy")</td>
                     </tr>
                     <tr>
                         <td colspan="4">Informe de Auditoria: Opinión <span class="error">FALTAN CAMPOS</span></td>
@@ -445,7 +445,7 @@
         
         @if (this.caratula != null && this.contador != null)
         {
-                <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el @this.caratula.FechaDeCierre.ToString("dd/MM/yyyy") e Informe de Auditor Externo de fecha @this.contador.FechaInformeAuditorExt.ToString("dd/MM/yyyy") con los datos incluidos en <span class="error">FALTAN CAMPOS</span>.</p>
+                <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el @this.caratula.FechaDeCierre?.ToString("dd/MM/yyyy") e Informe de Auditor Externo de fecha @this.contador.FechaInformeAuditorExt?.ToString("dd/MM/yyyy") con los datos incluidos en <span class="error">FALTAN CAMPOS</span>.</p>
         }
     </div>
     <div>
@@ -550,7 +550,7 @@
                             this.estadoContable.fechaReunionDirectorio = response.Result.EstadoContable.FechaReunionDirectorio;
                             this.estadoContable.cajaYBancos = response.Result.EstadoContable.CajaYBancos;
                             this.estadoContable.inversionesActivoCorriente = response.Result.EstadoContable.InversionesActivoCorriente;
-                            this.estadoContable.otrosRubros = response.Result.EstadoContable.otrosRubros;
+                            //this.estadoContable.otrosRubros = response.Result.EstadoContable.OtrosRubros;
 
                             // this.balance.Caratula = response.Result.Caratula;
                             this.libros.Asamblea = response.Result.Libros.Asamblea;
@@ -978,11 +978,11 @@
 
 
                 }
-                else if (valor is DateTime && (DateTime)valor == DateTime.MinValue)
+                /*else if (valor is DateTime && (DateTime)valor == DateTime.MinValue)
                 {
                     mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser una fecha válida.");
 
-                }
+                }*/
 
                 // Si la propiedad es Count o Capacity y el valor es cero, y no se ha agregado mensaje
                 if ((propiedad.Name == "Count" || propiedad.Name == "Capacity") && valor is int && (int)valor == 0 && !mensajeAgregado)

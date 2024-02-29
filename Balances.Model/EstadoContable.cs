@@ -47,10 +47,25 @@
         public decimal? GananciasPerdidasEjercicio { get; set; }
         public decimal? ReservaLegal { get; set; }
 
-        public List<RubroPatrimonioNeto> otrosRubros { get; set; }
+        private List<RubroPatrimonioNeto> _OtrosRubros;
+        public List<RubroPatrimonioNeto> OtrosRubros
+        {
+            get
+            {
+                // Instanciar la lista si aún no ha sido inicializada
+                if (_OtrosRubros == null)
+                {
+                    _OtrosRubros = new List<RubroPatrimonioNeto>();
+                }
+                return _OtrosRubros;
+            }
+            set { _OtrosRubros = value; }
+        }
 
 
-       
+        public EstadoContable(){
+         
+        }
     }
 
 

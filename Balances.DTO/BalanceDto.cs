@@ -26,6 +26,7 @@ namespace Balances.DTO
         // Constructor para asegurar la inicialización de Presentacion
         public BalanceDto()
         {
+            this.EstadoContable = new EstadoContable();
             this.Presentacion = new Presentacion();
         }
     }

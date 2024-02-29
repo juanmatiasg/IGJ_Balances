@@ -10,7 +10,7 @@
         public string NroFiscal { get; set; }
         public string Tomo { get; set; }
         public string Folio { get; set; }
-        public DateTime FechaInformeAuditorExt { get; set; }
+        public DateTime? FechaInformeAuditorExt { get; set; }
         public string NroLegalInfoAudExt { get; set; }
         public BalanceDto Balance { get; set; }
 

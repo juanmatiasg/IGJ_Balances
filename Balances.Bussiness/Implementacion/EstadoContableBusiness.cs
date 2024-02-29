@@ -3,6 +3,7 @@ using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Model;
 using Balances.Services.Contract;
+using Balances.Web.Pages;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
@@ -42,11 +43,11 @@ namespace Balances.Bussiness.Implementacion
                 var bDto = _balanceBusiness.BalanceActual;
 
                 //BUSCO EL OTRO RUBRO A BORRAR
-                var rubro = bDto.EstadoContable.otrosRubros.FirstOrDefault(p => p.Codigo == modelo.codigo);
+                var rubro = bDto.EstadoContable.OtrosRubros.FirstOrDefault(p => p.Codigo == modelo.codigo);
 
                 if (rubro != null)
                 {
-                    bDto.EstadoContable.otrosRubros.Remove(rubro);
+                    bDto.EstadoContable.OtrosRubros.Remove(rubro);
                 }
 
                 //ACTUALIZO LA DB
@@ -81,21 +82,21 @@ namespace Balances.Bussiness.Implementacion
                     var balanceDto = resultadoDto.Result;
 
 
-                    balanceDto.EstadoContable = _mapper.Map<EstadoContable>(modelo);
-
-                    
-
-                   /*if (balanceDto.EstadoContable.otrosRubros == null)
-                       balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();
+                    balanceDto.EstadoContable = _mapper.Map<Model.EstadoContable>(modelo);
 
 
-                    foreach (var rubro in balanceDto.EstadoContable.otrosRubros.ToList())
-                    {
 
-                        rubro.Codigo = Guid.NewGuid().ToString();
-                        balanceDto.EstadoContable.otrosRubros.Add(rubro);
-                        //balanceDto.EstadoContable.otrosRubros.AddRange(rubro);
-                    }*/
+                    /*if (balanceDto.EstadoContable.OtrosRubros == null)
+                        balanceDto.EstadoContable.OtrosRubros = new List<RubroPatrimonioNeto>();
+
+
+                     foreach (var rubro in balanceDto.EstadoContable.OtrosRubros.ToList())
+                     {
+
+                         rubro.Codigo = Guid.NewGuid().ToString();
+                         balanceDto.EstadoContable.OtrosRubros.Add(rubro);
+                         //balanceDto.EstadoContable.otrosRubros.AddRange(rubro);
+                     }*/
 
 
                     var rsp = _balanceBusiness.Update(balanceDto);
@@ -128,25 +129,44 @@ namespace Balances.Bussiness.Implementacion
 
                 if (resultadoDto.IsSuccess)
                 {
-                    var balanceDto = resultadoDto.Result;
+                    var balanceDto = resultadoDto.Result!;
+                    
+                    var estadoContable = balanceDto.EstadoContable;
+
+                    
 
 
-                    //balanceDto.EstadoContable = new EstadoContable();
-
-                    if (balanceDto.EstadoContable.otrosRubros == null)
-                        balanceDto.EstadoContable.otrosRubros = new List<RubroPatrimonioNeto>();
+                    //var balanceDto = resultadoDto.Result.EstadoContable;
 
 
-                    /*foreach (var rubro in balanceDto.EstadoContable.otrosRubros.ToList())
+                    /*balanceDto.EstadoContable = new EstadoContable();
+
+                    if (estadoContable.OtrosRubros == null)
+                    estadoContable.OtrosRubros = new List<RubroPatrimonioNeto>();
+
+
+                    foreach (var rubros in balanceDto.EstadoContable.OtrosRubros)
                     {
 
-                        rubro.Codigo = Guid.NewGuid().ToString();
-                        balanceDto.EstadoContable.otrosRubros.Add(rubro);
+                        rubros.Codigo = Guid.NewGuid().ToString();
+                        balanceDto.EstadoContable.OtrosRubros.Add(rubros);
                         //balanceDto.EstadoContable.otrosRubros.AddRange(rubro);
-                    }*/
+                    }
+
+                    
                     var rubro = _mapper.Map<RubroPatrimonioNeto>(modelo);
                     rubro.Codigo = Guid.NewGuid().ToString();
-                    balanceDto.EstadoContable.otrosRubros.Add(rubro);
+                    estadoContable.OtrosRubros.Add(rubro);*/
+                    
+                    var rubro = _mapper.Map<RubroPatrimonioNeto>(modelo);
+                    rubro.Codigo = Guid.NewGuid().ToString();
+            
+                    estadoContable.OtrosRubros.Add(rubro);
+
+                    
+
+
+                    //Actualiza el balance
                     var rsp = _balanceBusiness.Update(balanceDto);
                     _logger.LogInformation($"EstadoContableBusiness.Insert rubro --> {rubroSerializado} ");
                     respuesta = rsp;

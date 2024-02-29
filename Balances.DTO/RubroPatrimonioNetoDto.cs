@@ -6,7 +6,7 @@ namespace Balances.DTO
     {
         public string codigo { get; set; }
         public string denominacion { get; set; }
-        public decimal? importe { get; set; }
+        public decimal importe { get; set; }
 
         public RubroPatrimonioNetoDto() { }
 
@@ -25,7 +25,7 @@ namespace Balances.DTO
             return new RubroPatrimonioNeto
             {
                 Denominacion = denominacion,
-                Importe = (decimal)importe,
+                Importe = importe,
                 Codigo = codigo
             };
         }
