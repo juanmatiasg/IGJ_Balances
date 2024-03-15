@@ -17,6 +17,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -249,8 +250,9 @@
     private bool entidadEncontrada;
     private string idSession = "";
     public static bool isActive = false;
+    private const string KEY_SESSION = "idSession";
 
-  
+
 
     // reference to the modal component
     private Modal modalRef;
@@ -289,38 +291,37 @@
         {
 
 
-            // if(sessionStorage!=null)
+            var taskString = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
+            var idKey = taskString;
 
-            // var idSessionResponse = await caratulaService.getSession();
-            var idSessionStorage = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-            //var idLocalSessionStorage = await LocalStorage.GetItemAsync<string>(KEY_SESSION);
-
-
-            idSession = idSessionStorage;
-
-            if (idSession !=null)
+            if (idKey != null)
             {
-                var response = await caratulaService.getBalance(idSession);
+                var response = await caratulaService.getBalance(idKey);
 
                 if (response.IsSuccess)
                 {
-                    Model.Caratula caratula = response.Result.Caratula;
+                    var result = response.Result;
 
-                    modelo.Email = caratula.Email;
-                    modelo.FechaInicio = caratula.FechaInicio;
-                    modelo.FechaDeCierre = caratula.FechaDeCierre;
-                    modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
-                    modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
-                    modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
-                    modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
-                    modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+                    if (result != null)
+                    {
+                        Model.Caratula caratula = result.Caratula;
 
-                    TipoEntidad = caratula.Entidad.TipoEntidad;
-                    //  RazonSocial = caratula.Entidad.RazonSocial;
+                        modelo.Email = caratula.Email;
+                        modelo.FechaInicio = caratula.FechaInicio;
+                        modelo.FechaDeCierre = caratula.FechaDeCierre;
+                        modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
+                        modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
+                        modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+                        modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+                        modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+
+                        TipoEntidad = caratula.Entidad.TipoEntidad;
+                        //  RazonSocial = caratula.Entidad.RazonSocial;
 
 
-                    entidadEncontrada = true;
-                    tramiteIniciado = true;
+                        entidadEncontrada = true;
+                        tramiteIniciado = true;
+                    }
                 }
 
                 else
@@ -336,12 +337,17 @@
                 Console.WriteLine($"No se ha encontrado el idSession");
             }
 
+
+            
+
         }
+
         catch (Exception ex)
         {
             Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
 
         }
+
 
     }
 
@@ -414,10 +420,12 @@
 
                 if (response.IsSuccess)
                 {
-                    //No encuentra el archivo de emailPlantillas
-                    //await caratulaService.setSession(response.Result.Id);
-                    await SessionStorage.SetItemAsync(Constants.KEY_SESSION, response.Result.Id);
-                    //await LocalStorage.SetItemAsync(KEY_SESSION, response.Result.Id);
+         
+                    // Preguntar si hay una Clave existente antes de Setear
+
+
+                    await SessionStorage.SetItemAsync<string>(KEY_SESSION, response.Result.Id);
+       
 
                     isActive = true;
                     tramiteIniciado = true;
@@ -544,9 +552,5 @@
     }
 
 
-  
-
-
-   
 }
 

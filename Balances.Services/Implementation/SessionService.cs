@@ -1,4 +1,5 @@
 ﻿using Balances.DTO;
+using Balances.Model;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -17,6 +18,7 @@ namespace Balances.Services.Implementation
         private static readonly Dictionary<string, string> Storage = new Dictionary<string, string>();
 
         private const string KEY_SESSION = "idSession";
+        //private const string KEY_SESSION = _context.HttpContext.Session.Id;
 
         public string BalanceId
         {
@@ -35,12 +37,10 @@ namespace Balances.Services.Implementation
             _logger.LogWarning($"Método SetBalanceId invocado id: \n {balanceId} {JsonConvert.SerializeObject(new BalanceDto())}");
             _logger.LogError($"Invocando el logError en SetBalanceId {balanceId}");
 
-            // Obtener la fecha actual
-            DateTime currentDate = DateTime.Now;
 
             // Almacenar el balanceId en el diccionario junto con la fecha actual
-            string key = currentDate.ToString("yyyyMMddHHmmss");
-            Storage[key] = balanceId;
+         
+            Storage[KEY_SESSION] = balanceId;
 
             // También puedes almacenar el balanceId en la sesión si lo necesitas por separado
             _context.HttpContext.Session.SetString(KEY_SESSION, balanceId);
@@ -50,17 +50,10 @@ namespace Balances.Services.Implementation
         {
             try
             {
-                // Verificar si hay claves en el diccionario antes de intentar obtener el valor máximo
+                // Verificar si hay claves en el diccionario
                 if (Storage.Keys.Any())
                 {
-                    // Obtener la fecha más reciente en el diccionario
-                    string mostRecentKey = Storage.Keys.Max();
-
-                    // Obtener el balanceId correspondiente a la fecha más reciente
-                    if (Storage.TryGetValue(mostRecentKey, out string balanceId))
-                    {
-                        return balanceId;
-                    }
+                    return Storage[KEY_SESSION];
                 }
 
                 // Manejar el caso donde no se encontró el balanceId correspondiente a la fecha más reciente

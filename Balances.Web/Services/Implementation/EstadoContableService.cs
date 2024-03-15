@@ -48,13 +48,13 @@ namespace Balances.Web.Services.Contracts
 
         }
 
-        public async Task<ResponseDTO<BalanceDto>> insertEEC(EstadoContableDto estadoContableDto)
+        public async Task<ResponseDTO<BalanceDto>> insertEECC(EstadoContableDto estadoContableDto)
         {
             ResponseDTO<BalanceDto> rsp = new();
             rsp.IsSuccess = false;
             try
             {
-
+     
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
                 var respuesta = await _httpClient.PostAsJsonAsync("EstadoContable/InsertEECC", estadoContableDto);
 

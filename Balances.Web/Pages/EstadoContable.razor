@@ -7,6 +7,7 @@
 @using System.Text.RegularExpressions;
 @using System.Reflection;
 @using Blazorise.Extensions;
+@using Microsoft.AspNetCore.Http;
 @inject IEstadoContableService estadoContableService;
 @inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage
@@ -272,16 +273,16 @@
                         <!-- Repite esta estructura para otros campos -->
 
 
-                        <div class="form-group">
-                            <label for="inversionesActivoCorriente">Capital Suscripto</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">ARS $</span>
+                            <div class="form-group">
+                                <label for="inversionesActivoCorriente">Capital Suscripto</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">ARS $</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.capitalSuscripto"  @onblur="insertEECC" />
                                 </div>
-                                <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.capitalSuscripto"  @onblur="insertEECC" />
+                                <small id="tipoBalanceError" class="text-danger">@capitalSuscriptoError</small>
                             </div>
-                            <small id="tipoBalanceError" class="text-danger">@capitalSuscriptoError</small>
-
 
                             <div class="form-group">
                                 <label for="inversionesActivoCorriente">Ajuste de Capital</label>
@@ -374,7 +375,7 @@
                                 <small id="tipoBalanceError" class="text-danger">@reservaLegalError</small>
 
                             </div>     
-                        </div>
+                        
                     </div>
 
                 </div>
@@ -402,8 +403,7 @@
                             <small id="tipoBalanceError" class="text-danger">@pasivoNoCorrienteError</small>
                         </div>
 
-
-                        <button type="button" class="btn btn-primary w-100" @onclick ="insertRubro">Agregar</button>
+                        <button type="button" class="btn btn-primary w-100" @onclick="insertRubro">Agregar</button>
                     </div>
                 </div>
 
@@ -412,14 +412,13 @@
                     {
                         <table class="table table-bordered">
                             <thead>
-                                <tr>
-                                   
+                                <tr>       
                                     <th scope="col">Denominación</th>
                                     <th scope="col">Importe</th>
                                     <th scope="col">Acción</th>
-
                                 </tr>
                             </thead>
+
                             @foreach (var rubro in estadoContableDto.otrosRubros)
                             {
                                 <tbody>
@@ -492,7 +491,6 @@
     private EstadoContableDto estadoContableDto = new EstadoContableDto();
 
 
-
     private Boolean statusPatrimonioNeto = false;
 
     private string otraCosa = "";
@@ -503,17 +501,14 @@
     private bool firstTimeInput = true;
 
 
-
-
-
     protected override async Task OnInitializedAsync()
     {
-
 
         await Load();
 
         await base.OnInitializedAsync();
     }
+
 
     private async Task Load()
     {
@@ -521,10 +516,12 @@
         {
             var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
+
             //var idSession = await estadoContableService.getSession();
 
             if (idSession!=null)
             {
+
                 var response = await estadoContableService.getBalance(idSession);
 
                 if (response.IsSuccess)
@@ -536,18 +533,14 @@
 
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
 
-
                         estadoContableDto = new EstadoContableDto(rsp);
-                        // setListOtrosRubros(rsp.OtrosRubros);
-
+                        
+                        
                         StateHasChanged();
 
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.InnerException.Message}");
-
-                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.InnerException.Message}");
                         Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
                     }
                 }
@@ -565,6 +558,8 @@
 
     }
 
+ 
+
 
 
 
@@ -578,36 +573,106 @@
         resultadoPatrimonioNeto();
         //resultadoPatNetDetailPatNeto();
 
-        ResponseDTO<BalanceDto> respuesta = new();
+        ResponseDTO<BalanceDto> rsp = new();
 
         try
         {
-            if (checkData())
+
+            rsp = await estadoContableService.insertEECC(estadoContableDto);
+
+            if (rsp.IsSuccess)
             {
-
-                respuesta = await estadoContableService.insertEEC(estadoContableDto);
-
-
-                if (respuesta.IsSuccess)
-                {
-                    respuesta.Message = "Se inserto el Estado Contable sastifactoriamente";
-                }
-                else
-                {
-                    respuesta.Message = "No se inserto el Estado Contable";
-
-                }
+                rsp.Message = "Se inserto el Estado Contable sastifactoriamente";
+            }
+            else
+            {
+                rsp.Message = "No se inserto el Estado Contable";
 
             }
 
         }
         catch (Exception ex)
         {
-            respuesta.Message = ex.Message;
-            Console.WriteLine($"InsertEEC: Hubo un problema con la solicitud fetch: {ex.InnerException.Message}");
-            Console.WriteLine($"InsertEEC: Hubo un problema con la solicitud fetch: {ex.Message}");
+            rsp.Message = ex.Message;
+
         }
 
+        return rsp;
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> insertRubro()
+    {
+
+        var rsp = new ResponseDTO<BalanceDto>();
+        try
+        {
+
+            if (checkDataOtrosRubros())
+            {
+
+                rubroDto.codigo = Guid.NewGuid().ToString();
+
+                estadoContableDto.otrosRubros.Add(rubroDto);
+
+                rsp = await estadoContableService.insertEECC(estadoContableDto);
+
+                if (rsp.IsSuccess)
+                {
+                    var result = rsp.Result;
+
+                    if (result != null)
+                    {
+
+                        rsp.Message = "Se inserto el rubro sastifactoriamente";
+                    }
+                }
+                else
+                {
+                    rsp.Message = "No se inserto el rubro";
+
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            rsp.Message = ex.Message;
+
+        }
+        return rsp;
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> deleteRubro(RubroPatrimonioNetoDto rubroDto)
+    {
+
+        var respuesta = new ResponseDTO<BalanceDto>();
+
+
+        try
+        {
+
+            respuesta = await estadoContableService.deleteRubro(rubroDto);
+
+            if (respuesta.IsSuccess)
+            {
+                estadoContableDto.otrosRubros.Remove(rubroDto);
+                respuesta.Message = "Se eliminó el rubro sastifactoriamente";
+
+                StateHasChanged();
+            }
+
+            else
+            {
+                respuesta.Message = "No se eliminó el rubro sastifactoriamente";
+
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
         return respuesta;
     }
 
@@ -690,7 +755,6 @@
                         else
                         {
                             statusPatrimonioNeto = true;
-
                         }
                     }
                 }
@@ -698,6 +762,8 @@
         }
 
     }
+
+
 
     private void setFormatMiles()
     {
@@ -784,49 +850,11 @@
 
 
 
-    private async Task<ResponseDTO<BalanceDto>> insertRubro()
-    {
-
-        var rsp = new ResponseDTO<BalanceDto>();
-        try
-        {
-            if (checkDataOtrosRubros())
-            {
-                rsp = await estadoContableService.insertRubro(rubroDto);
-
-                if (rsp.IsSuccess)
-                {
-                    var result = rsp.Result;
-
-                    if (result != null)
-                    {
-                        setListOtrosRubros(result.EstadoContable.OtrosRubros);
-
-                        rsp.Message = "Se inserto el rubro sastifactoriamente";
-                    }
-                }
-                else
-                {
-                    rsp.Message = "No se inserto el rubro";
-
-                }
-            }
-
-        }
-        catch (Exception ex)
-        {
-
-            rsp.Message = ex.Message;
-            Console.WriteLine($"InsertRubro: Hubo un problema con la solicitud fetch: {ex.InnerException.Message}");
-            Console.WriteLine($"InsertRubro: Hubo un problema con la solicitud fetch: {ex.Message}");
-        }
-        return rsp;
-    }
+  
 
     private bool checkDataOtrosRubros()
     {
-        if (estadoContableDto != null)
-        {
+       
             // Denominacion
             if (!string.IsNullOrEmpty(rubroDto.denominacion))
             {
@@ -865,18 +893,7 @@
                 pasivoNoCorrienteError = "El campo no puede estar vacio";
                 return false;
             }
-
-
-
-        
-        }
-        else
-        {
-            denominacionError = "Por favor completá los datos anteriores";
-            pasivoNoCorrienteError = "Por favor completa los datos anteriores";
-
-            return false;    
-        }
+       
 
         //OtrosRubros
         denominacionError = "";
@@ -887,42 +904,10 @@
 
   
 
-    private async Task<ResponseDTO<BalanceDto>> deleteRubro(RubroPatrimonioNetoDto rubroDto)
-    {
-
-        var respuesta = new ResponseDTO<BalanceDto>();
+    
 
 
-        try
-        {
-
-            respuesta = await estadoContableService.deleteRubro(rubroDto);
-
-            if (respuesta.IsSuccess)
-            {
-                estadoContableDto.otrosRubros.Remove(rubroDto);
-                respuesta.Message = "Se eliminó el rubro sastifactoriamente";
-                
-                StateHasChanged();
-            }
-
-            else
-            {
-                respuesta.Message = "No se eliminó el rubro sastifactoriamente";
-
-            }
-
-
-        }
-        catch (Exception ex)
-        {
-            respuesta.Message = ex.Message;
-        }
-        return respuesta;
-    }
-
-
-    public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
+   public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
     {
         if (rubros != null)
         {
@@ -930,6 +915,7 @@
 
             foreach (var rubro in rubros)
             {
+
                 estadoContableDto.otrosRubros.Add(new RubroPatrimonioNetoDto
                     {
 

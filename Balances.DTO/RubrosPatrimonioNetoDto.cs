@@ -4,7 +4,7 @@ namespace Balances.DTO
 {
    public class RubrosPatrimonioNetoDto
     {
-        public RubrosPatrimonioNetoDto() { }
+        /*public RubrosPatrimonioNetoDto() { }
 
         public RubrosPatrimonioNetoDto(List<RubroPatrimonioNeto> rubros)
         {
@@ -28,7 +28,7 @@ namespace Balances.DTO
 
             return rubros;
 
-        }
+        }*/
         public string? BalanceId { get; set; }
         public List<RubroPatrimonioNetoDto> otrosRubros { get; set; }
 

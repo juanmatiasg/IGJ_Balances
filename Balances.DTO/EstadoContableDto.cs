@@ -72,53 +72,6 @@ namespace Balances.DTO
 
 
 
-        public EstadoContable GetEstadoContable()
-        {
-            var estado = new EstadoContable
-            {
-                TipoBalance = tipoBalance,
-                FechaEstado = (DateTime)fechaEstado,
-                FechaInicio = (DateTime)fechaInicio,
-                FechaReunionDirectorio = (DateTime)fechaReunionDirectorio,
-                FechaAsamblea = (DateTime)fechaAsamblea,
-
-                CajaYBancos = cajaYBancos,
-                InversionesActivoCorriente = inversionesActivoCorriente,
-                BienesDeCambio = bienesDeCambio,
-                ActivoCorrienteRestante = activoCorrienteRestante,
-                ActivoCorriente = activoCorriente,
-
-                BienesDeUso = bienesDeUso,
-                PropiedadesDeInversion = propiedadesDeInversion,
-                InversionesActivoNoCorriente = inversionesActivoNoCorriente,
-                ActivoNoCorrienteRestante = activoNoCorrienteRestante,
-                ActivoNoCorriente = activoNoCorriente,
-
-                TotalActivo = totalActivo,
-
-                DeudorPasivoCorriente = deudorPasivoCorriente,
-                PasivoCorriente = pasivoCorriente,
-
-                DeudorPasivoNoCorriente = deudorPasivoNoCorriente,
-                PasivoNoCorriente = pasivoNoCorriente,
-
-                TotalPasivo = totalPasivo,
-                PatrimonioNeto = patrimonioNeto,
-                CapitalSuscripto = capitalSuscripto,
-                AjusteCapital = ajusteCapital,
-                AportesIrrevocables = aportesIrrevocables,
-                PrimaEmision = primaEmision,
-                GananciasReservadas = gananciasReservadas,
-                PerdidasAcumuladas = perdidasAcumuladas,
-                GananciasPerdidasEjercicio = gananciasPerdidasEjercicio,
-                ReservaLegal = reservaLegal,
-                OtrosRubros = ConvertirARubroPatrimonioNeto(otrosRubros),         
-
-            };
-
-            return estado;
-        }
-
         public EstadoContableDto()
         {
         }
@@ -150,7 +103,6 @@ namespace Balances.DTO
 
 
 
-
             totalActivo = a.TotalActivo;
 
             deudorPasivoCorriente = (decimal)a.DeudorPasivoCorriente;
@@ -176,36 +128,27 @@ namespace Balances.DTO
         public static List<RubroPatrimonioNetoDto> ConvertirARubroPatrimonioNetoDto(List<RubroPatrimonioNeto> lista)
         {
             List<RubroPatrimonioNetoDto> nuevaLista = new List<RubroPatrimonioNetoDto>();
+
+
             foreach (var item in lista)
             {
-                // Realizar la conversión de RubroPatrimonionNeeto a RubroPatrimonioNetoDto
+
                 RubroPatrimonioNetoDto nuevoItem = new RubroPatrimonioNetoDto();
-                // Realizar las asignaciones de propiedades necesarias
+                
+      
                 nuevoItem.codigo = item.Codigo;
                 nuevoItem.denominacion = item.Denominacion;
                 nuevoItem.importe = item.Importe;
 
                 nuevaLista.Add(nuevoItem);
+
+
+
             }
             return nuevaLista;
         }
 
-        public static List<RubroPatrimonioNeto> ConvertirARubroPatrimonioNeto(List<RubroPatrimonioNetoDto> listaDto)
-        {
-            List<RubroPatrimonioNeto> nuevaLista = new List<RubroPatrimonioNeto>();
-            foreach (var itemDto in listaDto)
-            {
-                // Realizar la conversión de RubroPatrimonioNetoDto a RubroPatrimonioNeto
-                RubroPatrimonioNeto nuevoItem = new RubroPatrimonioNeto();
-                // Asignar las propiedades necesarias
-                nuevoItem.Codigo = itemDto.codigo;
-                nuevoItem.Denominacion = itemDto.denominacion;
-                nuevoItem.Importe = itemDto.importe;
-
-                nuevaLista.Add(nuevoItem);
-            }
-            return nuevaLista;
-        }
+        
 
 
 

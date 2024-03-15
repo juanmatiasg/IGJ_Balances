@@ -46,6 +46,7 @@ namespace Balances.Bussiness.Implementacion
             var contadorSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
+
                 var id = _sessionService.GetBalanceId();
                // var id = SessionStorageHelper.GetItem<string>(Constants.KEY_SESSION);
                 var responsedto = _balanceBusiness.GetById(id);

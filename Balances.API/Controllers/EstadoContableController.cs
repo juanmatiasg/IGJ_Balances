@@ -10,12 +10,12 @@ namespace Balances.API.Controllers
     public class EstadoContableController : ControllerBase
     {
         private readonly IEstadoContableBusiness _estadocontableBusiness;
-        private readonly ISessionService _sessionService;
 
-        public EstadoContableController(IEstadoContableBusiness estadocontableBusiness, ISessionService sessionService)
+
+        public EstadoContableController(IEstadoContableBusiness estadocontableBusiness)
         {
             _estadocontableBusiness = estadocontableBusiness;
-            _sessionService = sessionService;
+    
         }
 
         [HttpPost]
@@ -23,7 +23,7 @@ namespace Balances.API.Controllers
         public ResponseDTO<BalanceDto> InsertEECC([FromBody] EstadoContableDto estadocontableDto)
         {
 
-            var rsp = _estadocontableBusiness.Insert(estadocontableDto);
+            var rsp = _estadocontableBusiness.InsertEECC(estadocontableDto);
             return rsp;
 
         }
@@ -32,7 +32,7 @@ namespace Balances.API.Controllers
         public ResponseDTO<BalanceDto> InsertRubro([FromBody] RubroPatrimonioNetoDto rubroDto)
         {
 
-            var rsp = _estadocontableBusiness.Insert(rubroDto);
+            var rsp = _estadocontableBusiness.InsertRubro(rubroDto);
             return rsp;
 
         }
@@ -42,7 +42,7 @@ namespace Balances.API.Controllers
         public ResponseDTO<BalanceDto> DeleteRubro([FromBody] RubroPatrimonioNetoDto rubroDto)
         {
 
-            var rsp = _estadocontableBusiness.Delete(rubroDto);
+            var rsp = _estadocontableBusiness.DeleteRubro(rubroDto);
             return rsp;
 
         }

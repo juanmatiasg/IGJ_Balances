@@ -1,23 +1,25 @@
 ﻿using Balances.DTO;
 using Balances.Model;
 using Balances.Web.Pages;
-using Balances.Web.Services.Implementation;
-
+using Balances.Web.Services.Contracts;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
-namespace Balances.Web.Services.Contracts
+namespace Balances.Web.Services.Implementation
 {
     public class CaratulaService : ICaratulaService
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CaratulaService(HttpClient httpClient)
+        public CaratulaService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
+            _httpContextAccessor = httpContextAccessor;
 
         }
 
@@ -45,7 +47,8 @@ namespace Balances.Web.Services.Contracts
                     Message = result.Message
                 };
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 return new ResponseDTO<string>
                 {
                     Result = null,
@@ -66,7 +69,7 @@ namespace Balances.Web.Services.Contracts
                 if (rsp.Result != null)
                 {
                     // Enviar la solicitud POST directamente con PostAsJsonAsync
-                    var response = await _httpClient.PostAsJsonAsync($"Session/{id}",id);
+                    var response = await _httpClient.PostAsJsonAsync($"Session/{id}", id);
 
                     // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
                     //var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
@@ -88,7 +91,7 @@ namespace Balances.Web.Services.Contracts
                     };
                 }
 
-              
+
             }
             catch (Exception ex)
             {
@@ -101,14 +104,14 @@ namespace Balances.Web.Services.Contracts
                 };
             }
 
-             
-         
+
+
         }
 
         public async Task<ResponseDTO<BalanceDto>> initTramite(CaratulaDto caratula)
         {
             try
-            { 
+            {
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
                 var response = await _httpClient.PostAsJsonAsync("Caratula/InsertCaratula", caratula);
 
@@ -125,7 +128,7 @@ namespace Balances.Web.Services.Contracts
                     Message = result.Message
                 };
 
-              
+
             }
             catch (Exception ex)
             {
@@ -143,6 +146,10 @@ namespace Balances.Web.Services.Contracts
         {
             try
             {
+                var idKey = _httpContextAccessor.HttpContext.Session.Id;
+
+                Console.WriteLine("Prueba" + idKey);
+
                 var response = await _httpClient.PostAsJsonAsync($"Session/{id}", id);
 
                 // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
@@ -150,7 +157,8 @@ namespace Balances.Web.Services.Contracts
 
                 if (result.IsSuccess)
                 {
-                    return new ResponseDTO<string> { 
+                    return new ResponseDTO<string>
+                    {
                         Result = result.Result,
                         Message = result.Message,
                         IsSuccess = result.IsSuccess
@@ -166,15 +174,16 @@ namespace Balances.Web.Services.Contracts
                     };
                 }
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 return new ResponseDTO<string>
                 {
                     Result = null,
-                    Message = $"{"Error:SetSession"+ex.Message}",
+                    Message = $"{"Error:SetSession" + ex.Message}",
                     IsSuccess = false
                 };
             }
-            
+
         }
     }
 

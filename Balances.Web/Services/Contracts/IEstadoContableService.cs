@@ -5,7 +5,7 @@ namespace Balances.Web.Services.Implementation
 {
     public interface IEstadoContableService
     {
-        Task<ResponseDTO<BalanceDto>> insertEEC(EstadoContableDto estadoContableDto);
+        Task<ResponseDTO<BalanceDto>> insertEECC(EstadoContableDto estadoContableDto);
 
         Task<ResponseDTO<BalanceDto>> insertRubro(RubroPatrimonioNetoDto rubroPatrimonioNetoDto);
 

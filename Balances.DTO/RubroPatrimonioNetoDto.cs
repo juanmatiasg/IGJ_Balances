@@ -19,16 +19,27 @@ namespace Balances.DTO
             codigo = rubro.Codigo;
 
         }
-
-        public RubroPatrimonioNeto GetRubroPatrimonioNeto()
+        
+        public static RubroPatrimonioNetoDto ConvertirDesdeRubroPatrimonioNeto(RubroPatrimonioNeto rubro)
         {
-            return new RubroPatrimonioNeto
-            {
-                Denominacion = denominacion,
-                Importe = importe,
-                Codigo = codigo
-            };
+            RubroPatrimonioNetoDto dto = new RubroPatrimonioNetoDto();
+
+            dto.codigo = rubro.Codigo;
+            dto.denominacion = rubro.Denominacion;
+            dto.importe = rubro.Importe;
+
+            return dto;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is RubroPatrimonioNetoDto dto &&
+                   codigo == dto.codigo;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(codigo);
+        }
     }
 }
