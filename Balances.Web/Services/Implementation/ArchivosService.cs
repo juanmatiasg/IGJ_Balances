@@ -51,34 +51,19 @@ namespace Balances.Web.Services.Contracts
             }
 
         }
-        public async Task<ResponseDTO<BalanceDto>> uploadArchivo(IReadOnlyList<IBrowserFile> files, string categoria)
+      
+
+        public async Task<ResponseDTO<BalanceDto>> uploadArchivo(List<FileDTO> files)
         {
             try
             {
-                UploadFilesDTO ufilesTO = new UploadFilesDTO();
 
-                foreach (var file in files)
-                {
-                   
-                    var binario = await ToByteArrayAsync(file.OpenReadStream());
-
-
-                    var f = new FileDTO();
-                    f.DatosBinarios = binario;
-                    f.Tamaño = binario.Length;
-                    f.ContentType = file.ContentType;
-                    f.Categoria = categoria;
-                    f.NombreArchivo = file.Name;
-                    f.Hash = Convert.ToHexString(SHA256.HashData(f.DatosBinarios));
-
-                    ufilesTO.ListFile.Add(f);
-
-                }
-                JsonContent jc = JsonContent.Create(ufilesTO);
-                var response = await _httpClient.PostAsync("Archivo/InsertArchivos", jc);
+                //JsonContent jc = JsonContent.Create(files);
+                //var response = await _httpClient.PostAsync("Archivo/InsertArchivos", files);
+                var response = await _httpClient.PostAsJsonAsync("Archivo/InsertArchivos", files);
 
                 // Check if the request was successful (status code 2xx)
-                response.EnsureSuccessStatusCode();
+               // response.EnsureSuccessStatusCode();
 
                 // Deserialize the response
                 var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
@@ -98,12 +83,8 @@ namespace Balances.Web.Services.Contracts
                     IsSuccess = false,
                     Message = $"Error: {ex.Message}"
                 };
-            }
+            };
         }
-
-        
-
-
 
         private async Task <byte[]> ToByteArrayAsync(Stream stream)
         {
@@ -153,7 +134,7 @@ namespace Balances.Web.Services.Contracts
             return rsp;
         }
 
-       
+
     }
 
 

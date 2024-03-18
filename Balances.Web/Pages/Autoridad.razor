@@ -110,7 +110,9 @@
                                     <th scope="col">Nro Documento</th>
                                     <th scope="col">CUIT</th>
                                     <th scope="col">Cargo</th>
+                                    <th scope="col">Firmante</th>
                                     <th scope="col">Acción</th>
+                                   
                                 </tr>
                             </thead>
                             @foreach (var autoridad in listAutoridades)
@@ -121,6 +123,7 @@
                                         <td>@autoridad.NroDocumento</td>
                                         <td>@autoridad.NroFiscal</td>
                                         <td>@autoridad.Cargo</td>
+                                        <td>@(autoridad.EsFirmante ? "Sí" : "No")</td>
                                         <td>
                                             <button type="button" class="btn btn-danger" @onclick="() => deleteAutoridad(autoridad)">Eliminar</button>
                                         </td>

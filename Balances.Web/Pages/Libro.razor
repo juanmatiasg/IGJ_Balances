@@ -88,6 +88,7 @@ else
 }
 
 @code {
+
     private string msgErrorFolio = "";
     private string msgErrorNroRubrica = "";
     private string msgErrorNombre = "";
@@ -107,24 +108,24 @@ else
     [Parameter]
     public EventCallback<LibroDto> OnBlur { get; set; }
 
-
+    protected override void OnInitialized()
+    {
+  
+        base.OnInitialized();
+    }
 
     private async Task OnBlurHandler()
     {
+        await OnBlur.InvokeAsync(libroP);
+
         if (checkData())
         {
             await OnBlur.InvokeAsync(libroP);
         }
-        await OnBlur.InvokeAsync(libroP);
-        
     }
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-    }
+   
 
     private bool checkData()
     {

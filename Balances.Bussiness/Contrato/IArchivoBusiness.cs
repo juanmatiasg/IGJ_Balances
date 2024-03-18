@@ -7,6 +7,6 @@ namespace Balances.Bussiness.Contrato
     public interface IArchivoBusiness
     {
         ResponseDTO<BalanceDto> Delete(Archivo archivo);
-        ResponseDTO<BalanceDto> UploadFilesDTO(UploadFilesDTO ufDto);
+        ResponseDTO<BalanceDto> UploadFilesDTO(List<FileDTO> files);
     }
 }

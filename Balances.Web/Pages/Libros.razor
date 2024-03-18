@@ -82,6 +82,7 @@
         // Encuentra el libro correspondiente en el modelo y actualiza sus valores
         if (libro != null)
         {
+            
             if (modelo.Asamblea == libro)
             {
                 modelo.Asamblea = libro;
@@ -150,6 +151,9 @@
 
         await insertLibros(modelo);
     }
+
+   
+        
 
    /* private async Task ToggleSelectAll()
     {

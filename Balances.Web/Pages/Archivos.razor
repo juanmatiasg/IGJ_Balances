@@ -86,14 +86,14 @@
                                     <th scope="col">Acción</th>
                                 </tr>
                             </thead>
-                            @if (listArchivo.Count > 0)
+                            @if (listArchivo != null && listArchivo.Count > 0)
                             {
                                 @foreach (var archivo in listArchivo)
                                 {
                                     <tbody>
                                         <tr>
-                                            <td>@(archivo.NombreArchivo.Length > 10 ? archivo.NombreArchivo.Substring(0, 10) + "..." : archivo.NombreArchivo)</td>
-                                            <td>@(archivo.Categoria.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
+                                            <td>@(archivo.NombreArchivo?.Length > 10 ? archivo.NombreArchivo.Substring(0, 10) + "..." : archivo.NombreArchivo)</td>
+                                            <td>@(archivo.Categoria?.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
                                             <td>@archivo.Hash</td>
                                             <td>@archivo.FechaCreacion.ToString("dd/MM/yyyy")</td>
                                             <td>@conversionesDeArchivos(archivo.Tamaño)</td>
@@ -152,7 +152,7 @@
                     {
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
                         var rspArchivos = response.Result.Archivos;
-
+                       
                         setListArchivos(rspArchivos);
 
                         StateHasChanged();
@@ -175,24 +175,24 @@
 
     }
 
-    private void setListArchivos(List<Archivo> list)
-    {
-        if(list.Count>0){
-
-            var archivo = new FileDTO();
-
-            list.ForEach(x =>
+    private void setListArchivos(List<Archivo> list){
+        if (list != null)
+        {
+            foreach (var x in list)
             {
-                archivo.NombreArchivo = x.NombreArchivo;
-                archivo.Categoria = x.Categoria;
-                archivo.Hash = x.Hash;
-                archivo.Tamaño = x.Tamaño;
-                archivo.FechaCreacion = x.FechaCreacion;
+                var archivo = new FileDTO
+                    {
+                        NombreArchivo = x.NombreArchivo,
+                        Categoria = x.Categoria,
+                        Hash = x.Hash,
+                        Tamaño = x.Tamaño,
+                        FechaCreacion = x.FechaCreacion
+                    };
 
-            });
-
-            this.listArchivo.Add(archivo);
+                this.listArchivo.Add(archivo);
+            }
         }
+        
     }
 
     private string conversionesDeArchivos(long file)
@@ -305,7 +305,8 @@
                     
                     listArchivo.Add(archivos);
 
-                    response = await archivoService.uploadArchivo(selectedFiles, categoria);
+                    //response = await archivoService.uploadArchivo(selectedFiles, categoria);
+                    response = await archivoService.uploadArchivo(listArchivo);
 
                     if (response.IsSuccess)
                     {

@@ -89,7 +89,7 @@ namespace Balances.Bussiness.Implementacion
 
         }
 
-        public ResponseDTO<BalanceDto> UploadFilesDTO(UploadFilesDTO ufDto)
+        public ResponseDTO<BalanceDto> UploadFilesDTO(List<FileDTO> ufDto)
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
             var bDto = _balanceBusiness.BalanceActual;
@@ -98,7 +98,7 @@ namespace Balances.Bussiness.Implementacion
          
             try
             {
-                foreach (var file in ufDto.ListFile)
+                foreach (var file in ufDto)
                 {
                     var newFile = new Archivo
                     {

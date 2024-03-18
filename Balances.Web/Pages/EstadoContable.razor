@@ -388,7 +388,7 @@
                             </h5>
 
                             <label for="capitalSuscripto">Denominación</label>
-                            <input type="text" class="form-control" id="capitalSuscripto"  @bind ="rubroDto.denominacion">
+                            <input type="text" class="form-control" id="capitalSuscripto"  @bind = "denominacionDto">
                             <small id="tipoBalanceError" class="text-danger">@denominacionError</small>
 
                         </div>
@@ -398,7 +398,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">ARS $</span>
                                 </div>
-                                <input type="text" class="form-control" id="activoCorriente" @bind="rubroDto.importe" />
+                                <input type="text" class="form-control" id="activoCorriente" @bind="importeDto" />
                             </div>
                             <small id="tipoBalanceError" class="text-danger">@pasivoNoCorrienteError</small>
                         </div>
@@ -485,6 +485,9 @@
     private string pasivoNoCorrienteError="";
 
 
+    private string denominacionDto = "";
+    private decimal importeDto = 0;
+
 
     private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
 
@@ -534,8 +537,8 @@
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
 
                         estadoContableDto = new EstadoContableDto(rsp);
-                        
-                        
+
+
                         StateHasChanged();
 
                     }
@@ -558,7 +561,7 @@
 
     }
 
- 
+
 
 
 
@@ -577,17 +580,19 @@
 
         try
         {
-
-            rsp = await estadoContableService.insertEECC(estadoContableDto);
-
-            if (rsp.IsSuccess)
+            if (checkData())
             {
-                rsp.Message = "Se inserto el Estado Contable sastifactoriamente";
-            }
-            else
-            {
-                rsp.Message = "No se inserto el Estado Contable";
+                rsp = await estadoContableService.insertEECC(estadoContableDto);
 
+                if (rsp.IsSuccess)
+                {
+                    rsp.Message = "Se inserto el Estado Contable sastifactoriamente";
+                }
+                else
+                {
+                    rsp.Message = "No se inserto el Estado Contable";
+
+                }
             }
 
         }
@@ -611,10 +616,13 @@
             {
 
                 rubroDto.codigo = Guid.NewGuid().ToString();
+                rubroDto.denominacion = denominacionDto;
+                rubroDto.importe = importeDto;
 
-                estadoContableDto.otrosRubros.Add(rubroDto);
 
-                rsp = await estadoContableService.insertEECC(estadoContableDto);
+                //estadoContableDto.otrosRubros.Add(rubroDto);
+
+                rsp = await estadoContableService.insertRubro(rubroDto);
 
                 if (rsp.IsSuccess)
                 {
@@ -622,7 +630,7 @@
 
                     if (result != null)
                     {
-
+                        setListOtrosRubros(result.EstadoContable.OtrosRubros);
                         rsp.Message = "Se inserto el rubro sastifactoriamente";
                     }
                 }
@@ -856,9 +864,9 @@
     {
        
             // Denominacion
-            if (!string.IsNullOrEmpty(rubroDto.denominacion))
+            if (!string.IsNullOrEmpty(denominacionDto))
             {
-                if (Validator.IsNumeric(rubroDto.denominacion))
+                if (Validator.IsNumeric(denominacionDto))
                 {
                     denominacionError = "No puedes ingresar un valor numérico";
                     return false;
@@ -875,9 +883,9 @@
                 return false;
             }
 
-            if (rubroDto.importe > 0)
+            if (importeDto > 0)
             {
-                if (!Validator.IsNumeric(rubroDto.importe.ToString()))
+                if (!Validator.IsNumeric(importeDto.ToString()))
                 {
                     pasivoNoCorrienteError = "No puedes ingresar con caracteres";
                     return false;
