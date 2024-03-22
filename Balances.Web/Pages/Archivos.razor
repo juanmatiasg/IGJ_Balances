@@ -41,10 +41,11 @@
                         Enviar Archivos
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form class="">
                             <div class="form-group">
                                 <label for="tipoArchivo">Tipo de Archivo</label>
-                                <select class="form-select" @bind="@categoria">         
+                                <select class="form-select" @bind="@categoria"> 
+                                    <option value="">---- Seleccionar un tipo de Archivo ----</option>
                                     <option value="Estado Contable">Estado Contable</option>
                                     <option value="Acta reunión organo">Acta reunión organo</option>
                                     <option value="Acta reunión administradores">Acta reunión administradores</option>
@@ -54,11 +55,24 @@
                                 </select>
                                 <small id="msgError" class="text-danger">@msgErrorTipoArchivo</small>
                             </div>
-
                             <div class="col d-flex justify-content-between">
-                                <InputFile OnChange="@HandleFileUpload" multiple  />
-                                <button type="button" class ="btn-primary" @onclick="UploadFile">Subir Archivo</button>
+                                <InputFile OnChange="@HandleFileUpload" multiple />
+                                @if (!isUploaded)
+                                {
+                                    <button type="button" class="btn-primary" @onclick="UploadFile">Subir Archivo</button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn-secondary">Subir Archivo</button>
+                                }
                             </div>
+
+                            @if (isLoading)
+                            {
+                                <!-- Barra de progreso -->
+                                <progress max="100" value="@progressPercentage" class="w-100 mt-3"></progress>
+                                <span class="d-flex justify-content-center">@progressPercentage%</span>
+                            }
 
                         </form>
                         <div class="d-flex justify-content-center mt-4">
@@ -121,12 +135,17 @@
 
     [Parameter] public string? TipoEntidad { get; set; }
 
+    private bool isLoading = false;
+    private double progressPercentage = 0.0;
+
     private string categoria = "";
     private string msgError = "";
     private string msgErrorTipoArchivo = "";
 
     private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
     private List<FileDTO> listArchivo = new List<FileDTO>();
+
+    private bool isUploaded = false;
 
 
     protected override async void OnInitialized()
@@ -152,7 +171,7 @@
                     {
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
                         var rspArchivos = response.Result.Archivos;
-                       
+
                         setListArchivos(rspArchivos);
 
                         StateHasChanged();
@@ -192,7 +211,7 @@
                 this.listArchivo.Add(archivo);
             }
         }
-        
+
     }
 
     private string conversionesDeArchivos(long file)
@@ -202,7 +221,7 @@
 
         if (fileSizeInBytes < 1024)
         {
-            return "Bytes";
+            return $"{Math.Round((double)fileSizeInBytes)} Bytes";
         }
         else if (fileSizeInBytes < 1024 * 1024)
         {
@@ -232,29 +251,43 @@
     {
         try
         {
+            isLoading = true; // Mostrar indicador de carga
+           
+
             foreach (var file in e.GetMultipleFiles())
             {
-                
-                    msgError = "";
+                msgError = "";
 
-                    // Verificar si la extensión del archivo es PDF
-                    if (Path.GetExtension(file.Name).ToLower() == ".pdf")
+                if (Path.GetExtension(file.Name).ToLower() == ".pdf")
+                {
+                    if (file.Size <= 20 * 1024 * 1024) // 20 MB en bytes
                     {
                         msgError = "";
                         selectedFiles = e.GetMultipleFiles();
                     }
                     else
                     {
-                        msgError = $"El archivo {file.Name} no es un archivo PDF.";
-                
+                        msgError = $"El archivo {file.Name} excede el tamaño máximo permitido de 20 MB.";
                     }
-                
-                break;
+
+                }
+                else
+                {
+                    msgError = $"El archivo {file.Name} no es un archivo PDF.";
+
+                }
+
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: HandleFileUpload {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false; // Ocultar indicador de carga
+            isUploaded = false;
+
         }
     }
 
@@ -264,10 +297,6 @@
         {
             msgError = "No seleccionaste ningún archivo";
             return false;
-        }
-        else
-        {
-            msgError = "";
         }
 
         msgError = "";
@@ -284,51 +313,78 @@
 
         try
         {
+
+            isLoading = true;
+            isUploaded = true;
+
+
             if (checkData())
             {
 
-                    var archivos = new FileDTO();
+                var archivos = new FileDTO();
+                foreach (var file in selectedFiles)
+                {
 
-                    foreach (var file in selectedFiles)
+                    if (file.Size > 0)
                     {
-    
-                        var binario = await ToByteArrayAsync(file.OpenReadStream());
 
+                        var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
 
-                        archivos.DatosBinarios = binario;
                         archivos.Tamaño = binario.Length;
                         archivos.ContentType = file.ContentType;
                         archivos.Categoria = categoria;
                         archivos.NombreArchivo = file.Name;
                         archivos.Hash = Convert.ToHexString(SHA256.HashData(binario));
-                    }
-                    
-                    listArchivo.Add(archivos);
 
-                    //response = await archivoService.uploadArchivo(selectedFiles, categoria);
-                    response = await archivoService.uploadArchivo(listArchivo);
+                        // Calcular el progreso de la carga
+                        double totalFileSize = selectedFiles.Sum(file => file.Size);
+                        double uploadedSize = 0.0;
+                        double stepSize = totalFileSize / 5; // Dividir en 5 pasos (20, 40, 60, 80, 100)
 
-                    if (response.IsSuccess)
-                    {
-                        StateHasChanged();
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            uploadedSize += stepSize;
+                            progressPercentage = (uploadedSize / totalFileSize) * 100;
+                            await Task.Delay(1000); // Esperar 1 segundo en cada paso (simulando una carga más lenta)
+                        }
+
+                        listArchivo.Add(archivos);
+
+                        //response = await archivoService.uploadArchivo(selectedFiles, categoria);
+                        response = await archivoService.uploadArchivo(listArchivo);
+
+                        if (response.IsSuccess)
+                        {
+                            StateHasChanged();
+                        }
+                        else
+                        {
+                            response.Message = $"Error uploading files";
+                        }
                     }
                     else
                     {
-                        response.Message = $"Error uploading files";
+                        msgError = $"El archivo {file.Name} está vacío. Por favor, seleccione un archivo válido.";
                     }
                 }
-                else
-                {
-                    response.Message = $"El campo categoria no puede estar vacio";
-                }
-            
+            }
+            else
+            {
+                response.Message = $"El campo categoria no puede estar vacio";
+            }
+
+
         }
 
         catch (Exception ex)
         {
             response.Message = $"An error occurred while uploading files: {ex.Message}";
         }
-
+        finally
+        {
+            isLoading = false; 
+            isUploaded = false;
+        }
         return response;
     }
 
@@ -363,8 +419,6 @@
                 listArchivo.Remove(archivo);
 
             }
-
-
         }
         catch (Exception ex)
         {

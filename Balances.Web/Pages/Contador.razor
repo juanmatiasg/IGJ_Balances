@@ -39,13 +39,13 @@
                             <div>
                                 <div class="form-group">
                                     <label for="contadorNombre">Nombre</label>
-                                    <input type="text" class="form-control" id="contadorNombre" :value="form.nombre" oninput="handleChange(event)" required @bind="modelo.Nombre" @onblur=postContador>
+                                    <input type="text" class="form-control" id="contadorNombre" :value="form.nombre"  required @bind="modelo.Nombre" @onblur=postContador>
                                     <small id="msgError" class="text-danger">@msgErrorNombre</small>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="ContadorApellido">Apellido</label>
-                                    <input type="text" class="form-control" id="ContadorApellido" :value="form.apellido" oninput="handleChange(event)" required @bind="modelo.Apellido" @onblur=postContador>
+                                    <input type="text" class="form-control" id="ContadorApellido" :value="form.apellido"  required @bind="modelo.Apellido" @onblur=postContador>
                                     <small id="msgError" class="text-danger">@msgErrorApellido</small>
                                 </div>
 
@@ -53,6 +53,7 @@
                             <div class="form-group">
                                 <label for="tipoDocumento">Tipo de Documento</label>
                                 <select class="form-select" @bind="modelo.TipoDocumento" @onblur="postContador">
+                                    <option value="">--- Seleccionar un tipo de documento ---</option>
                                     <option value="DNI">DNI</option>
                                     <option value="Pasaporte">Pasaporte</option>
                                     <option value="Cedula">Cédula</option>
@@ -62,14 +63,14 @@
                             
                             <div class="form-group">
                                 <label for="contadorNroDocumento">Número de Documento</label>
-                                <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento" oninput="handleChange(event)" required @bind="modelo.NroDocumento" @onblur=postContador>
+                                <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento"  required @bind="modelo.NroDocumento" @onblur=postContador>
                                 <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
 
                             </div>
 
                             <div class="form-group">
                                 <label for="contadorNuFiscal">Nro. de Identificación Fiscal</label>
-                                <input type="text" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal" oninput="handleChange(event)" required @bind="modelo.NroFiscal" @onblur=postContador>
+                                <input type="text" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal"  required @bind="modelo.NroFiscal" @onblur=postContador>
                                 <small id="msgError" class="text-danger">@msgErrorNroIdFiscal</small>
 
 
@@ -77,28 +78,28 @@
 
                             <div class="form-group">
                                 <label for="tomo">Tomo</label>
-                                <input type="text" class="form-control" id="tomo" :value="form.tomo" oninput="handleChange(event)" required @bind="modelo.Tomo" @onblur=postContador>
+                                <input type="text" class="form-control" id="tomo" :value="form.tomo"  required @bind="modelo.Tomo" @onblur=postContador>
                                 <small id="msgError" class="text-danger">@msgErrorTomo</small>
 
                             </div>
 
                             <div class="form-group">
                                 <label for="folio">Folio</label>
-                                <input type="text" class="form-control" id="folio" :value="form.folio" oninput="handleChange(event)" required @bind="modelo.Folio" @onblur=postContador>
+                                <input type="text" class="form-control" id="folio" :value="form.folio"  required @bind="modelo.Folio" @onblur=postContador>
                                 <small id="msgError" class="text-danger">@msgErrorFolio</small>
 
                             </div>
 
                             <div class="form-group">
                                 <label for="feInformeAuditorExt">Fecha del Informe del Auditor Externo</label>
-                                <input type="date" class="form-control" id="feInformeAuditorExt" :value="form.fechaInformeAuditorExt" oninput="handleChange(event)" required @bind="modelo.FechaInformeAuditorExt" @onblur=postContador>
+                                <input type="date" class="form-control" id="feInformeAuditorExt" :value="form.fechaInformeAuditorExt"  required @bind="modelo.FechaInformeAuditorExt" @onblur=postContador>
                                 <small id="msgErrorFechaInformeAuditorExt" class="text-danger">@msgErrorFechaInformeAuditorExt</small>
 
                             </div>
 
                             <div class="form-group">
                                 <label for="nroLegalInfoAudExt">Nro. de Legalización del Informe del Auditor Externo</label>
-                                <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt" oninput="handleChange(event)" required @bind="modelo.NroLegalInfoAudExt" @onblur=postContador>
+                                <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt" required @bind="modelo.NroLegalInfoAudExt" @onblur=postContador>
                                 <small id="msgError" class="text-danger">@msgErrorNroLegInf</small>
 
                             </div>
@@ -205,29 +206,26 @@
 
     private async Task<ResponseDTO<BalanceDto>> postContador()
     {
-
-        if (checkData())
+        ResponseDTO<BalanceDto> respuesta = new();
+        respuesta.IsSuccess = false;
+        try
         {
-            ResponseDTO<BalanceDto> respuesta = new();
-            respuesta.IsSuccess = false;
-            try
+            if (checkData())
             {
                 //modelo.TipoDocumento = tipoDocSeleccionado;
                 respuesta = await contadorService.postContador(modelo);
                 respuesta.IsSuccess = true;
 
             }
-            catch (Exception ex)
-            {
 
-                respuesta.Message = ex.Message;
-            }
-            return respuesta;
         }
-        else
+
+        catch (Exception ex)
         {
-            return null;    
+            respuesta.Message = ex.Message;
+
         }
+        return respuesta;
 
     }
 
@@ -310,9 +308,6 @@
         }
 
 
-
-
-
         // NroFiscal
         if (!string.IsNullOrEmpty(modelo.NroFiscal))
         {
@@ -336,15 +331,7 @@
         // Tomo
         if (!string.IsNullOrEmpty(modelo.Tomo))
         {
-            if (Validator.IsNumeric(modelo.Tomo))
-            {
-                msgErrorTomo = "No puedes ingresar un valor numérico en el campo Tomo";
-                return false;
-            }
-            else
-            {
-                msgErrorTomo = "";
-            }
+            msgErrorTomo = "";
         }
         else
         {
@@ -355,15 +342,7 @@
         // Folio
         if (!string.IsNullOrEmpty(modelo.Folio))
         {
-            if (Validator.IsNumeric(modelo.Folio))
-            {
-                msgErrorFolio = "No puedes ingresar un valor numérico en el campo Folio";
-                return false;
-            }
-            else
-            {
-                msgErrorFolio = "";
-            }
+            msgErrorFolio = "";
         }
         else
         {
@@ -403,13 +382,6 @@
             return false;
         }
 
-
-
-
-
-       
-
-
         msgErrorNombre = "";
         msgErrorTomo = "";
         msgErrorApellido = "";
@@ -418,6 +390,8 @@
         msgErrorNroDoc = "";
         msgErrorTipoDocumento = "";
         msgErrorFechaInformeAuditorExt = "";
+
+
         return true;
     }
 

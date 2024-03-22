@@ -108,6 +108,7 @@ namespace Balances.Bussiness.Implementacion
                         NombreArchivo = file.NombreArchivo,
                         ContentType = file.ContentType,
                         Tamaño = file.Tamaño / 1024
+                       
                     };
 
                     if (file.Tamaño > 0)
@@ -116,7 +117,7 @@ namespace Balances.Bussiness.Implementacion
                         Directory.CreateDirectory(_baseDir + Periodo);
                         string fullPath = $@"{_baseDir}\{Periodo}\{newFile.Id}{Path.GetExtension(file.NombreArchivo)}";
 
-                        File.WriteAllBytes(fullPath, file.DatosBinarios);
+                        //File.WriteAllBytes(fullPath, file.DatosBinarios);
 
                         newFile.Hash = file.Hash;
 

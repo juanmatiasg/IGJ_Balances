@@ -10,7 +10,8 @@ namespace Balances.DTO
         public string NumeroRubrica { get => Original.NumeroRubrica; set => Original.NumeroRubrica = value; }
         public DateTime? FechaUltimaRegistracion { get => Original.FechaUltimaRegistracion; set => Original.FechaUltimaRegistracion = value; }
         public DateTime? FechaRubrica { get => Original.FechaRubrica; set => Original.FechaRubrica = value; }
-        public string Folio { get => Original.Folio; set => Original.Folio = value; }
+        public string FolioObraTranscripcion { get => Original.FolioObraTranscripcion; set => Original.FolioObraTranscripcion = value; }
+        public string FolioUltimaRegistracion { get => Original.FolioUltimaRegistracion; set => Original.FolioUltimaRegistracion = value; }
         public bool NoSabeNoContesta
         {
             get => Original.NoSabeNoContesta;
@@ -34,7 +35,8 @@ namespace Balances.DTO
             NumeroRubrica = "N/C";
             FechaRubrica = DateTime.Now;
             FechaUltimaRegistracion = DateTime.Now;
-            Folio = "N/C";
+            FolioObraTranscripcion = "N/C";
+            FolioUltimaRegistracion = "N/C";
         }
 
         public void Clear()
@@ -45,15 +47,14 @@ namespace Balances.DTO
                 NumeroRubrica = OldValue.NumeroRubrica;
                 FechaRubrica = OldValue.FechaRubrica;
                 FechaUltimaRegistracion = OldValue.FechaUltimaRegistracion;
-                Folio = OldValue.Folio;
+                FolioObraTranscripcion = OldValue.FolioObraTranscripcion;
+                FolioUltimaRegistracion = OldValue.FolioUltimaRegistracion;
+
             }
             else {
-                Nombre = "";
-                NumeroRubrica = "";
-                FechaRubrica = OldValue.FechaRubrica;
-                FechaUltimaRegistracion = OldValue.FechaUltimaRegistracion;
-                Folio = "";
+                OldValue =  new LibroDtoExtended();
             }
+          
         }
 
         public LibroDtoExtended(LibroDtoExtended other)
@@ -63,7 +64,8 @@ namespace Balances.DTO
             NumeroRubrica = other.NumeroRubrica;
             FechaRubrica = other.FechaRubrica;
             FechaUltimaRegistracion = other.FechaUltimaRegistracion;
-            Folio = other.Folio;
+            FolioObraTranscripcion = other.FolioObraTranscripcion;
+            FolioUltimaRegistracion = other.FolioUltimaRegistracion;
         }
 
         public LibroDtoExtended() { }

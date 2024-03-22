@@ -10,6 +10,7 @@
         public long Tamaño { get; set; }
         public string ContentType { get; set; }
 
+      
         public override bool Equals(object obj)
         {
             return obj is Archivo archivo &&

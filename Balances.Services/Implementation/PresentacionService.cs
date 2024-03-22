@@ -90,23 +90,26 @@ namespace Balances.Services.Implementation
             // Esto lo agrego Juan Fecha 18/07/2024
             SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
             SetTag("{{" + libroNombre + ".NumeroRubrica}}", libro.NumeroRubrica);
-            SetTag("{{" + libroNombre + ".Folio}}", libro.Folio);
+            SetTag("{{" + libroNombre + ".FolioObraTranscripcion}}", libro.FolioObraTranscripcion);
             SetTag("{{" + libroNombre + ".Denominacion}}", libro.Nombre);
             SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", libro.FechaUltimaRegistracion?.ToString("dd/MM/yyyy"));
+            SetTag("{{" + libroNombre + ".FolioUltimaRegistracion}}", libro.FolioUltimaRegistracion);
 
             if (libro.Nombre != null)
             {
                 SetTag("{{" + libroNombre + ".Nombre}}", libro.Nombre);
                 SetTag("{{" + libroNombre + ".NumeroRubrica}}", libro.NumeroRubrica);
-                SetTag("{{" + libroNombre + ".Folio}}", libro.Folio);
+                SetTag("{{" + libroNombre + ".FolioObraTranscripcionn}}", libro.FolioObraTranscripcion);
                 SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", libro.FechaUltimaRegistracion?.ToString("dd/MM/yyyy"));
+                SetTag("{{" + libroNombre + ".FolioUltimaRegistracion}}", libro.FolioUltimaRegistracion);
             }
             else
             {
                 SetTag("{{" + libroNombre + ".Nombre}}", "N/C");
                 SetTag("{{" + libroNombre + ".NumeroRubrica}}", "N/C");
-                SetTag("{{" + libroNombre + ".Folio}}", "N/C");
+                SetTag("{{" + libroNombre + ".FolioObraTranscripcion}}", "N/C");
                 SetTag("{{" + libroNombre + ".FechaUltimaRegistracion}}", "N/C");
+                SetTag("{{" + libroNombre + ".FolioUltimaRegistracion}}", "N/C");
             }
 
       

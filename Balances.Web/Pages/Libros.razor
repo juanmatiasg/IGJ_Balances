@@ -23,28 +23,64 @@
 
     <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Libros" TramiteIniciado="true"></Navegacion>
 
-    <div class="container mt-2 mb-4">
-        <div class="card mx-auto">
+    <div class="container-fluid mt-2 mb-4">
+        <div class="card">
             <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                 Datos de Libros
             </div>
 
-            <div class="card-body">
-                <Libro libroP="modelo.Asamblea" OnBlur="() => HandleBlur(modelo.Asamblea)"></Libro>
+            <div class="card-body" >
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-2 mt-1">
+                        <label class="text-primary">Tipo de Asiento</label>
+                    </div>
+                    <div class="col-md-2 mt-1">
+                        <label class="text-primary">Nombre del Libro</label>
+                    </div>
+
+                    <div class="col-md-1  mt-1">
+                        <label class="text-primary">Nro de Rúbrica</label>
+                    </div>
+
+                    <div class="col-md-1  mt-1">
+                        <label class="text-primary">Fecha Rúbrica</label>
+                    </div>
+                    <div class="col-md-1  mt-1">
+                        <label class ="text-primary">Folio en el que obra la transcripción</label>
+                    </div>
+
+                    <div class="col-md-1  mt-1">
+                        <label class="text-primary">Última Registración del Libro</label>
+                    </div>
+
+                    <div class="col-md-1  mt-1">
+                        <label class="text-primary">Folio de la última Reg.</label>
+                    </div>
+
+                 
+                    <div class="col-md-1 mt-1">
+                        <label class="text-primary">No sabe / No contesta</label>
+                    </div>
+
+                </div>
+                <Libro libroP="modelo.Memoria" OnBlur="() => HandleBlur(modelo.Memoria)"></Libro>
                 <Libro libroP="modelo.Administracion" OnBlur="() => HandleBlur(modelo.Administracion)"></Libro>
-                <Libro libroP="modelo.AsistenciaAsamblea" OnBlur="() => HandleBlur(modelo.AsistenciaAsamblea)"></Libro>
-                <Libro libroP="modelo.Auditor" OnBlur="() => HandleBlur(modelo.Auditor)"></Libro>
+                <Libro libroP="modelo.Asamblea" OnBlur="() => HandleBlur(modelo.Asamblea)"></Libro>
+                <Libro libroP="modelo.SituacionPatrimonial" OnBlur="() => HandleBlur(modelo.SituacionPatrimonial)"></Libro>
+                <Libro libroP="modelo.Resultados" OnBlur="() => HandleBlur(modelo.Resultados)"></Libro>
+                <Libro libroP="modelo.PatrimonioNeto" OnBlur="() => HandleBlur(modelo.PatrimonioNeto)"></Libro>
                 <Libro libroP="modelo.Efectivo" OnBlur="() => HandleBlur(modelo.Efectivo)"></Libro>
+                <Libro libroP="modelo.Informacion" OnBlur="() => HandleBlur(modelo.Informacion)"></Libro>
+                <Libro libroP="modelo.EstadosContablesConsolidados" OnBlur="() => HandleBlur(modelo.EstadosContablesConsolidados)"></Libro>
                 <Libro libroP="modelo.Fiscalizacion" OnBlur="() => HandleBlur(modelo.Fiscalizacion)"></Libro>
+                <Libro libroP="modelo.Auditor" OnBlur="() => HandleBlur(modelo.Auditor)"></Libro>
+                <Libro libroP="modelo.AsistenciaAsamblea" OnBlur="() => HandleBlur(modelo.AsistenciaAsamblea)"></Libro>
                 <Libro libroP="modelo.IVA" OnBlur="() => HandleBlur(modelo.IVA)"></Libro>
                 <Libro libroP="modelo.IVACompras" OnBlur="() => HandleBlur(modelo.IVACompras)"></Libro>
                 <Libro libroP="modelo.IVAVentas" OnBlur="() => HandleBlur(modelo.IVAVentas)"></Libro>
-                <Libro libroP="modelo.Resultados" OnBlur="() => HandleBlur(modelo.Resultados)"></Libro>
-                <Libro libroP="modelo.EstadosContablesConsolidados" OnBlur="() => HandleBlur(modelo.EstadosContablesConsolidados)"></Libro>
-                <Libro libroP="modelo.PatrimonioNeto" OnBlur="() => HandleBlur(modelo.PatrimonioNeto)"></Libro>
-                <Libro libroP="modelo.SituacionPatrimonial" OnBlur="() => HandleBlur(modelo.SituacionPatrimonial)"></Libro>
-                <Libro libroP="modelo.Memoria" OnBlur="() => HandleBlur(modelo.Memoria)"></Libro>
-                <Libro libroP="modelo.Informacion" OnBlur="() => HandleBlur(modelo.Informacion)"></Libro>
+              
+               
+
             </div>
 
 

@@ -538,6 +538,7 @@
 
                         estadoContableDto = new EstadoContableDto(rsp);
 
+                    
 
                         StateHasChanged();
 
@@ -582,6 +583,7 @@
         {
             if (checkData())
             {
+
                 rsp = await estadoContableService.insertEECC(estadoContableDto);
 
                 if (rsp.IsSuccess)
@@ -593,6 +595,7 @@
                     rsp.Message = "No se inserto el Estado Contable";
 
                 }
+
             }
 
         }
@@ -620,7 +623,7 @@
                 rubroDto.importe = importeDto;
 
 
-                //estadoContableDto.otrosRubros.Add(rubroDto);
+
 
                 rsp = await estadoContableService.insertRubro(rubroDto);
 
@@ -665,6 +668,7 @@
             {
                 estadoContableDto.otrosRubros.Remove(rubroDto);
                 respuesta.Message = "Se eliminó el rubro sastifactoriamente";
+
 
                 StateHasChanged();
             }
@@ -723,51 +727,50 @@
         }
     }
 
-    private  void resultadoPatNetDetailPatNeto()
+    private bool resultadoPatNetDetailPatNeto()
     {
-
-
-        if (resultadoPatrimonioNeto() > 0)
+        if (estadoContableDto.otrosRubros.Count > 0)
         {
-            if (!(estadoContableDto.otrosRubros.Count > 0))
+            decimal sumatoriaImporte = 0;
+
+            foreach (var rubros in estadoContableDto.otrosRubros)
             {
-                if (estadoContableDto.reservaLegal > 0)
-                {
-                    var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio;
+                sumatoriaImporte = sumatoriaImporte + rubros.importe;    
+            }
 
 
-                    if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
-                    {
-                        statusPatrimonioNeto = false;
+            var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.primaEmision + estadoContableDto.gananciasReservadas + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + estadoContableDto.reservaLegal + sumatoriaImporte;
 
-                    }
-                    else
-                    {
-                        statusPatrimonioNeto = true;
+            if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
+            {
+                return statusPatrimonioNeto = false;
 
-                    }
-                }
             }
             else
             {
-                foreach (var rubro in estadoContableDto.otrosRubros)
-                {
-                    var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.reservaLegal + estadoContableDto.primaEmision + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + rubro.importe;
-                    if (estadoContableDto.reservaLegal > 0)
-                    {
-                        if (resultadoPatrimonioNeto() == sumatoriaDetallePatNeto)
-                        {
-                            statusPatrimonioNeto = false;
+                return statusPatrimonioNeto = true;
 
-                        }
-                        else
-                        {
-                            statusPatrimonioNeto = true;
-                        }
-                    }
-                }
             }
         }
+        else
+        {
+            var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.primaEmision + estadoContableDto.gananciasReservadas + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + estadoContableDto.reservaLegal;
+
+            if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
+            {
+                return statusPatrimonioNeto = false;
+
+            }
+            else
+            {
+                return statusPatrimonioNeto = true;
+
+            }
+        }
+
+
+
+        return statusPatrimonioNeto;
 
     }
 
@@ -858,64 +861,66 @@
 
 
 
-  
+
 
     private bool checkDataOtrosRubros()
     {
-       
-            // Denominacion
-            if (!string.IsNullOrEmpty(denominacionDto))
-            {
-                if (Validator.IsNumeric(denominacionDto))
-                {
-                    denominacionError = "No puedes ingresar un valor numérico";
-                    return false;
-                }
-                else
-                {
-                    denominacionError = "";
 
-                }
+        // Denominacion
+        if (!string.IsNullOrEmpty(denominacionDto))
+        {
+            if (Validator.IsNumeric(denominacionDto))
+            {
+                denominacionError = "No puedes ingresar un valor numérico";
+                return false;
             }
             else
             {
-                denominacionError = "El campo no puede estar vacio";
-                return false;
+                denominacionError = "";
+
             }
+        }
+        else
+        {
+            denominacionError = "El campo no puede estar vacio";
+            return false;
+        }
 
-            if (importeDto > 0)
+        if (importeDto > 0)
+        {
+            if (!Validator.IsNumeric(importeDto.ToString()))
             {
-                if (!Validator.IsNumeric(importeDto.ToString()))
-                {
-                    pasivoNoCorrienteError = "No puedes ingresar con caracteres";
-                    return false;
-                }
-                else
-                {
-                    pasivoNoCorrienteError = "";
-
-                }
+                pasivoNoCorrienteError = "No puedes ingresar con caracteres";
+                return false;
             }
             else
             {
-                pasivoNoCorrienteError = "El campo no puede estar vacio";
-                return false;
+                pasivoNoCorrienteError = "";
+
             }
-       
+        }
+        else
+        {
+            pasivoNoCorrienteError = "El campo no puede estar vacio";
+            return false;
+        }
+
 
         //OtrosRubros
         denominacionError = "";
         pasivoNoCorrienteError = "";
 
+
+
         return true;
     }
 
-  
-
-    
 
 
-   public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
+
+
+
+    public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
     {
         if (rubros != null)
         {
@@ -1015,7 +1020,7 @@
         }
 
 
-       
+
 
         //Caja y Bancos
 
@@ -1076,7 +1081,7 @@
             bienesDeCambioError = "El campo no puede estar vacio";
             return false;
         }
-    
+
 
         //Activo  Corriente Restante
 
@@ -1097,7 +1102,7 @@
             activoCorrienteRestanteError = "El campo no puede estar vacio";
             return false;
         }
-  
+
 
         //Bienes de Uso
         if (!string.IsNullOrEmpty(estadoContableDto.bienesDeUso.ToString()))
@@ -1259,7 +1264,7 @@
             return false;
         }
 
-     
+
         //Prima Emision
 
         if (!string.IsNullOrEmpty(estadoContableDto.primaEmision.ToString()))
@@ -1379,18 +1384,18 @@
         capitalSuscriptoError = "";
         deudasPasivoCorrienteError = "";
         deudasPasivoNoCorrienteError = "";
-       
+
         gananciasPerdidasEjercicioError = "";
         gananciasReservadasError = "";
-      
-        
+
+
         primaEmisionError = "";
         perdidasAcumuladasError = "";
         propiedadesDeInversionError = "";
         reservaLegalError = "";
 
-       
 
+    
         return true;
     }
    

@@ -12,8 +12,10 @@ namespace Balances.DTO
         public DateTime? FechaUltimaRegistracion { get; set; }
         public DateTime? FechaRubrica { get; set; }
 
-        public string Folio { get; set; }
+        public string FolioObraTranscripcion { get; set; }
         public bool NoSabeNoContesta { get; set; }
+
+        public string FolioUltimaRegistracion { get; set; }
     
    
 

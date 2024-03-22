@@ -1,4 +1,5 @@
 using Balances.Web;
+using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
@@ -9,7 +10,6 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Balances.Web.Services.Contracts;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -54,10 +54,7 @@ builder.Services
     .AddFontAwesomeIcons();
 
 
-/*builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 6000000; // Set the limit to a larger value (e.g., 6 MB)
-});*/
+
 
 
 
