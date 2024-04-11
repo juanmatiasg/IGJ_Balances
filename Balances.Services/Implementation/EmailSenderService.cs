@@ -129,7 +129,7 @@ namespace Balances.Services.Implementation
 
                     _logger.LogInformation($"Email enviado correctamente a: \n {emailSerializado}");
                     return true;
-                }
+                }       
             }
             catch (Exception ex)
             {

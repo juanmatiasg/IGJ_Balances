@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4853a5f4-e837-4359-8fbd-9aed58454155" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Balances.DTO/LibroDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Balances.DTO/LibroDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Balances.DTO/LibroDtoExtended.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Balances.DTO/LibroDtoExtended.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Balances.Model/Libro.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Balances.Model/Libro.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Balances.Web/Pages/Caratula.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Balances.Web/Pages/Caratula.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Balances.Web/Pages/Confirmacion.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Balances.Web/Pages/Confirmacion.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Balances.Web/Pages/Libro.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Balances.Web/Pages/Libro.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Balances.Web/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Balances.Web/Program.cs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2eEMH24dG8h8cct9KKhor9Kl2gl" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature/autoridad",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/jguerrer/source/repos/IGJ_Balances",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4853a5f4-e837-4359-8fbd-9aed58454155" name="Changes" comment="" />
+      <created>1711465192846</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1711465192846</updated>
+    </task>
+    <servers />
+  </component>
+</project>

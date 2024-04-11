@@ -19,7 +19,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7172/") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://appsdesa:8084/") });
 builder.Services.AddHttpContextAccessor();
 
 
@@ -54,7 +54,10 @@ builder.Services
     .AddFontAwesomeIcons();
 
 
-
+/*builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 6000000; // Set the limit to a larger value (e.g., 6 MB)
+});*/
 
 
 

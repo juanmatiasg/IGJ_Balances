@@ -1,5 +1,4 @@
-﻿<h3>ContinuarCarga</h3>
-@page "/ContinuarCarga/{balid}"
+﻿@page "/ContinuarCarga/{balid}"
 @using Balances.Web.Services.Implementation;
 @using Org.BouncyCastle.Asn1.Ocsp;
 @inject NavigationManager NavigationManager
@@ -16,7 +15,8 @@
     {
         /*cargar la caratula*/
 
-      
+        await SessionStorage.SetItemAsStringAsync("idSession", balid);
+        
         var rlt = await caratulaService.loadCaratula(balid);
 
         if (rlt.IsSuccess)

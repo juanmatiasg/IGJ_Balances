@@ -38,7 +38,7 @@
 
         <!--Navegacion-->
 
-
+       
         <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado"></Navegacion>
 
         <!--Loading-->
@@ -289,10 +289,15 @@
     {
         try
         {
-
-
             var taskString = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
             var idKey = taskString;
+
+            if (balid != null)
+            {
+                idKey = balid;
+            }
+
+           
 
             if (idKey != null)
             {
@@ -338,7 +343,7 @@
             }
 
 
-            
+
 
         }
 
@@ -375,6 +380,8 @@
 
                 try
                 {
+                    await ShowLoadingModal();
+
                     var response = await caratulaService.findEntities(modelo.Entidad.Correlativo);
 
                     if (response != null)
@@ -392,6 +399,11 @@
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                }
+                finally
+                {
+                    await HideLoadingModal();
+                    StateHasChanged();
                 }
 
             } 

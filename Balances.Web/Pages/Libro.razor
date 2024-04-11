@@ -223,7 +223,7 @@ else
 }
 -->
 
-    @code {
+@code {
 
     private string msgErrorFolio = "";
     private string msgErrorNroRubrica = "";
@@ -249,10 +249,11 @@ else
     [Parameter]
     public EventCallback<LibroDto> OnBlur { get; set; }
 
-   
+
 
     private async Task OnBlurHandler()
     {
+        
         await OnBlur.InvokeAsync(libroP);
 
         if (checkData())

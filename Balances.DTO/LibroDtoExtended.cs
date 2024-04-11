@@ -8,8 +8,8 @@ namespace Balances.DTO
         public string Tipo { get => Original.Tipo; set => Original.Tipo = value; }
         public string Nombre { get => Original.Nombre; set => Original.Nombre = value; }
         public string NumeroRubrica { get => Original.NumeroRubrica; set => Original.NumeroRubrica = value; }
-        public DateTime? FechaUltimaRegistracion { get => Original.FechaUltimaRegistracion; set => Original.FechaUltimaRegistracion = value; }
-        public DateTime? FechaRubrica { get => Original.FechaRubrica; set => Original.FechaRubrica = value; }
+        public DateTime? FechaUltimaRegistracion { get => Original.FechaUltimaRegistracion ?? null; set => Original.FechaUltimaRegistracion = value; }
+        public DateTime? FechaRubrica { get => Original.FechaRubrica ?? null; set => Original.FechaRubrica = value; }
         public string FolioObraTranscripcion { get => Original.FolioObraTranscripcion; set => Original.FolioObraTranscripcion = value; }
         public string FolioUltimaRegistracion { get => Original.FolioUltimaRegistracion; set => Original.FolioUltimaRegistracion = value; }
         public bool NoSabeNoContesta
@@ -33,8 +33,8 @@ namespace Balances.DTO
             OldValue = new LibroDtoExtended(this);
             Nombre = "N/C";
             NumeroRubrica = "N/C";
-            FechaRubrica = DateTime.Now;
-            FechaUltimaRegistracion = DateTime.Now;
+            FechaRubrica = null;
+            FechaUltimaRegistracion = null;
             FolioObraTranscripcion = "N/C";
             FolioUltimaRegistracion = "N/C";
         }
@@ -45,14 +45,19 @@ namespace Balances.DTO
             {
                 Nombre = OldValue.Nombre;
                 NumeroRubrica = OldValue.NumeroRubrica;
-                FechaRubrica = OldValue.FechaRubrica;
+                FechaRubrica = OldValue.FechaRubrica ;
                 FechaUltimaRegistracion = OldValue.FechaUltimaRegistracion;
                 FolioObraTranscripcion = OldValue.FolioObraTranscripcion;
                 FolioUltimaRegistracion = OldValue.FolioUltimaRegistracion;
 
             }
             else {
-                OldValue =  new LibroDtoExtended();
+                Nombre = "";
+                NumeroRubrica = "";
+                FechaRubrica = null;
+                FechaUltimaRegistracion = null;
+                FolioObraTranscripcion = "";
+                FolioUltimaRegistracion = "";
             }
           
         }

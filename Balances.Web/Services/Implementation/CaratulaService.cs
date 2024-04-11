@@ -69,7 +69,7 @@ namespace Balances.Web.Services.Implementation
                 if (rsp.Result != null)
                 {
                     // Enviar la solicitud POST directamente con PostAsJsonAsync
-                    var response = await _httpClient.PostAsJsonAsync($"Session/{id}", id);
+                    //var response = await _httpClient.PostAsJsonAsync($"Session/{id}", id);
 
                     // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
                     //var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
