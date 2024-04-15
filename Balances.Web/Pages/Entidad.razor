@@ -1,5 +1,6 @@
 ﻿@page "/Entidad"
 @using Balances.DTO;
+@using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @using Microsoft.JSInterop
 @using Balances.Web.Services
@@ -246,7 +247,7 @@
         modelo.FechaDeCierre = DateTime.Now;
 
 
-        idBalanceSession = await sessionStorage.GetItemAsync<string>(KEY_SESSION);
+        idBalanceSession = await sessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
         if (idBalanceSession != null)
         {

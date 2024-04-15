@@ -1,6 +1,7 @@
 ﻿@page "/Libros"
 @using Balances.DTO;
 @using Balances.Model;
+@using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @using System.Text;
 @using System.Reflection;
@@ -356,13 +357,15 @@
     {
         try
         {
-            var idSession = await serviceLibro.getSession();
+         
+
+            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
             //var idSession = await SessionStorage.GetItemAsync<string>("idSession");
 
-            if (idSession.IsSuccess)
+            if (idSession !=null)
             {
-                var response = await serviceLibro.getBalance(idSession.Result!);
+                var response = await serviceLibro.getBalance(idSession);
 
                 if (response.IsSuccess == true)
                 {

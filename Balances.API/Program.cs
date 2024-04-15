@@ -92,20 +92,33 @@ try
                               (builder.Configuration.GetSection(nameof(MongoDbSettings)));
     builder.Services.AddSingleton<IMongoDbSettings>
                                  (d => d.GetRequiredService<IOptions<MongoDbSettings>>().Value);
-  
+
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("NuevaPolitica", app =>
         {
             app.AllowAnyOrigin().
-            AllowAnyHeader().
-            AllowAnyMethod();
+            AllowAnyHeader()
+             .SetIsOriginAllowedToAllowWildcardSubdomains()
+             .WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")
+             .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
 
         });
-    }); //Importante 
+    });
 
+        /* builder.Services.AddCors(options =>
+         {
+             options.AddPolicy("NuevaPolitica", app =>
+             {
+                 app.AllowAnyOrigin().
+                 AllowAnyHeader().
+                 AllowAnyMethod();
 
-    builder.Services.AddSession(options =>
+             });
+         }); //Importante 
+        */
+
+        builder.Services.AddSession(options =>
   {
       options.IdleTimeout = TimeSpan.FromHours(3);
       options.Cookie.HttpOnly = true;

@@ -3,7 +3,7 @@
 @using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @using System.Globalization;
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 @inject IContadorService contadorService
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
@@ -164,8 +164,10 @@
         ResponseDTO<BalanceDto> rsp = new();
         try
         {
-            var idSession = await contadorService.getSession();
-            rsp = await contadorService.getBalance(idSession.Result);
+            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+
+           // var idSession = await contadorService.getSession();
+            rsp = await contadorService.getBalance(idSession);
 
 
 

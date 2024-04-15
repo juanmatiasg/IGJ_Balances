@@ -10,6 +10,7 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -19,7 +20,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://appsdesa:8084/") });
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://balanceapi.justicia.ar/") });
+
+//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7172/") });
+
+//https://localhost:7172/
+
 builder.Services.AddHttpContextAccessor();
 
 
@@ -32,7 +39,6 @@ builder.Services.AddScoped<IArchivosService, ArchivosService>();
 builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
 builder.Services.AddScoped<IPresentacionService, PresentacionService >();
 builder.Services.AddScoped<IPresentacionService, PresentacionService>();
-
 
 
 // Ejemplo de configuración para ASP.NET Core

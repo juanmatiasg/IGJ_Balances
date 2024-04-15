@@ -3,6 +3,8 @@
 @using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @inject ISociosService socioService;
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
 
 
 
@@ -149,13 +151,14 @@
     {
         try
         {
-            var idSession = await socioService.getSession();
+            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+           // var idSession = await socioService.getSession();
 
-            if (idSession.IsSuccess)
+            if (idSession!=null)
             {
-                var response = await socioService.getBalance(idSession.Result);
+                var response = await socioService.getBalance(idSession);
 
-                if (idSession.IsSuccess == true)
+                if (response.IsSuccess == true)
                 {
 
                     try

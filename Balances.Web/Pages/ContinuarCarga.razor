@@ -1,4 +1,5 @@
 ﻿@page "/ContinuarCarga/{balid}"
+@using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @using Org.BouncyCastle.Asn1.Ocsp;
 @inject NavigationManager NavigationManager
@@ -15,7 +16,7 @@
     {
         /*cargar la caratula*/
 
-        await SessionStorage.SetItemAsStringAsync("idSession", balid);
+        await SessionStorage.SetItemAsStringAsync(Constants.KEY_SESSION, balid);
         
         var rlt = await caratulaService.loadCaratula(balid);
 

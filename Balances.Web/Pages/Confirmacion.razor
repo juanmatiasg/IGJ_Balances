@@ -1,9 +1,12 @@
 ﻿@page "/Confirmacion"
 @using Balances.DTO;
 @using Balances.Model;
+@using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @inject ICaratulaService caratulaService
 @inject IPresentacionService presentacionService
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
 
 <!DOCTYPE html>
 
@@ -552,13 +555,14 @@
     {
         try
         {
-            var idSession = await caratulaService.getSession();
+            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+           // var idSession = await caratulaService.getSession();
 
-            if (idSession.IsSuccess)
+            if (idSession != null)
             {
-                var response = await caratulaService.getBalance(idSession.Result);
+                var response = await caratulaService.getBalance(idSession);
 
-                if (idSession.IsSuccess == true)
+                if (response.IsSuccess == true)
                 {
 
                     try

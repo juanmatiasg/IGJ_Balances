@@ -3,8 +3,8 @@
 @using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @inject IAutoridadService autoridadService
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject NavigationManager NavigationManager
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 
 <!DOCTYPE html>
 <html lang="en">
@@ -211,13 +211,14 @@
     {
         try
         {
-            var idSession = await autoridadService.getSession();
-
-            if (idSession.IsSuccess)
+            //var idSession = await autoridadService.getSession();
+            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            
+            if (idSession!=null)
             {
-                var response = await autoridadService.getBalance(idSession.Result);
+                var response = await autoridadService.getBalance(idSession);
 
-                if (idSession.IsSuccess == true)
+                if (response.IsSuccess == true)
                 {
 
                     try

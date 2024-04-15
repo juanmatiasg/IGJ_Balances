@@ -1,4 +1,4 @@
-﻿@page "/Caratula/{balid?}"
+@page "/Caratula/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
@@ -17,7 +17,6 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -31,7 +30,7 @@
 
         <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
         <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
-
+        <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
     </head>
 
     <body>
@@ -232,7 +231,7 @@
              
              </div>
         </div>
-   
+        <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
     </body>
     
 
@@ -250,15 +249,13 @@
     private bool entidadEncontrada;
     private string idSession = "";
     public static bool isActive = false;
-    private const string KEY_SESSION = "idSession";
-
 
 
     // reference to the modal component
     private Modal modalRef;
 
     [Parameter]
-    public string balid { get; set; }
+    public string? balid { get; set; }
 
 
     [Parameter] public string? TipoEntidad { get; set; }
@@ -275,12 +272,12 @@
 
     private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
 
-
-
     protected override async Task OnInitializedAsync()
     {
+    
 
         await Load();
+
 
         await base.OnInitializedAsync();
     }
@@ -289,18 +286,15 @@
     {
         try
         {
-            var taskString = await SessionStorage.GetItemAsync<string>(KEY_SESSION);
+            var taskString = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
             var idKey = taskString;
 
-            if (balid != null)
-            {
-                idKey = balid;
-            }
-
+          
            
 
             if (idKey != null)
             {
+                balid = idKey;
                 var response = await caratulaService.getBalance(idKey);
 
                 if (response.IsSuccess)
@@ -436,7 +430,7 @@
                     // Preguntar si hay una Clave existente antes de Setear
 
 
-                    await SessionStorage.SetItemAsync<string>(KEY_SESSION, response.Result.Id);
+                    await SessionStorage.SetItemAsync<string>(Constants.KEY_SESSION, response.Result.Id);
        
 
                     isActive = true;
