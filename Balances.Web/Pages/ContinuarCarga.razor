@@ -1,0 +1,34 @@
+﻿@page "/ContinuarCarga/{balid}"
+@using Balances.Utilities;
+@using Balances.Web.Services.Implementation;
+@using Org.BouncyCastle.Asn1.Ocsp;
+@inject NavigationManager NavigationManager
+@inject ICaratulaService caratulaService
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
+<h3>Cargando....</h3>
+
+@code {
+    [Parameter]
+    public string balid { get; set; }
+
+    protected override async void OnInitialized()
+    {
+        /*cargar la caratula*/
+
+        await SessionStorage.SetItemAsStringAsync(Constants.KEY_SESSION, balid);
+        
+        var rlt = await caratulaService.loadCaratula(balid);
+
+        if (rlt.IsSuccess)
+        {/*redireccionar al inicio de la carga*/
+            NavigationManager.NavigateTo($"Caratula");
+        }
+     
+
+        //Else a una pagina de error
+    }
+
+   
+
+}

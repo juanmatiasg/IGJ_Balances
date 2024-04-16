@@ -1,5 +1,6 @@
 ﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
+using Balances.Model;
 using Balances.Services.Contract;
 using Dominio.Helpers;
 using EmailSender;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Utils;
-
+using Newtonsoft.Json;
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -65,12 +66,17 @@ namespace Balances.Bussiness.Implementacion
             var plantillapdf = _presentacionService.CrearPlantillaPresentacionPdf(balPresentacion, qr);
 
             //pdf
-
+                
             var binariopdf = _pdfService.HtmlToPDF(plantillapdf, balPresentacion);
 
             //agrego la presentacion al balance
+            if (bal.Presentacion == null)
+            {
+                bal.Presentacion = new Presentacion();
+            }
+
             bal.Presentacion.Fecha = DateTime.Now;
-            bal.Presentacion.PdfBytes = binariopdf;
+            bal.Presentacion.BinarioPdf = binariopdf;
 
             var plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(balPresentacion, qr);
 
@@ -78,6 +84,7 @@ namespace Balances.Bussiness.Implementacion
             // paso como parametro el balance y la plantilla para armar el emailRequest 
             var EmailRequest = CrearEmailPresentacion(bal, plantillahtml, binariopdf, qr);
 
+            var presentacionSerializada = JsonConvert.SerializeObject(balPresentacion);
             try
             {
                 //Envio el email con los datos del EmailRequest
@@ -86,13 +93,14 @@ namespace Balances.Bussiness.Implementacion
                 respuesta.Message = "Presentacion generada y enviada correctamente";
                 respuesta.Result = bal;
                 respuesta.IsSuccess = true;
+                _logger.LogInformation($" PresentacionBusiness.PresentarTramite: ---> {presentacionSerializada}");
 
             }
             catch (Exception ex)
             {
 
                 respuesta.Message = ex.Message;
-                _logger.LogError("PresentarTramite: SendEmailAsync", ex);
+                _logger.LogError($"PresentacionBusiness.PresentarTramite: \n {ex}");
             }
 
             //actualizo la base con los datos de la presentacion
@@ -112,13 +120,6 @@ namespace Balances.Bussiness.Implementacion
             // lleno la plantilla con los datos del balance
             var balPresentacionfiltro = _presentacionService.GetBalanceAutoridadySocioFirmante(bal);
             var Plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(balPresentacionfiltro, qr);
-
-
-
-
-
-
-
 
             return Plantillahtml;
         }

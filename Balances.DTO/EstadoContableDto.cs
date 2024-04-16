@@ -1,14 +1,20 @@
 ﻿using Balances.Model;
+using System.Reflection;
+using System.Text;
+using System;
+using Org.BouncyCastle.Crypto;
+using AutoMapper;
 
 namespace Balances.DTO
 {
     public class EstadoContableDto
     {
+      
         public string tipoBalance { get; set; }
-        public DateTime fechaEstado { get; set; }
-        public DateTime fechaInicio { get; set; }
-        public DateTime fechaReunionDirectorio { get; set; }
-        public DateTime fechaAsamblea { get; set; }
+        public DateTime? fechaEstado { get; set; }
+        public DateTime? fechaInicio { get; set; }
+        public DateTime? fechaReunionDirectorio { get; set; }
+        public DateTime? fechaAsamblea { get; set; }
 
 
         public decimal cajaYBancos { get; set; }
@@ -49,61 +55,30 @@ namespace Balances.DTO
         public decimal gananciasPerdidasEjercicio { get; set; }
         public decimal reservaLegal { get; set; }
 
-        public List<RubroPatrimonioNeto> otrosRubros { get; set; }
-
-        public EstadoContable GetEstadoContable()
+        private List<RubroPatrimonioNetoDto> _otrosRubros;
+        public List<RubroPatrimonioNetoDto> otrosRubros
         {
-            var estado = new EstadoContable
+            get
             {
-                TipoBalance = tipoBalance,
-                FechaEstado = fechaEstado,
-                FechaInicio = fechaInicio,
-                FechaReunionDirectorio = (DateTime)fechaReunionDirectorio,
-                FechaAsamblea = fechaAsamblea,
-
-                CajaYBancos = cajaYBancos,
-                InversionesActivoCorriente = inversionesActivoCorriente,
-                BienesDeCambio = bienesDeCambio,
-                ActivoCorrienteRestante = activoCorrienteRestante,
-                ActivoCorriente = activoCorriente,
-
-                BienesDeUso = bienesDeUso,
-                PropiedadesDeInversion = propiedadesDeInversion,
-                InversionesActivoNoCorriente = inversionesActivoNoCorriente,
-                ActivoNoCorrienteRestante = activoNoCorrienteRestante,
-                ActivoNoCorriente = activoNoCorriente,
-
-                TotalActivo = totalActivo,
-
-                DeudorPasivoCorriente = deudorPasivoCorriente,
-                PasivoCorriente = pasivoCorriente,
-
-                DeudorPasivoNoCorriente = deudorPasivoNoCorriente,
-                PasivoNoCorriente = pasivoNoCorriente,
-
-                TotalPasivo = totalPasivo,
-                PatrimonioNeto = patrimonioNeto,
-                CapitalSuscripto = capitalSuscripto,
-                AjusteCapital = ajusteCapital,
-                AportesIrrevocables = aportesIrrevocables,
-                PrimaEmision = primaEmision,
-                GananciasReservadas = gananciasReservadas,
-                PerdidasAcumuladas = perdidasAcumuladas,
-                GananciasPerdidasEjercicio = gananciasPerdidasEjercicio,
-                ReservaLegal = reservaLegal
-
-            };
-
-
-            //estado.OtrosRubros = otrosRubros.GetRubrosPatrimonioNeto();
+                // Instanciar la lista si aún no ha sido inicializada
+                if (_otrosRubros == null)
+                {
+                    _otrosRubros = new List<RubroPatrimonioNetoDto>();
+                }
+                return _otrosRubros;
+            }
+            set { _otrosRubros = value; }
+        }
 
 
 
-            return estado;
+        public EstadoContableDto()
+        {
         }
 
         public EstadoContableDto(EstadoContable a)
         {
+             
             tipoBalance = a.TipoBalance;
             fechaEstado = a.FechaEstado;
             fechaInicio = a.FechaInicio;
@@ -128,7 +103,6 @@ namespace Balances.DTO
 
 
 
-
             totalActivo = a.TotalActivo;
 
             deudorPasivoCorriente = (decimal)a.DeudorPasivoCorriente;
@@ -148,13 +122,36 @@ namespace Balances.DTO
             perdidasAcumuladas = (decimal)a.PerdidasAcumuladas;
             gananciasPerdidasEjercicio = (decimal)a.GananciasPerdidasEjercicio;
             reservaLegal = (decimal)a.ReservaLegal;
-
-            //otrosRubros = new RubrosPatrimonioNetoDto(a.OtrosRubros);
-
+            otrosRubros = ConvertirARubroPatrimonioNetoDto(a.OtrosRubros);
         }
 
-        public EstadoContableDto()
+        public static List<RubroPatrimonioNetoDto> ConvertirARubroPatrimonioNetoDto(List<RubroPatrimonioNeto> lista)
         {
+            List<RubroPatrimonioNetoDto> nuevaLista = new List<RubroPatrimonioNetoDto>();
+
+
+            foreach (var item in lista)
+            {
+
+                RubroPatrimonioNetoDto nuevoItem = new RubroPatrimonioNetoDto();
+                
+      
+                nuevoItem.codigo = item.Codigo;
+                nuevoItem.denominacion = item.Denominacion;
+                nuevoItem.importe = item.Importe;
+
+                nuevaLista.Add(nuevoItem);
+
+
+
+            }
+            return nuevaLista;
         }
+
+        
+
+
+
+
     }
 }

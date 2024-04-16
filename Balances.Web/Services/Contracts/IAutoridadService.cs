@@ -2,16 +2,16 @@
 
 namespace Balances.Web.Services.Implementation
 {
-    public interface IContadorService
+    public interface  IAutoridadService
     {
-        Task<ResponseDTO<BalanceDto>> postContador(ContadorDto contador);
+        Task<ResponseDTO<BalanceDto>> insertAutoridad(AutoridadDto autoridad);
 
+        Task<ResponseDTO<BalanceDto>> deleteAutoridad(AutoridadDto autoridad);
 
         Task<ResponseDTO<BalanceDto>> getBalance(string id);
 
-        Task<ResponseDTO<string>> setSession(string idBalance);
-
         Task<ResponseDTO<string>> getSession();
+
 
 
 

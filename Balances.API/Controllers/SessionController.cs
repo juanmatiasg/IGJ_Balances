@@ -14,7 +14,6 @@ namespace Balances.API.Controllers
         private readonly ISessionService _sessionService;
 
 
-
         public SessionController(ISessionService sessionService)
         {
             _sessionService = sessionService;
@@ -39,11 +38,9 @@ namespace Balances.API.Controllers
         public IActionResult GetSession()
         {
 
-
             var session = _sessionService.GetBalanceId();
 
             var response = new ResponseDTO<String>();
-
 
 
             if (session == null)
@@ -54,15 +51,13 @@ namespace Balances.API.Controllers
             }
             else
             {
-
+                
                 response.Result = session;
                 response.IsSuccess = true;
                 response.Message = "Session found";
             }
 
 
-
-        
 
             return Ok(response);
         }

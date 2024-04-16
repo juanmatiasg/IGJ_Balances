@@ -2,14 +2,12 @@
 using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Model;
-using Balances.Repository.Contract;
 using Balances.Services.Contract;
 using EmailSender;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Utils;
-using MongoDB.Driver;
 using Newtonsoft.Json;
 
 namespace Balances.Bussiness
@@ -17,7 +15,7 @@ namespace Balances.Bussiness
     public class CaratulaBusiness : ICaratulaBusiness
     {
 
-        protected IMongoCollection<Balance> _balance;
+
         protected IMapper _mapper;
         private ISessionService _sessionService;
         private readonly IBalanceBusiness _balanceBusiness;
@@ -26,17 +24,14 @@ namespace Balances.Bussiness
         private readonly ILogger<CaratulaBusiness> _logger;
 
 
-        public CaratulaBusiness(IMongoDbSettings _settings,
-                                IMapper mapper,
+        public CaratulaBusiness(IMapper mapper,
                                 ISessionService sessionService,
                                 IBalanceBusiness balanceBusiness,
                                 IEmailSenderService emailSenderService,
                                 IWebHostEnvironment webHostEnvironment,
                                 ILogger<CaratulaBusiness> logger)
         {
-            var cliente = new MongoClient(_settings.Server);
-            var database = cliente.GetDatabase(_settings.Database);
-            _balance = database.GetCollection<Balance>(_settings.Collection);
+
             _mapper = mapper;
             _sessionService = sessionService;
             _balanceBusiness = balanceBusiness;
@@ -56,16 +51,14 @@ namespace Balances.Bussiness
         {
             ResponseDTO<Balance> respuesta = new ResponseDTO<Balance>();
             respuesta.IsSuccess = false;
-
+            var caratulaSerializada = JsonConvert.SerializeObject(modelo);
             try
             {
                 var balance = new Balance();
-                var balSerializado = JsonConvert.SerializeObject(balance);
-
 
                 balance.Caratula = MapearCaratula(modelo);
 
-                var rsp = _balance.InsertOneAsync(balance);
+                var rsp = _balanceBusiness.Insert(balance);
 
                 var balanceDto = _mapper.Map<BalanceDto>(balance);
 
@@ -78,23 +71,21 @@ namespace Balances.Bussiness
                 // si inserto correctamente
                 if (rsp != null)
                 {
-                    _sessionService.SetBalanceId(balance.Id);
-                    //balance.Id = rsp.Id.ToString();
+                     _sessionService.SetBalanceId(balance.Id);
+
                     respuesta.IsSuccess = true;
                     respuesta.Message = "Caratula creada correctamente";
                     respuesta.Result = balance;
-
+                    _logger.LogInformation($"CaratulaBusiness.Insert --> {caratulaSerializada}");
                 }
-                else
-                    respuesta.Message = "No se Pudo Insertar";
 
-                _logger.LogError($"No se pudo insertar el balance: \n {balSerializado} ");
+
 
             }
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
-                _logger.LogError($"error al insertar balance: \n {ex.Message} ");
+                _logger.LogError($"CaratulaBusiness.Insert  \n {caratulaSerializada}  \n {ex.Message} ");
 
 
             }
@@ -129,47 +120,63 @@ namespace Balances.Bussiness
 
         public MimeMessage CrearEmaiInicioTramite(BalanceDto balance, string html)
         {
-            var mime = new MimeMessage()
+            var mime = new MimeMessage();
+
+            try
             {
-                //    To = balance.Caratula.Email,
-                Subject = $"Presentacion Generada - {balance.Caratula.Entidad.RazonSocial} ",
-                //  Body = html,
+                mime.Subject = $"Presentacion Generada - {balance.Caratula.Entidad.RazonSocial} ";
+                //var  mime = new MimeMessage()
+                // {
+                //     //    To = balance.Caratula.Email,
+                //     Subject = $"Presentacion Generada - {balance.Caratula.Entidad.RazonSocial} ",
+                //     //  Body = html,
 
-            };
+                // };
 
-            mime.To.Add(new MailboxAddress("", balance.Caratula.Email));
+                mime.To.Add(new MailboxAddress("", balance.Caratula.Email));
 
-            var builder = new BodyBuilder();
-            var pathImage = _webHostEnvironment.ContentRootPath + "/Plantillas/Imagenes";
+                var builder = new BodyBuilder();
+                var pathImage = _webHostEnvironment.ContentRootPath + "/Plantillas/Imagenes";
 
-            /* A G R E G AM O S   I M A G E N E S   H E A D E R */
-            var imgIGJ = builder.LinkedResources.Add("igj.png", File.ReadAllBytes(pathImage + "/igj.png"));
-            imgIGJ.ContentId = MimeUtils.GenerateMessageId();
-            html = html.Replace("{{igjImage}}", imgIGJ.ContentId);
+                /* A G R E G AM O S   I M A G E N E S   H E A D E R */
+                var imgIGJ = builder.LinkedResources.Add("igj.png", File.ReadAllBytes(pathImage + "/igj.png"));
+                imgIGJ.ContentId = MimeUtils.GenerateMessageId();
+                html = html.Replace("{{igjImage}}", imgIGJ.ContentId);
 
-            var imgMIN = builder.LinkedResources.Add("ministerio.png", File.ReadAllBytes(pathImage + "/ministerio.png"));
-            imgMIN.ContentId = MimeUtils.GenerateMessageId();
-            html = html.Replace("{{MinImage}}", imgMIN.ContentId);
-
-
-
-            builder.HtmlBody = html;
-
+                var imgMIN = builder.LinkedResources.Add("ministerio.png", File.ReadAllBytes(pathImage + "/ministerio.png"));
+                imgMIN.ContentId = MimeUtils.GenerateMessageId();
+                html = html.Replace("{{MinImage}}", imgMIN.ContentId);
 
 
-            mime.Body = builder.ToMessageBody();
 
+                builder.HtmlBody = html;
+
+
+
+                mime.Body = builder.ToMessageBody();
+
+                _logger.LogInformation("se ha armado el mail correctamente");
+
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"CaratulaBusiness.CrearMailInicioDelTramite \n {ex}");
+
+            }
             return mime;
+
         }
 
         private Caratula MapearCaratula(CaratulaDto modelo)
         {
             var caratula = new Caratula()
             {
-                FechaDeCierre = modelo.FechaDeCierre,
+                FechaDeCierre = (DateTime)modelo.FechaDeCierre,
                 Email = modelo.Email,
                 Entidad = modelo.Entidad,
-                FechaInicio = modelo.FechaInicio,
+                FechaInicio = (DateTime)modelo.FechaInicio,
                 Fecha = DateTime.Now,
             };
 
@@ -198,13 +205,6 @@ namespace Balances.Bussiness
         {
             throw new NotImplementedException();
         }
-
-
-
-
-
-
-
 
     }
 }

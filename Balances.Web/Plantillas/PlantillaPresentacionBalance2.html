@@ -94,8 +94,8 @@
 
 <body>
     <div class="encabezado">
-        <img class="logo" src="https://iili.io/HDQRcil.png" alt="Logo IGJ">
-        <img class="logo" src="https://iili.io/HDQRMJ9.png" alt="Logo MJDH">
+        <img class="logo" src="cid:{{igjImage}}" alt="Logo IGJ">
+        <img class="logo" src="cid:{{MinImage}}" alt="Logo MJDH">
     </div>
     <div class="membrete">
         <p><b><i>1983/2023 - 40 Años de Democracia</i></b></p>
@@ -105,7 +105,7 @@
         <p class="subtitulo">Anexo I - Resolución General IGJ Nº <span class="error">A DEFINIR</span></p>
     </div>
     <div>
-        <p class="membrete"><b>Código de Presentación :</b>  <img alt="Embedded QR code" class="img-responsive" src="data:image/jpg;base64,{{QR}}" /></p>
+        <p class="membrete"><b>Código de Presentación :</b>  <img alt="Embedded QR code" class="img-responsive" src="cid:{{QR}}" /></p>
     </div>
     <br />
     <div>
@@ -123,7 +123,7 @@
     </div>
     <br />
     <div class="box">
-        <p><span class="error">Debe utilizar el id del representante que tenga EsFirmante = True</span></p>
+        <p><span class="error"> <!– Debe utilizar el id del representante que tenga EsFirmante = True –></span></p>
         <p>   Lugar y Fecha     : </p>
         <p>   Apellido y Nombre : {{RepresentanteLegal.RepresentanteApellido}} {{RepresentanteLegal.RepresentanteNombre}}              </p>
         <p>   CUIT              : {{representanteLegal.RepresentanteNroFiscal}}   </p>
@@ -139,126 +139,152 @@
         <table>
             <tr>
                 <th>Asiento</th>
-                <th>Libro</th>
+                <th>Denominación</th>
                 <th>Numero de Rúbrica</th>
-                <th>Folio</th>
-                <th>Denominacion</th>
+                <th>Folio en el que obra la transcripción</th>
                 <th>Fecha Registracion</th>
+                <th>Folio de la última registración</th>
             </tr>
             <tr>
                 <td>Memoria</td>
                 <td>{{Memoria.Nombre}}</td>
                 <td>{{Memoria.NumeroRubrica}}</td>
-                <td>{{Memoria.Folio}}</td>
-                <td>{{Memoria.Denominacion}}</td>
+                <td>{{Memoria.FolioObraTranscripcion}}</td>
                 <td>{{Memoria.FechaUltimaRegistracion}}</td>
+                <td>{{Memoria.FolioUltimaRegistracion}}</td>
             </tr>
+
+            <tr>
+                <td>Patrimonio Neto</td>
+                <td>{{PatrimonioNeto.Nombre}}</td>
+                <td>{{PatrimonioNeto.NumeroRubrica}}</td>
+                <td>{{PatrimonioNeto.FolioObraTranscripcion}}</td>
+                <td>{{PatrimonioNeto.FechaUltimaRegistracion}}</td>
+                <td>{{PatrimonioNeto.FolioUltimaRegistracion}}</td>
+            </tr>
+
+
+            <tr>
+                <td>Asamblea</td>
+                <td>{{Asamblea.Nombre}}</td>
+                <td>{{Asamblea.NumeroRubrica}}</td>
+                <td>{{Asamblea.FolioObraTranscripcion}}</td>
+                <td>{{Asamblea.FechaUltimaRegistracion}}</td>
+                <td>{{Asamblea.FolioUltimaRegistracion}}</td>
+            </tr>
+
+
             <tr>
                 <td>Acta del Órgano de Administración</td>
                 <td>{{Administracion.Nombre}}</td>
                 <td>{{Administracion.NumeroRubrica}}</td>
-                <td>{{Administracion.Folio}}</td>
-                <td>{{Administracion.Denominacion}}</td>
+                <td>{{Administracion.FolioObraTranscripcion}}</td>
                 <td>{{Administracion.FechaUltimaRegistracion}}</td>
+                <td>{{Administracion.FolioUltimaRegistracion}}</td>
             </tr>
 
             <tr>
                 <td>Estado de Situación Patrimonial</td>
                 <td>{{SituacionPatrimonial.Nombre}}</td>
                 <td>{{SituacionPatrimonial.NumeroRubrica}}</td>
-                <td>{{SituacionPatrimonial.Folio}}</td>
-                <td>{{SituacionPatrimonial.Denominacion}}</td>
+                <td>{{SituacionPatrimonial.FolioObraTranscripcion}}</td>
                 <td>{{SituacionPatrimonial.FechaUltimaRegistracion}}</td>
+                <td>{{SituacionPatrimonial.FolioUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Estado de Resultados</td>
                 <td>{{Resultados.Nombre}}</td>
                 <td>{{Resultados.NumeroRubrica}}</td>
-                <td>{{Resultados.Folio}}</td>
-                <td>{{Resultados.Denominacion}}</td>
+                <td>{{Resultados.FolioObraTranscripcion}}</td>
                 <td>{{Resultados.FechaUltimaRegistracion}}</td>
+                <td>{{Resultados.FolioUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Estado de Evolución del Patrimonio Neto</td>
                 <td>{{PatrimonioNeto.Nombre}}</td>
                 <td>{{PatrimonioNeto.NumeroRubrica}}</td>
-                <td>{{PatrimonioNeto.Folio}}</td>
-                <td>{{PatrimonioNeto.Denominacion}}</td>
+                <td>{{PatrimonioNeto.FolioObraTranscripcion}}</td>
                 <td>{{PatrimonioNeto.FechaUltimaRegistracion}}</td>
+                <td>{{PatrimonioNeto.FolioUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Estado de Flujo de Efectivo</td>
                 <td>{{Efectivo.Nombre}}</td>
                 <td>{{Efectivo.NumeroRubrica}}</td>
-                <td>{{Efectivo.Folio}}</td>
-                <td>{{Efectivo.Denominacion}}</td>
+                <td>{{Efectivo.FolioObraTranscripcion}}</td>
                 <td>{{Efectivo.FechaUltimaRegistracion}}</td>
+                <td>{{Efectivo.FolioUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Información Complementaria</td>
                 <td>{{Informacion.Nombre}}</td>
                 <td>{{Informacion.NumeroRubrica}}</td>
-                <td>{{Informacion.Folio}}</td>
-                <td>{{Informacion.Denominacion}}</td>
+                <td>{{Informacion.FolioObraTranscripcion}}</td>
                 <td>{{Informacion.FechaUltimaRegistracion}}</td>
+                <td>{{Informacion.FolioUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Estado Contable Consolidado</td>
                 <td>{{EstadosContablesConsolidados.Nombre}}</td>
                 <td>{{EstadosContablesConsolidados.NumeroRubrica}}</td>
-                <td>{{EstadosContablesConsolidados.Folio}}</td>
-                <td>{{EstadosContablesConsolidados.Denominacion}}</td>
+                <td>{{EstadosContablesConsolidados.FolioObraTranscripcion}}</td>
                 <td>{{EstadosContablesConsolidados.FechaUltimaRegistracion}}</td>
+                <td>{{EstadosContablesConsolidados.FolioUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Informe de Órgano de Fiscalización</td>
                 <td>{{Fiscalizacion.Nombre}}</td>
                 <td>{{Fiscalizacion.NumeroRubrica}}</td>
-                <td>{{Fiscalizacion.Folio}}</td>
-                <td>{{Fiscalizacion.Denominacion}}</td>
+                <td>{{Fiscalizacion.FolioObraTranscripcion}}</td>
                 <td>{{Fiscalizacion.FechaUltimaRegistracion}}</td>
+                <td>{{Fiscalizacion.FolioUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Informe del Auditor Externo</td>
                 <td>{{Auditor.Nombre}}</td>
                 <td>{{Auditor.NumeroRubrica}}</td>
-                <td>{{Auditor.Folio}}</td>
-                <td>{{Auditor.Denominacion}}</td>
+                <td>{{Auditor.FolioObraTranscripcion}}</td>
                 <td>{{Auditor.FechaUltimaRegistracion}}</td>
+                <td>{{Auditor.FolioUltimaRegistracion}}</td>
             </tr>
             <tr>
                 <td>Registro de asistencia</td>
                 <td>{{AsistenciaAsamblea.Nombre}}</td>
                 <td>{{AsistenciaAsamblea.NumeroRubrica}}</td>
-                <td>{{AsistenciaAsamblea.Folio}}</td>
-                <td>{{AsistenciaAsamblea.Denominacion}}</td>
+                <td>{{AsistenciaAsamblea.FolioObraTranscripcion}}</td>
                 <td>{{AsistenciaAsamblea.FechaUltimaRegistracion}}</td>
+                <td>{{AsistenciaAsamblea.FolioUltimaRegistracion}}</td>
             </tr>
             <tr>
 
                 <td>Libro Diario</td>
                 <td>{{IVA.Nombre}}</td>
                 <td>{{IVA.NumeroRubrica}}</td>
-                <td>{{IVA.Folio}}</td>
-                <td>{{IVA.Denominacion}}</td>
+                <td>{{IVA.FolioObraTranscripcion}}</td>
                 <td>{{IVA.FechaUltimaRegistracion}}</td>
+                <td>{{IVA.FolioUltimaRegistracion}}</td>
+
+
             </tr>
             <tr>
 
                 <td>IVA Compras</td>
                 <td>{{IVACompras.Nombre}}</td>
                 <td>{{IVACompras.NumeroRubrica}}</td>
-                <td>{{IVACompras.Folio}}</td>
+                <td>{{IVACompras.FolioObraTranscripcion}}</td>
                 <td>{{IVACompras.Denominacion}}</td>
                 <td>{{IVACompras.FechaUltimaRegistracion}}</td>
+                <td>{{IVACompras.FolioUltimaRegistracion}}</td>
+
             </tr>
             <tr>
                 <td>IVA Ventas</td>
                 <td>{{IVAVentas.Nombre}}</td>
                 <td>{{IVAVentas.NumeroRubrica}}</td>
-                <td>{{IVAVentas.Folio}}</td>
-                <td>{{IVAVentas.Denominacion}}</td>
+                <td>{{IVAVentas.FolioObraTranscripcion}}</td>
                 <td>{{IVAVentas.FechaUltimaRegistracion}}</td>
+                <td>{{IVAVentas.FolioUltimaRegistracion}}</td>
+
             </tr>
             <tr>
                 <td colspan="4">Informe de Auditoria: Opinión <span class="error">FALTAN CAMPOS</span></td>

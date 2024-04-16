@@ -1,5 +1,6 @@
 ﻿@page "/Entidad"
 @using Balances.DTO;
+@using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
 @using Microsoft.JSInterop
 @using Balances.Web.Services
@@ -25,9 +26,6 @@
         <!-- Bootstrap 5 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-      
-
-
     </head>
 
     <body>
@@ -35,7 +33,7 @@
         <!--Navegacion-->
         <div class="d-flex justify-content-center align-items-center">
             <h3 class="fs-2 font-weight mt-4 mb-4">
-                 <p>Entidad:&nbsp; <h3 id="entidad">@entidad</h3></p>
+                 <p>Entidad:&nbsp; <h3 id="entidad">@modelo.Entidad.TipoEntidad</h3></p>
             </h3>
         </div>
         <ul class="nav nav-tabs d-flex justify-content-center">
@@ -81,7 +79,7 @@
                     
                         <div class="col">
                             <label for="busqueda">Nro.Correlativo/CUIT/CUIL</label>
-                            <input type="text"  @bind="@nroCorrelativo" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top">
+                            <input type="text"  @bind="@modelo.Entidad.Correlativo" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top">
                             <small id="busquedaError" class="text-danger">@busquedaError</small>
                         </div>
                  
@@ -96,7 +94,7 @@
                             <p class="control texto">Razón Social:</p>
                         </div>
                         <div class="col">
-                        <p id="razonSocial">@razonSocial</p>
+                        <p id="razonSocial">@modelo.Entidad.RazonSocial</p>
                         </div>                       
                     </div>
                     <div class="row mt-2">
@@ -104,21 +102,11 @@
                             <p class="control texto">Tipo de Entidad:</p>
                         </div>
                         <div class="col">
-                        <p id="tipoEntidad">@tipoEntidad</p>
+                        <p id="tipoEntidad">@modelo.Entidad.TipoEntidad</p>
                         </div>
                     </div>
 
-                    <div class="col mt-4 d-flex justify-content-center align-items-center">
-                        <div id="ReCaptchContainer" class="control texto" lang="es"></div>
-
-                        <!-- Display the reCAPTCHA token in the same container -->
-                        @if (!string.IsNullOrEmpty(reCAPTCHAToken))
-                        {
-                            <div class="alert alert-success mt-2" role="alert">
-                                ReCAPTCHA Token: @reCAPTCHAToken
-                            </div>
-                        }
-                    </div>
+                   
            
                 
                 </div>
@@ -137,12 +125,12 @@
                 <div class="row ps-3 pt-3">
                     <div class="form-group col">
                         <label for="location">Domicilio</label>
-                        <input type="text" @bind=@domicilio class="form-control" id="domicilio" placeholder="Domicilio">
+                        <input type="text" @bind=@modelo.Entidad.Domicilio class="form-control" id="domicilio" placeholder="Domicilio">
                     </div>
 
                     <div class="col mt-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@sedeSocialInscripta">
+                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@modelo.Entidad.SedeSocialInscripta">
                             <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
                         </div>
                     </div>
@@ -151,13 +139,13 @@
                 <div class="row  ps-3 pt-3 pe-3">
                     <div class="col">
                         <label for="domicilio">Fecha de inicio</label>
-                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" @bind=@fechaDeInicio />
+                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" @bind=@modelo.FechaInicio />
                         <small id="fechaError" class="text-danger">@fechaError</small>
 
                     </div>
                     <div class="col">
                         <label for="domicilio">Fecha de Cierre</label>
-                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" @bind=@fechaDeCierre />
+                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" @bind=@modelo.FechaDeCierre />
                         <small id="fechaError" class="text-danger">@fechaError</small>
                     </div>
                 </div>
@@ -165,13 +153,13 @@
                 <div class="row  ps-3 pt-3 pe-3">
                     <div class="col mb-4">
                         <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" @bind=@email data-bs-placement="top" />
+                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" @bind=@modelo.Email data-bs-placement="top" />
                         <small id="emailError" class="text-danger">@emailError</small>
                     </div>
                 </div>
 
                 <div class="col mt-4 mb-4 d-flex justify-content-center">
-                    <p>Id Session: @idSession</p>
+                    <p>Id Session: @idBalanceSession</p>
                 </div>
 
                 <div class="col mt-4 mb-4 d-flex justify-content-center">
@@ -227,14 +215,6 @@
              </div>
         </div>
 
-
-
-
-        
-
-
-       
-
     </body>
 
 
@@ -242,22 +222,20 @@
 
 @code {
 
-    private string reCAPTCHAToken;
-    private string nroCorrelativo;
+    
     private string busquedaError = "";
-    private string razonSocial = "";
-    private string tipoEntidad = "";
-    private string entidad = "";
-    private string email;
-    private bool sedeSocialInscripta = false;
-    private string domicilio;
-    private DateTime fechaDeInicio;
-    private DateTime fechaDeCierre;
     private string fechaError ="";
     private string emailError="";
     private bool entidadEncontrada;
-    private const string KEY_SESSION = "idSession";
-    private string idSession = "";
+    private const string KEY_SESSION = "keyBalanceIdSession";
+    private string idBalanceSession = "";
+
+
+    private CaratulaDto modelo = new CaratulaDto
+        {
+            Entidad = new Model.Entidad()
+
+        };
 
     private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
 
@@ -265,19 +243,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        fechaDeInicio = DateTime.Now;
-        fechaDeCierre = DateTime.Now;
+        modelo.FechaInicio = DateTime.Now;
+        modelo.FechaDeCierre = DateTime.Now;
 
 
-        idSession = await sessionStorage.GetItemAsync<string>(KEY_SESSION);
+        idBalanceSession = await sessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
-        if (idSession != null)
+        if (idBalanceSession != null)
         {
 
-            await getBalance(idSession);
+            await getBalance(idBalanceSession);
         }
 
-       
+
 
         await base.OnInitializedAsync();
     }
@@ -290,14 +268,14 @@
         {
             if (response.IsSuccess)
             {
-                email = response.Result.Caratula.Email;
-                fechaDeInicio = response.Result.Caratula.FechaInicio;
-                fechaDeCierre = response.Result.Caratula.FechaDeCierre;
-                domicilio = response.Result.Caratula.Entidad.Domicilio;
-                nroCorrelativo = response.Result.Caratula.Entidad.Correlativo;
-                razonSocial = response.Result.Caratula.Entidad.RazonSocial;
-                tipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
-                sedeSocialInscripta = response.Result.Caratula.Entidad.SedeSocialInscripta;
+                modelo.Email = response.Result.Caratula.Email;
+                modelo.FechaInicio = response.Result.Caratula.FechaInicio;
+                modelo.FechaDeCierre = response.Result.Caratula.FechaDeCierre;
+                modelo.Entidad.Domicilio = response.Result.Caratula.Entidad.Domicilio;
+                modelo.Entidad.Correlativo = response.Result.Caratula.Entidad.Correlativo;
+                modelo.Entidad.RazonSocial = response.Result.Caratula.Entidad.RazonSocial;
+                modelo.Entidad.TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+                modelo.Entidad.SedeSocialInscripta = response.Result.Caratula.Entidad.SedeSocialInscripta;
 
                 entidadEncontrada = true;
             }
@@ -319,63 +297,51 @@
     }
 
 
-    [JSInvokable("OnReCAPTCHASuccess")]
-    private async Task OnReCAPTCHASuccess(string token)
-    {
-        // Set the reCAPTCHA token
-        reCAPTCHAToken = token;
-
-        // Your implementation
-        if (!string.IsNullOrEmpty(reCAPTCHAToken))
-        {
-            await FindEntities();
-        }
-    }
-
-    private async Task RenderReCAPTCHA()
-    {
-        // Invoke the JavaScript function
-        await JS.InvokeVoidAsync("renderReCAPTCHA", DotNetObjectReference.Create(this), "OnReCAPTCHASuccess");
-    }
-
+    
 
     private async Task FindEntities()
     {
         int numericNroCorrelativo;
 
-        if (string.IsNullOrEmpty(nroCorrelativo))
+        if (modelo != null)
         {
-            busquedaError = "El campo no puede estar vacío";
-            return;
-        }
-
-        if (int.TryParse(nroCorrelativo, out numericNroCorrelativo))
-        {
-            busquedaError = "";
-
-
-            try
+            if (string.IsNullOrEmpty(modelo.Entidad.Correlativo))
             {
-                var response = await caratulaService.findEntities(nroCorrelativo);
+                busquedaError = "El campo no puede estar vacío";
+                return;
+            }
 
-                if (response != null)
+            if (int.TryParse(modelo.Entidad.Correlativo, out numericNroCorrelativo))
+            {
+                busquedaError = "";
+
+
+                try
                 {
-                    razonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
-                    tipoEntidad = response.Result.TipoEntidad;
-                    entidadEncontrada = true;
+                    var response = await caratulaService.findEntities(modelo.Entidad.Correlativo);
 
+                    if (response != null)
+                    {
+                        modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
+                        modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
+                        entidadEncontrada = true;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
                 }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                busquedaError = "El campo tiene que ser numérico";
             }
         }
         else
         {
-            busquedaError = "El campo tiene que ser numérico";
+            modelo = new CaratulaDto();    
         }
-
 
     }
 
@@ -385,13 +351,14 @@
 
         try
         {
-            var response = await caratulaService.initTramite(email, fechaDeInicio, fechaDeCierre, razonSocial, tipoEntidad, domicilio, sedeSocialInscripta, nroCorrelativo);
+            
+            var response = await caratulaService.initTramite(modelo);
 
             if (response.IsSuccess)
             {
                  await sessionStorage.SetItemAsync(KEY_SESSION, response.Result.Id);
                  
-                 NavigationManager.NavigateTo("EstadoContable");
+                
 
             }
             else

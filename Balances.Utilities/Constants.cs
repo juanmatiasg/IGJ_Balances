@@ -8,6 +8,6 @@ namespace Balances.Utilities
 {
     public class Constants
     {
-      
+        public const string KEY_SESSION = "idSession";
     }
 }

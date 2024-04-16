@@ -1,7 +1,10 @@
-﻿@page "/Integrante"
+﻿@page "/Integrante/"
+@using Balances.DTO;
+@using Balances.Utilities;
+@using Balances.Web.Services.Implementation;
+@inject ISociosService socioService;
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 
-@{
-}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,111 +16,414 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
-    </div>
-    <ul class="nav nav-tabs d-flex justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link" disabled href="/Entidad">Entidad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/EstadoContable">Estado</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
-        </li>
-        <li class="nav-item" active disabled>
-            <a class="nav-link" href="/Contador">Contador</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
-        </li>
-    </ul>
 
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true"></Navegacion>
 
     <!---------------------------------------------------------------->
     <!-- Tabs -->
-    <div class="container mt-4">
-        <ul class="nav nav-tabs" style="width: 1200px;">
+    <div class="container-fluid mt-4">
+        <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" href="#humano" onclick="openTab(event, 'humano')">Integrante Humano</a>
+                <a class="nav-link active" href="#">Integrante Humano</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#juridico" onclick="openTab(event, 'juridico')">Integrante Jurídico</a>
+                <a class="nav-link" href="/IntegranteJuridico">Integrante Jurídico</a>
             </li>
         </ul>
-        <hr style="width: 1130px;" />
+        
     </div>
 
     <!-- Formulario de Datos del Integrante -->
-    <div class="container mt-4">
-        <form class="card" id="formAccionista" onsubmit="handleSubmit(event)" onchange="handleChange(event)">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 20px; color: #0375bc; font-weight: bold; text-align: center;">
-                    Datos del Integrante
-                </h5>
-                <div class="form-group">
-                    <label for="accionistaNombre">Nombre</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Apellido</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Tipo de Documento</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Numero de Documento</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Número de Identificación Fiscal</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Cuotas</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="accionistaNombre">Votos</label>
-                    <input type="text" class="form-control" id="accionistaNombre" required>
-                </div>
-                <!-- Rest of the form content -->
-                <div class="form-group text-center">
-                    <button type="submit" class="btn btn-primary" onclick="addItem(event)">Agregar</button>
-                </div>
-            </div>
-        </form>
-    </div>
+    <div class="container-fluid mt-4 mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <form class="card">
+                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Datos del Integrante
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="accionistaNombre">Nombre</label>
+                            <input type="text" class="form-control" @bind="modelPersonaHumana.Nombre">
+                            <small id="msgError" class="text-danger">@msgErrorNombre</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="accionistaNombre">Apellido</label>
+                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.Apellido">
+                            <small id="msgError" class="text-danger">@msgErrorApellido</small>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="selectTipoDocumento">Tipo de Documento</label>
+                            <select id="selectTipoDocumento" class="form-select" @bind="modelPersonaHumana.TipoDocumento">
+                                <option selected>Seleccionar...</option>
+                                <option value="DNI">DNI</option>
+                                <option value="Pasaporte">Pasaporte</option>
+                                <option value="Cédula">Cédula</option>
+                            </select>
+                            <small id="msgError" class="text-danger">@msgErrorTipoDoc</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="accionistaNombre">Numero de Documento</label>
+                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroDocumento">
+                            <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
 
-    <!-- Lista de Integrantes -->
-    <div class="container mt-4">
-        <div class="card" style="margin-top: 50px;">
-            <div class="card-body">
-                <h5 class="card-title" style="color: #0375bc; font-size: larger;">Integrantes</h5>
-                <!-- ... Rest of the card content ... -->
+                        </div>
+                        <div class="form-group">
+                            <label for="accionistaNombre">Número de Identificación Fiscal</label>
+                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroFiscal">
+                            <small id="msgError" class="text-danger">@msgErrorCuit</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="accionistaNombre">Cuotas</label>
+                            <input type="text" class="form-control" @bind="modelPersonaHumana.Cuotas">
+                            <small id="msgError" class="text-danger">@msgErrorCuotas</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="accionistaNombre">Votos</label>
+                            <input type="text" class="form-control" @bind="modelPersonaHumana.Votos">
+                            <small id="msgError" class="text-danger">@msgErrorVotos</small>
+                        </div>
+                        <!-- Rest of the form content -->
+                        <div class="form-group text-center mt-4">
+                            <button type="button" class="btn btn-primary w-100" @onclick="addPersonaHumana">Agregar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <!-- Lista de Integrantes -->
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                            Integrantes
+                        </div>
+                        <div class="card-body">
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                      
+                                        <th scope="col">Apellido y Nombre</th>
+                                        <th scope="col">Nro Documento</th>
+                                        <th scope="col">CUIT</th>
+                                        <th scope="col">Cantidad</th>
+                                        <th scope="col">Acción</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var personaHumana in listPersonaHumana)
+                                {
+                                    <tbody>
+                                        <tr>
+                                        
+                                            <td>@personaHumana.Apellido @personaHumana.Nombre</td>
+                                            <td>@personaHumana.NroDocumento</td>
+                                            <td>@personaHumana.NroFiscal</td>
+                                            <td>@personaHumana.Cuotas / @personaHumana.Votos </td>
+
+                                            <td>
+                                                <button type="button" class="btn btn-danger" @onclick="() => deletePersonaHumana(personaHumana)">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                }
+                            </table>
+                            
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        
     </div>
 
-    
-
-    
+   
 
 </body>
 
 </html>
+
+@code {
+
+    [Parameter] public string? TipoEntidad { get; set; }
+    private string idSession = "";
+    private PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
+    private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
+
+    private string msgErrorNombre = "";
+    private string msgErrorApellido = "";
+    private string msgErrorTipoDoc = "";
+    private string msgErrorNroDoc = "";
+    private string msgErrorCuit = "";
+    private string msgErrorCuotas = "";
+    private string msgErrorVotos = "";
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await Load();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        try
+        {
+            var idSession = await socioService.getSession();
+            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            
+            if (idSession!=null)
+            {
+                var response = await socioService.getBalance(idSession.Result);
+
+                if (response.IsSuccess == true)
+                {
+
+                    try
+                    {
+                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
+                        resultPersonaHumana(response.Result.Socios.PersonasHumanas);
+
+                        StateHasChanged();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"GetBalance: Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> addPersonaHumana()
+    {
+        if (checkData())
+        {
+            ResponseDTO<BalanceDto> respuesta = new();
+
+            try
+            {
+                respuesta = await socioService.insertPersonaHumana(modelPersonaHumana);
+
+                if (respuesta.IsSuccess)
+                {
+                    resultPersonaHumana(respuesta.Result.Socios.PersonasHumanas);
+                    cleanInputsHumana();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.Message = ex.Message;
+            }
+            return respuesta;
+        }
+        else
+        {
+            return null;    
+        }
+    }
+
+    private void cleanInputsHumana()
+    {
+        // Restablecer los valores de los campos a su estado inicial o vacío
+        modelPersonaHumana = new PersonaHumanaDto();
+    }
+
+    private void resultPersonaHumana(List<PersonaHumanaDto> listPersonaHumana)
+    {
+        this.listPersonaHumana = listPersonaHumana;
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> deletePersonaHumana(PersonaHumanaDto personaHumanaDto)
+    {
+        var respuesta = new ResponseDTO<BalanceDto>();
+        try
+        {
+            respuesta = await socioService.deletePersonaHumana(personaHumanaDto);
+
+            if (respuesta.IsSuccess)
+            {
+
+                listPersonaHumana = respuesta.Result.Socios.PersonasHumanas;
+
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+
+    private bool checkData()
+    {
+
+        // Nombre
+        if (!string.IsNullOrEmpty(modelPersonaHumana.Nombre))
+        {
+            if (Validator.IsNumeric(modelPersonaHumana.Nombre))
+            {
+                msgErrorNombre = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorNombre = "";
+            }
+        }
+        else
+        {
+            msgErrorNombre = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+        // Apellido
+        if (!string.IsNullOrEmpty(modelPersonaHumana.Apellido))
+        {
+            if (Validator.IsNumeric(modelPersonaHumana.Apellido))
+            {
+                msgErrorApellido = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorApellido = "";
+            }
+        }
+        else
+        {
+            msgErrorApellido = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+        //Tipo Doc
+        if (!string.IsNullOrEmpty(modelPersonaHumana.TipoDocumento))
+        {
+            msgErrorTipoDoc = "";
+        }
+        else
+        {
+            msgErrorTipoDoc = "El campo no puede estar vacio";
+            return false;    
+        }
+
+
+
+        // NroDocumento
+        if (!string.IsNullOrEmpty(modelPersonaHumana.NroDocumento))
+        {
+            if (!Validator.IsNumeric(modelPersonaHumana.NroDocumento))
+            {
+                msgErrorNroDoc = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorNroDoc = "";
+            }
+        }
+        else
+        {
+            msgErrorNroDoc = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+        // CUIT
+        if (!string.IsNullOrEmpty(modelPersonaHumana.NroFiscal))
+        {
+            if (!Validator.IsNumeric(modelPersonaHumana.NroFiscal))
+            {
+                msgErrorCuit = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorCuit = "";
+            }
+        }
+        else
+        {
+            msgErrorCuit = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+
+        // Cuotas
+        if (!string.IsNullOrEmpty(modelPersonaHumana.Cuotas))
+        {
+            if (!Validator.IsNumeric(modelPersonaHumana.Cuotas))
+            {
+                msgErrorCuotas = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorCuotas = "";
+            }
+        }
+        else
+        {
+            msgErrorCuotas = "El campo no puede estar vacio";
+            return false;
+        }
+
+        // Votos
+        if (!string.IsNullOrEmpty(modelPersonaHumana.Votos))
+        {
+            if (!Validator.IsNumeric(modelPersonaHumana.Votos))
+            {
+                msgErrorVotos = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorVotos = "";
+            }
+        }
+        else
+        {
+            msgErrorVotos = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+
+
+        // Si todos los campos pasan la validación, devuelve true
+
+        msgErrorNombre = "";
+        msgErrorApellido = "";
+        msgErrorTipoDoc = "";
+        msgErrorNroDoc = "";
+        msgErrorCuit = "";
+        msgErrorCuotas = "";
+        msgErrorVotos = "";
+
+        return true;
+    }
+}

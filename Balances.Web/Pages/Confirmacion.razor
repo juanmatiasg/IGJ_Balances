@@ -1,76 +1,1121 @@
 ﻿@page "/Confirmacion"
-@{
-}
+@using Balances.DTO;
+@using Balances.Model;
+@using Balances.Utilities;
+@using Balances.Web.Services.Implementation;
+@inject ICaratulaService caratulaService
+@inject IPresentacionService presentacionService
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
 
 <!DOCTYPE html>
-<html lang="en">
 
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Viewer</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <title>Manifiesto de Presentación de Estados Contables Digitales IGJ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+    <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
+
+    <style>
+        body {
+            margin-left: 40px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .box {
+            border: 1px solid;
+            padding: 8px;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 2px solid #37bbed;
+        }
+
+        .logo {
+            max-height: 100px;
+            width: auto;
+        }
+
+        .membrete {
+            text-align: right;
+            font-size: small;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .seccion {
+            font-family: 'Encode Sans', sans-serif;
+            font-size: large;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .titulo {
+            font-family: 'Encode Sans', sans-serif;
+            font-size: xx-large;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subtitulo {
+            font-family: 'Encode Sans', sans-serif;
+            opacity: 0.7;
+            font-size: x-large;
+            font-weight: oblique;
+            margin-top: 5px;
+        }
+
+        .mono {
+            font-family: 'Roboto Mono';
+        }
+
+        .error {
+            color: red;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #333333;
+        }
+
+        th {
+            border: 1px solid #333333;
+            padding: 8px;
+            text-align: left;
+            background-color: #f2f2f2;
+            font-size: small;
+        }
+
+        td {
+            border: 1px solid #333333;
+            padding: 8px;
+            text-align: left;
+            font-size: small;
+
+        }
+
+        .error-container {
+            color: red;
+            border: 1px solid red;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+   
+
 </head>
 
 <body>
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
+    
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Confirmacion" TramiteIniciado="true"></Navegacion>
+
+    <!--Loading-->
+
+    <Modal @ref="modalRef">
+        <ModalContent>
+            <ModalBody>
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="text-center">
+                       
+                       <div class="spinner-grow text-primary" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-secondary" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-success" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-danger" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-warning" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-info" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-light" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-dark" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div>
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+            </ModalBody>
+        </ModalContent>
+    </Modal>
+
+
+    <Modal @ref="modalSuccess">
+        <ModalContent>
+            <ModalBody>
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="text-center">
+                        <div>
+                            Presentación generada con éxito.
+                        </div>
+                    </div>
+                </div>
+            </ModalBody>
+        </ModalContent>
+    </Modal>
+
+    
+    @if (mensajesError.Any())
+    {
+        <div class="error-container">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var mensaje in mensajesError)
+                    {
+                        <tr>
+                            <td>
+                                <h5>@GetTitulo(mensaje)</h5>
+                            </td>
+                            <td>
+                                <span class="error"> @GetMensaje(mensaje) </span>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+        </table>
     </div>
-    <ul class="nav nav-tabs d-flex justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/Entidad">Entidad</a>
-        </li>
-        <li class="nav-item" disabled id="estado">
-            <a class="nav-link" href="/EstadoContable">Estado</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Contador">Contador</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
-        </li>
-    </ul>
+    }
+    else{
 
+    <div class="d-flex justify-content-center mt-4 mb-4">
+        <button type ="button" @onclick="generarPresentacion" class="btn btn-primary">Generar presentación</button>
+    </div>
 
-    <!---------------------------------------------------------------->
-    <div id="app" v-if="Ok">
-        <div v-if="loading" style="min-height: 500px;margin-top: 100px;margin-left: 500px;">
-            <img src="/1487.gif" alt="Logo">
+    <div class="encabezado">
+        <img class="logo" src="img/LogoIGJNuevo.jpg" alt="Logo IGJ">
+        <img class="logo" src="img/LogoMinJusIGJ.jpg" alt="Logo MJDH">
+    </div>
+    <div class="membrete">
+        <p><b><i>1983/2023 - 40 Años de Democracia</i></b></p>
+    </div>
+    <div>
+        <p class="titulo">Regimen de Presentación de Estados Contables</p>
+        <p class="subtitulo">Anexo I - Resolución General IGJ Nº <span class="error">A DEFINIR</span></p>
+    </div>
+    <div>
+        <p class="membrete"><b>Código de Presentación :</b>  <img alt="Embedded QR code" class="img-responsive" src="cid:{{QR}}" /></p>
+    </div>
+    <br />
+
+    @if (this.caratula != null && this.caratula.Entidad != null)
+    {
+        <div>
+            <p>     <b>Denominación         :</b>  @this.caratula.Entidad.RazonSocial</p>
+                <p>     <b>Tipo Societario      :</b>  @this.caratula.Entidad.TipoEntidad</p>
+                <p>     <b>Nro Correlativo      :</b>  @this.caratula.Entidad.Correlativo</p>
+                <p>     <b>CUIT                 :</b>  @this.caratula.Entidad.RazonSocial</p>
+                <p>     <b>Domicilio            :</b>  @this.caratula.Entidad.Domicilio</p>
+                <p>     <b>Estados contables al :</b>  @this.caratula.FechaInicio?.ToString("dd/MM/yyyy")</p>
         </div>
-        <div v-else>
-            <!-- Render PDF -->
+    }
+    else
+    {
+        <div>
+            <p>     <b>Denominación         :</b>   <span class="error">Falta Campos</span></p>
+            <p>     <b>Tipo Societario      :</b>  <span class="error">Falta Campos</span></p>
+            <p>     <b>Nro Correlativo      :</b>  <span class="error">Falta Campos</span></p>
+            <p>     <b>CUIT                 :</b>    <span class="error">Falta Campos</span></p>
+            <p>     <b>Domicilio            :</b>  <span class="error">Falta Campos</span></p>
+            <p>     <b>Estados contables al :</b>    <span class="error">Fecha de inicio no disponible</span></p>
         </div>
+    }
+        <br />
+        <div>
+
+
+            <p class="seccion">Manifestación del Representante Legal </p>
+
+            @if (this.caratula != null && this.caratula.Entidad != null)
+            {
+                @foreach (var file in this.listArchivo) { 
+                    <p>  En mi carácter de representante legal de la sociedad  @this.caratula.Entidad.RazonSocial  @this.caratula.Entidad.TipoEntidad, manifiesto que los datos contenidos en los archivos de hash @file.Hash , se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al @this.caratula.FechaDeCierre?.ToString("dd/MM/yyyy") obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
+                }
+        }
+        else
+        {
+            <p>  En mi carácter de representante legal de la sociedad  <span class="error">Falta Campos</span> , manifiesto que los datos contenidos en los archivos de hash <span class="error">Falta Campos</span> , se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al <span class="error">Falta Campos</span> obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
+
+        }
+
+    </div>
+    <br />
+    <div class="box">
+
+        @foreach(var autoridad in listAutoridades){
+            if (autoridad.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
+            {
+                <p><span class="error"> </span></p>
+                <p>   Lugar y Fecha     : @this.caratula.Entidad.Domicilio @this.caratula.FechaInicio?.ToString("dd/MM/yyyy") </p>
+                <p>   Apellido y Nombre : @autoridad.Apellido @autoridad.Nombre </p>
+                <p>   CUIT              : @autoridad.NroFiscal   </p>
+                <p>   Firma             : </p>
+            }          
+        }
+    </div>
+    <br />
+    <div>
+        <p class="seccion">Certificación del Auditor Externo sobre Información Requerida por la Resolución General IGJ <span class="error">A DEFINIR</span></p>
+
+        @if (this.caratula != null && this.caratula.Entidad != null)
+        {
+                <p>En mi carácter de contador público independiente y auditor externo de @this.caratula.Entidad.RazonSocial  @this.caratula.Entidad.TipoEntidad, certifico la información detallada en el apartado siguiente.</p>
+        }
+        else
+        {
+            <p>En mi carácter de contador público independiente y auditor externo de  <span class="error">Falta Campos</span> , certifico la información detallada en el apartado siguiente.</p>
+        }
+    </div>
+    <div>
+        <p><b>1) Información Objeto de la Certificación</b></p>
+        @if (@libros != null)
+        {
+            <table>
+                <tr>
+                    <th>Asiento</th>
+                    <th>Denominación</th>
+                    <th>Numero de Rúbrica</th>
+                    <th>Folio en el que obra la transcripción</th>
+                    <th>Fecha Registracion</th>
+                    <th>Folio de la última registración</th>
+                </tr>
+               
+                    <tr>
+                        <td>Memoria</td>
+                        <td>@libros.Memoria.Nombre</td>
+                        <td>@libros.Memoria.NumeroRubrica</td>
+                        <td>@libros.Memoria.FolioObraTranscripcion</td>
+                        <td>@libros.Memoria.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Memoria.FolioUltimaRegistracion</td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td>Asamblea</td>
+                        <td>@libros.Asamblea.Nombre</td>
+                        <td>@libros.Asamblea.NumeroRubrica</td>
+                        <td>@libros.Asamblea.FolioObraTranscripcion</td>
+                        <td>@libros.Asamblea.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Asamblea.FolioUltimaRegistracion</td>
+                    </tr>
+
+                    <tr>
+                        <td>Acta del Órgano de Administración</td>
+                        <td>@libros.Administracion.Nombre</td>
+                        <td>@libros.Administracion.NumeroRubrica</td>
+                        <td>@libros.Administracion.FolioObraTranscripcion</td>
+                        <td>@libros.Administracion.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Administracion.FolioUltimaRegistracion</td>
+
+                    </tr>
+
+                    <tr>
+                        <td>Estado de Situación Patrimonial</td>
+                        <td>@libros.SituacionPatrimonial.Nombre</td>
+                        <td>@libros.SituacionPatrimonial.NumeroRubrica</td>
+                        <td>@libros.SituacionPatrimonial.FolioObraTranscripcion</td>
+                        <td>@libros.SituacionPatrimonial.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.SituacionPatrimonial.FolioUltimaRegistracion</td>
+                    </tr>
+                    <tr>
+                        <td>Estado de Resultados</td>
+                        <td>@libros.Resultados.Nombre</td>
+                        <td>@libros.Resultados.NumeroRubrica</td>
+                        <td>@libros.Resultados.FolioObraTranscripcion</td>
+                        <td>@libros.Resultados.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Resultados.FolioUltimaRegistracion</td>
+
+                    </tr>
+                    <tr>
+                        <td>Estado de Evolución del Patrimonio Neto</td>
+                        <td>@libros.PatrimonioNeto.Nombre</td>
+                        <td>@libros.PatrimonioNeto.NumeroRubrica</td>
+                        <td>@libros.PatrimonioNeto.FolioObraTranscripcion</td>
+                        <td>@libros.PatrimonioNeto.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.PatrimonioNeto.FolioUltimaRegistracion</td>
+                    </tr>
+                    <tr>
+                        <td>Estado de Flujo de Efectivo</td>
+                        <td>@libros.Efectivo.Nombre</td>
+                        <td>@libros.Efectivo.NumeroRubrica</td>
+                        <td>@libros.Efectivo.FolioObraTranscripcion</td>
+                        <td>@libros.Efectivo.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Efectivo.FolioUltimaRegistracion</td>
+                    </tr>
+                    <tr>
+                        <td>Información Complementaria</td>
+                        <td>@libros.Informacion.Nombre</td>
+                        <td>@libros.Informacion.NumeroRubrica</td>
+                        <td>@libros.Informacion.FolioObraTranscripcion</td>
+                        <td>@libros.Informacion.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Informacion.FolioUltimaRegistracion</td>
+                    </tr>
+                    <tr>
+                        <td>Estado Contable Consolidado</td>
+                        <td>@libros.EstadosContablesConsolidados.Nombre</td>
+                        <td>@libros.EstadosContablesConsolidados.NumeroRubrica</td>
+                        <td>@libros.EstadosContablesConsolidados.FolioObraTranscripcion</td>
+                        <td>@libros.EstadosContablesConsolidados.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.EstadosContablesConsolidados.FolioUltimaRegistracion</td>
+                    </tr>
+                    <tr>
+                        <td>Informe de Órgano de Fiscalización</td>
+                        <td>@libros.Fiscalizacion.Nombre</td>
+                        <td>@libros.Fiscalizacion.NumeroRubrica</td>
+                        <td>@libros.Fiscalizacion.FolioObraTranscripcion</td>
+                        <td>@libros.Fiscalizacion.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Fiscalizacion.FolioUltimaRegistracion</td>
+                    </tr>
+                    <tr>
+                        <td>Informe del Auditor Externo</td>
+                        <td>@libros.Auditor.Nombre</td>
+                        <td>@libros.Auditor.NumeroRubrica</td>
+                        <td>@libros.Auditor.FolioObraTranscripcion</td>
+                        <td>@libros.Auditor.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.Auditor.FolioUltimaRegistracion</td>
+                    </tr>
+
+                    <tr>
+                        <td>Registro de asistencia</td>
+                        <td>@libros.AsistenciaAsamblea.Nombre</td>
+                        <td>@libros.AsistenciaAsamblea.NumeroRubrica</td>
+                        <td>@libros.AsistenciaAsamblea.FolioObraTranscripcion</td>
+                        <td>@libros.AsistenciaAsamblea.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.AsistenciaAsamblea.FolioUltimaRegistracion</td>
+                    </tr>
+                    <tr>
+
+                        <td>Libro Diario</td>
+                        <td>@libros.IVA.Nombre</td>
+                        <td>@libros.IVA.NumeroRubrica</td>
+                        <td>@libros.IVA.FolioObraTranscripcion</td>
+                        <td>@libros.IVA.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.IVA.FolioUltimaRegistracion</td>
+                    </tr>
+                    <tr>
+
+                        <td>IVA Compras</td>
+                        <td>@libros.IVACompras.Nombre</td>
+                        <td>@libros.IVACompras.NumeroRubrica</td>
+                        <td>@libros.IVACompras.FolioObraTranscripcion</td>
+                        <td>@libros.IVACompras.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.IVACompras.FolioUltimaRegistracion</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>IVA Ventas</td>
+                        <td>@libros.IVAVentas.Nombre</td>
+                        <td>@libros.IVAVentas.NumeroRubrica</td>
+                        <td>@libros.IVAVentas.FolioObraTranscripcion</td>
+                        <td>@libros.IVAVentas.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
+                        <td>@libros.IVAVentas.FolioUltimaRegistracion</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Informe de Auditoria: Opinión <span class="error">FALTAN CAMPOS</span></td>
+                    </tr>
+                    
+                    @if (this.contador != null)
+                    {
+                        <tr>
+                            <td colspan="4">Fecha del Informe del Auditor Externo @contador.FechaInformeAuditorExt</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">Nro de Legalización del Auditor Externo @contador.NroLegalInfoAudExt</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4">Fecha del Informe del Auditor Externo <span class="error">Falta Campos</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">Nro de Legalización del Auditor Externo<span class="error">Falta Campos</span></td>
+                        </tr>
+
+                    }
+
+                    <tr>
+                        <td colspan="4">Observaciones <span class="error">FALTAN CAMPOS</span></td>
+                    </tr>
+                
+            </table>
+        }
+        else
+        {
+            <p>Memoria is null</p>
+        }
+    </div>
+    <div>
+        <p><b>2) Tarea Profesional Realizada</b></p>
+        
+        @if (this.caratula != null && this.contador != null)
+        {
+                <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el @this.caratula.FechaDeCierre?.ToString("dd/MM/yyyy") e Informe de Auditor Externo de fecha @this.contador.FechaInformeAuditorExt?.ToString("dd/MM/yyyy") con los datos incluidos en <span class="error">FALTAN CAMPOS</span>.</p>
+        }
+    </div>
+    <div>
+        <p><b>3) Certificación</b></p>
+        <p>  Sobre la base delas tareas descriptas CERTIFICO que la información contenida en los documentos detallados en 1. concuerda en un todo con lo declarado en el hash y surge de registros rubricados/medios ópticos/mecánicos/digitales  llevados en legal forma.-</p>
+    </div>
+    <br />
+    <div class="box">
+        @if (this.contador != null)
+        {
+            <p>   Lugar y Fecha     : </p>
+            <p>   Apellido y Nombre : @contador.Apellido @contador.Nombre </p>
+            <p>   CUIT              : @contador.NroFiscal - T° @contador.Tomo F° @contador.Folio  </p>
+            <p>   En carácter de Socio de la Soc Tº <span class="error">FALTAN CAMPOS</span> Fº <span class="error">FALTAN CAMPOS   (ésta línea solo debe aparecer si "Actúa en carácter de Socio de Estudio Contable" = True)</span></p>
+            
+            <p>   Firma             : </p>
+        }
     </div>
 
-    <div v-else>
-        <ul class="list-group" v-for="error in errores">
-            <li class="list-group-item" style="color: red;">{{ error }}</li>
-        </ul>
-    </div>
 
-   
+
+    }
 </body>
-
-
 
 </html>
 
+
+
 @code {
 
+    List<string> mensajesError = new List<string>();
+
+    // reference to the modal component
+    private Modal modalRef;
+
+
+    private Modal modalSuccess;
+
+
+
+    [Parameter] public string? TipoEntidad { get; set; }
+
+    private BalanceDto balance = new BalanceDto();
+
+    private CaratulaDto caratula = new CaratulaDto();
+
+    private AutoridadDto autoridades = new AutoridadDto();
+
+    private EstadoContableDto estadoContable = new EstadoContableDto();
+
+    private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
+
+    private LibrosDto libros = new LibrosDto();
+    private LibroDto libro = new LibroDto();
+
+    private ContadorDto contador = new ContadorDto();
+    private List<Archivo> listArchivo = new List<Archivo>();
+
+
+    private SociosDto socios = new SociosDto();
+    private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
+    private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
+
+
+    protected override async void OnInitialized()
+    {
+        await Load();
+        ValidarCampos();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        try
+        {
+           // var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            var idSession = await caratulaService.getSession();
+
+            if (idSession != null)
+            {
+                var response = await caratulaService.getBalance(idSession.Result);
+
+                if (response.IsSuccess == true)
+                {
+
+                    try
+                    {
+
+                        if (response.Result != null)
+                        {
+
+                            //TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
+                            setBalance(balance);
+
+                            //Caratula
+                            setCaratula(response.Result.Caratula);
+
+                            //EstadoContable
+                            //setEstadoContable(response.Result.EstadoContable);
+
+                            this.estadoContable.tipoBalance = response.Result.EstadoContable.TipoBalance;
+                            this.estadoContable.fechaInicio = response.Result.EstadoContable.FechaInicio;
+                            this.estadoContable.fechaEstado = response.Result.EstadoContable.FechaEstado;
+                            this.estadoContable.fechaAsamblea = response.Result.EstadoContable.FechaAsamblea;
+                            this.estadoContable.fechaReunionDirectorio = response.Result.EstadoContable.FechaReunionDirectorio;
+                            this.estadoContable.cajaYBancos = response.Result.EstadoContable.CajaYBancos;
+                            this.estadoContable.inversionesActivoCorriente = response.Result.EstadoContable.InversionesActivoCorriente;
+                            //this.estadoContable.otrosRubros = response.Result.EstadoContable.OtrosRubros;
+
+                            // this.balance.Caratula = response.Result.Caratula;
+                            this.libros.Asamblea = response.Result.Libros.Asamblea;
+                            this.libros.Administracion = response.Result.Libros.Administracion;
+                            this.libros.AsistenciaAsamblea = response.Result.Libros.AsistenciaAsamblea;
+                            this.libros.Auditor = response.Result.Libros.Auditor;
+                            this.libros.Efectivo = response.Result.Libros.Efectivo;
+                            this.libros.Fiscalizacion = response.Result.Libros.Fiscalizacion;
+                            this.libros.IVA = response.Result.Libros.IVA;
+                            this.libros.IVACompras = response.Result.Libros.IVACompras;
+                            this.libros.IVAVentas = response.Result.Libros.IVAVentas;
+                            this.libros.Resultados = response.Result.Libros.Resultados;
+                            this.libros.EstadosContablesConsolidados = response.Result.Libros.EstadosContablesConsolidados;
+                            this.libros.PatrimonioNeto = response.Result.Libros.PatrimonioNeto;
+                            this.libros.SituacionPatrimonial = response.Result.Libros.SituacionPatrimonial;
+                            this.libros.Memoria = response.Result.Libros.Memoria;
+                            this.libros.Informacion = response.Result.Libros.Informacion;
+
+                            //Contador
+                            setContador(response.Result.Contador);
+
+                            //Autoridades
+                            setAutoridades(response.Result.Autoridades);
+
+                            //Integrante
+
+                            this.listPersonaHumana = response.Result.Socios.PersonasHumanas;
+                            this.listPersonaJuridica = response.Result.Socios.PersonasJuridicas;
+
+
+                            //Archivos
+                            setArchivos(response.Result.Archivos);
+
+                            StateHasChanged();
+
+                        }
+                        else
+                        {
+                            Console.WriteLine($"No hay resultados en la respuesta");
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No se ha encontrado el idSession");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+
+
+    private async Task<ResponseDTO<BalanceDto>> generarPresentacion()
+    {
+
+        try
+        {
+
+            await ShowLoadingModal();
+
+            var responseDto = new ResponseDTO<BalanceDto>();
+            var response = await presentacionService.generarPresentacion();
+
+            if (response.IsSuccess)
+            {
+         
+
+                responseDto.IsSuccess = response.IsSuccess;
+                responseDto.Message = response.Message;
+                responseDto.Result = response.Result;
+
+                await ShowSuccessModal();
+
+                return responseDto;
+            }
+            else
+            {
+                responseDto.IsSuccess = response.IsSuccess;
+                responseDto.Message = response.Message;
+                responseDto.Result = response.Result;
+
+                return responseDto;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            return new ResponseDTO<BalanceDto>
+                {
+                    IsSuccess = false,
+                    Message = $"{ex.Message}",
+                    Result = null
+                };
+        }
+
+        finally
+        {
+            await HideLoadingModal();
+        }
+    }
+
+    private void setCaratula(Model.Caratula caratula)
+    {
+        this.caratula.Entidad = caratula.Entidad;
+        this.caratula.Entidad.Domicilio = caratula.Entidad.Domicilio;
+        this.caratula.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+        this.caratula.FechaInicio = caratula.FechaInicio;
+        this.caratula.FechaDeCierre = caratula.FechaDeCierre;
+        this.caratula.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+        this.caratula.Entidad.Correlativo = caratula.Entidad.Correlativo;
+        this.caratula.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+
+
+        TipoEntidad = caratula.Entidad.TipoEntidad;
+
+    }
+
+    private void setEstadoContable(Model.EstadoContable estadoContable)
+    {
+
+        this.estadoContable.tipoBalance = estadoContable.TipoBalance;
+        this.estadoContable.fechaInicio = estadoContable.FechaInicio;
+        this.estadoContable.fechaEstado = estadoContable.FechaEstado;
+        this.estadoContable.fechaAsamblea = estadoContable.FechaAsamblea;
+        this.estadoContable.fechaReunionDirectorio = estadoContable.FechaReunionDirectorio;
+        this.estadoContable.cajaYBancos = estadoContable.CajaYBancos;
+        this.estadoContable.inversionesActivoCorriente = estadoContable.CajaYBancos;
+
+    }
+
+
+    private void setBalance(BalanceDto balance)
+    {     
+        this.balance = balance;
+        this.balance.Libros =  new LibrosDto();
+        this.balance.Libros.Asamblea = new LibroDto(); 
+
+    }
+
+    private void setAutoridades(List<AutoridadDto> lista)
+    {
+        this.listAutoridades = lista;
+    }
+
+
+    private void setLibros(LibrosDto libro)
+    {
+
+        this.libros = libro;
+
+    }
+
+
+    private void setArchivos(List<Archivo>archivos)
+    {
+
+        this.listArchivo = archivos;
+
+    }
+
+
+
+    private void setIntegranteHumana(List<PersonaHumanaDto> listPersonaHumana)
+    {
+
+        this.listPersonaHumana = listPersonaHumana;
+
+    }
+    private void setIntegranteJuridica(List<PersonaJuridicaDto> listPersonaJuridica)
+    {
+
+        this.listPersonaJuridica = listPersonaJuridica;
+
+    }
+
+
+    private void setContador(Model.Contador contador)
+    {
+
+        this.contador.Nombre = contador.Nombre;
+        this.contador.Apellido = contador.Apellido;
+        this.contador.TipoDocumento = contador.TipoDocumento;
+        this.contador.NroDocumento = contador.NroDocumento;
+        this.contador.NroFiscal = contador.NroFiscal;
+        this.contador.Tomo = contador.Tomo;
+        this.contador.Folio = contador.Folio;
+        this.contador.NroLegalInfoAudExt = contador.NroLegalInfoAudExt;
+        this.contador.FechaInformeAuditorExt = contador.FechaInformeAuditorExt;
+
+    }
+
+
+
+    private bool ValidarCampos()
+    {
+        try
+        {
+            
+                mensajesError.Clear();
+
+                // Validar propiedades de Entidad
+                ValidarPropiedades(this.caratula.Entidad, "Entidad");
+
+                //Validar propiedades de EstadoContable
+                ValidarPropiedades(this.estadoContable, "Estado Contable");
+
+                //Validar propiedades Libros
+                ValidarPropiedades(this.libros.Memoria, "Libros - Memoria");
+                ValidarPropiedades(this.libros.Administracion, "Libros - Acta del Organo de Administracion");
+                ValidarPropiedades(this.libros.Asamblea, "Libros - Asamblea de Reunion Socios");
+                ValidarPropiedades(this.libros.SituacionPatrimonial, "Libros - Estado de Situacion Patrimonial");
+                ValidarPropiedades(this.libros.Resultados, "Libros - Estado de Resultados");
+                ValidarPropiedades(this.libros.PatrimonioNeto, "Libros - Estado de Evolucion del Patrimonio Neto");
+                ValidarPropiedades(this.libros.Efectivo, "Libros - Estado de Flujo Efectivo");
+                ValidarPropiedades(this.libros.Informacion, "Libros - Informacion Complementaria");
+                ValidarPropiedades(this.libros.EstadosContablesConsolidados, "Libros - Estado Contable Consolidados");
+                ValidarPropiedades(this.libros.Fiscalizacion, "Libros - Informe Organo Fiscalizacion");
+                ValidarPropiedades(this.libros.Auditor, "Libros - Informe Auditor Auditor");
+                ValidarPropiedades(this.libros.AsistenciaAsamblea, "Libros - Registro de Asistencia");
+                ValidarPropiedades(this.libros.IVA, "Libros - IVA");
+                ValidarPropiedades(this.libros.IVACompras, "Libros - IVA Compras");
+                ValidarPropiedades(this.libros.IVAVentas, "Libros - IVA Ventas");
+
+
+
+                //Validar propiedades de Contador
+                ValidarPropiedades(this.contador, "Contador");
+
+
+                // Validar propiedades de Autoridades
+                ValidarPropiedades(this.listAutoridades, "Autoridades");
+
+
+                var listaSocios = new List<object>();
+                listaSocios.AddRange(this.listPersonaJuridica);
+                listaSocios.AddRange(this.listPersonaHumana);
+
+                //Validar propiedades de Socios
+                if (!(listaSocios.Count > 0))
+                {
+                    ValidarPropiedades(listaSocios, "Integrante");
+                }
+
+
+                // Validar propiedades de Archivos
+                ValidarPropiedades(this.listArchivo, "Archivos");
+
+
+                // Verificar si hay mensajes de error y mostrarlos
+                if (mensajesError.Any())
+                {   // Limpiar la lista de mensajes de error antes de cada validación
+
+                    StateHasChanged();
+                    return false;
+               }
+            
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Validar Campos: " + ex.Message); 
+        }
+        return true;
+    }
+
+
+
+    private string GetTitulo(string mensaje)
+    {
+        // Implement your logic to classify errors based on the object
+        if (mensaje.Contains("Contador"))
+        {
+            return "Contador";
+        }
+
+        else if (mensaje.Contains("Libros - Memoria"))
+        {
+            return "Libros - Memoria";
+        }
+        else if (mensaje.Contains("Libros - Acta del Organo de Administracion"))
+        {
+            return "Libros - Acta del Organo de Administracion";
+        }
+        else if (mensaje.Contains("Libros - Asamblea de Reunion Socios"))
+        {
+            return "Libros - Asamblea de Reunion Socios";
+        }
+        else if (mensaje.Contains("Libros - Estado de Situacion Patrimonial"))
+        {
+            return "Libros - Estado de Situacion Patrimonial";
+        }
+
+        else if (mensaje.Contains("Libros - Estado de Resultados"))
+        {
+            return "Libros - Estado de Resultados";
+        }
+        else if (mensaje.Contains("Libros - Estado de Evolucion del Patrimonio Neto"))
+        {
+            return "Libros - Estado de Evolucion del Patrimonio Neto";
+        }
+        else if (mensaje.Contains("Libros - Estado de Flujo Efectivo"))
+        {
+            return "Libros - Estado de Flujo Efectivo";
+        }
+        else if (mensaje.Contains("Libros - Informacion Complementaria"))
+        {
+            return "Libros - Informacion Complementaria";
+        }
+        else if (mensaje.Contains("Libros - Estados Contable Consolidado"))
+        {
+            return "Libros - Estados Contables Consolidados";
+        }
+        else if (mensaje.Contains("Libros - Informe Organo Fiscalizacion"))
+        {
+            return "Libros - Informe Organo Fiscalizacion";
+        }
+
+        else if (mensaje.Contains("Libros - Informe Auditor Auditor"))
+        {
+            return "Libros - Informe Auditor Auditor";
+        }
+        else if (mensaje.Contains("Libros - Registro de Asistencia"))
+        {
+            return "Libros - Registro de Asistencia";
+        }
+
+        else if (mensaje.Contains("Libros - IVA"))
+        {
+            return "Libros - IVA";
+        }
+        else if (mensaje.Contains("Libros - IVA Ventas"))
+        {
+            return "Libros - IVA Ventas";
+        }
+        else if (mensaje.Contains("Libros - IVA Compras"))
+        {
+            return "Libros - IVA Compras";
+        }
+
+
+        //Autoridades
+        else if (mensaje.Contains("Autoridades"))
+        {
+            return "Autoridades";
+        }
+
+        //Integrantes
+        else if (mensaje.Contains("Integrante"))
+        {
+            return "Integrante";
+        }
+
+        else if (mensaje.Contains("Estado Contable"))
+        {
+            return "Estado Contable";
+        }
+        else if (mensaje.Contains("Archivos"))
+        {
+            return "Archivos";
+        }
+        // Add more conditions as needed
+        else
+        {
+            return "Otros Errores";
+        }
+    }
+
+    private string GetMensaje(string mensaje)
+    {
+        // Extract the error message without the title
+        var startIndex = mensaje.IndexOf(":") + 1; // Find the index after the colon
+        if (startIndex > 0 && startIndex < mensaje.Length)
+        {
+            return mensaje.Substring(startIndex).Trim(); // Extract the message and remove leading/trailing spaces
+        }
+        else
+        {
+            return mensaje; // Return the original message if the format is unexpected
+        }
+    }
+
+    private void ValidarPropiedades(object entidad, string nombreEntidad){
+    
+        try
+        {
+              
+                // Bandera para verificar si ya se ha agregado un mensaje para la entidad
+                bool mensajeAgregado = false;
+
+                foreach (var propiedad in entidad.GetType().GetProperties())
+                {
+                    var valor = propiedad.GetValue(entidad);
+
+                    if (propiedad.Name == "id" || propiedad.Name == "Id" || propiedad.Name == "Balance")
+                    {
+                        
+                        continue;
+                    }
+
+                    if (propiedad.Name == "FechaUltimaRegistracion" || propiedad.Name == "FechaRubrica")
+                    {
+                        continue;
+                    }
+
+
+                    if (valor == null)
+                    {
+                        mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
+
+
+                    }
+                    else if (valor is string && string.IsNullOrEmpty((string)valor))
+                    {
+                        mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
+
+
+                    }
+                    else if (valor is int && (int)valor == 0 && propiedad.Name != "Count" && propiedad.Name != "Capacity")
+                    {
+                        mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser un valor numérico");
+
+
+                    }
+                  
+                    // Si la propiedad es Count o Capacity y el valor es cero, y no se ha agregado mensaje
+                    else if ((propiedad.Name == "Count" || propiedad.Name == "Capacity") && valor is int && (int)valor == 0 && !mensajeAgregado)
+                    {
+                        mensajesError.Add($"{nombreEntidad} está vacía");
+                        // Establecer la bandera para indicar que se ha agregado el mensaje
+                        mensajeAgregado = true;
+                    }
+                }
+
+               
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error:Validar Propiedades" + ex.Data.ToString());
+            Console.WriteLine("Error:Validar Propiedades" + ex.Message);
+        }
+    }
+
+
+    private decimal resultadoPatrimonioNeto()
+    {
+        if (estadoContable.totalActivo != 0 && estadoContable.totalPasivo != 0)
+        {
+            return estadoContable.patrimonioNeto = estadoContable.totalActivo - estadoContable.totalPasivo;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    private bool resultadoPatNetDetailPatNeto()
+    {
+        if (estadoContable.otrosRubros.Count > 0)
+        {
+            decimal sumatoriaImporte = 0;
+
+            foreach (var rubros in estadoContable.otrosRubros)
+            {
+                sumatoriaImporte = sumatoriaImporte + rubros.importe;
+            }
+
+
+            var sumatoriaDetallePatNeto = estadoContable.capitalSuscripto + estadoContable.ajusteCapital + estadoContable.aportesIrrevocables + estadoContable.primaEmision + estadoContable.gananciasReservadas + estadoContable.perdidasAcumuladas + estadoContable.gananciasPerdidasEjercicio + estadoContable.reservaLegal + sumatoriaImporte;
+
+            if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
+            {
+                return  false;
+
+            }
+            else
+            {
+                return true;
+
+            }
+        }
+        else
+        {
+            var sumatoriaDetallePatNeto = estadoContable.capitalSuscripto + estadoContable.ajusteCapital + estadoContable.aportesIrrevocables + estadoContable.primaEmision + estadoContable.gananciasReservadas + estadoContable.perdidasAcumuladas + estadoContable.gananciasPerdidasEjercicio + estadoContable.reservaLegal;
+
+            if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
+            {
+                return false;
+
+            }
+            else
+            {
+                return  true;
+
+            }
+        }
+
+    }
+
+    // Método para mostrar el modal de carga
+    private Task ShowLoadingModal()
+    {
+        return modalRef.Show();
+    }
+
+    // Método para ocultar el modal de carga
+    private Task HideLoadingModal()
+    {
+        return modalRef.Hide();
+    }
+    
+
+    private Task ShowSuccessModal()
+    {
+        return modalSuccess.Show();
+    }
+
+    
 }

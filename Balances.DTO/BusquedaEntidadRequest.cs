@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Balances.DTO
 {
-    public class SessionRequestDTO
+    public class BusquedaEntidadRequest
     {
-        private string balanceId;
+        public string? NroCorrelativo { get; set; }
+      
     }
 }

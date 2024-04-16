@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Balances.Bussiness.Contrato;
 using Balances.DTO;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -9,17 +11,22 @@ namespace Balances.Bussiness.Implementacion
     {
         private readonly IBalanceBusiness _balanceBusiness;
         private readonly IMapper _mapper;
+        private readonly ILogger<SociosBusiness> _logger;
 
-        public SociosBusiness(IBalanceBusiness balanceBusiness, IMapper mapper)
+        public SociosBusiness(IBalanceBusiness balanceBusiness,
+                              IMapper mapper,
+                              ILogger<SociosBusiness> logger
+                              )
         {
             _balanceBusiness = balanceBusiness;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public ResponseDTO<BalanceDto> InsertPersonaJuriridica(PersonaJuridicaDto modelo)
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
-
+            var pjSerializada = JsonConvert.SerializeObject(modelo);
 
             try
             {
@@ -42,15 +49,15 @@ namespace Balances.Bussiness.Implementacion
 
                 respuesta.IsSuccess = true;
                 respuesta.Result = bDto;
-                respuesta.Message = "Persona juridica guardada correctamente";
-
+                respuesta.Message = $"Persona juridica guardada correctamente";
+                _logger.LogInformation($"SociosBusiness.InsertPersonaJuriridica : ---> {pjSerializada}");
 
             }
             catch (Exception ex)
             {
 
                 respuesta.Message = ex.Message;
-
+                _logger.LogError($"SociosBusiness.InsertPersonaJuriridica: \n {ex}");
             }
 
             return respuesta;
@@ -59,7 +66,7 @@ namespace Balances.Bussiness.Implementacion
         public ResponseDTO<BalanceDto> InsertPersonaHumana(PersonaHumanaDto modelo)
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
-
+            var pjSerializada = JsonConvert.SerializeObject(modelo);
 
             try
             {
@@ -82,14 +89,14 @@ namespace Balances.Bussiness.Implementacion
                 respuesta.IsSuccess = true;
                 respuesta.Result = bDto;
                 respuesta.Message = "Persona humana guardada correctamente";
-
+                _logger.LogInformation($"SociosBusiness.InsertPersonaHumana : ---> {pjSerializada}");
 
             }
             catch (Exception ex)
             {
 
                 respuesta.Message = ex.Message;
-
+                _logger.LogError($"SociosBusiness.InsertPersonaHumana \n {ex}");
             }
 
             return respuesta;
@@ -98,6 +105,7 @@ namespace Balances.Bussiness.Implementacion
         public ResponseDTO<BalanceDto> DeletePersonaHumana(PersonaHumanaDto modelo)
         {
             var respuesta = new ResponseDTO<BalanceDto>();
+            var pjSerializada = JsonConvert.SerializeObject(modelo);
             respuesta.IsSuccess = false;
             try
             {
@@ -111,11 +119,13 @@ namespace Balances.Bussiness.Implementacion
                 respuesta.Result = bal;
                 respuesta.IsSuccess = true;
                 respuesta.Message = "persona humana borrada correctamente";
+                _logger.LogInformation($"SociosBusiness.DeletePersonaHumana :  ---> {pjSerializada}");
             }
             catch (Exception ex)
             {
 
                 respuesta.Message = ex.Message;
+                _logger.LogError($"SociosBusiness.DeletePersonaHumana: \n {ex}");
             }
 
             return respuesta;
@@ -126,7 +136,7 @@ namespace Balances.Bussiness.Implementacion
         {
             var respuesta = new ResponseDTO<BalanceDto>();
             respuesta.IsSuccess = false;
-
+            var pjSerializada = JsonConvert.SerializeObject(modelo);
             try
             {
                 var bal = _balanceBusiness.BalanceActual;
@@ -139,11 +149,13 @@ namespace Balances.Bussiness.Implementacion
                 respuesta.Result = bal;
                 respuesta.IsSuccess = true;
                 respuesta.Message = "persona juridica borrada correctamente";
+                _logger.LogInformation($"SociosBusiness.DeletePersonaJuriridica : ---> {pjSerializada}");
             }
             catch (Exception ex)
             {
 
                 respuesta.Message = ex.Message;
+                _logger.LogError($"SociosBusiness.DeletePersonaJuriridica: \n {ex}");
             }
 
             return respuesta;

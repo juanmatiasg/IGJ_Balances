@@ -12,8 +12,8 @@ namespace Balances.Bussiness.Contrato
 
         bool Delete(CaratulaDto modelo);
 
-        //ResponseDTO<CaratulaDto> GetById(string id);
-
         IEnumerable<CaratulaDto> List();
+
+    
     }
 }

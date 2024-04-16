@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Balances.Model\Balances.Model.csproj" />
     <ProjectReference Include="..\Balances.Repository\Balances.Repository.csproj" />
     <ProjectReference Include="..\Balances.Utilities\Balances.Utilities.csproj" />
+    <ProjectReference Include="..\Balances.Web\Balances.Web.csproj" />
   </ItemGroup>
 
 </Project>

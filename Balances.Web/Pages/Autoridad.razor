@@ -1,7 +1,10 @@
 ﻿@page "/Autoridad"
-
-@{
-}
+@using Balances.DTO;
+@using Balances.Utilities;
+@using Balances.Web.Services.Implementation;
+@inject IAutoridadService autoridadService
+@inject NavigationManager NavigationManager
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,133 +15,144 @@
     <title>Formulario con Bootstrap</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
+
+
+
 </head>
 
 
 <body>
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
-    </div>
-    <ul class="nav nav-tabs d-flex justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link" disabled href="/Entidad">Entidad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/EstadoContable">Estado</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
-        </li>
-        <li class="nav-item" active disabled>
-            <a class="nav-link" href="/Contador">Contador</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
-        </li>
-    </ul>
+
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Autoridad" TramiteIniciado="true"></Navegacion>
 
 
     <!---------------------------------------------------------------->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="container mt-4">
+                <div class="card">
+                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Datos de la Autoridad
+                    </div>
 
+                    <div class="card-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="inputNombre">Nombre</label>
+                                    <input type="text" class="form-control" id="inputNombre" placeholder="Nombre" @bind=modelo.Nombre>
+                                    <small id="msgError" class="text-danger">@msgErrorNombre</small>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputApellido">Apellido</label>
+                                    <input type="text" class="form-control" id="inputApellido" placeholder="Apellido" @bind=modelo.Apellido>
+                                    <small id="msgError" class="text-danger">@msgErrorApellido</small>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="selectTipoDocumento">Tipo de Documento</label>
+                                    <select id="selectTipoDocumento" class="form-select" @bind="modelo.TipoDocumento">
+                                        <option selected>Seleccionar...</option>
+                                        <option value="DNI">DNI</option>
+                                        <option value="Pasaporte">Pasaporte</option>
+                                        <option value="Cédula">Cédula</option>
+                                    </select>
+                                    <small id="msgError" class="text-danger">@msgErrorTipoDeDoc</small>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="inputNumeroDocumento">Nro. de Documento</label>
+                                    <input type="text" class="form-control" id="inputNumeroDocumento" placeholder="Número de Documento" @bind="modelo.NroDocumento">
+                                    <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputNumeroFiscal">Nro de Id. Fiscal</label>                                    
+                                    <input type="text" class="form-control" id="inputNumeroFiscal" placeholder="Número de Identificación Fiscal" @bind="modelo.NroFiscal">
+                                    <small id="msgError" class="text-danger">@msgErrorNroIdFiscal</small>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputCargo">Cargo</label>
+                                    <input type="text" class="form-control" id="inputCargo" placeholder="Cargo" @bind="modelo.Cargo">
+                                    <small id="msgError" class="text-danger">@msgErrorCargo</small>
 
-    <div class="container mt-4">
-        <div class="card">
+                                </div>
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="checkboxFirmante" @bind="modelo.EsFirmante">
+                                <label class="form-check-label" for="checkboxFirmante">Es Firmante</label>
+                            </div>
 
-            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                Datos de la Autoridad
-            </div>
-            <div class="card-body">
-                <form>
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="inputNombre">Nombre</label>
-                            <input type="text" class="form-control" id="inputNombre" placeholder="Nombre">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="inputApellido">Apellido</label>
-                            <input type="text" class="form-control" id="inputApellido" placeholder="Apellido">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="selectTipoDocumento">Tipo de Documento</label>
-                            <select id="selectTipoDocumento" class="form-control">
-                                <option selected>Seleccionar...</option>
-                                <!-- Opciones de tipo de documento aquí -->
-                            </select>
-                        </div>
+                            <button type="button" class="btn btn-primary w-100" @onclick="insertAutoridad">Agregar</button>
+                        </form>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="inputNumeroDocumento">Número de Documento</label>
-                            <input type="text" class="form-control" id="inputNumeroDocumento" placeholder="Número de Documento">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="inputNumeroFiscal">Número de Identificación Fiscal</label>
-                            <input type="text" class="form-control" id="inputNumeroFiscal" placeholder="Número de Identificación Fiscal">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="inputCargo">Cargo</label>
-                            <input type="text" class="form-control" id="inputCargo" placeholder="Cargo">
-                        </div>
-                    </div>
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="checkboxFirmante">
-                        <label class="form-check-label" for="checkboxFirmante">Es Firmante</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Agregar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                Autoridades
-            </div>
-            <div class="card-body">
-                <form>
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="inputApellidoNombre">Apellido y Nombre</label>
-                            <input type="text" class="form-control" id="inputApellidoNombre" placeholder="Apellido y Nombre">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputNroDocumento">Nro Documento</label>
-                            <input type="text" class="form-control" id="inputNroDocumento" placeholder="Nro Documento">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputCUIT">CUIT</label>
-                            <input type="text" class="form-control" id="inputCUIT" placeholder="CUIT">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label for="inputCargo">Cargo</label>
-                            <input type="text" class="form-control" id="inputCargo" placeholder="Cargo">
-                        </div>
-                    </div>
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="checkboxFirma">
-                        <label class="form-check-label" for="checkboxFirma">FIRMA</label>
-                    </div>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
+                </div>
             </div>
         </div>
+
+
+
+        <div class="col-md-6">
+            <div class="container mt-4">
+                <div class="card">
+                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Autoridades
+                    </div>
+                    <div class="card-body mb-4">
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Apellido y Nombre</th>
+                                    <th scope="col">Nro Documento</th>
+                                    <th scope="col">CUIT</th>
+                                    <th scope="col">Cargo</th>
+                                    <th scope="col">Firmante</th>
+                                    <th scope="col">Acción</th>
+                                   
+                                </tr>
+                            </thead>
+                            @foreach (var autoridad in listAutoridades)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td>@autoridad.Apellido @autoridad.Nombre</td>
+                                        <td>@autoridad.NroDocumento</td>
+                                        <td>@autoridad.NroFiscal</td>
+                                        <td>@autoridad.Cargo</td>
+                                        <td>@(autoridad.EsFirmante ? "Sí" : "No")</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger" @onclick="() => deleteAutoridad(autoridad)">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <Modal @ref="modalRef">
+            <ModalContent Centered>
+                <ModalHeader>
+                    <ModalTitle>Autoridades</ModalTitle>
+                    <CloseButton />
+                </ModalHeader>
+                <ModalBody>
+                    <p class="d-flex justify-content-center">No puede haber más dos firmantes.</p>
+                </ModalBody>
+                <ModalFooter>
+                    <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+       
     </div>
 
-    <!-- Bootstrap JS and jQuery -->
-   
 
 </body>
 
@@ -148,5 +162,324 @@
 
 
 @code {
+    [Parameter] public string? TipoEntidad { get; set; }
 
+
+    [CascadingParameter] IModalService Modal { get; set; } = default!;
+
+    private string idSession = "";
+    private AutoridadDto modelo = new AutoridadDto();
+    private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
+    private string resultNameAndSurname ="";
+
+    private string msgErrorNombre = "";
+    private string msgErrorApellido = "";
+    private string msgErrorNroIdFiscal = "";
+    private string msgErrorNroDoc = "";
+    private string msgErrorCargo = "";
+    private string msgErrorTipoDeDoc = "";
+    private string nroIdentificacionSocial = "Nro de Identificación Fiscal";
+
+
+    // reference to the modal component
+    private Modal? modalRef;
+
+
+
+
+    private  Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await Load();
+
+        await base.OnInitializedAsync();
+    }
+
+
+    private async Task Load()
+    {
+        try
+        {
+            var idSession = await autoridadService.getSession();
+            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            
+            if (idSession!=null)
+            {
+                var response = await autoridadService.getBalance(idSession.Result);
+
+                if (response.IsSuccess == true)
+                {
+
+                    try
+                    {
+                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
+                        resultAutoridades(response.Result.Autoridades);
+
+                        StateHasChanged();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No se ha encontrado el idSession");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+
+    private async Task<ResponseDTO<BalanceDto>> insertAutoridad()
+
+    {
+
+
+        if (checkData())
+        {
+            ResponseDTO<BalanceDto> respuesta = new();
+
+
+            try
+            {
+                // Check if the current autoridad is a firmante
+                if (modelo.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
+                {
+                    ShowModal();
+                    return null;
+                }
+                else
+                {
+                    respuesta = await autoridadService.insertAutoridad(modelo);
+
+
+                    if (respuesta.IsSuccess)
+                    {
+
+                        resultAutoridades(respuesta.Result.Autoridades);
+
+                        // Limpiar los campos después de una inserción exitosa
+                        cleanInputs();
+
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.Message = ex.Message;
+            }
+            return respuesta;
+        }
+        else
+        {
+            return null;    
+        }
+    }
+
+
+    private void cleanInputs()
+    {
+        // Restablecer los valores de los campos a su estado inicial o vacío
+        modelo = new AutoridadDto(); 
+    }
+
+    private void resultAutoridades(List<AutoridadDto> listAutoridades)
+    {
+        if (listAutoridades.Count > 0){
+            this.listAutoridades = listAutoridades;
+        }
+
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> deleteAutoridad(AutoridadDto autoridad)
+    {
+        var respuesta = new ResponseDTO<BalanceDto>();
+        try
+        {
+            respuesta = await autoridadService.deleteAutoridad(autoridad);
+
+            if (respuesta.IsSuccess)
+            {
+
+                listAutoridades = respuesta.Result.Autoridades;
+
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+        return respuesta;
+    }
+
+
+    private bool checkData()
+    {
+
+        // Nombre
+        if (!string.IsNullOrEmpty(modelo.Nombre))
+        {
+            if (Validator.IsNumeric(modelo.Nombre))
+            {
+                msgErrorNombre = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorNombre = "";
+
+            }
+        }
+        else
+        {
+            msgErrorNombre = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+        // Apellido
+        if (!string.IsNullOrEmpty(modelo.Apellido))
+        {
+            if (Validator.IsNumeric(modelo.Apellido))
+            {
+                msgErrorApellido = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorApellido = "";
+
+            }
+        }
+        else
+        {
+            msgErrorApellido = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+        // Apellido
+        if (!string.IsNullOrEmpty(modelo.TipoDocumento))
+        {
+            msgErrorTipoDeDoc = "";
+        }
+        else
+        {
+            msgErrorTipoDeDoc = "El campo no puede estar vacio";
+            return false;
+        }
+
+        // NroDocumento
+        if (!string.IsNullOrEmpty(modelo.NroDocumento))
+        {
+            if (!Validator.IsNumeric(modelo.NroDocumento))
+            {
+                msgErrorNroDoc = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorNroDoc = "";
+            }
+        }
+        else
+        {
+            msgErrorNroDoc = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+        // NroFiscal
+        if (!string.IsNullOrEmpty(modelo.NroFiscal))
+        {
+            if (!Validator.IsNumeric(modelo.NroFiscal))
+            {
+                msgErrorNroIdFiscal = "No puedes ingresar caracteres";
+                return false;
+            }
+            else
+            {
+                msgErrorNroIdFiscal = "";
+            }
+        }
+        else
+        {
+            msgErrorNroIdFiscal = "El campo no puede estar vacio";
+            return false;
+        }
+
+        // Cargo
+        if (!string.IsNullOrEmpty(modelo.Cargo))
+        {
+            if (Validator.IsNumeric(modelo.Cargo))
+            {
+                msgErrorCargo = "No puedes ingresar un valor numérico";
+                return false;
+            }
+            else
+            {
+                msgErrorCargo = "";
+
+            }
+        }
+
+        else
+        {
+            msgErrorCargo = "El campo no puede estar vacio";
+            return false;
+        }
+
+
+
+
+        // Si todos los campos pasan la validación, devuelve true
+
+        msgErrorTipoDeDoc = "";
+        msgErrorNombre = "";
+        msgErrorApellido = "";
+        msgErrorNroIdFiscal = "";
+        msgErrorNroDoc = "";
+        msgErrorCargo = "";
+
+        return true;
+    }
+
+    
+
+
+
+
+  
 }
+    
+
+
+
+    

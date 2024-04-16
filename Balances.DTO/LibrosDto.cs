@@ -2,26 +2,24 @@
 {
     public class LibrosDto
     {
-        //public string BalanceId { get; set; }
-        //public List<LibroDto> librosDigitales { get; set; }
+
         public LibrosDto()
         {
-            _Administracion = new LibroDto();
-            _Asamblea = new LibroDto();
-            _AsistenciaAsamblea = new LibroDto();
-            _Auditor = new LibroDto();
-            _Fiscalizacion = new LibroDto();
-            _Efectivo = new LibroDto();
-            _EstadosContablesConsolidados = new LibroDto();
-            _Auditor = new LibroDto();
-            _SituacionPatrimonial = new LibroDto();
-            _Informacion = new LibroDto();
-            _IVA = new LibroDto();
-            _IVACompras = new LibroDto();
-            _IVAVentas = new LibroDto();
-            _PatrimonioNeto = new LibroDto();
-            _Memoria = new LibroDto();
-            _Resultados = new LibroDto();
+            this.Administracion = new LibroDto();
+            this.Asamblea = new LibroDto();
+            this.AsistenciaAsamblea = new LibroDto();
+            this.Fiscalizacion = new LibroDto();
+            this.Efectivo = new LibroDto();
+            this.EstadosContablesConsolidados = new LibroDto();
+            this.Auditor = new LibroDto();
+            this.SituacionPatrimonial = new LibroDto();
+            this.Informacion = new LibroDto();
+            this.IVA = new LibroDto();
+            this.IVACompras = new LibroDto();
+            this.IVAVentas = new LibroDto();
+            this.PatrimonioNeto = new LibroDto();
+            this.Memoria = new LibroDto();
+            this.Resultados = new LibroDto();
 
         }
         private LibroDto _Memoria;
@@ -41,14 +39,14 @@
         public LibroDto Administracion
         {
             get { return _Administracion; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "Administracion"; _Administracion = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Acta del Organo de Administración"; _Administracion = value; }
         }
 
         private LibroDto _Asamblea;
         public LibroDto Asamblea
         {
             get { return _Asamblea; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "Asamblea"; _Asamblea = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Acta de Reunión Socios"; _Asamblea = value; }
 
         }
 
@@ -56,7 +54,7 @@
         public LibroDto AsistenciaAsamblea
         {
             get { return _AsistenciaAsamblea; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "AsistenciaAsamblea"; _AsistenciaAsamblea = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Registro de Asistencia"; _AsistenciaAsamblea = value; }
 
         }
 
@@ -64,7 +62,7 @@
         public LibroDto SituacionPatrimonial
         {
             get { return _SituacionPatrimonial; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "SituacionPatrimonial"; _SituacionPatrimonial = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Estado de Situación Patrimonial"; _SituacionPatrimonial = value; }
 
         }
 
@@ -74,28 +72,28 @@
         public LibroDto Resultados
         {
             get { return _Resultados; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "Resultados"; _Resultados = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Estado de Resultados"; _Resultados = value; }
         }
 
         private LibroDto _PatrimonioNeto;
         public LibroDto PatrimonioNeto
         {
             get { return _PatrimonioNeto; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "PatrimonioNeto"; _PatrimonioNeto = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Estado de Evolución del Patrimonio Neto"; _PatrimonioNeto = value; }
         }
 
         private LibroDto _Efectivo;
         public LibroDto Efectivo
         {
             get { return _Efectivo; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "Efectivo"; _Efectivo = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Estado de Flujo de Efectivo"; _Efectivo = value; }
         }
 
         private LibroDto _Informacion;
         public LibroDto Informacion
         {
             get { return _Informacion; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "Informacion"; _Informacion = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Informacion Complementaria"; _Informacion = value; }
 
         }
 
@@ -103,21 +101,21 @@
         public LibroDto EstadosContablesConsolidados
         {
             get { return _EstadosContablesConsolidados; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "EstadosContablesConsolidados"; _EstadosContablesConsolidados = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Estados Contables Consolidados"; _EstadosContablesConsolidados = value; }
         }
 
         private LibroDto _Fiscalizacion;
         public LibroDto Fiscalizacion
         {
             get { return _Fiscalizacion; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "Fiscalizacion"; _Fiscalizacion = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Informe Organo Fiscalización"; _Fiscalizacion = value; }
         }
 
         private LibroDto _Auditor;
         public LibroDto Auditor
         {
             get { return _Auditor; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "Auditor"; _Auditor = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "Informe Auditor Externo"; _Auditor = value; }
         }
 
         private LibroDto _IVA;
@@ -131,14 +129,14 @@
         public LibroDto IVACompras
         {
             get { return _IVACompras; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "IVACompras"; _IVACompras = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "IVA Compras"; _IVACompras = value; }
         }
 
         private LibroDto _IVAVentas;
         public LibroDto IVAVentas
         {
             get { return _IVAVentas; }
-            set { if (value == null) value = new LibroDto(); value.Tipo = "IVAVentas"; _IVAVentas = value; }
+            set { if (value == null) value = new LibroDto(); value.Tipo = "IVA Ventas"; _IVAVentas = value; }
         }
 
     }

@@ -1,4 +1,19 @@
 ﻿@page "/Archivos"
+@using Balances.DTO;
+@using Balances.Model;
+@using Balances.Utilities;
+@using Balances.Web.Services.Implementation;
+@using Microsoft.AspNetCore.Http;
+@using BlazorInputFileExtended;
+@using Microsoft.AspNetCore.Http.Internal;
+@using System.Net.Http.Headers;
+@using Microsoft.Extensions.Primitives;
+@using System.Security.Cryptography;
+@inject IArchivosService archivoService
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,88 +24,111 @@
     <title>Archivos</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
 </head>
 
-
 <body>
-    <!--Navegacion-->
-    <div class="d-flex justify-content-center align-items-center">
-        <h3 class="fs-2 font-weight mt-4 mb-4">
-            <p>Entidad:</p>
-        </h3>
-    </div>
-    <ul class="nav nav-tabs d-flex justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/Entidad">Entidad</a>
-        </li>
-        <li class="nav-item" disabled id="estado">
-            <a class="nav-link" href="/EstadoContable">Estado</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Libros">Libros</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Contador">Contador</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Autoridad">Autoridad</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Integrante">Integrante</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Archivos">Archivos</a>
-        </li>
-        <li class="nav-item" disabled>
-            <a class="nav-link" href="/Confirmacion">Confirmación DJ</a>
-        </li>
-    </ul>
 
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Archivos" TramiteIniciado="true"></Navegacion>
 
     <!---------------------------------------------------------------->
-    <div class="container mt-5">
+    <div class="container-fluid mt-5">
         <h2 class="text-center" style="margin-bottom: 20px; color: #0375bc; font-weight: bold;">
             Archivos
         </h2>
         <div class="row">
             <!-- Tarjeta: Enviar Archivos -->
-            <div class="col-md-6">
+            <div class="col mt-4">
                 <div class="card">
                     <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                         Enviar Archivos
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form class="">
                             <div class="form-group">
                                 <label for="tipoArchivo">Tipo de Archivo</label>
-                                <select class="form-control" id="tipoArchivo">
-                                    <option value="Declaraciones de Accionista">Declaraciones de Accionista</option>
-                                    <option value="Estatuto">Estatuto</option>
+                                <select class="form-select" @bind="@categoria"> 
+                                    <option value="">---- Seleccionar un tipo de Archivo ----</option>
+                                    <option value="Estado Contable">Estado Contable</option>
+                                    <option value="Acta reunión organo">Acta reunión organo</option>
+                                    <option value="Acta reunión administradores">Acta reunión administradores</option>
+                                    <option value="Registro Asistencia">Registro Asistencia</option>
+                                    <option value="Informe Fiscalizacion">Informe Fiscalizacion</option>
+                                    <option value="Otro">Otro</option>
                                 </select>
+                                <small id="msgError" class="text-danger">@msgErrorTipoArchivo</small>
                             </div>
+                            <div class="col d-flex justify-content-between">
+                                <InputFile OnChange="@HandleFileUpload" multiple />
+                                @if (!isUploaded)
+                                {
+                                    <button type="button" class="btn-primary" @onclick="UploadFile">Subir Archivo</button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn-secondary">Subir Archivo</button>
+                                }
+                            </div>
+
+                            @if (isLoading)
+                            {
+                                <!-- Barra de progreso -->
+                                <progress max="100" value="@progressPercentage" class="w-100 mt-3"></progress>
+                                <span class="d-flex justify-content-center">@progressPercentage%</span>
+                            }
+
                         </form>
-                        <div class="card-text text-center">
-                            <h5>Arrastre los archivos aquí o haga clic para subir</h5>
-                            <p>Los archivos deben tener un máximo de 20MB.</p>
+                        <div class="d-flex justify-content-center mt-4">
+                            <small class="text-danger">@msgError</small>
                         </div>
                     </div>
                 </div>
             </div>
-
+          
             <!-- Tarjeta: Archivo Recibido -->
-            <div class="col-md-6">
+            <div class="col mt-4">
                 <div class="card">
                     <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                         Archivo Recibido
                     </div>
-                    <ul class="list-group list-group-flush" id="archivosRecibidos">
-                        <!-- Los archivos recibidos se agregarán aquí -->
-                    </ul>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr> 
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Tipo</th>
+                                    <th scope="col">Hash</th>
+                                    <th scope="col">Fecha de Creación</th>
+                                    <th scope="col">Tamaño</th>
+                                    <th scope="col">Acción</th>
+                                </tr>
+                            </thead>
+                            @if (listArchivo != null && listArchivo.Count > 0)
+                            {
+                                @foreach (var archivo in listArchivo)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td>@(archivo.NombreArchivo?.Length > 10 ? archivo.NombreArchivo.Substring(0, 10) + "..." : archivo.NombreArchivo)</td>
+                                            <td>@(archivo.Categoria?.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
+                                            <td>@archivo.Hash</td>
+                                            <td>@archivo.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                                            <td>@conversionesDeArchivos(archivo.Tamaño)</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger" @onclick="() => deleteArchivo(archivo)">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            }
+                        </table>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 
 </body>
 
@@ -98,5 +136,313 @@
 
 
 @code {
+
+    [Parameter] public string? TipoEntidad { get; set; }
+
+    private bool isLoading = false;
+    private double progressPercentage = 0.0;
+
+    private string categoria = "";
+    private string msgError = "";
+    private string msgErrorTipoArchivo = "";
+
+    private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
+    private List<FileDTO> listArchivo = new List<FileDTO>();
+
+    private bool isUploaded = false;
+
+
+    protected override async void OnInitialized()
+    {
+        await Load();
+        base.OnInitialized();
+    }
+
+    private async Task Load()
+    {
+        try
+        {
+            var idSession = await archivoService.getSession();
+            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+
+
+            if (idSession!=null)
+            {
+                var response = await archivoService.getBalance(idSession.Result);
+
+                if (response.IsSuccess == true)
+                {
+
+                    try
+                    {
+                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+                        var rspArchivos = response.Result.Archivos;
+
+                        setListArchivos(rspArchivos);
+
+                        StateHasChanged();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        response.Message = $"GetBalance: Hubo un problema con la solicitud fetch: {ex.Message}";
+                    }
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+        }
+
+    }
+
+    private void setListArchivos(List<Archivo> list){
+        if (list != null)
+        {
+            foreach (var x in list)
+            {
+                var archivo = new FileDTO
+                    {
+                        NombreArchivo = x.NombreArchivo,
+                        Categoria = x.Categoria,
+                        Hash = x.Hash,
+                        Tamaño = x.Tamaño,
+                        FechaCreacion = x.FechaCreacion
+                    };
+
+                this.listArchivo.Add(archivo);
+            }
+        }
+
+    }
+
+    private string conversionesDeArchivos(long file)
+    {
+        // Tamaño del archivo en bytes (esto podría provenir de tu archivo subido)
+        long fileSizeInBytes = file;
+
+        if (fileSizeInBytes < 1024)
+        {
+            return $"{Math.Round((double)fileSizeInBytes)} Bytes";
+        }
+        else if (fileSizeInBytes < 1024 * 1024)
+        {
+            double fileSizeInKB = (double)fileSizeInBytes / 1024;
+            return $"{Math.Round(fileSizeInKB)} KB";
+        }
+        else if (fileSizeInBytes < 1024L * 1024 * 1024)
+        {
+            double fileSizeInMB = (double)fileSizeInBytes / (1024 * 1024);
+            return $"{Math.Round(fileSizeInMB)} MB";
+        }
+        else if (fileSizeInBytes < 1024L * 1024 * 1024 * 1024)
+        {
+            double fileSizeInGB = (double)fileSizeInBytes / (1024 * 1024 * 1024);
+            return $"{Math.Round(fileSizeInGB)} GB";
+        }
+        else
+        {
+            double fileSizeInTB = (double)fileSizeInBytes / (1024L * 1024 * 1024 * 1024);
+            return $"{Math.Round(fileSizeInTB)} TB";
+        }
+    }
+
+
+
+    private void HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            isLoading = true; // Mostrar indicador de carga
+           
+
+            foreach (var file in e.GetMultipleFiles())
+            {
+                msgError = "";
+
+                if (Path.GetExtension(file.Name).ToLower() == ".pdf")
+                {
+                    if (file.Size <= 20 * 1024 * 1024) // 20 MB en bytes
+                    {
+                        msgError = "";
+                        selectedFiles = e.GetMultipleFiles();
+                    }
+                    else
+                    {
+                        msgError = $"El archivo {file.Name} excede el tamaño máximo permitido de 20 MB.";
+                    }
+
+                }
+                else
+                {
+                    msgError = $"El archivo {file.Name} no es un archivo PDF.";
+
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: HandleFileUpload {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false; // Ocultar indicador de carga
+            isUploaded = false;
+
+        }
+    }
+
+    private bool checkDataFile()
+    {
+        if (selectedFiles.Count < 0)
+        {
+            msgError = "No seleccionaste ningún archivo";
+            return false;
+        }
+
+        msgError = "";
+
+        return true;
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> UploadFile()
+    {
+
+
+
+        var response = new ResponseDTO<BalanceDto>();
+
+        try
+        {
+
+            isLoading = true;
+            isUploaded = true;
+
+
+            if (checkData())
+            {
+
+                var archivos = new FileDTO();
+                foreach (var file in selectedFiles)
+                {
+
+                    if (file.Size > 0)
+                    {
+
+                        var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
+
+                        archivos.Tamaño = binario.Length;
+                        archivos.ContentType = file.ContentType;
+                        archivos.Categoria = categoria;
+                        archivos.NombreArchivo = file.Name;
+                        archivos.Hash = Convert.ToHexString(SHA256.HashData(binario));
+
+                        // Calcular el progreso de la carga
+                        double totalFileSize = selectedFiles.Sum(file => file.Size);
+                        double uploadedSize = 0.0;
+                        double stepSize = totalFileSize / 5; // Dividir en 5 pasos (20, 40, 60, 80, 100)
+
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            uploadedSize += stepSize;
+                            progressPercentage = (uploadedSize / totalFileSize) * 100;
+                            await Task.Delay(1000); // Esperar 1 segundo en cada paso (simulando una carga más lenta)
+                        }
+
+                        listArchivo.Add(archivos);
+
+                        //response = await archivoService.uploadArchivo(selectedFiles, categoria);
+                        response = await archivoService.uploadArchivo(listArchivo);
+
+                        if (response.IsSuccess)
+                        {
+                            StateHasChanged();
+                        }
+                        else
+                        {
+                            response.Message = $"Error uploading files";
+                        }
+                    }
+                    else
+                    {
+                        msgError = $"El archivo {file.Name} está vacío. Por favor, seleccione un archivo válido.";
+                    }
+                }
+            }
+            else
+            {
+                response.Message = $"El campo categoria no puede estar vacio";
+            }
+
+
+        }
+
+        catch (Exception ex)
+        {
+            response.Message = $"An error occurred while uploading files: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false; 
+            isUploaded = false;
+        }
+        return response;
+    }
+
+
+    private bool checkData()
+    {
+        if (!string.IsNullOrEmpty(categoria))
+        {
+            msgErrorTipoArchivo = "";
+        }
+        else
+        {
+            msgErrorTipoArchivo = "El campo no puede estar vacio";
+            return false;
+        }
+
+        
+        msgErrorTipoArchivo = "";
+
+        return true;
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO archivo)
+    {
+        var response = new ResponseDTO<BalanceDto>();
+        try
+        {
+            response = await archivoService.deleteArchivo(archivo);
+
+            if (response.IsSuccess)
+            {
+                listArchivo.Remove(archivo);
+
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = ex.Message;
+        }
+        return response;
+    }
+
+    private async Task<byte[]> ToByteArrayAsync(Stream stream)
+    {
+        using (var memoryStream = new MemoryStream())
+        {
+            await stream.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
+        }
+    }
+
+
+
 
 }

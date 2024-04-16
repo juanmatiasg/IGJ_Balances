@@ -1,3 +1,4 @@
+using Balances.API.Controllers;
 using Balances.Bussiness;
 using Balances.Bussiness.Contrato;
 using Balances.Bussiness.Implementacion;
@@ -6,11 +7,14 @@ using Balances.Repository.Implementation;
 using Balances.Services.Contract;
 using Balances.Services.Implementation;
 using Balances.Utilities;
+using Balances.Web.Services.Implementation;
 using Dominio.Helpers;
 using EmailSender;
 using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Web;
+using IPresentacionService = Balances.Services.Contract.IPresentacionService;
+using PresentacionService = Balances.Services.Implementation.PresentacionService;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
@@ -35,6 +39,8 @@ try
     //SMTP Settings
     builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
+
+
     //Balance
 
     builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
@@ -50,11 +56,11 @@ try
     builder.Services.AddSingleton<ISessionService, SessionService>();
 
     builder.Services.AddSingleton<IBalanceService, BalanceService>();
-    //builder.Services.AddScoped<IContadorService, ContadorService>();
-    builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
-    //builder.Services.AddScoped<IRepresentanteLegalService, RepresentanteLegalService>();
+
     builder.Services.AddScoped<IArchivoService, ArchivoService>();
     builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
+
+
 
     //QR
     builder.Services.AddScoped<IQRService, QRService>();
@@ -67,7 +73,11 @@ try
     builder.Services.AddScoped<IPresentacionService, PresentacionService>();
 
     //Session
+    // Agrega IHttpContextAccessor a los servicios.
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+    builder.Services.AddSingleton<IStorageBalanceHelper, StorageBalanceHelper>();
+
 
 
     builder.Services.AddDistributedMemoryCache();
@@ -83,21 +93,32 @@ try
     builder.Services.AddSingleton<IMongoDbSettings>
                                  (d => d.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
-
-
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("NuevaPolitica", app =>
         {
             app.AllowAnyOrigin().
-            AllowAnyHeader().
-            AllowAnyMethod();
+            AllowAnyHeader()
+             .SetIsOriginAllowedToAllowWildcardSubdomains()
+             .WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")
+             .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
 
         });
-    }); //Importante 
+    });
 
+        /* builder.Services.AddCors(options =>
+         {
+             options.AddPolicy("NuevaPolitica", app =>
+             {
+                 app.AllowAnyOrigin().
+                 AllowAnyHeader().
+                 AllowAnyMethod();
 
-    builder.Services.AddSession(options =>
+             });
+         }); //Importante 
+        */
+
+        builder.Services.AddSession(options =>
   {
       options.IdleTimeout = TimeSpan.FromHours(3);
       options.Cookie.HttpOnly = true;
@@ -108,12 +129,14 @@ try
 
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    // Configure the HTTP requeContrato.IPresentacionBusiness Lifetime: Scoped st pipeline.
+    if (app.Environment.IsProduction())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
     //Session
     app.UseSession();
@@ -121,8 +144,12 @@ try
     //Serilog
     //app.UseSerilogRequestLogging();
 
-    //Cors
+
+    app.UseRouting(); 
     app.UseCors("NuevaPolitica");
+    app.UseAuthorization();
+        //Cors
+    //app.UseCors("NuevaPolitica");
 
     app.UseAuthentication();
 
