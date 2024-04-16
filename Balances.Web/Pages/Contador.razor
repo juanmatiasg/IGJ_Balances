@@ -164,12 +164,10 @@
         ResponseDTO<BalanceDto> rsp = new();
         try
         {
-            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
-           // var idSession = await contadorService.getSession();
-            rsp = await contadorService.getBalance(idSession);
-
-
+            var idSession = await contadorService.getSession();
+            rsp = await contadorService.getBalance(idSession.Result);
 
             if (rsp.IsSuccess)
             {

@@ -162,13 +162,13 @@
     {
         try
         {
-           // var idSession = await archivoService.getSession();
-            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            var idSession = await archivoService.getSession();
+            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
 
             if (idSession!=null)
             {
-                var response = await archivoService.getBalance(idSession);
+                var response = await archivoService.getBalance(idSession.Result);
 
                 if (response.IsSuccess == true)
                 {

@@ -151,12 +151,12 @@
     {
         try
         {
-            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-           // var idSession = await socioService.getSession();
+           // var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            var idSession = await socioService.getSession();
 
             if (idSession!=null)
             {
-                var response = await socioService.getBalance(idSession);
+                var response = await socioService.getBalance(idSession.Result);
 
                 if (response.IsSuccess == true)
                 {

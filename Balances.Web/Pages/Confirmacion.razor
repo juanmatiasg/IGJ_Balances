@@ -555,12 +555,12 @@
     {
         try
         {
-            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-           // var idSession = await caratulaService.getSession();
+           // var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            var idSession = await caratulaService.getSession();
 
             if (idSession != null)
             {
-                var response = await caratulaService.getBalance(idSession);
+                var response = await caratulaService.getBalance(idSession.Result);
 
                 if (response.IsSuccess == true)
                 {

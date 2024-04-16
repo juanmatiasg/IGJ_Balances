@@ -119,7 +119,7 @@
         // Encuentra el libro correspondiente en el modelo y actualiza sus valores
         if (libro != null)
         {
-            
+
             if (modelo.Asamblea == libro)
             {
                 modelo.Asamblea = libro;
@@ -183,64 +183,64 @@
             {
                 modelo.Informacion = libro;
             }
-   
+
         }
 
         await insertLibros(modelo);
     }
 
-   
-        
-
-   /* private async Task ToggleSelectAll()
-    {
-        allSelected = !allSelected;
-
-        foreach (var libro in ObtenerTodosLosLibros())
-        {
-            // Verificar si el libro está completo
-            bool isComplete = LibroEstaCompleto(libro);
-
-            // Si el libro está completo o no está marcado como "N/C", actualizar según la operación de selección/deselección en masa
-            if (isComplete || libro.Nombre != "N/C")
-            {
-                libro.NoSabeNoContesta = allSelected;
-                libro.Nombre = allSelected ? libro.Nombre : libro.Nombre;
-                libro.NumeroRubrica = allSelected ? libro.NumeroRubrica : libro.NumeroRubrica;
-                libro.FechaUltimaRegistracion = allSelected ? DateTime.Now : libro.FechaUltimaRegistracion;
-                libro.FechaRubrica = allSelected ? DateTime.Now : libro.FechaRubrica;
-                libro.Folio = allSelected ? libro.Folio : libro.Folio;
 
 
-            }
-            else
-            {
-                // Si el libro está marcado como "N/C" y se realiza una deselección en masa, eliminar el libro del modelo
-                if (!allSelected)
-                {
-                    libro.NoSabeNoContesta = allSelected;
-                    libro.Nombre = allSelected ? "N/C" : libro.Nombre;
-                    libro.NumeroRubrica = allSelected ? "N/C" : libro.NumeroRubrica;
-                    libro.FechaUltimaRegistracion = allSelected ? DateTime.Now : libro.FechaUltimaRegistracion;
+
+                 /* private async Task ToggleSelectAll()
+                 {
+                 allSelected = !allSelected;
+
+                 foreach (var libro in ObtenerTodosLosLibros())
+                 {
+                 // Verificar si el libro está completo
+                 bool isComplete = LibroEstaCompleto(libro);
+
+                 // Si el libro está completo o no está marcado como "N/C", actualizar según la operación de selección/deselección en masa
+                 if (isComplete || libro.Nombre != "N/C")
+             {
+             libro.NoSabeNoContesta = allSelected;
+                 libro.Nombre = allSelected ? libro.Nombre : libro.Nombre;
+                 libro.NumeroRubrica = allSelected ? libro.NumeroRubrica : libro.NumeroRubrica;
+                     libro.FechaUltimaRegistracion = allSelected ? DateTime.Now : libro.FechaUltimaRegistracion;
+                     libro.FechaRubrica = allSelected ? DateTime.Now : libro.FechaRubrica;
+                     libro.Folio = allSelected ? libro.Folio : libro.Folio;
+
+
+                     }
+                     else
+                     {
+                     // Si el libro está marcado como "N/C" y se realiza una deselección en masa, eliminar el libro del modelo
+                     if (!allSelected)
+                     {
+                     libro.NoSabeNoContesta = allSelected;
+                     libro.Nombre = allSelected ? "N/C" : libro.Nombre;
+         libro.NumeroRubrica = allSelected ? "N/C" : libro.NumeroRubrica;
+         libro.FechaUltimaRegistracion = allSelected ? DateTime.Now : libro.FechaUltimaRegistracion;
                     libro.FechaRubrica = allSelected ? DateTime.Now : libro.FechaRubrica;
-                    libro.Folio = allSelected ? "N/C" : libro.Folio;
+        libro.Folio = allSelected ? "N/C" : libro.Folio;
 
-                    //EliminarLibro(libro);
-                }
-            }
+            //EliminarLibro(libro);
+        }
+        }
         }
 
         // Actualizar el modelo con los cambios
-        await insertLibros(modelo);
+            await insertLibros(modelo);
         StateHasChanged(); // Notificar a Blazor que se ha actualizado el estado
-    }*/
+            }*/
 
 
 
-    /*private void EliminarLibro(LibroDto libro)
-    {
-        if (modelo.Asamblea == libro)
+            /*private void EliminarLibro(LibroDto libro)
         {
+        if (modelo.Asamblea == libro)
+            {
             modelo.Asamblea = null;
         }
         else if (modelo.Administracion == libro)
@@ -254,78 +254,78 @@
         else if (modelo.Auditor == libro)
         {
             modelo.Auditor = null;
-        }
+            }
 
         else if (modelo.Efectivo == libro)
         {
-            modelo.Efectivo = null;
-        }
-        else if (modelo.Fiscalizacion == libro)
+        modelo.Efectivo = null;
+            }
+            else if (modelo.Fiscalizacion == libro)
         {
-            modelo.Fiscalizacion = null;
-        }
-        else if (modelo.IVA == libro)
+        modelo.Fiscalizacion = null;
+            }
+            else if (modelo.IVA == libro)
         {
-            modelo.IVA = null;
+        modelo.IVA = null;
         }
 
         else if (modelo.IVACompras == libro)
-        {
-            modelo.IVACompras = null;
+            {
+        modelo.IVACompras = null;
         }
         else if (modelo.IVAVentas == libro)
-        {
+            {
             modelo.IVAVentas = null;
-        }
+            }
         else if (modelo.Resultados == libro)
         {
-            modelo.Resultados = null;
-        }
+        modelo.Resultados = null;
+            }
 
-        else if (modelo.EstadosContablesConsolidados == libro)
+            else if (modelo.EstadosContablesConsolidados == libro)
         {
-            modelo.EstadosContablesConsolidados = null;
-        }
-        else if (modelo.PatrimonioNeto == libro)
+        modelo.EstadosContablesConsolidados = null;
+            }
+            else if (modelo.PatrimonioNeto == libro)
         {
-            modelo.PatrimonioNeto = null;
-        }
-        else if (modelo.SituacionPatrimonial == libro)
+        modelo.PatrimonioNeto = null;
+            }
+            else if (modelo.SituacionPatrimonial == libro)
         {
-            modelo.SituacionPatrimonial = null;
-        }
-        else if (modelo.Memoria == libro)
-        {
-            modelo.Memoria = null;
-        }
-        else if (modelo.Informacion == libro)
-        {
-            modelo.Informacion = libro;
-        }
-    }*/
-
-    /*private bool LibroEstaCompleto(LibroDto libro)
+        modelo.SituacionPatrimonial = null;
+            }
+            else if (modelo.Memoria == libro)
     {
+    modelo.Memoria = null;
+    }
+    else if (modelo.Informacion == libro)
+        {
+        modelo.Informacion = libro;
+        }
+        }*/
+
+        /*private bool LibroEstaCompleto(LibroDto libro)
+        {
         // Aquí debes implementar la lógica para verificar si todas las propiedades del libro están completas
         // Devuelve true si todas las propiedades están completas, de lo contrario, devuelve false
 
         // Por ejemplo, podrías verificar si todas las propiedades tienen valores distintos de "NC" o si las propiedades de fecha no están en su valor mínimo
 
-        bool estaCompleto = !string.IsNullOrEmpty(libro.Nombre)  &&
+                            bool estaCompleto = !string.IsNullOrEmpty(libro.Nombre)  &&
                             !string.IsNullOrEmpty(libro.NumeroRubrica)  &&
                             libro.FechaUltimaRegistracion != DateTime.Now &&
-                            libro.FechaRubrica != DateTime.Now &&
-                            !string.IsNullOrEmpty(libro.Folio);
+        libro.FechaRubrica != DateTime.Now &&
+    !string.IsNullOrEmpty(libro.Folio);
 
         return estaCompleto;
-    }
+        }
 
-    private List<LibroDto> ObtenerTodosLosLibros()
-    {
+        private List<LibroDto> ObtenerTodosLosLibros()
+        {
         // Aquí debes implementar la lógica para obtener todos los libros del modelo
         // Devuelve una lista que contenga todos los libros
         var todosLosLibros = new List<LibroDto>
-    {
+        {
         modelo.Asamblea,
         modelo.Administracion,
         modelo.AsistenciaAsamblea,
@@ -341,13 +341,13 @@
         modelo.SituacionPatrimonial,
         modelo.Memoria,
         modelo.Informacion
-    };
+        };
 
-        return todosLosLibros;
+    return todosLosLibros;
     }
 
     private async Task HandleBlur(LibrosDto libro)
-    {
+        {
         await insertLibros(libro); // Llama al método que deseas ejecutar cuando se produce el evento onblur
     }*/
 
@@ -357,15 +357,16 @@
     {
         try
         {
-         
 
-            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+
+            // var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            var idSession = await serviceLibro.getSession();
 
             //var idSession = await SessionStorage.GetItemAsync<string>("idSession");
 
             if (idSession !=null)
             {
-                var response = await serviceLibro.getBalance(idSession);
+                var response = await serviceLibro.getBalance(idSession.Result);
 
                 if (response.IsSuccess == true)
                 {

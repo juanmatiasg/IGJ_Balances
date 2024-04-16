@@ -1,5 +1,4 @@
 ﻿@page "/EstadoContable"
-@page "/EstadoContable/{Text}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -504,38 +503,28 @@
 
     private bool firstTimeInput = true;
 
-    [Parameter]
-    public string Text { get; set; }
-
-
-
+    
     protected override async Task OnInitializedAsync()
     {
-
-        var taskString = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-
-        Text = taskString;
-        StateHasChanged();
 
         await Load();
 
         await base.OnInitializedAsync();
     }
 
-
     private async Task Load()
     {
         try
         {
-            var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
 
-            //var idSession = await estadoContableService.getSession();
+            var idSession = await estadoContableService.getSession();
 
             if (idSession!=null)
             {
 
-                var response = await estadoContableService.getBalance(idSession);
+                var response = await estadoContableService.getBalance(idSession.Result);
 
                 if (response.IsSuccess)
                 {

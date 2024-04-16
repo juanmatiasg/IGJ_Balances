@@ -1,6 +1,7 @@
 ﻿using Balances.DTO;
 using Balances.Model;
 using Balances.Services.Contract;
+using Balances.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,17 +15,8 @@ namespace Balances.Services.Implementation
         private readonly IHttpContextAccessor _context;
         private readonly ILogger<SessionService> _logger;
 
-        // Diccionario para almacenar balanceId junto con la fecha actual
+      
         private static readonly Dictionary<string, string> Storage = new Dictionary<string, string>();
-
-        private const string KEY_SESSION = "idSession";
-        //private const string KEY_SESSION = _context.HttpContext.Session.Id;
-
-        public string BalanceId
-        {
-            get { return GetBalanceId(); }
-            set { SetBalanceId(value); }
-        }
 
         public SessionService(IHttpContextAccessor context, ILogger<SessionService> logger)
         {
@@ -40,10 +32,10 @@ namespace Balances.Services.Implementation
 
             // Almacenar el balanceId en el diccionario junto con la fecha actual
          
-            Storage[KEY_SESSION] = balanceId;
+            Storage[Constants.KEY_SESSION] = balanceId;
 
             // También puedes almacenar el balanceId en la sesión si lo necesitas por separado
-            _context.HttpContext.Session.SetString(KEY_SESSION, balanceId);
+            _context.HttpContext.Session.SetString(Constants.KEY_SESSION, balanceId);
         }
 
         public string GetBalanceId()
@@ -53,11 +45,11 @@ namespace Balances.Services.Implementation
                 // Verificar si hay claves en el diccionario
                 if (Storage.Keys.Any())
                 {
-                    return Storage[KEY_SESSION];
+                    return Storage[Constants.KEY_SESSION];
                 }
 
                 // Manejar el caso donde no se encontró el balanceId correspondiente a la fecha más reciente
-                _logger.LogWarning("No se encontró balanceId correspondiente a la fecha más reciente.");
+                _logger.LogWarning("No se encontró balanceId correspondiente");
                 return null;
             }
             catch (Exception ex)
