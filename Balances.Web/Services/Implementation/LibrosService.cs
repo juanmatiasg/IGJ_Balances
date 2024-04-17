@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class LibrosService : ILibrosService
+    public class LibrosService : ILibrosClientService
     {
         private readonly HttpClient _httpClient;
         public LibrosService(HttpClient httpClient) {

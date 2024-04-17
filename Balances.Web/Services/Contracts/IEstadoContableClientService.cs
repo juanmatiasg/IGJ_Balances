@@ -3,7 +3,7 @@ using Balances.Model;
 
 namespace Balances.Web.Services.Implementation
 {
-    public interface IEstadoContableService
+    public interface IEstadoContableClientService
     {
         Task<ResponseDTO<BalanceDto>> insertEECC(EstadoContableDto estadoContableDto);
 

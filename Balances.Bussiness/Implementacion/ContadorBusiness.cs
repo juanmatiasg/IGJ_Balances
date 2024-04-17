@@ -48,7 +48,7 @@ namespace Balances.Bussiness.Implementacion
             {
 
                 var id = _sessionService.GetBalanceId();
-               // var id = SessionStorageHelper.GetItem<string>(Constants.KEY_SESSION);
+                // var id = SessionStorageHelper.GetItem<string>(Constants.KEY_SESSION);
                 var responsedto = _balanceBusiness.GetById(id);
 
                 if (responsedto.IsSuccess)

@@ -1,5 +1,4 @@
 ﻿using Balances.DTO;
-using Balances.Model;
 using Balances.Services.Contract;
 using Balances.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +14,7 @@ namespace Balances.Services.Implementation
         private readonly IHttpContextAccessor _context;
         private readonly ILogger<SessionService> _logger;
 
-      
+
         private static readonly Dictionary<string, string> Storage = new Dictionary<string, string>();
 
         public SessionService(IHttpContextAccessor context, ILogger<SessionService> logger)
@@ -30,12 +29,12 @@ namespace Balances.Services.Implementation
             _logger.LogError($"Invocando el logError en SetBalanceId {balanceId}");
 
 
-            // Almacenar el balanceId en el diccionario junto con la fecha actual
-         
-            Storage[Constants.KEY_SESSION] = balanceId;
+
+
+            Storage[Token.KEY_SESSION] = balanceId;
 
             // También puedes almacenar el balanceId en la sesión si lo necesitas por separado
-            _context.HttpContext.Session.SetString(Constants.KEY_SESSION, balanceId);
+            _context.HttpContext.Session.SetString(Token.KEY_SESSION, balanceId);
         }
 
         public string GetBalanceId()
@@ -45,7 +44,8 @@ namespace Balances.Services.Implementation
                 // Verificar si hay claves en el diccionario
                 if (Storage.Keys.Any())
                 {
-                    return Storage[Constants.KEY_SESSION];
+
+                    return Storage[Token.KEY_SESSION];
                 }
 
                 // Manejar el caso donde no se encontró el balanceId correspondiente a la fecha más reciente

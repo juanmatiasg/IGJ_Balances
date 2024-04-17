@@ -2,7 +2,7 @@
 
 namespace Balances.Web.Services.Implementation
 {
-    public interface ISociosService
+    public interface ISociosClientService
     {
         Task<ResponseDTO<BalanceDto>> insertPersonaHumana(PersonaHumanaDto personaHumana);
 

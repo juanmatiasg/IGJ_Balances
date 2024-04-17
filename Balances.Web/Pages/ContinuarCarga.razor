@@ -3,7 +3,7 @@
 @using Balances.Web.Services.Implementation;
 @using Org.BouncyCastle.Asn1.Ocsp;
 @inject NavigationManager NavigationManager
-@inject ICaratulaService caratulaService
+@inject ICaratulaClientService caratulaService
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 
 <h3>Cargando....</h3>
@@ -16,7 +16,7 @@
     {
         /*cargar la caratula*/
 
-        await SessionStorage.SetItemAsStringAsync(Constants.KEY_SESSION, balid);
+        await SessionStorage.SetItemAsStringAsync(Token.KEY_SESSION, balid);
         
         var rlt = await caratulaService.loadCaratula(balid);
 

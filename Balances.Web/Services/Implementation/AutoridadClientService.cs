@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class AutoridadService:IAutoridadService
+    public class AutoridadClientService : IAutoridadClientService
     {
         private readonly HttpClient _httpClient;
-      
-        public AutoridadService(HttpClient httpClient)
+
+        public AutoridadClientService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

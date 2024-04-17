@@ -4,27 +4,28 @@ using System.Net.Http.Json;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class ContadorService : IContadorService
+    public class ContadorService : IContadorClientService
     {
         private readonly HttpClient _httpClient;
-     
+
 
 
         public ContadorService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-           
+
 
         }
 
-        public async Task<ResponseDTO<BalanceDto>> getBalance(string id){
+        public async Task<ResponseDTO<BalanceDto>> getBalance(string id)
+        {
             return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Balance/{id}");
         }
 
 
         public async Task<ResponseDTO<BalanceDto>> getContador(string id)
         {
-            
+
             return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Contador/{id}");
 
         }
@@ -83,6 +84,6 @@ namespace Balances.Web.Services.Contracts
             return rsp;
         }
 
-        
+
     }
 }

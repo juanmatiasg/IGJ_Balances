@@ -10,11 +10,11 @@ using System.Text;
 namespace Balances.Web.Services.Contracts
 {
 
-    public class ArchivosService : IArchivosService
+    public class ArchivosClientService : IArchivosClientService
     {
         private readonly HttpClient _httpClient;
 
-        public ArchivosService(HttpClient httpClient)
+        public ArchivosClientService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

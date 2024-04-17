@@ -3,7 +3,7 @@ using Balances.Model;
 
 namespace Balances.Web.Services.Implementation
 {
-    public interface ICaratulaService
+    public interface ICaratulaClientService
     {
         Task<ResponseDTO<BusquedaEntidadResponse>> findEntities(string nroCorrelativo);
 

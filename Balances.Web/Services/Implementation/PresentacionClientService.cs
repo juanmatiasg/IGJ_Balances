@@ -4,10 +4,10 @@ using System.Net.Http.Json;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class PresentacionService:IPresentacionService
+    public class PresentacionClientService : IPresentacionClientService
     {
         private readonly HttpClient _httpClient;
-        public PresentacionService(HttpClient httpClient)
+        public PresentacionClientService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

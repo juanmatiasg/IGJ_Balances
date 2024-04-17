@@ -9,7 +9,7 @@
 @using Newtonsoft.Json;
 @using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 @inject IJSRuntime JS
-@inject ICaratulaService caratulaService
+@inject ICaratulaClientService caratulaService
 @inject NavigationManager NavigationManager;
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -231,7 +231,7 @@
              
              </div>
         </div>
-        <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+     
     </body>
     
 
@@ -274,7 +274,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-    
+
 
         await Load();
 
@@ -286,52 +286,57 @@
     {
         try
         {
-            var taskString = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-            var idKey = taskString;
+            var tokenId = await SessionStorage.GetItemAsync<string>("TokenId");
 
-            if (idKey != null)
+
+            if(tokenId == null)
             {
-                balid = idKey;
-                var response = await caratulaService.getBalance(idKey);
-
-                if (response.IsSuccess)
-                {
-                    var result = response.Result;
-
-                    if (result != null)
-                    {
-                        Model.Caratula caratula = result.Caratula;
-
-                        modelo.Email = caratula.Email;
-                        modelo.FechaInicio = caratula.FechaInicio;
-                        modelo.FechaDeCierre = caratula.FechaDeCierre;
-                        modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
-                        modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
-                        modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
-                        modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
-                        modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
-
-                        TipoEntidad = caratula.Entidad.TipoEntidad;
-                        //  RazonSocial = caratula.Entidad.RazonSocial;
-
-
-                        entidadEncontrada = true;
-                        tramiteIniciado = true;
-                    }
-                }
-
-                else
-                {
-                    entidadEncontrada = false;
-
-                }
-
-                StateHasChanged();
+                tokenId = Guid.NewGuid().ToString();
+                await SessionStorage.SetItemAsync<string>("TokenId",tokenId);
             }
+
+
+            caratulaService.getSession
+
+
+
+            var response = await caratulaService.getBalance(tokenId);
+
+            if (response.IsSuccess)
+            {
+                var result = response.Result;
+
+                if (result != null)
+                {
+                    Model.Caratula caratula = result.Caratula;
+
+                    modelo.Email = caratula.Email;
+                    modelo.FechaInicio = caratula.FechaInicio;
+                    modelo.FechaDeCierre = caratula.FechaDeCierre;
+                    modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
+                    modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
+                    modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+                    modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+                    modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+
+                    TipoEntidad = caratula.Entidad.TipoEntidad;
+                    //  RazonSocial = caratula.Entidad.RazonSocial;
+
+
+                    entidadEncontrada = true;
+                    tramiteIniciado = true;
+                }
+            }
+
             else
             {
-                Console.WriteLine($"No se ha encontrado el idSession");
+                entidadEncontrada = false;
+
             }
+
+            StateHasChanged();
+
+
 
 
 
@@ -423,11 +428,11 @@
 
                 if (response.IsSuccess)
                 {
-         
+
                     // Preguntar si hay una Clave existente antes de Setear
 
-
-                    await SessionStorage.SetItemAsync<string>(Constants.KEY_SESSION, response.Result.Id);
+                    var TokenId = Guid.NewGuid().ToString();
+                    await SessionStorage.SetItemAsync<string>(TokenId, response.Result.Id);
        
 
                     isActive = true;

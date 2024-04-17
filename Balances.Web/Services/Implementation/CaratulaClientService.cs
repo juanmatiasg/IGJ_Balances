@@ -1,22 +1,15 @@
 ﻿using Balances.DTO;
-using Balances.Model;
-using Balances.Web.Pages;
-using Balances.Web.Services.Contracts;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using System.Net.Http.Json;
-using System.Reflection;
-using System.Text;
-using System.Text.Json;
 
 namespace Balances.Web.Services.Implementation
 {
-    public class CaratulaService : ICaratulaService
+    public class CaratulaClientService : ICaratulaClientService
     {
         private readonly HttpClient _httpClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CaratulaService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public CaratulaClientService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;

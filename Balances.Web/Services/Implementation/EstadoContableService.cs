@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class EstadoContableService : IEstadoContableService
+    public class EstadoContableService : IEstadoContableClientService
     {
         private readonly HttpClient _httpClient;
 

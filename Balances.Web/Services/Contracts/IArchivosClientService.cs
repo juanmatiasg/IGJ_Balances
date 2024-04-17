@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http.Internal;
 
 namespace Balances.Web.Services.Implementation
 {
-    public interface IArchivosService
+    public interface IArchivosClientService
     {
 
         //Task<ResponseDTO<BalanceDto>> uploadArchivo(IReadOnlyList<IBrowserFile> files, string categoria);

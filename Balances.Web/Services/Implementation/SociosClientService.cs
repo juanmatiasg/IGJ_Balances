@@ -1,5 +1,4 @@
 ﻿using Balances.DTO;
-using Balances.Model;
 using Balances.Web.Services.Implementation;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
@@ -7,11 +6,11 @@ using System.Text;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class SociosService : ISociosService
+    public class SociosClientService : ISociosClientService
     {
         private readonly HttpClient _httpClient;
 
-        public SociosService(HttpClient httpClient)
+        public SociosClientService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -100,10 +99,11 @@ namespace Balances.Web.Services.Contracts
                         rsp = result;
 
                     }
-                    else {
+                    else
+                    {
                         rsp.Message = $"SocioService.deletePersonaHumana. {result.Message}";
                     }
-                  
+
                 }
                 else
                 {
@@ -193,6 +193,6 @@ namespace Balances.Web.Services.Contracts
         }
 
 
-       
+
     }
 }

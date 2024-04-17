@@ -2,7 +2,7 @@
 
 namespace Balances.Web.Services.Implementation
 {
-    public interface IPresentacionService
+    public interface IPresentacionClientService
     {
         Task<ResponseDTO<BalanceDto>> generarPresentacion();
     }
