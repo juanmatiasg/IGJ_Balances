@@ -38,7 +38,7 @@ namespace Balances.Bussiness
         {
             get
             {
-                var responseDto = this.GetById(_sessionService.GetBalanceId());
+                var responseDto = this.GetById(_sessionService.GetSession().Values.ToString());
 
                 if (responseDto.IsSuccess)
                 {
@@ -202,7 +202,7 @@ namespace Balances.Bussiness
             return respuesta;
         }
 
-       
+
     }
 
 

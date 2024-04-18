@@ -66,10 +66,10 @@ namespace Balances.Bussiness.Implementacion
             var autoridadSerializada = JsonConvert.SerializeObject(modelo);
             try
             {
-                var id = _sessionService.GetBalanceId();
+                var id = _sessionService.GetSession();
 
-             
-                var resultadoDto = _balanceBusiness.GetById(id);
+
+                var resultadoDto = _balanceBusiness.GetById(id.Values.ToString());
 
                 if (resultadoDto.IsSuccess)
                 {

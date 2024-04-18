@@ -137,11 +137,12 @@ namespace Balances.Web.Services.Implementation
 
         public async Task<ResponseDTO<string>> setSession(string id)
         {
+
+            var responseDto = new ResponseDTO<string>();
+
             try
             {
-                var idKey = _httpContextAccessor.HttpContext.Session.Id;
 
-                Console.WriteLine("Prueba" + idKey);
 
                 var response = await _httpClient.PostAsJsonAsync($"Session/{id}", id);
 
@@ -150,33 +151,25 @@ namespace Balances.Web.Services.Implementation
 
                 if (result.IsSuccess)
                 {
-                    return new ResponseDTO<string>
-                    {
-                        Result = result.Result,
-                        Message = result.Message,
-                        IsSuccess = result.IsSuccess
-                    };
+
+
+                    responseDto.Result = result.Result;
+                    responseDto.Message = result.Message;
+                    responseDto.IsSuccess = result.IsSuccess;
+
                 }
-                else
-                {
-                    return new ResponseDTO<string>
-                    {
-                        Result = result.Result,
-                        Message = result.Message,
-                        IsSuccess = result.IsSuccess
-                    };
-                }
+
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<string>
-                {
-                    Result = null,
-                    Message = $"{"Error:SetSession" + ex.Message}",
-                    IsSuccess = false
-                };
-            }
 
+
+                responseDto.Result = null;
+                responseDto.Message = $"{"Error:SetSession" + ex.Message}";
+                responseDto.IsSuccess = false;
+
+            }
+            return responseDto;
         }
     }
 

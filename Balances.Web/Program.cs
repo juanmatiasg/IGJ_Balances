@@ -38,6 +38,7 @@ builder.Services.AddScoped<IArchivosClientService, ArchivosClientService>();
 builder.Services.AddScoped<IEstadoContableClientService, EstadoContableService>();
 builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
 builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
+builder.Services.AddScoped<IBaseSessionClientService, BaseSessionClientService>();
 
 
 // Ejemplo de configuración para ASP.NET Core

@@ -71,7 +71,7 @@ namespace Balances.Bussiness
                 // si inserto correctamente
                 if (rsp != null)
                 {
-                     _sessionService.SetBalanceId(balance.Id);
+                    _sessionService.SetSession(balance.Id);
 
                     respuesta.IsSuccess = true;
                     respuesta.Message = "Caratula creada correctamente";

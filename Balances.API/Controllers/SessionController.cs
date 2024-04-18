@@ -2,7 +2,7 @@ using Balances.DTO;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ServiceModel.Channels;
+using Newtonsoft.Json;
 
 namespace Balances.API.Controllers
 {
@@ -22,7 +22,8 @@ namespace Balances.API.Controllers
         [HttpPost("{balanceId}")]
         public IActionResult CreateSession(string balanceId)
         {
-            _sessionService.SetBalanceId(balanceId);
+            _sessionService.SetSession(balanceId);
+
             var response = new ResponseDTO<String>
             {
                 Result = "Success",
@@ -38,7 +39,7 @@ namespace Balances.API.Controllers
         public IActionResult GetSession()
         {
 
-            var session = _sessionService.GetBalanceId();
+            var session = _sessionService.GetSession();
 
             var response = new ResponseDTO<String>();
 
@@ -51,8 +52,14 @@ namespace Balances.API.Controllers
             }
             else
             {
-                
-                response.Result = session;
+
+
+                var sessionSerializada = JsonConvert.SerializeObject(session);
+
+
+
+
+                response.Result = sessionSerializada;
                 response.IsSuccess = true;
                 response.Message = "Session found";
             }
@@ -60,6 +67,14 @@ namespace Balances.API.Controllers
 
 
             return Ok(response);
+        }
+
+        [HttpGet("getBalaneIdSession")]
+        public ActionResult<string> GetBalanceIdSession()
+        {
+            var balIdSession = _sessionService.GetSessionBalanceId();
+
+            return balIdSession;
         }
     }
 }
