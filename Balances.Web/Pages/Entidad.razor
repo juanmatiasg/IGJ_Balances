@@ -1,6 +1,7 @@
 ﻿@page "/Entidad"
 @using Balances.DTO;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using Microsoft.JSInterop
 @using Balances.Web.Services
@@ -8,6 +9,9 @@
 @using Newtonsoft.Json;
 @inject IJSRuntime JS
 @inject ICaratulaClientService caratulaService
+@inject IBalanceClientService balanceService
+@inject IBusquedaDeSociedadesClientService busquedaSociedadService;
+
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager
@@ -263,7 +267,7 @@
     private async Task getBalance(string idBalance)
     {
 
-        var response = await caratulaService.getBalance(idBalance);
+        var response = await balanceService.getBalance(idBalance);
         try
         {
             if (response.IsSuccess)
@@ -318,7 +322,7 @@
 
                 try
                 {
-                    var response = await caratulaService.findEntities(modelo.Entidad.Correlativo);
+                    var response = await busquedaSociedadService.findSociedad(modelo.Entidad.Correlativo);
 
                     if (response != null)
                     {
@@ -352,7 +356,7 @@
         try
         {
             
-            var response = await caratulaService.initTramite(modelo);
+            var response = await caratulaService.insertCaratula(modelo);
 
             if (response.IsSuccess)
             {

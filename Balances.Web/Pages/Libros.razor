@@ -2,13 +2,13 @@
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using System.Text;
 @using System.Reflection;
 @inject ILibrosClientService serviceLibro;
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
-@{
-}
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sesionService
 
 <!DOCTYPE html>
 <html lang="en">
@@ -359,14 +359,12 @@
         {
 
 
-            // var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-            var idSession = await serviceLibro.getSession();
+            var idSession = await sesionService.GetSessionBalanceId();
 
-            //var idSession = await SessionStorage.GetItemAsync<string>("idSession");
 
             if (idSession !=null)
             {
-                var response = await serviceLibro.getBalance(idSession.Result);
+                var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
                 {

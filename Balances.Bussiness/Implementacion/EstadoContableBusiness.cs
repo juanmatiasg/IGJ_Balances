@@ -37,8 +37,8 @@ namespace Balances.Bussiness.Implementacion
             var EECCSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
-                var id = _sessionService.GetSession();
-                var resultadoDto = _balanceBusiness.GetById(id.Values.ToString());
+                var id = _sessionService.GetSessionBalanceId();
+                var resultadoDto = _balanceBusiness.GetById(id);
 
                 if (resultadoDto.IsSuccess)
                 {
@@ -72,9 +72,9 @@ namespace Balances.Bussiness.Implementacion
             var rubroSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
-                var id = _sessionService.GetSession();
+                var id = _sessionService.GetSessionBalanceId();
 
-                var resultadoDto = _balanceBusiness.GetById(id.Values.ToString());
+                var resultadoDto = _balanceBusiness.GetById(id);
 
                 if (resultadoDto.IsSuccess)
                 {

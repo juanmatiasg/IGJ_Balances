@@ -7,10 +7,22 @@
 
         public static string GetBalanceId(string session)
         {
-            var balanceId = new string(session.Reverse().Skip(2).Take(24).Reverse().ToArray());
+            if (session == "{}")
+            {
+                return null;
+            }
 
+            var balanceId = new string(session.Reverse().Skip(2).Take(24).Reverse().ToArray());
             return balanceId;
         }
+
+        public static string GetTokenKey(string session)
+        {
+            var token = new string(session.Skip(2).Take(36).ToArray());
+
+            return token;
+        }
+
 
         //private static readonly Dictionary<string, string> Storage = new Dictionary<string, string>();
         //private static readonly Dictionary<DateTime, string> DateStorage = new Dictionary<DateTime, string>();

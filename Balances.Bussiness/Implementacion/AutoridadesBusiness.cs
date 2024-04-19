@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Balances.Bussiness.Contrato;
+﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Services.Contract;
 using Microsoft.Extensions.Logging;
@@ -11,18 +10,19 @@ namespace Balances.Bussiness.Implementacion
     {
         private readonly ISessionService _sessionService;
         private readonly IBalanceBusiness _balanceBusiness;
-        private readonly IMapper _mapper;
+
         private readonly ILogger<AutoridadesBusiness> _logger;
 
 
         public AutoridadesBusiness(ISessionService sessionService,
                                    IBalanceBusiness balanceBusiness,
-                                   IMapper mapper,
+
+
                                    ILogger<AutoridadesBusiness> logger)
         {
             _sessionService = sessionService;
             _balanceBusiness = balanceBusiness;
-            _mapper = mapper;
+
             _logger = logger;
         }
 
@@ -66,10 +66,10 @@ namespace Balances.Bussiness.Implementacion
             var autoridadSerializada = JsonConvert.SerializeObject(modelo);
             try
             {
-                var id = _sessionService.GetSession();
+                var id = _sessionService.GetSessionBalanceId();
 
 
-                var resultadoDto = _balanceBusiness.GetById(id.Values.ToString());
+                var resultadoDto = _balanceBusiness.GetById(id);
 
                 if (resultadoDto.IsSuccess)
                 {
@@ -97,10 +97,7 @@ namespace Balances.Bussiness.Implementacion
             return respuesta;
         }
 
-        public bool Update(AutoridadesLegalesDto modelo)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 
 

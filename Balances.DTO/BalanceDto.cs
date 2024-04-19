@@ -15,7 +15,7 @@ namespace Balances.DTO
         [BsonElement("Caratula")]
         public Caratula Caratula { get; set; }
 
-        public List<Archivo> Archivos { get; set; }
+        public List<FileDTO> Archivos { get; set; }
         public List<AutoridadDto> Autoridades { get; set; }
         public EstadoContable EstadoContable { get; set; }
         public LibrosDto Libros { get; set; }
@@ -26,7 +26,7 @@ namespace Balances.DTO
         // Constructor para asegurar la inicialización de Presentacion
         public BalanceDto()
         {
-           
+
             Presentacion = new Presentacion();
         }
     }

@@ -1,4 +1,3 @@
-using Balances.API.Controllers;
 using Balances.Bussiness;
 using Balances.Bussiness.Contrato;
 using Balances.Bussiness.Implementacion;
@@ -7,7 +6,6 @@ using Balances.Repository.Implementation;
 using Balances.Services.Contract;
 using Balances.Services.Implementation;
 using Balances.Utilities;
-using Balances.Web.Services.Implementation;
 using Dominio.Helpers;
 using EmailSender;
 using Microsoft.Extensions.Options;
@@ -76,7 +74,7 @@ try
     // Agrega IHttpContextAccessor a los servicios.
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-    builder.Services.AddSingleton<IStorageBalanceHelper, StorageBalanceHelper>();
+
 
 
 
@@ -106,24 +104,24 @@ try
         });
     });
 
-        /* builder.Services.AddCors(options =>
+    /* builder.Services.AddCors(options =>
+     {
+         options.AddPolicy("NuevaPolitica", app =>
          {
-             options.AddPolicy("NuevaPolitica", app =>
-             {
-                 app.AllowAnyOrigin().
-                 AllowAnyHeader().
-                 AllowAnyMethod();
+             app.AllowAnyOrigin().
+             AllowAnyHeader().
+             AllowAnyMethod();
 
-             });
-         }); //Importante 
-        */
+         });
+     }); //Importante 
+    */
 
-        builder.Services.AddSession(options =>
-  {
-      options.IdleTimeout = TimeSpan.FromHours(3);
-      options.Cookie.HttpOnly = true;
-      options.Cookie.IsEssential = true;
-  });
+    builder.Services.AddSession(options =>
+{
+  options.IdleTimeout = TimeSpan.FromHours(3);
+  options.Cookie.HttpOnly = true;
+  options.Cookie.IsEssential = true;
+});
 
     builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -145,10 +143,10 @@ try
     //app.UseSerilogRequestLogging();
 
 
-    app.UseRouting(); 
+    app.UseRouting();
     app.UseCors("NuevaPolitica");
     app.UseAuthorization();
-        //Cors
+    //Cors
     //app.UseCors("NuevaPolitica");
 
     app.UseAuthentication();

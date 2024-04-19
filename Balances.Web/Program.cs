@@ -39,6 +39,9 @@ builder.Services.AddScoped<IEstadoContableClientService, EstadoContableService>(
 builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
 builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
 builder.Services.AddScoped<IBaseSessionClientService, BaseSessionClientService>();
+builder.Services.AddScoped<IBusquedaDeSociedadesClientService, BusquedaDesociedadesClientService>();
+builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
+
 
 
 // Ejemplo de configuración para ASP.NET Core

@@ -1,25 +1,21 @@
-﻿using AutoMapper;
-using Balances.Bussiness.Contrato;
+﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
-using Balances.Model;
-using Balances.Utilities;
-using Microsoft.AspNetCore.Http;
 
 namespace Balances.Bussiness.Implementacion
 {
     public class ArchivoBusiness : IArchivoBusiness
     {
         private readonly IBalanceBusiness _balanceBusiness;
-        private readonly IMapper _mapper;
+
         private const string _baseDir = @"c:\datos\balances";
 
-        public ArchivoBusiness(IBalanceBusiness balanceBusiness, IMapper mapper)
+        public ArchivoBusiness(IBalanceBusiness balanceBusiness)
         {
             _balanceBusiness = balanceBusiness;
-            _mapper = mapper;
+
         }
 
-        public ResponseDTO<BalanceDto> Delete(Archivo modelo)
+        public ResponseDTO<BalanceDto> Delete(FileDTO modelo)
         {
             var resultadoDto = new ResponseDTO<BalanceDto>();
             resultadoDto.IsSuccess = false;
@@ -38,7 +34,7 @@ namespace Balances.Bussiness.Implementacion
                     bal.Archivos.Remove(archivo);
 
                     // Check if FechaCreacion is not null before using it
-                    if (archivo.FechaCreacion!=null)
+                    if (archivo.FechaCreacion != null)
                     {
                         string Periodo = CalcularPeriodo(archivo.FechaCreacion);
                         string fullPath = $@"{_baseDir}\{Periodo}\{archivo.Id}{Path.GetExtension(archivo.NombreArchivo)}";
@@ -70,7 +66,7 @@ namespace Balances.Bussiness.Implementacion
             return resultadoDto;
         }
 
-     
+
 
 
         private string CalcularPeriodo(DateTime fecha)
@@ -93,14 +89,14 @@ namespace Balances.Bussiness.Implementacion
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
             var bDto = _balanceBusiness.BalanceActual;
-            var listaArchivos = new List<Archivo>();
-      
-         
+            var listaArchivos = new List<FileDTO>();
+
+
             try
             {
                 foreach (var file in ufDto)
                 {
-                    var newFile = new Archivo
+                    var newFile = new FileDTO
                     {
                         Id = Guid.NewGuid().ToString(),
                         FechaCreacion = DateTime.UtcNow,
@@ -108,7 +104,7 @@ namespace Balances.Bussiness.Implementacion
                         NombreArchivo = file.NombreArchivo,
                         ContentType = file.ContentType,
                         Tamaño = file.Tamaño / 1024
-                       
+
                     };
 
                     if (file.Tamaño > 0)

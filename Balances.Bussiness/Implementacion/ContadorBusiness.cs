@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Balances.Bussiness.Contrato;
+﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Model;
 using Balances.Services.Contract;
@@ -15,18 +14,18 @@ namespace Balances.Bussiness.Implementacion
 
         private readonly ISessionService _sessionService;
         private readonly IBalanceBusiness _balanceBusiness;
-        private readonly IMapper _mapper;
+
         private readonly ILogger<ContadorBusiness> _logger;
 
 
         public ContadorBusiness(ISessionService sessionService,
                                IBalanceBusiness balanceBusiness,
-                               IMapper mapper,
+
                                ILogger<ContadorBusiness> logger)
         {
             _sessionService = sessionService;
             _balanceBusiness = balanceBusiness;
-            _mapper = mapper;
+
             _logger = logger;
 
         }
@@ -47,8 +46,8 @@ namespace Balances.Bussiness.Implementacion
             try
             {
 
-                var id = _sessionService.GetSession().Values.ToString();
-                // var id = SessionStorageHelper.GetItem<string>(Constants.KEY_SESSION);
+                var id = _sessionService.GetSessionBalanceId();
+
                 var responsedto = _balanceBusiness.GetById(id);
 
                 if (responsedto.IsSuccess)

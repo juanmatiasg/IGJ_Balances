@@ -1,5 +1,4 @@
 ﻿using Balances.DTO;
-using Balances.Model;
 
 namespace Balances.Web.Services.Implementation
 {
@@ -11,8 +10,6 @@ namespace Balances.Web.Services.Implementation
 
         Task<ResponseDTO<BalanceDto>> deleteRubro(RubroPatrimonioNetoDto rubroPatrimonioNetoDto);
 
-        Task<ResponseDTO<string>> getSession();
 
-        Task<ResponseDTO<BalanceDto>> getBalance(string id);
     }
 }

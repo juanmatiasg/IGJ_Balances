@@ -11,7 +11,9 @@
 @using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 @inject IJSRuntime JS
 @inject ICaratulaClientService caratulaService
+@inject IBalanceClientService balanceService 
 @inject IBaseSessionClientService sesionService
+@inject IBusquedaDeSociedadesClientService busquedaSociedadService 
 @inject NavigationManager NavigationManager;
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -103,7 +105,7 @@
                         </div>
 
                         <div class="col mt-4">
-                            <button type="submit" id="btnBuscar" class="btn btn-primary" @onclick="FindEntities" disabled="@entidadEncontrada">Buscar</button>
+                            <button type="submit" id="btnBuscar" class="btn btn-primary" @onclick="FindEntities">Buscar</button>
                         </div>
                     </div>
                     <small id="busquedaError" class="text-danger">@busquedaError</small>
@@ -292,12 +294,13 @@
 
             var sesion = await sesionService.getSession();
 
-            if (sesion.IsSuccess)
+            if (sesion.Result != null)
             {
 
-                var balanceId = SessionStorageHelper.GetBalanceId(sesion.Result);
+                var balanceId = await sesionService.GetSessionBalanceId();
 
-                var response = await caratulaService.getBalance(balanceId);
+
+                var response = await balanceService.getBalance(balanceId);
 
                 if (response.IsSuccess)
                 {
@@ -335,15 +338,14 @@
 
 
             }
-            else
-            {
-                sesion.Message = "Mal Parseo de Json";
-            }
+
         }
 
         catch (Exception ex)
         {
-            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+            
+            //Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+            throw;
 
         }
 
@@ -376,7 +378,7 @@
                 {
                     await ShowLoadingModal();
 
-                    var response = await caratulaService.findEntities(modelo.Entidad.Correlativo);
+                    var response = await busquedaSociedadService.findSociedad(modelo.Entidad.Correlativo);
 
                     if (response != null)
                     {
@@ -422,13 +424,12 @@
         {
             if (checkData())
             {
-                var response = await caratulaService.initTramite(modelo);
+                var response = await caratulaService.insertCaratula(modelo);
 
                 if (response.IsSuccess)
                 {
-
-                  
-                  await sesionService.setSession(response.Result.Id);
+                 
+                    await sesionService.setSession(response.Result.Id);
 
                     isActive = true;
                     tramiteIniciado = true;

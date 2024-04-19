@@ -1,5 +1,4 @@
 ﻿using Balances.DTO;
-using Balances.Model;
 using Balances.Web.Services.Implementation;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
@@ -16,37 +15,7 @@ namespace Balances.Web.Services.Contracts
             _httpClient = httpClient;
         }
 
-       
-        public async Task<ResponseDTO<BalanceDto>> getBalance(string id)
-        {
-            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Balance/{id}");
 
-        }
-
-        public async Task<ResponseDTO<string>> getSession()
-        {
-            try
-            {
-                var result = await _httpClient.GetFromJsonAsync<ResponseDTO<string>>($"Session/getSession");
-
-                return new ResponseDTO<string>
-                {
-                    Result = result.Result,
-                    IsSuccess = result.IsSuccess,
-                    Message = result.Message
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDTO<string>
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = ex.Message
-                };
-            }
-
-        }
 
         public async Task<ResponseDTO<BalanceDto>> insertEECC(EstadoContableDto estadoContableDto)
         {
@@ -54,7 +23,7 @@ namespace Balances.Web.Services.Contracts
             rsp.IsSuccess = false;
             try
             {
-     
+
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
                 var respuesta = await _httpClient.PostAsJsonAsync("EstadoContable/InsertEECC", estadoContableDto);
 

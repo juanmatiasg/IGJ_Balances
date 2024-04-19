@@ -1,10 +1,13 @@
 ﻿@page "/Autoridad"
 @using Balances.DTO;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @inject IAutoridadClientService autoridadService
+@inject IBaseSessionClientService sesionService
+@inject IBalanceClientService balanceService
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -211,12 +214,11 @@
     {
         try
         {
-            var idSession = await autoridadService.getSession();
-            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            var idSession = await sesionService.GetSessionBalanceId();
             
             if (idSession!=null)
             {
-                var response = await autoridadService.getBalance(idSession.Result);
+                var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
                 {

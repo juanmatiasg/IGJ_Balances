@@ -2,10 +2,12 @@
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @inject ICaratulaClientService caratulaService
 @inject IPresentacionClientService presentacionService
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sesionService
 
 
 <!DOCTYPE html>
@@ -555,12 +557,12 @@
     {
         try
         {
-           // var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-            var idSession = await caratulaService.getSession();
+         
+            var balanceId = await sesionService.GetSessionBalanceId();
 
-            if (idSession != null)
+            if (balanceId != null)
             {
-                var response = await caratulaService.getBalance(idSession.Result);
+                var response = await balanceService.getBalance(balanceId);
 
                 if (response.IsSuccess == true)
                 {
@@ -620,7 +622,7 @@
 
 
                             //Archivos
-                            setArchivos(response.Result.Archivos);
+                            //setArchivos(response.Result.Archivos);
 
                             StateHasChanged();
 

@@ -69,12 +69,21 @@ namespace Balances.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("getBalaneIdSession")]
+        [HttpGet("getBalanceIdSession")]
         public ActionResult<string> GetBalanceIdSession()
         {
+
             var balIdSession = _sessionService.GetSessionBalanceId();
 
             return balIdSession;
+        }
+
+        [HttpGet("getTokenSession")]
+        public ActionResult<string> GetTokenSession()
+        {
+            var token = _sessionService.GetSessionToken();
+
+            return token;
         }
     }
 }

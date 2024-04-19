@@ -2,8 +2,6 @@
 using Balances.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace Balances.Services.Implementation
@@ -23,6 +21,51 @@ namespace Balances.Services.Implementation
             _logger = logger;
         }
 
+
+
+        public void SetSession(string balanceId)
+        {
+
+
+            Storage[Token.KEY_SESSION] = balanceId;
+            _context.HttpContext.Session.SetString(Token.KEY_SESSION, balanceId);
+
+        }
+
+        public Dictionary<string, string> GetSession()
+        {
+            try
+            {
+
+                return Storage;
+
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+
+            }
+
+        }
+
+        public string GetSessionBalanceId()
+        {
+            var Sesionserializada = JsonSerializer.Serialize(Storage);
+            var balanceID = SessionStorageHelper.GetBalanceId(Sesionserializada);
+
+            return balanceID;
+
+        }
+
+        public string GetSessionToken()
+        {
+
+            var Sesionserializada = JsonSerializer.Serialize(Storage);
+            var token = SessionStorageHelper.GetTokenKey(Sesionserializada);
+
+            return token;
+        }
         //public void SetBalanceId(string balanceId)
         //{
         //    _logger.LogWarning($"Método SetBalanceId invocado id: \n {balanceId} {JsonConvert.SerializeObject(new BalanceDto())}");
@@ -74,47 +117,6 @@ namespace Balances.Services.Implementation
         //        throw;
         //    }
         //}
-
-        public void SetSession(string balanceId)
-        {
-
-
-            Storage[Token.KEY_SESSION] = balanceId;
-            _context.HttpContext.Session.SetString(Token.KEY_SESSION, balanceId);
-
-        }
-
-        public Dictionary<string, string> GetSession()
-        {
-            try
-            {
-
-                return Storage;
-
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-
-            }
-
-        }
-
-        public string GetSessionBalanceId()
-        {
-            var Sesionserializada = JsonSerializer.Serialize(Storage);
-            var balanceID = SessionStorageHelper.GetBalanceId(Sesionserializada);
-
-            return balanceID;
-
-        }
-
-        public string GetSessionToken()
-        {
-            throw new NotImplementedException();
-        }
-
 
     }
 }

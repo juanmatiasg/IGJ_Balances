@@ -1,12 +1,10 @@
 ﻿using Balances.DTO;
-using Balances.Model;
-using Microsoft.AspNetCore.Http;
 
 namespace Balances.Bussiness.Contrato
 {
     public interface IArchivoBusiness
     {
-        ResponseDTO<BalanceDto> Delete(Archivo archivo);
+        ResponseDTO<BalanceDto> Delete(FileDTO archivo);
         ResponseDTO<BalanceDto> UploadFilesDTO(List<FileDTO> files);
     }
 }

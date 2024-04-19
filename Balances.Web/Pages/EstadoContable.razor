@@ -2,6 +2,7 @@
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using System.Globalization;
 @using System.Text.RegularExpressions;
@@ -10,7 +11,10 @@
 @using Microsoft.AspNetCore.Http;
 @inject IEstadoContableClientService estadoContableService;
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
+
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sesionService
 
 
 <!DOCTYPE html>
@@ -516,15 +520,14 @@
     {
         try
         {
-            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+        
 
-
-            var idSession = await estadoContableService.getSession();
+            var idSession = await sesionService.GetSessionBalanceId();
 
             if (idSession!=null)
             {
 
-                var response = await estadoContableService.getBalance(idSession.Result);
+                var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess)
                 {

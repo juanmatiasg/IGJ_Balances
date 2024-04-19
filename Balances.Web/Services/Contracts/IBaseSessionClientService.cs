@@ -6,5 +6,7 @@ namespace Balances.Web.Services.Contracts
     {
         Task<ResponseDTO<string>> getSession();
         Task<ResponseDTO<string>> setSession(string balanceid);
+        Task<string> GetSessionBalanceId();
+        Task<string> GetSessionToken();
     }
 }

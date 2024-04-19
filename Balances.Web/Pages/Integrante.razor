@@ -1,9 +1,11 @@
 ﻿@page "/Integrante/"
 @using Balances.DTO;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @inject ISociosClientService socioService;
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sessionService
 
 
 <!DOCTYPE html>
@@ -174,12 +176,11 @@
     {
         try
         {
-            var idSession = await socioService.getSession();
-            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            var idSession = await sessionService.GetSessionBalanceId();
             
             if (idSession!=null)
             {
-                var response = await socioService.getBalance(idSession.Result);
+                var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
                 {
