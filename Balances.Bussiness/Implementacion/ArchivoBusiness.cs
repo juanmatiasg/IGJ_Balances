@@ -1,31 +1,29 @@
-﻿using AutoMapper;
-using Balances.Bussiness.Contrato;
+﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Model;
-using Balances.Utilities;
-using Microsoft.AspNetCore.Http;
 
 namespace Balances.Bussiness.Implementacion
 {
     public class ArchivoBusiness : IArchivoBusiness
     {
         private readonly IBalanceBusiness _balanceBusiness;
-        private readonly IMapper _mapper;
+
         private const string _baseDir = @"c:\datos\balances";
 
-        public ArchivoBusiness(IBalanceBusiness balanceBusiness, IMapper mapper)
+        public ArchivoBusiness(IBalanceBusiness balanceBusiness)
         {
             _balanceBusiness = balanceBusiness;
-            _mapper = mapper;
+
         }
 
-        public ResponseDTO<BalanceDto> Delete(Archivo modelo)
+        public ResponseDTO<BalanceDto> Delete(FileDTO modelo)
         {
             var resultadoDto = new ResponseDTO<BalanceDto>();
             resultadoDto.IsSuccess = false;
 
             try
             {
+               
                 // RECUPERO BALANCE
                 var bal = _balanceBusiness.BalanceActual;
 
@@ -38,7 +36,7 @@ namespace Balances.Bussiness.Implementacion
                     bal.Archivos.Remove(archivo);
 
                     // Check if FechaCreacion is not null before using it
-                    if (archivo.FechaCreacion!=null)
+                    if (archivo.FechaCreacion != null)
                     {
                         string Periodo = CalcularPeriodo(archivo.FechaCreacion);
                         string fullPath = $@"{_baseDir}\{Periodo}\{archivo.Id}{Path.GetExtension(archivo.NombreArchivo)}";
@@ -70,7 +68,7 @@ namespace Balances.Bussiness.Implementacion
             return resultadoDto;
         }
 
-     
+
 
 
         private string CalcularPeriodo(DateTime fecha)
@@ -93,9 +91,10 @@ namespace Balances.Bussiness.Implementacion
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
             var bDto = _balanceBusiness.BalanceActual;
+
             var listaArchivos = new List<Archivo>();
-      
-         
+
+
             try
             {
                 foreach (var file in ufDto)
@@ -108,7 +107,7 @@ namespace Balances.Bussiness.Implementacion
                         NombreArchivo = file.NombreArchivo,
                         ContentType = file.ContentType,
                         Tamaño = file.Tamaño / 1024
-                       
+
                     };
 
                     if (file.Tamaño > 0)
@@ -116,8 +115,6 @@ namespace Balances.Bussiness.Implementacion
                         string Periodo = CalcularPeriodo();
                         Directory.CreateDirectory(_baseDir + Periodo);
                         string fullPath = $@"{_baseDir}\{Periodo}\{newFile.Id}{Path.GetExtension(file.NombreArchivo)}";
-
-                        //File.WriteAllBytes(fullPath, file.DatosBinarios);
 
                         newFile.Hash = file.Hash;
 

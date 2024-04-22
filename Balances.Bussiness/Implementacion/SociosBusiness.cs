@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Balances.Bussiness.Contrato;
+﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -10,16 +9,15 @@ namespace Balances.Bussiness.Implementacion
 
     {
         private readonly IBalanceBusiness _balanceBusiness;
-        private readonly IMapper _mapper;
+
         private readonly ILogger<SociosBusiness> _logger;
 
         public SociosBusiness(IBalanceBusiness balanceBusiness,
-                              IMapper mapper,
-                              ILogger<SociosBusiness> logger
+                               ILogger<SociosBusiness> logger
                               )
         {
             _balanceBusiness = balanceBusiness;
-            _mapper = mapper;
+            ;
             _logger = logger;
         }
 

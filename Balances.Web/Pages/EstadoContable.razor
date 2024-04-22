@@ -1,16 +1,20 @@
-﻿@page "/EstadoContable"
+﻿@page "/EstadoContable/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using System.Globalization;
 @using System.Text.RegularExpressions;
 @using System.Reflection;
 @using Blazorise.Extensions;
 @using Microsoft.AspNetCore.Http;
-@inject IEstadoContableService estadoContableService;
+@inject IEstadoContableClientService estadoContableService;
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
+
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sesionService
 
 
 <!DOCTYPE html>
@@ -26,7 +30,7 @@
 </head>
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="EstadoContable" TramiteIniciado = "true" ></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="EstadoContable" TramiteIniciado = "true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <div class="container mt-4">
@@ -451,6 +455,8 @@
 @code {
     [Parameter] public string? TipoEntidad { get; set; }
 
+    [Parameter] public string? balid { get; set; } = null;
+
     private string tipoBalanceError = "";
 
     private string fechaInicioError = "";
@@ -503,7 +509,7 @@
 
     private bool firstTimeInput = true;
 
-    
+
     protected override async Task OnInitializedAsync()
     {
 
@@ -512,19 +518,23 @@
         await base.OnInitializedAsync();
     }
 
+
     private async Task Load()
     {
         try
         {
-            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
 
-            var idSession = await estadoContableService.getSession();
+            var idSession = await sesionService.GetSessionBalanceId();
 
             if (idSession!=null)
             {
 
-                var response = await estadoContableService.getBalance(idSession.Result);
+
+                balid = idSession;
+
+                var response = await balanceService.getBalance(idSession);
+
 
                 if (response.IsSuccess)
                 {
@@ -533,11 +543,12 @@
                     {
                         var rsp = response.Result.EstadoContable;
 
+
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
 
                         estadoContableDto = new EstadoContableDto(rsp);
 
-                    
+
 
                         StateHasChanged();
 
@@ -734,7 +745,7 @@
 
             foreach (var rubros in estadoContableDto.otrosRubros)
             {
-                sumatoriaImporte = sumatoriaImporte + rubros.importe;    
+                sumatoriaImporte = sumatoriaImporte + rubros.importe;
             }
 
 
@@ -929,12 +940,12 @@
             {
 
                 estadoContableDto.otrosRubros.Add(new RubroPatrimonioNetoDto
-                    {
+                {
 
-                        codigo = rubro.Codigo,
-                        denominacion = rubro.Denominacion,
-                        importe = rubro.Importe,
-                    });
+                    codigo = rubro.Codigo,
+                    denominacion = rubro.Denominacion,
+                    importe = rubro.Importe,
+                });
             }
         }
     }
@@ -1394,9 +1405,9 @@
         reservaLegalError = "";
 
 
-    
+
         return true;
     }
-   
+
 
 }

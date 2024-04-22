@@ -3,7 +3,6 @@ using Balances.Bussiness.Contrato;
 using Balances.DTO;
 using Balances.Model;
 using Balances.Services.Contract;
-using Balances.Web.Pages;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
@@ -30,7 +29,7 @@ namespace Balances.Bussiness.Implementacion
             _logger = logger;
         }
 
-       
+
         public ResponseDTO<BalanceDto> InsertEECC(EstadoContableDto modelo)
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
@@ -38,7 +37,7 @@ namespace Balances.Bussiness.Implementacion
             var EECCSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
-                var id = _sessionService.GetBalanceId();
+                var id = _sessionService.GetSessionBalanceId();
                 var resultadoDto = _balanceBusiness.GetById(id);
 
                 if (resultadoDto.IsSuccess)
@@ -73,18 +72,18 @@ namespace Balances.Bussiness.Implementacion
             var rubroSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
-                var id = _sessionService.GetBalanceId();
-                
+                var id = _sessionService.GetSessionBalanceId();
+
                 var resultadoDto = _balanceBusiness.GetById(id);
 
                 if (resultadoDto.IsSuccess)
                 {
                     var balanceDto = resultadoDto.Result;
-                    
+
                     var estadoContable = balanceDto.EstadoContable;
 
                     var rubro = _mapper.Map<RubroPatrimonioNeto>(modelo);
-           
+
                     estadoContable.OtrosRubros.Add(rubro);
 
 
@@ -96,7 +95,7 @@ namespace Balances.Bussiness.Implementacion
                     respuesta = rsp;
                 }
 
-          
+
             }
             catch (Exception ex)
             {

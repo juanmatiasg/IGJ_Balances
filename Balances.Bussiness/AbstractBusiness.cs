@@ -24,12 +24,15 @@ namespace Balances.Bussiness
 
         public Balance GetBalance()
         {
+            var id = _sessionService.GetSession();
 
-            var balanceId = _sessionService.GetBalanceId();
+
+            //var resultadoDto = _balanceBusiness.GetById(id.Values.ToString());
+            //var balanceId = _sessionService.GetSession();
 
 
             var balance = _balances.Find(
-                new BsonDocument { { "_id", new ObjectId(balanceId) } }
+                new BsonDocument { { "_id", new ObjectId(id.Values.ToString()) } }
                ).FirstOrDefaultAsync().Result;
 
             return balance;

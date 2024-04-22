@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Balances.Services.Contract
 {
     public interface ISessionService
     {
 
-        void SetBalanceId(string balanceId);
-        string GetBalanceId();
+        void SetSession(string balanceId);
+        Dictionary<string, string> GetSession();
+        string GetSessionBalanceId();
+        string GetSessionToken();
     }
 
 

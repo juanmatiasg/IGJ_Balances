@@ -1,5 +1,4 @@
 ﻿using Balances.DTO;
-using Balances.Model;
 using Balances.Web.Services.Implementation;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
@@ -7,46 +6,17 @@ using System.Text;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class SociosService : ISociosService
+    public class SociosClientService : ISociosClientService
     {
         private readonly HttpClient _httpClient;
 
-        public SociosService(HttpClient httpClient)
+        public SociosClientService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
 
-        public async Task<ResponseDTO<BalanceDto>> getBalance(string id)
-        {
-            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Balance/{id}");
 
-        }
-
-        public async Task<ResponseDTO<string>> getSession()
-        {
-            try
-            {
-                var result = await _httpClient.GetFromJsonAsync<ResponseDTO<string>>($"Session/getSession");
-
-                return new ResponseDTO<string>
-                {
-                    Result = result.Result,
-                    IsSuccess = result.IsSuccess,
-                    Message = result.Message
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDTO<string>
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = ex.Message
-                };
-            }
-
-        }
 
         public async Task<ResponseDTO<BalanceDto>> insertPersonaHumana(PersonaHumanaDto personaHumana)
         {
@@ -100,10 +70,11 @@ namespace Balances.Web.Services.Contracts
                         rsp = result;
 
                     }
-                    else {
+                    else
+                    {
                         rsp.Message = $"SocioService.deletePersonaHumana. {result.Message}";
                     }
-                  
+
                 }
                 else
                 {
@@ -193,6 +164,6 @@ namespace Balances.Web.Services.Contracts
         }
 
 
-       
+
     }
 }

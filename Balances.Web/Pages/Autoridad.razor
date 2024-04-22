@@ -1,10 +1,13 @@
-﻿@page "/Autoridad"
+﻿@page "/Autoridad/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
-@inject IAutoridadService autoridadService
+@inject IAutoridadClientService autoridadService
+@inject IBaseSessionClientService sesionService
+@inject IBalanceClientService balanceService
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +30,7 @@
 
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Autoridad" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Autoridad" TramiteIniciado="true" balid="@balid"></Navegacion>
 
 
     <!---------------------------------------------------------------->
@@ -162,6 +165,8 @@
 
 
 @code {
+    [Parameter] public string? balid { get; set; } = null;
+
     [Parameter] public string? TipoEntidad { get; set; }
 
 
@@ -211,12 +216,13 @@
     {
         try
         {
-            var idSession = await autoridadService.getSession();
-            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-            
+            var idSession = await sesionService.GetSessionBalanceId();
+
             if (idSession!=null)
             {
-                var response = await autoridadService.getBalance(idSession.Result);
+                balid = idSession;
+
+                var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
                 {
@@ -295,7 +301,7 @@
         }
         else
         {
-            return null;    
+            return null;
         }
     }
 
@@ -303,7 +309,7 @@
     private void cleanInputs()
     {
         // Restablecer los valores de los campos a su estado inicial o vacío
-        modelo = new AutoridadDto(); 
+        modelo = new AutoridadDto();
     }
 
     private void resultAutoridades(List<AutoridadDto> listAutoridades)
@@ -471,12 +477,12 @@
         return true;
     }
 
-    
 
 
 
 
-  
+
+
 }
     
 

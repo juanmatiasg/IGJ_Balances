@@ -1,9 +1,7 @@
 using Balances.DTO;
-using Balances.Model;
 using BuscarIGJ;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebService;
 
 namespace WebApi.Controllers
 { //sesion y objeto
@@ -21,7 +19,7 @@ namespace WebApi.Controllers
             {
                 var entidadService = new WebService.Entidad();
 
-         
+
 
                 if (!string.IsNullOrEmpty(nroCorrelativo))
                 {
@@ -52,7 +50,7 @@ namespace WebApi.Controllers
                         {
                             Result = new BusquedaEntidadResponse
                             {
-                                NroCorrelativo = entidadService.NroCorrelativo.ToString(), 
+                                NroCorrelativo = entidadService.NroCorrelativo.ToString(),
                                 TipoEntidad = entidadService.TipoSoc,
                                 RazonSocial = entidadService.RazonSocial
                             },
@@ -71,7 +69,8 @@ namespace WebApi.Controllers
                     return BadRequest("El parámetro cuitcorrelativo es nulo o vacío.");
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine($"Error en la acción BusquedaByCuilOrCorrelativo: {ex.Message}");
                 return StatusCode(500, "Error interno del servidor");
             }

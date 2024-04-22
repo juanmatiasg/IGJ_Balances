@@ -2,7 +2,7 @@
 
 namespace Balances.Web.Services.Implementation
 {
-    public interface ISociosService
+    public interface ISociosClientService
     {
         Task<ResponseDTO<BalanceDto>> insertPersonaHumana(PersonaHumanaDto personaHumana);
 
@@ -13,9 +13,5 @@ namespace Balances.Web.Services.Implementation
 
         Task<ResponseDTO<BalanceDto>> deletePersonaJuridica(PersonaJuridicaDto personaJuridica);
 
-
-        Task<ResponseDTO<BalanceDto>> getBalance(string id);
-
-        Task<ResponseDTO<string>> getSession();
     }
 }

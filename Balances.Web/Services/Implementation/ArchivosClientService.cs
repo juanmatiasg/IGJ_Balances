@@ -1,69 +1,35 @@
 ﻿using Balances.DTO;
 using Balances.Web.Services.Implementation;
-using Microsoft.AspNetCore.Components.Forms;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
-using System.Security.Cryptography;
 using System.Text;
 
 
 namespace Balances.Web.Services.Contracts
 {
 
-    public class ArchivosService : IArchivosService
+    public class ArchivosClientService : IArchivosClientService
     {
         private readonly HttpClient _httpClient;
 
-        public ArchivosService(HttpClient httpClient)
+        public ArchivosClientService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
 
 
-        public async Task<ResponseDTO<BalanceDto>> getBalance(string id)
-        {
-            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Balance/{id}");
 
-        }
-
-        public async Task<ResponseDTO<string>> getSession()
-        {
-            try
-            {
-                var result = await _httpClient.GetFromJsonAsync<ResponseDTO<string>>($"Session/getSession");
-
-                return new ResponseDTO<string>
-                {
-                    Result = result.Result,
-                    IsSuccess = result.IsSuccess,
-                    Message = result.Message
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDTO<string>
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = ex.Message
-                };
-            }
-
-        }
-      
 
         public async Task<ResponseDTO<BalanceDto>> uploadArchivo(List<FileDTO> files)
         {
             try
             {
 
-                //JsonContent jc = JsonContent.Create(files);
-                //var response = await _httpClient.PostAsync("Archivo/InsertArchivos", files);
                 var response = await _httpClient.PostAsJsonAsync("Archivo/InsertArchivos", files);
 
                 // Check if the request was successful (status code 2xx)
-               // response.EnsureSuccessStatusCode();
+                // response.EnsureSuccessStatusCode();
 
                 // Deserialize the response
                 var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
@@ -86,17 +52,17 @@ namespace Balances.Web.Services.Contracts
             };
         }
 
-        private async Task <byte[]> ToByteArrayAsync(Stream stream)
+        private async Task<byte[]> ToByteArrayAsync(Stream stream)
         {
             using (var memoryStream = new MemoryStream())
             {
-                 await stream.CopyToAsync(memoryStream);
+                await stream.CopyToAsync(memoryStream);
                 return memoryStream.ToArray();
             }
         }
 
 
-        
+
         public async Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO archivo)
         {
             ResponseDTO<BalanceDto> rsp = new ResponseDTO<BalanceDto>();

@@ -1,16 +1,14 @@
-﻿@page "/Contador"
+﻿@page "/Contador/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using System.Globalization;
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
-@inject IContadorService contadorService
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject IBaseSessionClientService sesionService
+@inject IBalanceClientService balanceService
+@inject IContadorClientService contadorService
+@inject IBaseSessionClientService sessionService
 
-
-
-@{
-}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +24,7 @@
 <body>
 
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Contador" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Contador" TramiteIniciado="true" balid="@balid"></Navegacion>
    
 
     <div class="container-fluid">
@@ -123,6 +121,11 @@
 
 @code {
     [Parameter] public string? TipoEntidad { get; set; }
+
+
+    [Parameter]
+    public string? balid { get; set; } = null;
+
     private string[] tiposDocumentos = { "DNI", "Pasaporte", "Cédula" };
     private string tipoDocSeleccionado = "";
 
@@ -164,10 +167,12 @@
         ResponseDTO<BalanceDto> rsp = new();
         try
         {
-            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
 
-            var idSession = await contadorService.getSession();
-            rsp = await contadorService.getBalance(idSession.Result);
+            var idSession = await sesionService.GetSessionBalanceId();
+
+            balid = idSession;
+
+            rsp = await balanceService.getBalance(idSession);
 
             if (rsp.IsSuccess)
             {
@@ -176,7 +181,7 @@
                 TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
                 modelo.id = rsp.Result.Id;
                 modelo.Nombre = rsp.Result.Contador.Nombre;
-                modelo.Apellido = rsp.Result.Contador.Apellido;   
+                modelo.Apellido = rsp.Result.Contador.Apellido;
                 modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
                 modelo.NroDocumento = rsp.Result.Contador.NroDocumento;
                 modelo.NroFiscal = rsp.Result.Contador.NroFiscal;
@@ -374,7 +379,7 @@
             }
             else
             {
-                msgErrorNroLegInf = "";           
+                msgErrorNroLegInf = "";
             }
         }
         else
@@ -396,6 +401,6 @@
         return true;
     }
 
-  
+
 
 }

@@ -38,7 +38,7 @@ namespace Balances.Bussiness
         {
             get
             {
-                var responseDto = this.GetById(_sessionService.GetBalanceId());
+                var responseDto = this.GetById(_sessionService.GetSessionBalanceId());
 
                 if (responseDto.IsSuccess)
                 {
@@ -90,9 +90,6 @@ namespace Balances.Bussiness
             try
             {
                 var balance = _balanceService.GetById(id);
-                //    var balance = _balances.Find(
-                // new BsonDocument { { "_id", new ObjectId(id) } }
-                //).FirstOrDefaultAsync().Result;
 
                 var balancedto = _mapper.Map<BalanceDto>(balance);
 
@@ -202,7 +199,7 @@ namespace Balances.Bussiness
             return respuesta;
         }
 
-       
+
     }
 
 

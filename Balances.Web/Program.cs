@@ -4,13 +4,12 @@ using Balances.Web.Services.Implementation;
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Blazorise;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -30,15 +29,19 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https:/
 builder.Services.AddHttpContextAccessor();
 
 
-builder.Services.AddScoped <ICaratulaService, CaratulaService>();
-builder.Services.AddScoped<IContadorService, ContadorService>();
-builder.Services.AddScoped<IAutoridadService, AutoridadService>();
-builder.Services.AddScoped<ISociosService, SociosService>();
-builder.Services.AddScoped<ILibrosService, LibrosService>();
-builder.Services.AddScoped<IArchivosService, ArchivosService>();
-builder.Services.AddScoped<IEstadoContableService, EstadoContableService>();
-builder.Services.AddScoped<IPresentacionService, PresentacionService >();
-builder.Services.AddScoped<IPresentacionService, PresentacionService>();
+builder.Services.AddScoped<ICaratulaClientService, CaratulaClientService>();
+builder.Services.AddScoped<IContadorClientService, ContadorService>();
+builder.Services.AddScoped<IAutoridadClientService, AutoridadClientService>();
+builder.Services.AddScoped<ISociosClientService, SociosClientService>();
+builder.Services.AddScoped<ILibrosClientService, LibrosService>();
+builder.Services.AddScoped<IArchivosClientService, ArchivosClientService>();
+builder.Services.AddScoped<IEstadoContableClientService, EstadoContableService>();
+builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
+builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
+builder.Services.AddScoped<IBaseSessionClientService, BaseSessionClientService>();
+builder.Services.AddScoped<IBusquedaDeSociedadesClientService, BusquedaDesociedadesClientService>();
+builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
+
 
 
 // Ejemplo de configuración para ASP.NET Core
@@ -67,8 +70,7 @@ builder.Services
 
 
 
-builder.Services.AddBlazoredLocalStorageAsSingleton();
+//builder.Services.AddBlazoredLocalStorageAsSingleton();
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredLocalStorage();
-
 await builder.Build().RunAsync();

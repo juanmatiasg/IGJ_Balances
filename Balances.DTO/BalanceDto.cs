@@ -26,7 +26,7 @@ namespace Balances.DTO
         // Constructor para asegurar la inicialización de Presentacion
         public BalanceDto()
         {
-           
+
             Presentacion = new Presentacion();
         }
     }

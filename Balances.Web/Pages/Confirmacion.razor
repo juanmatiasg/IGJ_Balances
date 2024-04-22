@@ -1,11 +1,13 @@
-﻿@page "/Confirmacion"
+﻿@page "/Confirmacion/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
-@inject ICaratulaService caratulaService
-@inject IPresentacionService presentacionService
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject ICaratulaClientService caratulaService
+@inject IPresentacionClientService presentacionService
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sesionService
 
 
 <!DOCTYPE html>
@@ -117,7 +119,7 @@
 
 <body>
     
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Confirmacion" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Confirmacion" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!--Loading-->
 
@@ -519,6 +521,8 @@
     private Modal modalSuccess;
 
 
+    [Parameter]
+    public string? balid { get; set; } = null;
 
     [Parameter] public string? TipoEntidad { get; set; }
 
@@ -536,6 +540,7 @@
     private LibroDto libro = new LibroDto();
 
     private ContadorDto contador = new ContadorDto();
+
     private List<Archivo> listArchivo = new List<Archivo>();
 
 
@@ -555,12 +560,14 @@
     {
         try
         {
-           // var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-            var idSession = await caratulaService.getSession();
 
-            if (idSession != null)
+            var balanceId = await sesionService.GetSessionBalanceId();
+
+            balid = balanceId;
+
+            if (balanceId != null)
             {
-                var response = await caratulaService.getBalance(idSession.Result);
+                var response = await balanceService.getBalance(balanceId);
 
                 if (response.IsSuccess == true)
                 {
@@ -666,7 +673,7 @@
 
             if (response.IsSuccess)
             {
-         
+
 
                 responseDto.IsSuccess = response.IsSuccess;
                 responseDto.Message = response.Message;
@@ -689,11 +696,11 @@
         catch (Exception ex)
         {
             return new ResponseDTO<BalanceDto>
-                {
-                    IsSuccess = false,
-                    Message = $"{ex.Message}",
-                    Result = null
-                };
+            {
+                IsSuccess = false,
+                Message = $"{ex.Message}",
+                Result = null
+            };
         }
 
         finally
@@ -733,10 +740,10 @@
 
 
     private void setBalance(BalanceDto balance)
-    {     
+    {
         this.balance = balance;
         this.balance.Libros =  new LibrosDto();
-        this.balance.Libros.Asamblea = new LibroDto(); 
+        this.balance.Libros.Asamblea = new LibroDto();
 
     }
 
@@ -798,70 +805,70 @@
     {
         try
         {
-            
-                mensajesError.Clear();
 
-                // Validar propiedades de Entidad
-                ValidarPropiedades(this.caratula.Entidad, "Entidad");
+            mensajesError.Clear();
 
-                //Validar propiedades de EstadoContable
-                ValidarPropiedades(this.estadoContable, "Estado Contable");
+            // Validar propiedades de Entidad
+            ValidarPropiedades(this.caratula.Entidad, "Entidad");
 
-                //Validar propiedades Libros
-                ValidarPropiedades(this.libros.Memoria, "Libros - Memoria");
-                ValidarPropiedades(this.libros.Administracion, "Libros - Acta del Organo de Administracion");
-                ValidarPropiedades(this.libros.Asamblea, "Libros - Asamblea de Reunion Socios");
-                ValidarPropiedades(this.libros.SituacionPatrimonial, "Libros - Estado de Situacion Patrimonial");
-                ValidarPropiedades(this.libros.Resultados, "Libros - Estado de Resultados");
-                ValidarPropiedades(this.libros.PatrimonioNeto, "Libros - Estado de Evolucion del Patrimonio Neto");
-                ValidarPropiedades(this.libros.Efectivo, "Libros - Estado de Flujo Efectivo");
-                ValidarPropiedades(this.libros.Informacion, "Libros - Informacion Complementaria");
-                ValidarPropiedades(this.libros.EstadosContablesConsolidados, "Libros - Estado Contable Consolidados");
-                ValidarPropiedades(this.libros.Fiscalizacion, "Libros - Informe Organo Fiscalizacion");
-                ValidarPropiedades(this.libros.Auditor, "Libros - Informe Auditor Auditor");
-                ValidarPropiedades(this.libros.AsistenciaAsamblea, "Libros - Registro de Asistencia");
-                ValidarPropiedades(this.libros.IVA, "Libros - IVA");
-                ValidarPropiedades(this.libros.IVACompras, "Libros - IVA Compras");
-                ValidarPropiedades(this.libros.IVAVentas, "Libros - IVA Ventas");
+            //Validar propiedades de EstadoContable
+            ValidarPropiedades(this.estadoContable, "Estado Contable");
 
-
-
-                //Validar propiedades de Contador
-                ValidarPropiedades(this.contador, "Contador");
+            //Validar propiedades Libros
+            ValidarPropiedades(this.libros.Memoria, "Libros - Memoria");
+            ValidarPropiedades(this.libros.Administracion, "Libros - Acta del Organo de Administracion");
+            ValidarPropiedades(this.libros.Asamblea, "Libros - Asamblea de Reunion Socios");
+            ValidarPropiedades(this.libros.SituacionPatrimonial, "Libros - Estado de Situacion Patrimonial");
+            ValidarPropiedades(this.libros.Resultados, "Libros - Estado de Resultados");
+            ValidarPropiedades(this.libros.PatrimonioNeto, "Libros - Estado de Evolucion del Patrimonio Neto");
+            ValidarPropiedades(this.libros.Efectivo, "Libros - Estado de Flujo Efectivo");
+            ValidarPropiedades(this.libros.Informacion, "Libros - Informacion Complementaria");
+            ValidarPropiedades(this.libros.EstadosContablesConsolidados, "Libros - Estado Contable Consolidados");
+            ValidarPropiedades(this.libros.Fiscalizacion, "Libros - Informe Organo Fiscalizacion");
+            ValidarPropiedades(this.libros.Auditor, "Libros - Informe Auditor Auditor");
+            ValidarPropiedades(this.libros.AsistenciaAsamblea, "Libros - Registro de Asistencia");
+            ValidarPropiedades(this.libros.IVA, "Libros - IVA");
+            ValidarPropiedades(this.libros.IVACompras, "Libros - IVA Compras");
+            ValidarPropiedades(this.libros.IVAVentas, "Libros - IVA Ventas");
 
 
-                // Validar propiedades de Autoridades
-                ValidarPropiedades(this.listAutoridades, "Autoridades");
+
+            //Validar propiedades de Contador
+            ValidarPropiedades(this.contador, "Contador");
 
 
-                var listaSocios = new List<object>();
-                listaSocios.AddRange(this.listPersonaJuridica);
-                listaSocios.AddRange(this.listPersonaHumana);
-
-                //Validar propiedades de Socios
-                if (!(listaSocios.Count > 0))
-                {
-                    ValidarPropiedades(listaSocios, "Integrante");
-                }
+            // Validar propiedades de Autoridades
+            ValidarPropiedades(this.listAutoridades, "Autoridades");
 
 
-                // Validar propiedades de Archivos
-                ValidarPropiedades(this.listArchivo, "Archivos");
+            var listaSocios = new List<object>();
+            listaSocios.AddRange(this.listPersonaJuridica);
+            listaSocios.AddRange(this.listPersonaHumana);
+
+            //Validar propiedades de Socios
+            if (!(listaSocios.Count > 0))
+            {
+                ValidarPropiedades(listaSocios, "Integrante");
+            }
 
 
-                // Verificar si hay mensajes de error y mostrarlos
-                if (mensajesError.Any())
-                {   // Limpiar la lista de mensajes de error antes de cada validación
+            // Validar propiedades de Archivos
+            ValidarPropiedades(this.listArchivo, "Archivos");
 
-                    StateHasChanged();
-                    return false;
-               }
-            
+
+            // Verificar si hay mensajes de error y mostrarlos
+            if (mensajesError.Any())
+            {   // Limpiar la lista de mensajes de error antes de cada validación
+
+                StateHasChanged();
+                return false;
+            }
+
 
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Validar Campos: " + ex.Message); 
+            Console.WriteLine("Validar Campos: " + ex.Message);
         }
         return true;
     }
@@ -983,58 +990,58 @@
     }
 
     private void ValidarPropiedades(object entidad, string nombreEntidad){
-    
+
         try
         {
-              
-                // Bandera para verificar si ya se ha agregado un mensaje para la entidad
-                bool mensajeAgregado = false;
 
-                foreach (var propiedad in entidad.GetType().GetProperties())
+            // Bandera para verificar si ya se ha agregado un mensaje para la entidad
+            bool mensajeAgregado = false;
+
+            foreach (var propiedad in entidad.GetType().GetProperties())
+            {
+                var valor = propiedad.GetValue(entidad);
+
+                if (propiedad.Name == "id" || propiedad.Name == "Id" || propiedad.Name == "Balance")
                 {
-                    var valor = propiedad.GetValue(entidad);
 
-                    if (propiedad.Name == "id" || propiedad.Name == "Id" || propiedad.Name == "Balance")
-                    {
-                        
-                        continue;
-                    }
-
-                    if (propiedad.Name == "FechaUltimaRegistracion" || propiedad.Name == "FechaRubrica")
-                    {
-                        continue;
-                    }
-
-
-                    if (valor == null)
-                    {
-                        mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
-
-
-                    }
-                    else if (valor is string && string.IsNullOrEmpty((string)valor))
-                    {
-                        mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
-
-
-                    }
-                    else if (valor is int && (int)valor == 0 && propiedad.Name != "Count" && propiedad.Name != "Capacity")
-                    {
-                        mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser un valor numérico");
-
-
-                    }
-                  
-                    // Si la propiedad es Count o Capacity y el valor es cero, y no se ha agregado mensaje
-                    else if ((propiedad.Name == "Count" || propiedad.Name == "Capacity") && valor is int && (int)valor == 0 && !mensajeAgregado)
-                    {
-                        mensajesError.Add($"{nombreEntidad} está vacía");
-                        // Establecer la bandera para indicar que se ha agregado el mensaje
-                        mensajeAgregado = true;
-                    }
+                    continue;
                 }
 
-               
+                if (propiedad.Name == "FechaUltimaRegistracion" || propiedad.Name == "FechaRubrica")
+                {
+                    continue;
+                }
+
+
+                if (valor == null)
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
+
+
+                }
+                else if (valor is string && string.IsNullOrEmpty((string)valor))
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
+
+
+                }
+                else if (valor is int && (int)valor == 0 && propiedad.Name != "Count" && propiedad.Name != "Capacity")
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser un valor numérico");
+
+
+                }
+
+                // Si la propiedad es Count o Capacity y el valor es cero, y no se ha agregado mensaje
+                else if ((propiedad.Name == "Count" || propiedad.Name == "Capacity") && valor is int && (int)valor == 0 && !mensajeAgregado)
+                {
+                    mensajesError.Add($"{nombreEntidad} está vacía");
+                    // Establecer la bandera para indicar que se ha agregado el mensaje
+                    mensajeAgregado = true;
+                }
+            }
+
+
         }
         catch (Exception ex)
         {
@@ -1110,12 +1117,12 @@
     {
         return modalRef.Hide();
     }
-    
+
 
     private Task ShowSuccessModal()
     {
         return modalSuccess.Show();
     }
 
-    
+
 }

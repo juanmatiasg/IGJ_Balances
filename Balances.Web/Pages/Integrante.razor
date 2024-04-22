@@ -1,9 +1,11 @@
-﻿@page "/Integrante/"
+﻿@page "/Integrante/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
-@inject ISociosService socioService;
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject ISociosClientService socioService;
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sessionService
 
 
 <!DOCTYPE html>
@@ -17,7 +19,7 @@
 </head>
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <!-- Tabs -->
@@ -147,6 +149,8 @@
 
 @code {
 
+    [Parameter]
+    public string? balid { get; set; } = null;
     [Parameter] public string? TipoEntidad { get; set; }
     private string idSession = "";
     private PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
@@ -174,12 +178,14 @@
     {
         try
         {
-            var idSession = await socioService.getSession();
-            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-            
+            var idSession = await sessionService.GetSessionBalanceId();
+
             if (idSession!=null)
             {
-                var response = await socioService.getBalance(idSession.Result);
+
+                balid = idSession;
+
+                var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
                 {
@@ -235,7 +241,7 @@
         }
         else
         {
-            return null;    
+            return null;
         }
     }
 
@@ -325,7 +331,7 @@
         else
         {
             msgErrorTipoDoc = "El campo no puede estar vacio";
-            return false;    
+            return false;
         }
 
 

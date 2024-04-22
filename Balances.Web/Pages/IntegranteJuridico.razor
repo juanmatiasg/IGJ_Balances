@@ -1,10 +1,12 @@
-﻿@page "/IntegranteJuridico"
+﻿@page "/IntegranteJuridico/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
-@inject ISociosService socioService;
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 
+@inject ISociosClientService socioService;
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sessionService
 
 
 
@@ -19,7 +21,7 @@
 </head>
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <!-- Tabs -->
@@ -129,6 +131,10 @@
 
 @code {
     [Parameter] public string? TipoEntidad { get; set; }
+
+    [Parameter]
+    public string? balid { get; set; } = null;
+
     private string idSession = "";
     private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
     private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
@@ -151,12 +157,14 @@
     {
         try
         {
-           // var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-            var idSession = await socioService.getSession();
+            var idSession = await sessionService.GetSessionBalanceId();
 
             if (idSession!=null)
             {
-                var response = await socioService.getBalance(idSession.Result);
+
+                balid = idSession;
+
+                var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
                 {
@@ -222,7 +230,7 @@
         }
         else
         {
-            return null;    
+            return null;
         }
     }
 

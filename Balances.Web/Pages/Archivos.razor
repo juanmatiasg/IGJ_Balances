@@ -1,7 +1,8 @@
-﻿@page "/Archivos"
+﻿@page "/Archivos/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using Microsoft.AspNetCore.Http;
 @using BlazorInputFileExtended;
@@ -9,8 +10,9 @@
 @using System.Net.Http.Headers;
 @using Microsoft.Extensions.Primitives;
 @using System.Security.Cryptography;
-@inject IArchivosService archivoService
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject IArchivosClientService archivoService
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sesionService
 
 
 
@@ -30,7 +32,7 @@
 
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Archivos" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Archivos" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <div class="container-fluid mt-5">
@@ -95,7 +97,8 @@
                     <div class="card-body">
                         <table class="table table-bordered">
                             <thead>
-                                <tr> 
+                                <tr>
+                                    
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Tipo</th>
                                     <th scope="col">Hash</th>
@@ -110,6 +113,7 @@
                                 {
                                     <tbody>
                                         <tr>
+                                           
                                             <td>@(archivo.NombreArchivo?.Length > 10 ? archivo.NombreArchivo.Substring(0, 10) + "..." : archivo.NombreArchivo)</td>
                                             <td>@(archivo.Categoria?.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
                                             <td>@archivo.Hash</td>
@@ -138,6 +142,7 @@
 @code {
 
     [Parameter] public string? TipoEntidad { get; set; }
+    [Parameter] public string? balid { get; set; } = null;
 
     private bool isLoading = false;
     private double progressPercentage = 0.0;
@@ -162,13 +167,14 @@
     {
         try
         {
-            var idSession = await archivoService.getSession();
-            //var idSession = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
+            var idSession = await sesionService.GetSessionBalanceId();
 
 
             if (idSession!=null)
             {
-                var response = await archivoService.getBalance(idSession.Result);
+                balid = idSession;
+
+                var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
                 {
@@ -201,22 +207,26 @@
     }
 
     private void setListArchivos(List<Archivo> list){
-        if (list != null)
-        {
-            foreach (var x in list)
-            {
-                var archivo = new FileDTO
-                    {
-                        NombreArchivo = x.NombreArchivo,
-                        Categoria = x.Categoria,
-                        Hash = x.Hash,
-                        Tamaño = x.Tamaño,
-                        FechaCreacion = x.FechaCreacion
-                    };
 
-                this.listArchivo.Add(archivo);
-            }
+        this.listArchivo.Clear();
+
+        foreach (var x in list)
+        {
+            var archivo = new FileDTO
+            {
+                Id = x.Id,
+                NombreArchivo = x.NombreArchivo,
+                Categoria = x.Categoria,
+                Hash = x.Hash,
+                Tamaño = x.Tamaño,
+                FechaCreacion = x.FechaCreacion
+            };
+
+            this.listArchivo.Add(archivo);
         }
+
+
+        StateHasChanged();
 
     }
 
@@ -258,7 +268,7 @@
         try
         {
             isLoading = true; // Mostrar indicador de carga
-           
+
 
             foreach (var file in e.GetMultipleFiles())
             {
@@ -291,7 +301,7 @@
         }
         finally
         {
-            isLoading = false; // Ocultar indicador de carga
+            isLoading = false;
             isUploaded = false;
 
         }
@@ -327,7 +337,7 @@
             if (checkData())
             {
 
-                var archivos = new FileDTO();
+                var archivo = new FileDTO();
                 foreach (var file in selectedFiles)
                 {
 
@@ -336,11 +346,12 @@
 
                         var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
 
-                        archivos.Tamaño = binario.Length;
-                        archivos.ContentType = file.ContentType;
-                        archivos.Categoria = categoria;
-                        archivos.NombreArchivo = file.Name;
-                        archivos.Hash = Convert.ToHexString(SHA256.HashData(binario));
+
+                        archivo.Tamaño = binario.Length;
+                        archivo.ContentType = file.ContentType;
+                        archivo.Categoria = categoria;
+                        archivo.NombreArchivo = file.Name;
+                        archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
 
                         // Calcular el progreso de la carga
                         double totalFileSize = selectedFiles.Sum(file => file.Size);
@@ -354,9 +365,9 @@
                             await Task.Delay(1000); // Esperar 1 segundo en cada paso (simulando una carga más lenta)
                         }
 
-                        listArchivo.Add(archivos);
+                        listArchivo.Add(archivo);
 
-                        //response = await archivoService.uploadArchivo(selectedFiles, categoria);
+
                         response = await archivoService.uploadArchivo(listArchivo);
 
                         if (response.IsSuccess)
@@ -388,7 +399,7 @@
         }
         finally
         {
-            isLoading = false; 
+            isLoading = false;
             isUploaded = false;
         }
         return response;
@@ -407,24 +418,26 @@
             return false;
         }
 
-        
+
         msgErrorTipoArchivo = "";
 
         return true;
     }
 
-    private async Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO archivo)
+    private async Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO fileDTO)
     {
         var response = new ResponseDTO<BalanceDto>();
         try
         {
-            response = await archivoService.deleteArchivo(archivo);
+            response = await archivoService.deleteArchivo(fileDTO);
 
             if (response.IsSuccess)
             {
-                listArchivo.Remove(archivo);
 
+                listArchivo.Remove(fileDTO);
             }
+
+
         }
         catch (Exception ex)
         {
@@ -445,4 +458,4 @@
 
 
 
-}
+    }

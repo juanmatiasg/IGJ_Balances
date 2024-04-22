@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Balances.Web.Services.Contracts
 {
-    public class AutoridadService:IAutoridadService
+    public class AutoridadClientService : IAutoridadClientService
     {
         private readonly HttpClient _httpClient;
-      
-        public AutoridadService(HttpClient httpClient)
+
+        public AutoridadClientService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -81,38 +81,6 @@ namespace Balances.Web.Services.Contracts
 
             return rsp;
         }
-
-        public async Task<ResponseDTO<BalanceDto>> getBalance(string id)
-        {
-            return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Balance/{id}");
-
-        }
-
-        public async Task<ResponseDTO<string>> getSession()
-        {
-            try
-            {
-                var result = await _httpClient.GetFromJsonAsync<ResponseDTO<string>>($"Session/getSession");
-
-                return new ResponseDTO<string>
-                {
-                    Result = result.Result,
-                    IsSuccess = result.IsSuccess,
-                    Message = result.Message
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDTO<string>
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = ex.Message
-                };
-            }
-
-        }
-
 
     }
 }

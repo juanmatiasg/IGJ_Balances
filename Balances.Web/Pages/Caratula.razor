@@ -1,6 +1,7 @@
 @page "/Caratula/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using Microsoft.AspNetCore.Http;
 @using Microsoft.JSInterop
@@ -8,8 +9,12 @@
 @using System.Text.RegularExpressions;
 @using Newtonsoft.Json;
 @using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
+
 @inject IJSRuntime JS
-@inject ICaratulaService caratulaService
+@inject ICaratulaClientService caratulaService
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sesionService
+@inject IBusquedaDeSociedadesClientService busquedaSociedadService
 @inject NavigationManager NavigationManager;
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -19,121 +24,121 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Búsqueda de Entidad</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Entidad</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 
-        <!-- Bootstrap 5 CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
-        <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
-        <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
-    </head>
+    <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+</head>
 
-    <body>
+<body>
 
-        <!--Navegacion-->
+    <!--Navegacion-->
 
-       
-        <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado"></Navegacion>
 
-        <!--Loading-->
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
 
-        <Modal @ref="modalRef">
-            <ModalContent>
-                <ModalBody>
-                    <div class="d-flex justify-content-center align-items-center" >
-                        <div class="text-center">
-                            <div class="spinner-grow text-primary" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-secondary" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-success" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-danger" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-warning" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-info" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-light" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-dark" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div>
-                                Loading...
-                            </div>
+    <!--Loading-->
+
+    <Modal @ref="modalRef">
+        <ModalContent>
+            <ModalBody>
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="text-center">
+                        <div class="spinner-grow text-primary" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-secondary" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-success" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-danger" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-warning" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-info" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-light" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div class="spinner-grow text-dark" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                        <div>
+                            Loading...
                         </div>
                     </div>
-                </ModalBody>
-            </ModalContent>
-        </Modal>
-     
-
-        <!---------------------------------------------------------------->
-        <!--Entidad-->
-
-        <div class="container mt-2 mb-3">
-            <div class="card mx-auto">
-                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                    Entidad
                 </div>
+            </ModalBody>
+        </ModalContent>
+    </Modal>
 
 
-                <div class="card-body">
-                    <div class="row d-flex justify-content-center align-items-end position-relative">
-                    
-                        <div class="col">
-                            <label for="busqueda">Nro.Correlativo/CUIT/CUIL</label>
-                            <input type="text w-50"  @bind="@modelo.Entidad.Correlativo" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled ="@tramiteIniciado" >
-                           
-                        </div>
+    <!---------------------------------------------------------------->
+    <!--Entidad-->
 
-                        <div class="col mt-4">
-                            <button type="submit" id="btnBuscar" class="btn btn-primary" @onclick="FindEntities" disabled="@entidadEncontrada">Buscar</button>
-                        </div>
+    <div class="container mt-2 mb-3">
+        <div class="card mx-auto">
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Entidad
+            </div>
+
+
+            <div class="card-body">
+                <div class="row d-flex justify-content-center align-items-end position-relative">
+
+                    <div class="col">
+                        <label for="busqueda">Nro.Correlativo/CUIT/CUIL</label>
+                        <input type="text w-50" @bind="@modelo.Entidad.Correlativo" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled="@tramiteIniciado">
+
                     </div>
-                    <small id="busquedaError" class="text-danger">@busquedaError</small>
-                    
-                   
-                    <div class="row mt-2">
-                        <div class="col-12 col-md-3">
-                            <p class="control texto">Razón Social:</p>
-                        </div>
-                        <div class="col">
+
+                    <div class="col mt-4">
+                        <button type="submit" id="btnBuscar" class="btn btn-primary" @onclick="FindEntities">Buscar</button>
+                    </div>
+                </div>
+                <small id="busquedaError" class="text-danger">@busquedaError</small>
+
+
+                <div class="row mt-2">
+                    <div class="col-12 col-md-3">
+                        <p class="control texto">Razón Social:</p>
+                    </div>
+                    <div class="col">
                         <p id="razonSocial">@modelo.Entidad.RazonSocial</p>
-                        </div>                       
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-12 col-md-3">
-                            <p class="control texto">Tipo de Entidad:</p>
-                        </div>
-                        <div class="col">
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12 col-md-3">
+                        <p class="control texto">Tipo de Entidad:</p>
+                    </div>
+                    <div class="col">
                         <p id="tipoEntidad">@modelo.Entidad.TipoEntidad</p>
-                        </div>
                     </div>
                 </div>
             </div>
-        
-            <!--Datos Personales -->
+        </div>
 
-       <div class="card mx-auto mt-4 ">
- 
+        <!--Datos Personales -->
+
+        <div class="card mx-auto mt-4 ">
+
             <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                 Datos Personales
             </div>
-            
+
             @if (@entidadEncontrada)
             {
                 <div class="row ps-3 pt-3">
@@ -175,12 +180,12 @@
                 </div>
 
                 <div class="col mt-4 mb-4 d-flex justify-content-center">
-                    <button type="button" id="btnInit" class="btn btn-primary w-50 @(!entidadEncontrada || tramiteIniciado ? "btn-secondary" : "btn-primary")" @onclick="@IniciarTramites" disabled="@(!entidadEncontrada ||tramiteIniciado )">Iniciar trámite</button>
+                    <button type="button" id="btnInit" class="btn btn-primary w-50 @(!entidadEncontrada || tramiteIniciado ? "btn-secondary" : "btn-primary")" @onclick="@IniciarTramites" disabled="@(!entidadEncontrada || tramiteIniciado )">Iniciar trámite</button>
                 </div>
 
-             
-                
-           
+
+
+
             }
             else
             {
@@ -221,19 +226,19 @@
                     </div>
                 </div>
 
-               
+
                 <div class="col mt-4 mb-4 d-flex justify-content-center">
                     <button type="button" id="btnInit" class="btn btn-secondary w-50" disabled>Iniciar Trámite</button>
                 </div>
-        
+
             }
 
-             
-             </div>
+
         </div>
-        <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
-    </body>
-    
+    </div>
+
+</body>
+
 
 </html>
 
@@ -241,319 +246,318 @@
 
 
     private string busquedaError = "";
-    private string emailError = "";
-    private string fechaErrorInicio = "";
-    private string fechaErrorCierre = "";
-    private string domicilioError = "";
+        private string emailError = "";
+        private string fechaErrorInicio = "";
+        private string fechaErrorCierre = "";
+        private string domicilioError = "";
 
-    private bool entidadEncontrada;
-    private string idSession = "";
-    public static bool isActive = false;
-
-
-    // reference to the modal component
-    private Modal modalRef;
-
-    [Parameter]
-    public string? balid { get; set; }
+        private bool entidadEncontrada;
+        private string idSession = "";
+        public static bool isActive = false;
 
 
-    [Parameter] public string? TipoEntidad { get; set; }
-    // [Parameter] public string? RazonSocial { get; set; }
+        // reference to the modal component
+        private Modal modalRef;
 
-    private bool tramiteIniciado = false;
+        [Parameter]
+        public string? balid { get; set; } = null;
 
 
-    private CaratulaDto modelo = new CaratulaDto
+        [Parameter] public string? TipoEntidad { get; set; }
+        // [Parameter] public string? RazonSocial { get; set; }
+
+        private bool tramiteIniciado = false;
+
+
+        private CaratulaDto modelo = new CaratulaDto
         {
             Entidad = new Model.Entidad()
 
         };
 
-    private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
+        private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
 
-    protected override async Task OnInitializedAsync()
-    {
-    
-
-        await Load();
-
-
-        await base.OnInitializedAsync();
-    }
-
-    private async Task Load()
-    {
-        try
+        protected override async Task OnInitializedAsync()
         {
-            var taskString = await SessionStorage.GetItemAsync<string>(Constants.KEY_SESSION);
-            var idKey = taskString;
 
-            if (idKey != null)
+
+            await Load();
+
+
+            await base.OnInitializedAsync();
+        }
+
+        private async Task Load()
+        {
+            try
             {
-                balid = idKey;
-                var response = await caratulaService.getBalance(idKey);
 
-                if (response.IsSuccess)
+                var sesion = await sesionService.getSession();
+
+                if (sesion.Result != null)
                 {
-                    var result = response.Result;
 
-                    if (result != null)
+                    var balanceId = await sesionService.GetSessionBalanceId();
+
+                    if (balanceId != null)
                     {
-                        Model.Caratula caratula = result.Caratula;
+                        balid = balanceId;
 
-                        modelo.Email = caratula.Email;
-                        modelo.FechaInicio = caratula.FechaInicio;
-                        modelo.FechaDeCierre = caratula.FechaDeCierre;
-                        modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
-                        modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
-                        modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
-                        modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
-                        modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+                        var response = await balanceService.getBalance(balanceId);
 
-                        TipoEntidad = caratula.Entidad.TipoEntidad;
-                        //  RazonSocial = caratula.Entidad.RazonSocial;
+                        if (response.IsSuccess)
+                        {
+                            var result = response.Result;
+
+                            if (result != null)
+                            {
+                                Model.Caratula caratula = result.Caratula;
+
+                                modelo.Email = caratula.Email;
+                                modelo.FechaInicio = caratula.FechaInicio;
+                                modelo.FechaDeCierre = caratula.FechaDeCierre;
+                                modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
+                                modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
+                                modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+                                modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+                                modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+
+                                TipoEntidad = caratula.Entidad.TipoEntidad;
+                                //  RazonSocial = caratula.Entidad.RazonSocial;
 
 
-                        entidadEncontrada = true;
-                        tramiteIniciado = true;
+                                entidadEncontrada = true;
+                                tramiteIniciado = true;
+                            }
+                        }
+
+                        else
+                        {
+                            entidadEncontrada = false;
+
+                        }
                     }
-                }
-
-                else
-                {
-                    entidadEncontrada = false;
 
                 }
 
                 StateHasChanged();
+
+
             }
-            else
+
+
+
+            catch (Exception ex)
             {
-                Console.WriteLine($"No se ha encontrado el idSession");
+                Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+                throw;
+
             }
-
-
-
-
-        }
-
-        catch (Exception ex)
-        {
-            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
-
         }
 
 
-    }
 
 
-
-
-    private async Task FindEntities()
-    {
-
-
-        int numericNroCorrelativo;
-
-        if (modelo != null)
+        private async Task FindEntities()
         {
-            if (string.IsNullOrEmpty(modelo.Entidad.Correlativo))
+
+
+            int numericNroCorrelativo;
+
+            if (modelo != null)
             {
-                busquedaError = "El campo no puede estar vacío";
-                return;
-            }
-
-            if (int.TryParse(modelo.Entidad.Correlativo, out numericNroCorrelativo))
-            {
-                busquedaError = "";
-
-
-                try
+                if (string.IsNullOrEmpty(modelo.Entidad.Correlativo))
                 {
-                    await ShowLoadingModal();
+                    busquedaError = "El campo no puede estar vacío";
+                    return;
+                }
 
-                    var response = await caratulaService.findEntities(modelo.Entidad.Correlativo);
+                if (int.TryParse(modelo.Entidad.Correlativo, out numericNroCorrelativo))
+                {
+                    busquedaError = "";
 
-                    if (response != null)
+
+                    try
                     {
-                        modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
-                        modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
+                        await ShowLoadingModal();
 
-                        TipoEntidad = response.Result.TipoEntidad;
-                        //   RazonSocial = response.Result.RazonSocial;
+                        var response = await busquedaSociedadService.findSociedad(modelo.Entidad.Correlativo);
 
-                        entidadEncontrada = true;
+                        if (response != null)
+                        {
+                            modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
+                            modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
 
+                            TipoEntidad = response.Result.TipoEntidad;
+                            //   RazonSocial = response.Result.RazonSocial;
+
+                            entidadEncontrada = true;
+
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                }
-                finally
-                {
-                    await HideLoadingModal();
-                    StateHasChanged();
-                }
-
-            } 
-            else
-            {
-                busquedaError = "El campo tiene que ser numérico";
-            }
-        }
-        else
-        {
-            modelo = new CaratulaDto();    
-        }
-
-    }
-
-    private async Task IniciarTramites()
-    {
-
-        await ShowLoadingModal();
-
-        try
-        {
-            if (checkData())
-            {
-                var response = await caratulaService.initTramite(modelo);
-
-                if (response.IsSuccess)
-                {
-         
-                    // Preguntar si hay una Clave existente antes de Setear
-
-
-                    await SessionStorage.SetItemAsync<string>(Constants.KEY_SESSION, response.Result.Id);
-       
-
-                    isActive = true;
-                    tramiteIniciado = true;
-
-
-                    StateHasChanged();
-                }
-            }
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: IniciarTramites {ex.Message}");
-        }
-        finally
-        {
-            await HideLoadingModal();
-            StateHasChanged();
-        }
-
-
-    }
-
-    private bool checkData()
-    {
-        if (modelo.Entidad.Domicilio != null)
-        {
-            domicilioError = "";
-        }
-        else
-        {
-            domicilioError = "El campo no puede estar vacío";
-            return false;
-        }
-
-
-        if (modelo.FechaInicio != null)
-        {
-            fechaErrorInicio = "";
-        }
-        else
-        {
-            fechaErrorInicio = "Seleccioná la fecha correspondiente";
-            return false;
-        }
-
-        if (modelo.FechaDeCierre != null)
-        {
-            fechaErrorCierre = "";
-        }
-        else
-        {
-            fechaErrorCierre = "Seleccioná la fecha correspondiente";
-            return false;
-        }
-
-
-
-        if (modelo.FechaInicio != null && modelo.FechaDeCierre != null)
-        {
-            if (modelo.FechaInicio.Value == modelo.FechaDeCierre.Value)
-            {
-                fechaErrorInicio = "Ambas fechas son iguales";
-                fechaErrorCierre = "Ambas fechas son iguales";
-
-                return false;
-            }
-            else
-            {
-                if (modelo.FechaInicio.Value < modelo.FechaDeCierre.Value)
-                {
-                    fechaErrorInicio = "";
-                    fechaErrorCierre = "";
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                    finally
+                    {
+                        await HideLoadingModal();
+                        StateHasChanged();
+                    }
 
                 }
                 else
                 {
-                    fechaErrorInicio = "La fecha de inicio tiene que ser menor a la fecha del cierre"; 
-
-                    return false;    
+                    busquedaError = "El campo tiene que ser numérico";
                 }
-
-            }
-        }
-
-        if (modelo.Email != null)
-        {
-            emailError = "";
-            if (Validator.IsEmail(modelo.Email))
-            {
-                emailError = "";
             }
             else
             {
-                emailError = "Ingresa tu mail correcto";
-                return false;
+                modelo = new CaratulaDto();
             }
 
         }
-        else
+
+        private async Task IniciarTramites()
         {
-            emailError = "El campo no puede esta vacio";
-            return false;
+
+            await ShowLoadingModal();
+
+            try
+            {
+                if (checkData())
+                {
+                    var response = await caratulaService.insertCaratula(modelo);
+
+                    if (response.IsSuccess)
+                    {
+
+                        await sesionService.setSession(response.Result.Id);
+
+                        isActive = true;
+                        tramiteIniciado = true;
+
+
+                        StateHasChanged();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: IniciarTramites {ex.Message}");
+            }
+            finally
+            {
+                await HideLoadingModal();
+                StateHasChanged();
+            }
+
+
         }
 
-        emailError = "";
-        domicilioError = "";
-        fechaErrorCierre = "";
-        fechaErrorInicio = "";
-        return true;    
+        private bool checkData()
+        {
+            if (modelo.Entidad.Domicilio != null)
+            {
+                domicilioError = "";
+            }
+            else
+            {
+                domicilioError = "El campo no puede estar vacío";
+                return false;
+            }
+
+
+            if (modelo.FechaInicio != null)
+            {
+                fechaErrorInicio = "";
+            }
+            else
+            {
+                fechaErrorInicio = "Seleccioná la fecha correspondiente";
+                return false;
+            }
+
+            if (modelo.FechaDeCierre != null)
+            {
+                fechaErrorCierre = "";
+            }
+            else
+            {
+                fechaErrorCierre = "Seleccioná la fecha correspondiente";
+                return false;
+            }
+
+
+
+            if (modelo.FechaInicio != null && modelo.FechaDeCierre != null)
+            {
+                if (modelo.FechaInicio.Value == modelo.FechaDeCierre.Value)
+                {
+                    fechaErrorInicio = "Ambas fechas son iguales";
+                    fechaErrorCierre = "Ambas fechas son iguales";
+
+                    return false;
+                }
+                else
+                {
+                    if (modelo.FechaInicio.Value < modelo.FechaDeCierre.Value)
+                    {
+                        fechaErrorInicio = "";
+                        fechaErrorCierre = "";
+
+                    }
+                    else
+                    {
+                        fechaErrorInicio = "La fecha de inicio tiene que ser menor a la fecha del cierre";
+
+                        return false;
+                    }
+
+                }
+            }
+
+            if (modelo.Email != null)
+            {
+                emailError = "";
+                if (Validator.IsEmail(modelo.Email))
+                {
+                    emailError = "";
+                }
+                else
+                {
+                    emailError = "Ingresa tu mail correcto";
+                    return false;
+                }
+
+            }
+            else
+            {
+                emailError = "El campo no puede esta vacio";
+                return false;
+            }
+
+            emailError = "";
+            domicilioError = "";
+            fechaErrorCierre = "";
+            fechaErrorInicio = "";
+            return true;
+        }
+
+
+        // Método para mostrar el modal de carga
+        private Task ShowLoadingModal()
+        {
+            return modalRef.Show();
+        }
+
+        // Método para ocultar el modal de carga
+        private Task HideLoadingModal()
+        {
+            return modalRef.Hide();
+        }
+
+
     }
-
-
-    // Método para mostrar el modal de carga
-    private Task ShowLoadingModal()
-    {
-        return modalRef.Show();
-    }
-
-    // Método para ocultar el modal de carga
-    private Task HideLoadingModal()
-    {
-        return modalRef.Hide();
-    }
-
-
-}
 

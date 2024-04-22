@@ -1,6 +1,5 @@
 ﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
-using Balances.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Balances.API.Controllers
@@ -15,23 +14,23 @@ namespace Balances.API.Controllers
         {
             _archivoBusiness = archivoBusiness;
         }
-        
+
         [HttpPost]
         [Route("InsertArchivos")]
         public ResponseDTO<BalanceDto> InsertArchivos([FromBody] List<FileDTO> files)
         {
-           
+
             var rsp = _archivoBusiness.UploadFilesDTO(files);
             return rsp;
 
         }
-        
+
         [HttpDelete]
         [Route("DeleteArchivo")]
-        public ResponseDTO<BalanceDto> Delete([FromBody] Archivo archivo)
+        public ResponseDTO<BalanceDto> Delete([FromBody] FileDTO file)
         {
 
-            var rsp = _archivoBusiness.Delete(archivo);
+            var rsp = _archivoBusiness.Delete(file);
             return rsp;
 
         }
