@@ -1,4 +1,4 @@
-﻿@page "/EstadoContable"
+﻿@page "/EstadoContable/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -30,7 +30,7 @@
 </head>
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="EstadoContable" TramiteIniciado = "true" ></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="EstadoContable" TramiteIniciado = "true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <div class="container mt-4">
@@ -455,6 +455,8 @@
 @code {
     [Parameter] public string? TipoEntidad { get; set; }
 
+    [Parameter] public string? balid { get; set; } = null;
+
     private string tipoBalanceError = "";
 
     private string fechaInicioError = "";
@@ -507,7 +509,7 @@
 
     private bool firstTimeInput = true;
 
-    
+
     protected override async Task OnInitializedAsync()
     {
 
@@ -516,18 +518,23 @@
         await base.OnInitializedAsync();
     }
 
+
     private async Task Load()
     {
         try
         {
-        
+
 
             var idSession = await sesionService.GetSessionBalanceId();
 
             if (idSession!=null)
             {
 
+
+                balid = idSession;
+
                 var response = await balanceService.getBalance(idSession);
+
 
                 if (response.IsSuccess)
                 {
@@ -536,11 +543,12 @@
                     {
                         var rsp = response.Result.EstadoContable;
 
+
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
 
                         estadoContableDto = new EstadoContableDto(rsp);
 
-                    
+
 
                         StateHasChanged();
 
@@ -737,7 +745,7 @@
 
             foreach (var rubros in estadoContableDto.otrosRubros)
             {
-                sumatoriaImporte = sumatoriaImporte + rubros.importe;    
+                sumatoriaImporte = sumatoriaImporte + rubros.importe;
             }
 
 
@@ -932,12 +940,12 @@
             {
 
                 estadoContableDto.otrosRubros.Add(new RubroPatrimonioNetoDto
-                    {
+                {
 
-                        codigo = rubro.Codigo,
-                        denominacion = rubro.Denominacion,
-                        importe = rubro.Importe,
-                    });
+                    codigo = rubro.Codigo,
+                    denominacion = rubro.Denominacion,
+                    importe = rubro.Importe,
+                });
             }
         }
     }
@@ -1397,9 +1405,9 @@
         reservaLegalError = "";
 
 
-    
+
         return true;
     }
-   
+
 
 }

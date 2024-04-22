@@ -1,5 +1,9 @@
 @using Balances.DTO;
 @using Balances.Web.Pages;
+@using Balances.Web.Services.Contracts;
+@using Balances.Web.Services.Implementation;
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sesionService
 
 <div>
     <h3 class="fs-2 font-weight mt-4 mb-4 d-flex justify-content-center">
@@ -9,33 +13,37 @@
 
 <ul class="nav nav-tabs d-flex justify-content-center">
     <li class="nav-item">
-        <a class="nav-link text-primary @(PaginaActiva == "Caratula" ? "active" : "")" href="/Caratula">Caratula</a>
+        <a class="nav-link text-primary @(PaginaActiva == "Caratula" ? "active" : "")" href="/Caratula/@balid">Caratula</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "EstadoContable" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/EstadoContable">Estado Contable</a>
-    </li>
-      <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Libros" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Libros">Libros</a>
+        <a class="nav-link text-primary @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "EstadoContable" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/EstadoContable/@balid">Estado Contable</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Contador" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Contador">Contador</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Libros" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Libros/@balid">Libros</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Autoridad" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Autoridad">Autoridad</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Contador" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Contador/@balid">Contador</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Integrante" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Integrante">Integrante</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Autoridad" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Autoridad/@balid">Autoridad</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Archivos" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Archivos">Archivos</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Integrante" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Integrante/@balid">Integrante</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Confirmacion" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Confirmacion">Confirmación</a>
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Archivos" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Archivos/@balid">Archivos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Confirmacion" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Confirmacion/@balid">Confirmación</a>
     </li>
 </ul>
+
 
 @code {
     [Parameter] public string? Entidad { get; set; }
     [Parameter] public string? PaginaActiva { get; set; } = "Caratula";
-    [Parameter] public bool TramiteIniciado { get; set; } 
+    [Parameter] public bool TramiteIniciado { get; set; }
+    [Parameter] public string? balid { get; set; } = null;
 }
+
+    

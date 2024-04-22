@@ -1,4 +1,4 @@
-﻿@page "/Autoridad"
+﻿@page "/Autoridad/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
@@ -30,7 +30,7 @@
 
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Autoridad" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Autoridad" TramiteIniciado="true" balid="@balid"></Navegacion>
 
 
     <!---------------------------------------------------------------->
@@ -165,6 +165,8 @@
 
 
 @code {
+    [Parameter] public string? balid { get; set; } = null;
+
     [Parameter] public string? TipoEntidad { get; set; }
 
 
@@ -215,9 +217,11 @@
         try
         {
             var idSession = await sesionService.GetSessionBalanceId();
-            
+
             if (idSession!=null)
             {
+                balid = idSession;
+
                 var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
@@ -297,7 +301,7 @@
         }
         else
         {
-            return null;    
+            return null;
         }
     }
 
@@ -305,7 +309,7 @@
     private void cleanInputs()
     {
         // Restablecer los valores de los campos a su estado inicial o vacío
-        modelo = new AutoridadDto(); 
+        modelo = new AutoridadDto();
     }
 
     private void resultAutoridades(List<AutoridadDto> listAutoridades)
@@ -473,12 +477,12 @@
         return true;
     }
 
-    
 
 
 
 
-  
+
+
 }
     
 

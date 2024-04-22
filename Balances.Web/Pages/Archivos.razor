@@ -1,4 +1,4 @@
-﻿@page "/Archivos"
+﻿@page "/Archivos/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -32,7 +32,7 @@
 
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Archivos" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Archivos" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <div class="container-fluid mt-5">
@@ -98,7 +98,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col">Id</th>
+                                    
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Tipo</th>
                                     <th scope="col">Hash</th>
@@ -113,7 +113,7 @@
                                 {
                                     <tbody>
                                         <tr>
-                                            <td>@archivo.Id</td>
+                                           
                                             <td>@(archivo.NombreArchivo?.Length > 10 ? archivo.NombreArchivo.Substring(0, 10) + "..." : archivo.NombreArchivo)</td>
                                             <td>@(archivo.Categoria?.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
                                             <td>@archivo.Hash</td>
@@ -142,6 +142,7 @@
 @code {
 
     [Parameter] public string? TipoEntidad { get; set; }
+    [Parameter] public string? balid { get; set; } = null;
 
     private bool isLoading = false;
     private double progressPercentage = 0.0;
@@ -171,6 +172,8 @@
 
             if (idSession!=null)
             {
+                balid = idSession;
+
                 var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
@@ -203,24 +206,27 @@
 
     }
 
-    private void setListArchivos(List<FileDTO> list){
-        if (list != null)
-        {
-            foreach (var x in list)
-            {
-                var archivo = new FileDTO
-                    {
-                        Id = x.Id,
-                        NombreArchivo = x.NombreArchivo,
-                        Categoria = x.Categoria,
-                        Hash = x.Hash,
-                        Tamaño = x.Tamaño,
-                        FechaCreacion = x.FechaCreacion
-                    };
+    private void setListArchivos(List<Archivo> list){
 
-                this.listArchivo.Add(archivo);
-            }
+        this.listArchivo.Clear();
+
+        foreach (var x in list)
+        {
+            var archivo = new FileDTO
+            {
+                Id = x.Id,
+                NombreArchivo = x.NombreArchivo,
+                Categoria = x.Categoria,
+                Hash = x.Hash,
+                Tamaño = x.Tamaño,
+                FechaCreacion = x.FechaCreacion
+            };
+
+            this.listArchivo.Add(archivo);
         }
+
+
+        StateHasChanged();
 
     }
 
@@ -262,7 +268,7 @@
         try
         {
             isLoading = true; // Mostrar indicador de carga
-           
+
 
             foreach (var file in e.GetMultipleFiles())
             {
@@ -295,7 +301,7 @@
         }
         finally
         {
-            isLoading = false; // Ocultar indicador de carga
+            isLoading = false;
             isUploaded = false;
 
         }
@@ -339,8 +345,8 @@
                     {
 
                         var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
-                        
-                       
+
+
                         archivo.Tamaño = binario.Length;
                         archivo.ContentType = file.ContentType;
                         archivo.Categoria = categoria;
@@ -361,7 +367,7 @@
 
                         listArchivo.Add(archivo);
 
-                       
+
                         response = await archivoService.uploadArchivo(listArchivo);
 
                         if (response.IsSuccess)
@@ -393,7 +399,7 @@
         }
         finally
         {
-            isLoading = false; 
+            isLoading = false;
             isUploaded = false;
         }
         return response;
@@ -412,24 +418,26 @@
             return false;
         }
 
-        
+
         msgErrorTipoArchivo = "";
 
         return true;
     }
 
-    private async Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO archivo)
+    private async Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO fileDTO)
     {
         var response = new ResponseDTO<BalanceDto>();
         try
         {
-            response = await archivoService.deleteArchivo(archivo);
+            response = await archivoService.deleteArchivo(fileDTO);
 
             if (response.IsSuccess)
             {
-                listArchivo.Remove(archivo);
 
+                listArchivo.Remove(fileDTO);
             }
+
+
         }
         catch (Exception ex)
         {
@@ -450,4 +458,4 @@
 
 
 
-}
+    }

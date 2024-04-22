@@ -1,4 +1,4 @@
-﻿@page "/Integrante/"
+﻿@page "/Integrante/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
@@ -19,7 +19,7 @@
 </head>
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <!-- Tabs -->
@@ -149,6 +149,8 @@
 
 @code {
 
+    [Parameter]
+    public string? balid { get; set; } = null;
     [Parameter] public string? TipoEntidad { get; set; }
     private string idSession = "";
     private PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
@@ -177,9 +179,12 @@
         try
         {
             var idSession = await sessionService.GetSessionBalanceId();
-            
+
             if (idSession!=null)
             {
+
+                balid = idSession;
+
                 var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
@@ -236,7 +241,7 @@
         }
         else
         {
-            return null;    
+            return null;
         }
     }
 
@@ -326,7 +331,7 @@
         else
         {
             msgErrorTipoDoc = "El campo no puede estar vacio";
-            return false;    
+            return false;
         }
 
 

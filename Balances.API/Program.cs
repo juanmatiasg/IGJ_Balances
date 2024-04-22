@@ -14,9 +14,9 @@ using NLog.Web;
 using IPresentacionService = Balances.Services.Contract.IPresentacionService;
 using PresentacionService = Balances.Services.Implementation.PresentacionService;
 
-var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+//var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-logger.Debug("init main");
+//logger.Debug("init main");
 
 try
 {
@@ -31,8 +31,8 @@ try
     builder.Services.AddSwaggerGen();
 
     //Logger
-    builder.Logging.ClearProviders();
-    builder.Host.UseNLog();
+  //  builder.Logging.ClearProviders();
+  //  builder.Host.UseNLog();
 
     //SMTP Settings
     builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
@@ -104,24 +104,14 @@ try
         });
     });
 
-    /* builder.Services.AddCors(options =>
-     {
-         options.AddPolicy("NuevaPolitica", app =>
-         {
-             app.AllowAnyOrigin().
-             AllowAnyHeader().
-             AllowAnyMethod();
 
-         });
-     }); //Importante 
-    */
 
     builder.Services.AddSession(options =>
-{
-  options.IdleTimeout = TimeSpan.FromHours(3);
-  options.Cookie.HttpOnly = true;
-  options.Cookie.IsEssential = true;
-});
+    {
+        options.IdleTimeout = TimeSpan.FromHours(3);
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+    });
 
     builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -146,13 +136,11 @@ try
     app.UseRouting();
     app.UseCors("NuevaPolitica");
     app.UseAuthorization();
-    //Cors
-    //app.UseCors("NuevaPolitica");
+
 
     app.UseAuthentication();
 
     app.UseAuthorization();
-
 
 
     app.MapControllers();
@@ -163,12 +151,12 @@ try
 }
 catch (Exception e)
 {
-    logger.Error(e, "Falla al iniciar la api en el Program.cs");
+    //logger.Error(e, "Falla al iniciar la api en el Program.cs");
     throw;
 }
 finally
 {
-    NLog.LogManager.Shutdown();
+    //NLog.LogManager.Shutdown();
 }
 
 

@@ -1,34 +1,36 @@
 ﻿@page "/ContinuarCarga/{balid}"
-@using Balances.Utilities;
-@using Balances.Web.Services.Implementation;
-@using Org.BouncyCastle.Asn1.Ocsp;
 @inject NavigationManager NavigationManager
-@inject ICaratulaClientService caratulaService
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@using Balances.Web.Services.Contracts;
 
-<h3>Cargando....</h3>
+@inject IBalanceClientService balanceService
+@inject IBaseSessionClientService sesionService
+
+<h3 class="d-flex justify-content-center">@message</h3>
 
 @code {
     [Parameter]
     public string balid { get; set; }
 
+    private string? message;
+
     protected override async void OnInitialized()
     {
         /*cargar la caratula*/
 
-        await SessionStorage.SetItemAsStringAsync(Token.KEY_SESSION, balid);
-        
-        var rlt = await caratulaService.loadCaratula(balid);
+        message = "Cargando...";
+
+        var rlt = await sesionService.setSession(balid);
 
         if (rlt.IsSuccess)
         {/*redireccionar al inicio de la carga*/
-            NavigationManager.NavigateTo($"Caratula");
+            NavigationManager.NavigateTo($"Caratula/{balid}");
         }
-     
+        else {
+            message = "Hubo algun error";
+        }
 
-        //Else a una pagina de error
     }
 
-   
+
 
 }

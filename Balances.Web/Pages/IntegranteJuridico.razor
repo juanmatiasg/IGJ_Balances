@@ -1,4 +1,4 @@
-﻿@page "/IntegranteJuridico"
+﻿@page "/IntegranteJuridico/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
@@ -21,7 +21,7 @@
 </head>
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <!-- Tabs -->
@@ -131,6 +131,10 @@
 
 @code {
     [Parameter] public string? TipoEntidad { get; set; }
+
+    [Parameter]
+    public string? balid { get; set; } = null;
+
     private string idSession = "";
     private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
     private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
@@ -157,6 +161,9 @@
 
             if (idSession!=null)
             {
+
+                balid = idSession;
+
                 var response = await balanceService.getBalance(idSession);
 
                 if (response.IsSuccess == true)
@@ -223,7 +230,7 @@
         }
         else
         {
-            return null;    
+            return null;
         }
     }
 
