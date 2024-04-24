@@ -12,7 +12,7 @@
 @using System.Security.Cryptography;
 @inject IArchivosClientService archivoService
 @inject IBalanceClientService balanceService
-@inject IBaseSessionClientService sesionService
+@inject ISessionClientService sesionService
 
 
 
@@ -98,7 +98,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col">Id</th>
+                                 
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Tipo</th>
                                     <th scope="col">Hash</th>
@@ -113,7 +113,7 @@
                                 {
                                     <tbody>
                                         <tr>
-                                            <td>@archivo.Id</td>
+                                            
                                             <td>@(archivo.NombreArchivo?.Length > 10 ? archivo.NombreArchivo.Substring(0, 10) + "..." : archivo.NombreArchivo)</td>
                                             <td>@(archivo.Categoria?.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
                                             <td>@archivo.Hash</td>

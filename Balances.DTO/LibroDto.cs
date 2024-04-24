@@ -1,12 +1,12 @@
-﻿using static Balances.DTO.LibrosDto;
-
-namespace Balances.DTO
+﻿namespace Balances.DTO
 {
     public class LibroDto
     {
+
+        public string SesionId { get; set; }
         public string Tipo { get; set; }
         public string Nombre { get; set; }
-      
+
         public string NumeroRubrica { get; set; }
 
         public DateTime? FechaUltimaRegistracion { get; set; }
@@ -15,8 +15,8 @@ namespace Balances.DTO
         public bool NoSabeNoContesta { get; set; }
 
         public string FolioUltimaRegistracion { get; set; }
-    
-   
+
+
     }
 
 }

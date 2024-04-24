@@ -10,12 +10,13 @@
 @using Newtonsoft.Json;
 @using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 @inject IJSRuntime JS
+
 @inject ICaratulaClientService caratulaService
 @inject IBalanceClientService balanceService 
-@inject IBaseSessionClientService sesionService
+@inject ISessionClientService sesionService
 @inject IBusquedaDeSociedadesClientService busquedaSociedadService 
 @inject NavigationManager NavigationManager;
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IHttpContextAccessor httpContextAccessor
 
@@ -260,6 +261,10 @@
 
     [Parameter]
     public string? balid { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
+    //[Parameter]
+    public string? sesion { get; set; }
 
 
     [Parameter] public string? TipoEntidad { get; set; }
@@ -290,60 +295,109 @@
     {
         try
         {
-
-
-            var sesion = await sesionService.getSession();
-
-            if (sesion.Result != null)
+           sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            if(sesionId == null)
             {
+                var sesionRespuesta = await sesionService.getNewSession();
 
-                var balanceId = await sesionService.GetSessionBalanceId();
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
+            }
+            else
+            {
+                var rsp = await sesionService.getBalanceId(sesionId);
 
-
-                var response = await balanceService.getBalance(balanceId);
-
-                if (response.IsSuccess)
+                if(/*rsp.IsSuccess*/ rsp is not null)
                 {
-                    var result = response.Result;
+                    balid = rsp ;
+                    var response = await balanceService.getBalance(balid);
 
-                    if (result != null)
+                    if (response.IsSuccess)
                     {
+                        var result = response.Result;
                         Model.Caratula caratula = result.Caratula;
 
-                        modelo.Email = caratula.Email;
-                        modelo.FechaInicio = caratula.FechaInicio;
-                        modelo.FechaDeCierre = caratula.FechaDeCierre;
-                        modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
-                        modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
-                        modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
-                        modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
-                        modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+                                    modelo.Email = caratula.Email;
+                                    modelo.FechaInicio = caratula.FechaInicio;
+                                    modelo.FechaDeCierre = caratula.FechaDeCierre;
+                                    modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
+                                    modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
+                                    modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+                                    modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+                                    modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
 
-                        TipoEntidad = caratula.Entidad.TipoEntidad;
-                        //  RazonSocial = caratula.Entidad.RazonSocial;
+                                    TipoEntidad = caratula.Entidad.TipoEntidad;
+                                    //  RazonSocial = caratula.Entidad.RazonSocial;
 
 
-                        entidadEncontrada = true;
-                        tramiteIniciado = true;
+                                    entidadEncontrada = true;
+                                    tramiteIniciado = true;
                     }
-                }
-
-                else
-                {
-                    entidadEncontrada = false;
 
                 }
+              
 
-                StateHasChanged();
-
-
+                
             }
+
+           
+
+            //SetSessionStorage();
+
+
+
+            //var sesion = await sesionService.getSession();
+
+            //if (sesion.Result != null)
+            //{
+
+            //    var balanceId = await sesionService.GetSessionBalanceId();
+
+
+            //    var response = await balanceService.getBalance(balanceId);
+
+            //    if (response.IsSuccess)
+            //    {
+            //        var result = response.Result;
+
+            //        if (result != null)
+            //        {
+            //            Model.Caratula caratula = result.Caratula;
+
+            //            modelo.Email = caratula.Email;
+            //            modelo.FechaInicio = caratula.FechaInicio;
+            //            modelo.FechaDeCierre = caratula.FechaDeCierre;
+            //            modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
+            //            modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
+            //            modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+            //            modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+            //            modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+
+            //            TipoEntidad = caratula.Entidad.TipoEntidad;
+            //            //  RazonSocial = caratula.Entidad.RazonSocial;
+
+
+            //            entidadEncontrada = true;
+            //            tramiteIniciado = true;
+            //        }
+            //    }
+
+            //    else
+            //    {
+            //        entidadEncontrada = false;
+
+            //    }
+
+            //    StateHasChanged();
+
+
+            //}
 
         }
 
         catch (Exception ex)
         {
-            
+
             //Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
             throw;
 
@@ -351,6 +405,42 @@
 
 
     }
+
+
+    public void SetSessionStorage()
+    {
+
+
+        sessionStorage.SetItemAsync("SessionId", sesionId);
+
+
+    }
+
+    public async Task<String> GetSessionStorage()
+    {
+        sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+
+        return sesionId;
+    }
+
+    //public async Task<String> GetBalanceId(string sesionId)
+    //{
+
+    //    //var rsp = await sesionService.getBalanceId(sesionId);
+    //    //string balanceId = rsp.Result ;
+
+    //    //return balanceId;
+    //}
+
+    public async Task <BalanceDto> GetBalance(string balanceId)
+    {
+
+        var rsp = await balanceService.getBalance(balanceId);
+        var balance = rsp.Result;
+        return balance;
+    }
+
+
 
 
 
@@ -424,17 +514,25 @@
         {
             if (checkData())
             {
-                var response = await caratulaService.insertCaratula(modelo);
+                sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+                modelo.SesionId = sesionId;
+                var rsp = await caratulaService.insertCaratula(modelo);
 
-                if (response.IsSuccess)
+                if (rsp.IsSuccess)
                 {
-                 
-                    await sesionService.setSession(response.Result.Id);
+                    //await sesionService.setBalanceId(sesionId, rsp.Result.Id);
 
+                    //var rspBalanceId = await sesionService.getBalanceId(sesionId);
+
+                    //balid = rsp.Result;
+
+
+                    //await sesionService.setSession(response.Result.Id);
+                   
                     isActive = true;
                     tramiteIniciado = true;
 
-
+                    //await sesionService.getBalanceId(sesionId);
                     StateHasChanged();
                 }
             }

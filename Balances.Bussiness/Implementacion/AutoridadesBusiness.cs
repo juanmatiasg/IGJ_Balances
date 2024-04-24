@@ -66,7 +66,8 @@ namespace Balances.Bussiness.Implementacion
             var autoridadSerializada = JsonConvert.SerializeObject(modelo);
             try
             {
-                var id = _sessionService.GetSessionBalanceId();
+                var sesionId = _sessionService.GetNewSesion();
+                var id = _sessionService.GetBalanceId(sesionId);
 
 
                 var resultadoDto = _balanceBusiness.GetById(id);

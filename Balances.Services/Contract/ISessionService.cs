@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-
-namespace Balances.Services.Contract
+﻿namespace Balances.Services.Contract
 {
     public interface ISessionService
     {
 
-        void SetSession(string balanceId);
-        Dictionary<string, string> GetSession();
+        bool SetBalance(string sessionId, string balanceId);
+        string GetNewSesion();
+        string GetBalanceId(string sessionId);
         string GetSessionBalanceId();
-        string GetSessionToken();
+        //string GetSessionToken();
     }
 
 

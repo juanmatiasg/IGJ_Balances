@@ -8,9 +8,10 @@ namespace Balances.Web.Services.Implementation
     {
         private readonly HttpClient _httpClient;
 
-        public BalanceClientService(HttpClient httpClient)
+        public BalanceClientService(HttpClient httpClient/*, SessionClientService session*/)
         {
             _httpClient = httpClient;
+            //session.SessionId = session.SessionId;
         }
 
         public async Task<ResponseDTO<BalanceDto>> getBalance(string id)

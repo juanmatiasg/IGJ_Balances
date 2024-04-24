@@ -26,6 +26,7 @@ try
 
     builder.Services.AddControllers();
 
+
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -104,23 +105,13 @@ try
         });
     });
 
-    /* builder.Services.AddCors(options =>
-     {
-         options.AddPolicy("NuevaPolitica", app =>
-         {
-             app.AllowAnyOrigin().
-             AllowAnyHeader().
-             AllowAnyMethod();
 
-         });
-     }); //Importante 
-    */
 
     builder.Services.AddSession(options =>
 {
-  options.IdleTimeout = TimeSpan.FromHours(3);
-  options.Cookie.HttpOnly = true;
-  options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromDays(60);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 
     builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

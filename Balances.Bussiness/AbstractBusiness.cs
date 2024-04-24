@@ -22,9 +22,10 @@ namespace Balances.Bussiness
             _sessionService = sessionService;
         }
 
-        public Balance GetBalance()
+        public Balance GetBalance(string sesionId)
         {
-            var id = _sessionService.GetSession();
+
+            var id = _sessionService.GetBalanceId(sesionId);
 
 
             //var resultadoDto = _balanceBusiness.GetById(id.Values.ToString());
@@ -32,7 +33,7 @@ namespace Balances.Bussiness
 
 
             var balance = _balances.Find(
-                new BsonDocument { { "_id", new ObjectId(id.Values.ToString()) } }
+                new BsonDocument { { "_id", new ObjectId(id) } }
                ).FirstOrDefaultAsync().Result;
 
             return balance;

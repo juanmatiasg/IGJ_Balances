@@ -1,4 +1,5 @@
-﻿using Balances.Services.Contract;
+﻿using Balances.Model;
+using Balances.Services.Contract;
 using Balances.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -13,7 +14,7 @@ namespace Balances.Services.Implementation
         private readonly ILogger<SessionService> _logger;
 
 
-        private static readonly Dictionary<string, string> Storage = new Dictionary<string, string>();
+        private static readonly Dictionary<string, RegistroSesion> Storage = new Dictionary<string, RegistroSesion>();
 
         public SessionService(IHttpContextAccessor context, ILogger<SessionService> logger)
         {
@@ -23,29 +24,59 @@ namespace Balances.Services.Implementation
 
 
 
-        public void SetSession(string balanceId)
+        public bool SetBalance(string sessionId, string balanceId)
         {
 
 
-            Storage[Token.KEY_SESSION] = balanceId;
-            _context.HttpContext.Session.SetString(Token.KEY_SESSION, balanceId);
+            RegistroSesion r = Storage[sessionId];
+
+            if (r != null && balanceId != null)
+            {
+                r.RegistrarBalance(balanceId);
+                return true;
+
+            }
+            return false;
+
+
 
         }
 
-        public Dictionary<string, string> GetSession()
+
+
+        /// <summary>
+        /// Devuelve la nueva sesion creada
+        /// </summary>
+        /// <returns>Identificador de la Session Nueva Creada</returns>
+        public string GetNewSesion()
         {
             try
             {
+                RegistroSesion r = new RegistroSesion();
+                Storage[r.Id] = r;
 
-                return Storage;
+                return r.Id;
 
             }
 
-            catch (Exception ex)
+            catch
             {
-                return null;
+                return "";
 
             }
+
+        }
+
+        public string GetBalanceId(string sesionId)
+        {
+            RegistroSesion r = (RegistroSesion)Storage[sesionId];
+
+            if (r != null)
+            {
+                return r.BalanceId;
+            }
+
+            return "";
 
         }
 
@@ -58,65 +89,17 @@ namespace Balances.Services.Implementation
 
         }
 
-        public string GetSessionToken()
-        {
-
-            var Sesionserializada = JsonSerializer.Serialize(Storage);
-            var token = SessionStorageHelper.GetTokenKey(Sesionserializada);
-
-            return token;
-        }
-        //public void SetBalanceId(string balanceId)
+        //public string GetSessionToken()
         //{
-        //    _logger.LogWarning($"Método SetBalanceId invocado id: \n {balanceId} {JsonConvert.SerializeObject(new BalanceDto())}");
-        //    _logger.LogError($"Invocando el logError en SetBalanceId {balanceId}");
 
+        //    var Sesionserializada = JsonSerializer.Serialize(Storage);
+        //    var token = SessionStorageHelper.GetTokenKey(Sesionserializada);
 
-
-
-        //    Storage[Token.KEY_SESSION] = balanceId;
-
-        //    // También puedes almacenar el balanceId en la sesión si lo necesitas por separado
-        //    _context.HttpContext.Session.SetString(Token.KEY_SESSION, balanceId);
+        //    return token;
         //}
 
 
-        //public void SetBalanceId(string balanceId, string token)
-        //{
-        //    //_logger.LogWarning($"Método SetBalanceId invocado id: \n {balanceId} {JsonConvert.SerializeObject(new BalanceDto())}");
-        //    //_logger.LogError($"Invocando el logError en SetBalanceId {balanceId}");
 
-
-
-        //    Storage[Token.KEY_SESSION] = balanceId;
-
-
-        //    // También puedes almacenar el balanceId en la sesión si lo necesitas por separado
-        //    _context.HttpContext.Session.SetString(token, balanceId);
-        //}
-
-        //public string GetToken()
-        //{
-        //    try
-        //    {
-        //        // Verificar si hay claves en el diccionario
-        //        if (Storage.Keys.Any())
-        //        {
-
-        //            return Storage[Token.KEY_SESSION];
-        //        }
-
-        //        // Manejar el caso donde no se encontró el balanceId correspondiente a la fecha más reciente
-        //        _logger.LogWarning("No se encontró balanceId correspondiente");
-        //        return null;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Propagar la excepción
-        //        _logger.LogError($"Error al obtener el balanceId: {ex.Message}");
-        //        throw;
-        //    }
-        //}
 
     }
 }

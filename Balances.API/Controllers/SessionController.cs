@@ -2,7 +2,6 @@ using Balances.DTO;
 using Balances.Services.Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Balances.API.Controllers
 {
@@ -19,71 +18,52 @@ namespace Balances.API.Controllers
             _sessionService = sessionService;
         }
 
-        [HttpPost("{balanceId}")]
-        public IActionResult CreateSession(string balanceId)
-        {
-            _sessionService.SetSession(balanceId);
 
-            var response = new ResponseDTO<String>
-            {
-                Result = "Success",
-                IsSuccess = true,
-                Message = "Session created successfully"
-            };
-            return Ok(response);
-
-        }
-
-
-        [HttpGet("getSession")]
-        public IActionResult GetSession()
+        [HttpGet("getNewSession")]
+        public IActionResult GetNewSession()
         {
 
-            var session = _sessionService.GetSession();
+            var sesionId = _sessionService.GetNewSesion();
 
             var response = new ResponseDTO<String>();
 
 
-            if (session == null)
+            if (sesionId == null)
             {
-                response.Message = "Session not found";
+                response.Message = "Session not created";
                 response.IsSuccess = false;
                 NotFound();
             }
             else
             {
 
-
-                var sessionSerializada = JsonConvert.SerializeObject(session);
-
-
-
-
-                response.Result = sessionSerializada;
+                response.Result = sesionId;
                 response.IsSuccess = true;
-                response.Message = "Session found";
+                response.Message = "Session created";
             }
-
-
 
             return Ok(response);
         }
 
-        [HttpGet("getBalanceIdSession")]
-        public ActionResult<string> GetBalanceIdSession()
+
+        [HttpGet("SetBalanceId")]
+        public ActionResult<bool> SetBalanceId(string sesionId, string balanceId)
         {
 
-            var balIdSession = _sessionService.GetSessionBalanceId();
+            var sesion = _sessionService.SetBalance(sesionId, balanceId);
+
+            return sesion;
+        }
+
+        [HttpGet("getBalanceId")]
+        public ActionResult<string> GetBalanceId(string sesionId)
+        {
+
+            var balIdSession = _sessionService.GetBalanceId(sesionId);
 
             return balIdSession;
         }
 
-        [HttpGet("getTokenSession")]
-        public ActionResult<string> GetTokenSession()
-        {
-            var token = _sessionService.GetSessionToken();
 
-            return token;
-        }
     }
 }

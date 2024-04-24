@@ -7,6 +7,7 @@ namespace Balances.DTO
     public class CaratulaDto
     {
 
+        public string SesionId { get; set; }
 
         [BsonElement("Email")]
         public string Email { get; set; }
@@ -16,6 +17,7 @@ namespace Balances.DTO
         public DateTime? FechaDeCierre { get; set; }
 
         public DateTime Fecha { get; set; }
+
 
         public Entidad Entidad { get; set; }
 

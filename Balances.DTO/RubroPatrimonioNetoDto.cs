@@ -4,6 +4,8 @@ namespace Balances.DTO
 {
     public class RubroPatrimonioNetoDto
     {
+
+        public string SesionId { get; set; }
         public string codigo { get; set; }
         public string denominacion { get; set; }
         public decimal importe { get; set; }
@@ -19,7 +21,7 @@ namespace Balances.DTO
             codigo = rubro.Codigo;
 
         }
-        
+
         public static RubroPatrimonioNetoDto ConvertirDesdeRubroPatrimonioNeto(RubroPatrimonioNeto rubro)
         {
             RubroPatrimonioNetoDto dto = new RubroPatrimonioNetoDto();

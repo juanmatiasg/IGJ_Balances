@@ -54,6 +54,7 @@ namespace Balances.Bussiness
             var caratulaSerializada = JsonConvert.SerializeObject(modelo);
             try
             {
+
                 var balance = new Balance();
 
                 balance.Caratula = MapearCaratula(modelo);
@@ -61,6 +62,10 @@ namespace Balances.Bussiness
                 var rsp = _balanceBusiness.Insert(balance);
 
                 var balanceDto = _mapper.Map<BalanceDto>(balance);
+
+                //asocio el balance con la sesion
+                _sessionService.SetBalance(modelo.SesionId, rsp.Result.Id);
+
 
                 var plantillahtml = CrearPlantillaInicioTramite(balanceDto);
 
@@ -71,7 +76,7 @@ namespace Balances.Bussiness
                 // si inserto correctamente
                 if (rsp != null)
                 {
-                    _sessionService.SetSession(balance.Id);
+                    //_sessionService.SetSession(balance.Id);
 
                     respuesta.IsSuccess = true;
                     respuesta.Message = "Caratula creada correctamente";

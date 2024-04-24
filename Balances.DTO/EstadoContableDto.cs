@@ -1,15 +1,12 @@
 ﻿using Balances.Model;
-using System.Reflection;
-using System.Text;
-using System;
-using Org.BouncyCastle.Crypto;
-using AutoMapper;
 
 namespace Balances.DTO
 {
     public class EstadoContableDto
     {
-      
+
+
+        public string SesionId { get; set; }
         public string tipoBalance { get; set; }
         public DateTime? fechaEstado { get; set; }
         public DateTime? fechaInicio { get; set; }
@@ -78,7 +75,7 @@ namespace Balances.DTO
 
         public EstadoContableDto(EstadoContable a)
         {
-             
+
             tipoBalance = a.TipoBalance;
             fechaEstado = a.FechaEstado;
             fechaInicio = a.FechaInicio;
@@ -134,8 +131,8 @@ namespace Balances.DTO
             {
 
                 RubroPatrimonioNetoDto nuevoItem = new RubroPatrimonioNetoDto();
-                
-      
+
+
                 nuevoItem.codigo = item.Codigo;
                 nuevoItem.denominacion = item.Denominacion;
                 nuevoItem.importe = item.Importe;
@@ -148,7 +145,7 @@ namespace Balances.DTO
             return nuevaLista;
         }
 
-        
+
 
 
 

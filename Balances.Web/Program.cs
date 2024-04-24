@@ -38,7 +38,7 @@ builder.Services.AddScoped<IArchivosClientService, ArchivosClientService>();
 builder.Services.AddScoped<IEstadoContableClientService, EstadoContableService>();
 builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
 builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
-builder.Services.AddScoped<IBaseSessionClientService, BaseSessionClientService>();
+builder.Services.AddScoped<ISessionClientService, SessionClientService>();
 builder.Services.AddScoped<IBusquedaDeSociedadesClientService, BusquedaDesociedadesClientService>();
 builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
 

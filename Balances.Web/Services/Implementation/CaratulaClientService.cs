@@ -7,11 +7,14 @@ namespace Balances.Web.Services.Implementation
     {
         private readonly HttpClient _httpClient;
 
+
         public CaratulaClientService(HttpClient httpClient)
         {
             _httpClient = httpClient;
 
         }
+
+
 
 
         public async Task<ResponseDTO<BalanceDto>> loadCaratula(string id)
@@ -53,7 +56,7 @@ namespace Balances.Web.Services.Implementation
                 // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
                 var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
 
-                await _httpClient.PostAsJsonAsync($"Session/{result.Result.Id}", result.Result.Id);
+
 
 
 
