@@ -38,6 +38,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Balances.DTO\Balances.DTO.csproj" />
     <ProjectReference Include="..\Balances.Utilities\Balances.Utilities.csproj" />
+    <ProjectReference Include="..\Balances.ViewModel\Balances.ViewModel.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>

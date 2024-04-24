@@ -1,3 +1,5 @@
+using Balances.Http.Client;
+using Balances.ViewModel;
 using Balances.Web;
 using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
@@ -35,7 +37,13 @@ builder.Services.AddScoped<IAutoridadClientService, AutoridadClientService>();
 builder.Services.AddScoped<ISociosClientService, SociosClientService>();
 builder.Services.AddScoped<ILibrosClientService, LibrosService>();
 builder.Services.AddScoped<IArchivosClientService, ArchivosClientService>();
-builder.Services.AddScoped<IEstadoContableClientService, EstadoContableService>();
+
+//builder.Services.AddScoped<IEstadoContableClientService, EstadoContableService>();
+
+builder.Services.AddScoped<EstadoContableService>();
+builder.Services.AddScoped<EstadoContableViewModel>();
+
+
 builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
 builder.Services.AddScoped<IPresentacionClientService, PresentacionClientService>();
 builder.Services.AddScoped<IBaseSessionClientService, BaseSessionClientService>();
@@ -43,8 +51,11 @@ builder.Services.AddScoped<IBusquedaDeSociedadesClientService, BusquedaDesocieda
 builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
 
 
+// Registra BaseService<T>
+builder.Services.AddScoped(typeof(BaseService<>));
 
-// Ejemplo de configuración para ASP.NET Core
+
+// Ejemplo de configuraciï¿½n para ASP.NET Core
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.CheckConsentNeeded = context => true;

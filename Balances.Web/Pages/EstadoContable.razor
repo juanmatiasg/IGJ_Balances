@@ -1,20 +1,24 @@
 ﻿@page "/EstadoContable/{balid?}"
+
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
+@using Balances.ViewModel;
 @using System.Globalization;
+
+
 @using System.Text.RegularExpressions;
 @using System.Reflection;
 @using Blazorise.Extensions;
 @using Microsoft.AspNetCore.Http;
-@inject IEstadoContableClientService estadoContableService;
-@inject NavigationManager NavigationManager
 
+@inject NavigationManager NavigationManager
 
 @inject IBalanceClientService balanceService
 @inject IBaseSessionClientService sesionService
+@inject EstadoContableViewModel viewModel
 
 
 <!DOCTYPE html>
@@ -26,243 +30,242 @@
     <!-- Agrega los enlaces a los estilos de Bootstrap y otros recursos aquí -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
- 
+
 </head>
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="EstadoContable" TramiteIniciado = "true" balid="@balid"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="EstadoContable" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <div class="container mt-4">
         <h2 class="text-center">Estado Contable</h2>
-         <div class="row">
+        <div class="row">
             <div class="col">
-           
-                    <!-- Período -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title d-flex justify-content-center">Período</h5>
-                            <div class="form-group">
 
-                                <input type="text" class="form-control" id="fechaInicio" placeholder="Tipo de balance" @bind=estadoContableDto.tipoBalance @onblur="insertEECC">
-                                <small id="tipoBalanceError" class="text-danger">@tipoBalanceError</small>
+                <!-- Período -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-center">Período</h5>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="fechaInicio" placeholder="Tipo de balance" @bind=viewModel.ToRegistry.tipoBalance @onblur="insertEECC">
+                            <small id="tipoBalanceError" class="text-danger">@tipoBalanceError</small>
 
-                            </div>
-                            <div class="form-group">
-                                <label for="fechaInicio">Fecha de Inicio</label>
-                                <input type="date" class="form-control" id="fechaInicio" placeholder="Fecha de Inicio" @bind=estadoContableDto.fechaInicio @onblur="insertEECC">
-                                <small id="tipoBalanceError" class="text-danger">@fechaInicioError</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="fechaInicio">Fecha de Inicio</label>
+                            <input type="date" class="form-control" id="fechaInicio" placeholder="Fecha de Inicio" @bind=viewModel.ToRegistry.fechaInicio @onblur="insertEECC">
+                            <small id="tipoBalanceError" class="text-danger">@fechaInicioError</small>
 
-                            </div>
-                   
-                            <div class="form-group">
-                                <label for="fechaEstado">Fecha de Cierre</label>
-                            <input type="date" class="form-control" id="fechaEstado" placeholder="Fecha de Cierre" @bind=estadoContableDto.fechaEstado @onblur="insertEECC">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fechaEstado">Fecha de Cierre</label>
+                            <input type="date" class="form-control" id="fechaEstado" placeholder="Fecha de Cierre" @bind=viewModel.ToRegistry.fechaEstado @onblur="insertEECC">
                             <small id="tipoBalanceError" class="text-danger">@fechaEstadoError</small>
 
                         </div>
-                        </div>
                     </div>
+                </div>
 
-                    <!-- Aprobado por -->
-                    <div class="card mb-4">
-                        <div class="card-body">
+                <!-- Aprobado por -->
+                <div class="card mb-4">
+                    <div class="card-body">
                         <h5 class="card-title d-flex justify-content-center">Aprobado por</h5>
-                            <div class="form-group">
-                                <label for="fechaReunionDirectorio">Fecha de Acta de Reunión de Autoridades</label>
-                            <input type="date" class="form-control" id="fechaReunionDirectorio" placeholder="Fecha de Acta de Renión de Autoridades" @bind=estadoContableDto.fechaReunionDirectorio @onblur="insertEECC">
+                        <div class="form-group">
+                            <label for="fechaReunionDirectorio">Fecha de Acta de Reunión de Autoridades</label>
+                            <input type="date" class="form-control" id="fechaReunionDirectorio" placeholder="Fecha de Acta de Renión de Autoridades" @bind=viewModel.ToRegistry.fechaReunionDirectorio @onblur="insertEECC">
                             <small id="tipoBalanceError" class="text-danger">@fechaReunionDirectorioError</small>
 
                         </div>
-                            <div class="form-group">
-                                <label for="fechaAsamblea">Fecha de Acta de Reunión de Socios</label>
-                                <input type="date" class="form-control" id="fechaAsamblea" placeholder="Fecha de Acta de Reunión de Socios" @bind=estadoContableDto.fechaAsamblea @onblur="insertEECC">
-                                <small id="tipoBalanceError" class="text-danger">@fechaAsambleaError</small>
-                            </div>
+                        <div class="form-group">
+                            <label for="fechaAsamblea">Fecha de Acta de Reunión de Socios</label>
+                            <input type="date" class="form-control" id="fechaAsamblea" placeholder="Fecha de Acta de Reunión de Socios" @bind=viewModel.ToRegistry.fechaAsamblea @onblur="insertEECC">
+                            <small id="tipoBalanceError" class="text-danger">@fechaAsambleaError</small>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Rubros del Balance -->
-                    <div class="card mb-4">
-                        <div class="card-body">
+                <!-- Rubros del Balance -->
+                <div class="card mb-4">
+                    <div class="card-body">
                         <h5 class="card-title d-flex justify-content-center">Rubros del Balance</h5>
 
-                            <div class="row">
+                        <div class="row">
                             <!--Columna 1-->
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="activoCorriente">Caja Y Bancos</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                        <input type="text" class="form-control" id="numero" @bind-value=estadoContableDto.cajaYBancos @onblur="insertEECC" />
-                                        
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="activoCorriente">Caja Y Bancos</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="numero" @bind-value=viewModel.ToRegistry.cajaYBancos @onblur="insertEECC" />
+
                                     </div>
                                     <small id="tipoBalanceError" class="text-danger">@cajaYBancosError</small>
 
-                                    </div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="activoCorriente">Inversiones</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" @bind="estadoContableDto.inversionesActivoCorriente"  @onblur="insertEECC" />
+                                <div class="form-group">
+                                    <label for="activoCorriente">Inversiones</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
                                         </div>
-                                        <small id="tipoBalanceError" class="text-danger">@inversionesError</small>
+                                        <input type="text" class="form-control" @bind="viewModel.ToRegistry.inversionesActivoCorriente" @onblur="insertEECC" />
                                     </div>
+                                    <small id="tipoBalanceError" class="text-danger">@inversionesError</small>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Bienes de Cambios</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeCambio"   @onblur="insertEECC" />
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Bienes de Cambios</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
                                         </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.bienesDeCambio" @onblur="insertEECC" />
+                                    </div>
                                     <small id="tipoBalanceError" class="text-danger">@bienesDeCambioError</small>
 
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Activo Corriente Restante</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-    
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorrienteRestante"  @onblur="insertEECC" />
-                                        </div>
-                                        <small id="tipoBalanceError" class="text-danger">@activoCorrienteRestanteError</small>
+                                </div>
 
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Total Activo Corriente</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorriente"   @onblur="insertEECC" disabled/>
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Activo Corriente Restante</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Bienes de Uso</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeUso"   @onblur="insertEECC"  />
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.activoCorrienteRestante" @onblur="insertEECC" />
+                                    </div>
+                                    <small id="tipoBalanceError" class="text-danger">@activoCorrienteRestanteError</small>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Total Activo Corriente</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
                                         </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.activoCorriente" @onblur="insertEECC" disabled />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Bienes de Uso</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.bienesDeUso" @onblur="insertEECC" />
+                                    </div>
                                     <small id="tipoBalanceError" class="text-danger">@bienesDeUsoError</small>
 
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Propiedades de Inversión</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.propiedadesDeInversion"   @onblur="insertEECC"  />
-                                        </div>
-                                        <small id="tipoBalanceError" class="text-danger">@propiedadesDeInversionError</small>
-
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Activo No Corriente Restante</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorrienteRestante"  @onblur="insertEECC" />
-                                        </div>
-                                        <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Total Activo No Corriente</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorriente"  @onblur="insertEECC" disabled />
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Total Activo</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalActivo"   @onblur="insertEECC" disabled />
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Deudas del Pasivo Corriente</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoCorriente"   @onblur="insertEECC" />
-                                        </div>
-                                        <small id="tipoBalanceError" class="text-danger">@deudasPasivoCorrienteError</small>
-
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Deudas del Pasivo No Corriente</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoNoCorriente"   @onblur="insertEECC" />
-                                        </div>
-                                        <small id="tipoBalanceError" class="text-danger">@deudasPasivoNoCorrienteError</small>
-                                    </div>
-
-
-
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Total Pasivo</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalPasivo" @onblur="insertEECC" disabled />
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label for="inversionesActivoCorriente">Patrimonio Neto</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.patrimonioNeto"   @onblur="insertEECC" disabled />
-                                        </div>
-
-                                    </div>
-
-                                    @if (statusPatrimonioNeto)
-                                    {
-                                        <div class="alert alert-danger" role="alert">
-                                            No coinciden el Patrimonio Neto de Activo y Pasivo con 
-                                            el Detalle del Patrimonio Neto
-                                        </div>
-                                    }
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Propiedades de Inversión</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.propiedadesDeInversion" @onblur="insertEECC" />
+                                    </div>
+                                    <small id="tipoBalanceError" class="text-danger">@propiedadesDeInversionError</small>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Activo No Corriente Restante</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.activoNoCorrienteRestante" @onblur="insertEECC" />
+                                    </div>
+                                    <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Total Activo No Corriente</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.activoNoCorriente" @onblur="insertEECC" disabled />
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Total Activo</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.totalActivo" @onblur="insertEECC" disabled />
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Deudas del Pasivo Corriente</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.deudorPasivoCorriente" @onblur="insertEECC" />
+                                    </div>
+                                    <small id="tipoBalanceError" class="text-danger">@deudasPasivoCorrienteError</small>
+
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Deudas del Pasivo No Corriente</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.deudorPasivoNoCorriente" @onblur="insertEECC" />
+                                    </div>
+                                    <small id="tipoBalanceError" class="text-danger">@deudasPasivoNoCorrienteError</small>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Total Pasivo</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.totalPasivo" @onblur="insertEECC" disabled />
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="inversionesActivoCorriente">Patrimonio Neto</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">ARS $</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.patrimonioNeto" @onblur="insertEECC" disabled />
+                                    </div>
+
+                                </div>
+
+                                @if (statusPatrimonioNeto)
+                                {
+                                    <div class="alert alert-danger" role="alert">
+                                        No coinciden el Patrimonio Neto de Activo y Pasivo con
+                                        el Detalle del Patrimonio Neto
+                                    </div>
+                                }
+                            </div>
 
                         </div>
                     </div>
@@ -277,109 +280,109 @@
                         <!-- Repite esta estructura para otros campos -->
 
 
-                            <div class="form-group">
-                                <label for="inversionesActivoCorriente">Capital Suscripto</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.capitalSuscripto"  @onblur="insertEECC" />
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Capital Suscripto</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
                                 </div>
-                                <small id="tipoBalanceError" class="text-danger">@capitalSuscriptoError</small>
+                                <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.capitalSuscripto" @onblur="insertEECC" />
                             </div>
+                            <small id="tipoBalanceError" class="text-danger">@capitalSuscriptoError</small>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="inversionesActivoCorriente">Ajuste de Capital</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.ajusteCapital"   @onblur="insertEECC" />
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Ajuste de Capital</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
                                 </div>
-                                <small id="tipoBalanceError" class="text-danger">@ajusteCapitalError</small>
+                                <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.ajusteCapital" @onblur="insertEECC" />
                             </div>
+                            <small id="tipoBalanceError" class="text-danger">@ajusteCapitalError</small>
+                        </div>
 
 
-                            <div class="form-group">
-                                <label for="inversionesActivoCorriente">Aportes Irrevocables</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.aportesIrrevocables"  @onblur="insertEECC" />
-
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Aportes Irrevocables</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
                                 </div>
-                                <small id="tipoBalanceError" class="text-danger">@aportesIrrevocablesError</small>
+                                <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.aportesIrrevocables" @onblur="insertEECC" />
 
                             </div>
+                            <small id="tipoBalanceError" class="text-danger">@aportesIrrevocablesError</small>
+
+                        </div>
 
 
-                            <div class="form-group">
-                                <label for="inversionesActivoCorriente">Prima Emisión</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.primaEmision"  @onblur="insertEECC" />
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Prima Emisión</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
                                 </div>
-                                <small id="tipoBalanceError" class="text-danger">@primaEmisionError</small>
-
+                                <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.primaEmision" @onblur="insertEECC" />
                             </div>
+                            <small id="tipoBalanceError" class="text-danger">@primaEmisionError</small>
+
+                        </div>
 
 
 
-                            <div class="form-group">
-                                <label for="inversionesActivoCorriente">Ganancias Reservadas</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasReservadas"  @onblur="insertEECC" />
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Ganancias Reservadas</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
                                 </div>
-                                <small id="tipoBalanceError" class="text-danger">@gananciasReservadasError</small>
-
+                                <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.gananciasReservadas" @onblur="insertEECC" />
                             </div>
+                            <small id="tipoBalanceError" class="text-danger">@gananciasReservadasError</small>
+
+                        </div>
 
 
-                            <div class="form-group">
-                                <label for="inversionesActivoCorriente">Pérdidas Acumuladas</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.perdidasAcumuladas"   @onblur="insertEECC" />
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Pérdidas Acumuladas</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
                                 </div>
-                                <small id="tipoBalanceError" class="text-danger">@perdidasAcumuladasError</small>
-
+                                <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.perdidasAcumuladas" @onblur="insertEECC" />
                             </div>
+                            <small id="tipoBalanceError" class="text-danger">@perdidasAcumuladasError</small>
+
+                        </div>
 
 
 
-                            <div class="form-group">
-                                <label for="inversionesActivoCorriente">Ganancias / Pérdidas del Ejercicio</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasPerdidasEjercicio"  @onblur="insertEECC" />
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Ganancias / Pérdidas del Ejercicio</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
                                 </div>
-                                <small id="tipoBalanceError" class="text-danger">@gananciasPerdidasEjercicioError</small>
-
+                                <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.gananciasPerdidasEjercicio" @onblur="insertEECC" />
                             </div>
+                            <small id="tipoBalanceError" class="text-danger">@gananciasPerdidasEjercicioError</small>
+
+                        </div>
 
 
-                            <div class="form-group">
-                                <label for="inversionesActivoCorriente">Reserva Legal</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.reservaLegal"  @onblur="insertEECC"  />
+                        <div class="form-group">
+                            <label for="inversionesActivoCorriente">Reserva Legal</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">ARS $</span>
                                 </div>
-                                <small id="tipoBalanceError" class="text-danger">@reservaLegalError</small>
+                                <input type="text" class="form-control" id="activoCorriente" @bind="viewModel.ToRegistry.reservaLegal" @onblur="insertEECC" />
+                            </div>
+                            <small id="tipoBalanceError" class="text-danger">@reservaLegalError</small>
 
-                            </div>     
-                        
+                        </div>
+
                     </div>
 
                 </div>
@@ -392,7 +395,7 @@
                             </h5>
 
                             <label for="capitalSuscripto">Denominación</label>
-                            <input type="text" class="form-control" id="capitalSuscripto"  @bind = "denominacionDto">
+                            <input type="text" class="form-control" id="capitalSuscripto" @bind="denominacionDto">
                             <small id="tipoBalanceError" class="text-danger">@denominacionError</small>
 
                         </div>
@@ -412,26 +415,26 @@
                 </div>
 
                 <div class="card-body">
-                    @if (estadoContableDto.otrosRubros != null)
+                    @if (viewModel.ToRegistry.otrosRubros != null)
                     {
                         <table class="table table-bordered">
                             <thead>
-                                <tr>       
+                                <tr>
                                     <th scope="col">Denominación</th>
                                     <th scope="col">Importe</th>
                                     <th scope="col">Acción</th>
                                 </tr>
                             </thead>
 
-                            @foreach (var rubro in estadoContableDto.otrosRubros)
+                            @foreach (var rubro in viewModel.ToRegistry.otrosRubros)
                             {
                                 <tbody>
                                     <tr>
-                                        
+
                                         <td>@rubro.denominacion</td>
                                         <td>$@rubro.importe</td>
                                         <td>
-                                            <button type="button" class="btn btn-danger" @onclick="() => deleteRubro(rubro)">Eliminar</button>
+                                            <button type="button" class="btn btn-danger" @onclick="() => deleteRubro()">Eliminar</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -443,7 +446,7 @@
 
         </div>
     </div>
-   
+
 
 
 
@@ -453,6 +456,7 @@
 
 
 @code {
+
     [Parameter] public string? TipoEntidad { get; set; }
 
     [Parameter] public string? balid { get; set; } = null;
@@ -462,7 +466,7 @@
     private string fechaInicioError = "";
     private string fechaAsambleaError = "";
     private string fechaEstadoError = "";
-    private string fechaReunionDirectorioError ="";
+    private string fechaReunionDirectorioError = "";
 
     private string cajaYBancosError = "";
     private string inversionesError = "";
@@ -471,33 +475,30 @@
     private string activoNoCorrienteRestanteError = "";
     private string ajusteCapitalError = "";
     private string aportesIrrevocablesError = "";
-    private string bienesDeUsoError="";
-    private string capitalSuscriptoError="";
-    private string deudasPasivoCorrienteError="";
-    private string deudasPasivoNoCorrienteError="";
+    private string bienesDeUsoError = "";
+    private string capitalSuscriptoError = "";
+    private string deudasPasivoCorrienteError = "";
+    private string deudasPasivoNoCorrienteError = "";
 
     private string gananciasPerdidasEjercicioError = "";
     private string gananciasReservadasError = "";
 
     private string perdidasAcumuladasError = "";
 
-    private string primaEmisionError="";
+    private string primaEmisionError = "";
 
     private string propiedadesDeInversionError = "";
     private string reservaLegalError = "";
 
     //OtrosRubros
     private string denominacionError = "";
-    private string pasivoNoCorrienteError="";
+    private string pasivoNoCorrienteError = "";
 
 
     private string denominacionDto = "";
     private decimal importeDto = 0;
 
 
-    private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
-
-    private EstadoContableDto estadoContableDto = new EstadoContableDto();
 
 
     private Boolean statusPatrimonioNeto = false;
@@ -527,7 +528,7 @@
 
             var idSession = await sesionService.GetSessionBalanceId();
 
-            if (idSession!=null)
+            if (idSession != null)
             {
 
 
@@ -546,9 +547,7 @@
 
                         TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
 
-                        estadoContableDto = new EstadoContableDto(rsp);
-
-
+                        viewModel.ToRegistry = new EstadoContableDto(rsp);
 
                         StateHasChanged();
 
@@ -594,15 +593,15 @@
             if (checkData())
             {
 
-                rsp = await estadoContableService.insertEECC(estadoContableDto);
+                rsp = await viewModel.InsertEECC();
 
                 if (rsp.IsSuccess)
                 {
-                    rsp.Message = "Se inserto el Estado Contable sastifactoriamente";
+                    rsp.Message = viewModel.Message;
                 }
                 else
                 {
-                    rsp.Message = "No se inserto el Estado Contable";
+                    rsp.Message = viewModel.Message;
 
                 }
 
@@ -628,14 +627,12 @@
             if (checkDataOtrosRubros())
             {
 
-                rubroDto.codigo = Guid.NewGuid().ToString();
-                rubroDto.denominacion = denominacionDto;
-                rubroDto.importe = importeDto;
+                viewModel.OtherRegistry.codigo = Guid.NewGuid().ToString();
+                viewModel.OtherRegistry.denominacion = denominacionDto;
+                viewModel.OtherRegistry.importe = importeDto;
 
 
-
-
-                rsp = await estadoContableService.insertRubro(rubroDto);
+                rsp = await viewModel.InsertRubro();
 
                 if (rsp.IsSuccess)
                 {
@@ -644,12 +641,12 @@
                     if (result != null)
                     {
                         setListOtrosRubros(result.EstadoContable.OtrosRubros);
-                        rsp.Message = "Se inserto el rubro sastifactoriamente";
+                        rsp.Message = viewModel.Message;
                     }
                 }
                 else
                 {
-                    rsp.Message = "No se inserto el rubro";
+                    rsp.Message = viewModel.Message;
 
                 }
             }
@@ -663,7 +660,7 @@
         return rsp;
     }
 
-    private async Task<ResponseDTO<BalanceDto>> deleteRubro(RubroPatrimonioNetoDto rubroDto)
+    private async Task<ResponseDTO<BalanceDto>> deleteRubro()
     {
 
         var respuesta = new ResponseDTO<BalanceDto>();
@@ -672,20 +669,19 @@
         try
         {
 
-            respuesta = await estadoContableService.deleteRubro(rubroDto);
+            respuesta = await viewModel.DeleteRubro();
 
             if (respuesta.IsSuccess)
             {
-                estadoContableDto.otrosRubros.Remove(rubroDto);
-                respuesta.Message = "Se eliminó el rubro sastifactoriamente";
-
+                viewModel.ToRegistry.otrosRubros.Remove(viewModel.OtherRegistry);
+                respuesta.Message = viewModel.Message;
 
                 StateHasChanged();
             }
 
             else
             {
-                respuesta.Message = "No se eliminó el rubro sastifactoriamente";
+                respuesta.Message = viewModel.Message;
 
             }
 
@@ -701,35 +697,35 @@
 
     private void sumatoriaTotalActivoCorriente()
     {
-        var sumatoriaTotalActivoCorriente = Convert.ToDecimal(estadoContableDto.cajaYBancos) + estadoContableDto.inversionesActivoCorriente + estadoContableDto.bienesDeCambio + estadoContableDto.activoCorrienteRestante;
-        estadoContableDto.activoCorriente = sumatoriaTotalActivoCorriente;
+        var sumatoriaTotalActivoCorriente = Convert.ToDecimal(viewModel.ToRegistry.cajaYBancos) + viewModel.ToRegistry.inversionesActivoCorriente + viewModel.ToRegistry.bienesDeCambio + viewModel.ToRegistry.activoCorrienteRestante;
+        viewModel.ToRegistry.activoCorriente = sumatoriaTotalActivoCorriente;
 
 
     }
 
     private void sumatoriaTotalActivoNoCorriente()
     {
-        var sumatoriaTotalActivoNoCorriente = estadoContableDto.bienesDeCambio + estadoContableDto.propiedadesDeInversion + estadoContableDto.inversionesActivoNoCorriente + estadoContableDto.activoNoCorrienteRestante;
-        estadoContableDto.activoNoCorriente = sumatoriaTotalActivoNoCorriente;
+        var sumatoriaTotalActivoNoCorriente = viewModel.ToRegistry.bienesDeCambio + viewModel.ToRegistry.propiedadesDeInversion + viewModel.ToRegistry.inversionesActivoNoCorriente + viewModel.ToRegistry.activoNoCorrienteRestante;
+        viewModel.ToRegistry.activoNoCorriente = sumatoriaTotalActivoNoCorriente;
     }
 
     private void sumatorialTotalActivo()
     {
-        var sumatorialTotalActivo = estadoContableDto.activoCorriente + estadoContableDto.activoNoCorriente;
-        estadoContableDto.totalActivo = sumatorialTotalActivo;
+        var sumatorialTotalActivo = viewModel.ToRegistry.activoCorriente + viewModel.ToRegistry.activoNoCorriente;
+        viewModel.ToRegistry.totalActivo = sumatorialTotalActivo;
     }
 
     private void sumatoriaTotalPasivo()
     {
-        var sumatoriaTotalPasivo = estadoContableDto.deudorPasivoCorriente + estadoContableDto.deudorPasivoNoCorriente;
-        estadoContableDto.totalPasivo = sumatoriaTotalPasivo;
+        var sumatoriaTotalPasivo = viewModel.ToRegistry.deudorPasivoCorriente + viewModel.ToRegistry.deudorPasivoNoCorriente;
+        viewModel.ToRegistry.totalPasivo = sumatoriaTotalPasivo;
     }
 
     private decimal resultadoPatrimonioNeto()
     {
-        if (estadoContableDto.totalActivo != 0 && estadoContableDto.totalPasivo != 0)
+        if (viewModel.ToRegistry.totalActivo != 0 && viewModel.ToRegistry.totalPasivo != 0)
         {
-            return estadoContableDto.patrimonioNeto = estadoContableDto.totalActivo - estadoContableDto.totalPasivo;
+            return viewModel.ToRegistry.patrimonioNeto = viewModel.ToRegistry.totalActivo - viewModel.ToRegistry.totalPasivo;
         }
         else
         {
@@ -739,17 +735,17 @@
 
     private bool resultadoPatNetDetailPatNeto()
     {
-        if (estadoContableDto.otrosRubros.Count > 0)
+        if (viewModel.ToRegistry.otrosRubros.Count > 0)
         {
             decimal sumatoriaImporte = 0;
 
-            foreach (var rubros in estadoContableDto.otrosRubros)
+            foreach (var rubros in viewModel.ToRegistry.otrosRubros)
             {
                 sumatoriaImporte = sumatoriaImporte + rubros.importe;
             }
 
 
-            var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.primaEmision + estadoContableDto.gananciasReservadas + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + estadoContableDto.reservaLegal + sumatoriaImporte;
+            var sumatoriaDetallePatNeto = viewModel.ToRegistry.capitalSuscripto + viewModel.ToRegistry.ajusteCapital + viewModel.ToRegistry.aportesIrrevocables + viewModel.ToRegistry.primaEmision + viewModel.ToRegistry.gananciasReservadas + viewModel.ToRegistry.perdidasAcumuladas + viewModel.ToRegistry.gananciasPerdidasEjercicio + viewModel.ToRegistry.reservaLegal + sumatoriaImporte;
 
             if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
             {
@@ -764,7 +760,7 @@
         }
         else
         {
-            var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.primaEmision + estadoContableDto.gananciasReservadas + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + estadoContableDto.reservaLegal;
+            var sumatoriaDetallePatNeto = viewModel.ToRegistry.capitalSuscripto + viewModel.ToRegistry.ajusteCapital + viewModel.ToRegistry.aportesIrrevocables + viewModel.ToRegistry.primaEmision + viewModel.ToRegistry.gananciasReservadas + viewModel.ToRegistry.perdidasAcumuladas + viewModel.ToRegistry.gananciasPerdidasEjercicio + viewModel.ToRegistry.reservaLegal;
 
             if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
             {
@@ -791,7 +787,7 @@
         try
         {
             // Obtener todas las propiedades públicas de EstadoContableDto
-            PropertyInfo[] propiedades = estadoContableDto.GetType().GetProperties();
+            PropertyInfo[] propiedades = viewModel.ToRegistry.GetType().GetProperties();
 
             foreach (PropertyInfo propiedad in propiedades)
             {
@@ -799,7 +795,7 @@
                 {
 
                     case "Decimal":
-                        object valorOriginal = propiedad.GetValue(estadoContableDto);
+                        object valorOriginal = propiedad.GetValue(viewModel.ToRegistry);
 
                         // Verificar si el valor es un decimal
                         if (valorOriginal != null && valorOriginal is decimal)
@@ -820,7 +816,7 @@
                             if (decimal.TryParse(valorFormateado, NumberStyles.Currency, culturaAR, out decimal valorDecimalNuevo))
                             {
                                 // Asignar el nuevo valor decimal a la propiedad
-                                propiedad.SetValue(estadoContableDto, valorDecimalNuevo);
+                                propiedad.SetValue(viewModel.ToRegistry, valorDecimalNuevo);
                             }
                             else
                             {
@@ -830,7 +826,7 @@
                         break;
 
                     case "DateTime":
-                        object valorOriginalDate = propiedad.GetValue(estadoContableDto);
+                        object valorOriginalDate = propiedad.GetValue(viewModel.ToRegistry);
                         // Verificar si el valor es una cadena
                         if (valorOriginalDate != null && valorOriginalDate is string)
                         {
@@ -842,7 +838,7 @@
                                 // Formatear la fecha como cadena
                                 string fechaFormateada = valorFecha.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
                                 // Asignar el valor formateado a la propiedad
-                                propiedad.SetValue(estadoContableDto, fechaFormateada);
+                                propiedad.SetValue(viewModel.ToRegistry, fechaFormateada);
                             }
                             else
                             {
@@ -934,12 +930,12 @@
     {
         if (rubros != null)
         {
-            estadoContableDto.otrosRubros.Clear();
+            viewModel.ToRegistry.otrosRubros.Clear();
 
             foreach (var rubro in rubros)
             {
 
-                estadoContableDto.otrosRubros.Add(new RubroPatrimonioNetoDto
+                viewModel.ToRegistry.otrosRubros.Add(new RubroPatrimonioNetoDto
                 {
 
                     codigo = rubro.Codigo,
@@ -959,9 +955,9 @@
     {
 
         // Tipo Balance
-        if (!string.IsNullOrEmpty(estadoContableDto.tipoBalance))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.tipoBalance))
         {
-            if (Validator.IsNumeric(estadoContableDto.tipoBalance))
+            if (Validator.IsNumeric(viewModel.ToRegistry.tipoBalance))
             {
                 tipoBalanceError = "No puedes ingresar un valor numérico";
                 return false;
@@ -981,7 +977,7 @@
 
 
         // Fecha Inicio
-        if (estadoContableDto.fechaInicio == null)
+        if (viewModel.ToRegistry.fechaInicio == null)
         {
             fechaInicioError = "Seleccioná la fecha correspondiente";
             return false;
@@ -992,7 +988,7 @@
         }
 
         //Fecha Estado
-        if (estadoContableDto.fechaEstado == null)
+        if (viewModel.ToRegistry.fechaEstado == null)
         {
             fechaEstadoError = "Seleccioná la fecha correspondiente";
             return false;
@@ -1004,7 +1000,7 @@
 
 
         //Fecha Reunion Directorio
-        if (estadoContableDto.fechaReunionDirectorio == null)
+        if (viewModel.ToRegistry.fechaReunionDirectorio == null)
         {
             fechaReunionDirectorioError = "Seleccioná la fecha correspondiente";
             return false;
@@ -1019,7 +1015,7 @@
 
 
         //Fecha Asamblea
-        if (estadoContableDto.fechaAsamblea == null)
+        if (viewModel.ToRegistry.fechaAsamblea == null)
         {
             fechaAsambleaError = "Seleccioná la fecha correspondiente";
             return false;
@@ -1034,9 +1030,9 @@
 
         //Caja y Bancos
 
-        if (!string.IsNullOrEmpty(estadoContableDto.cajaYBancos.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.cajaYBancos.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.cajaYBancos.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.cajaYBancos.ToString()))
             {
                 cajaYBancosError = "No puedes ingresar caracteres en el campo ";
                 return false;
@@ -1055,9 +1051,9 @@
 
 
         //Inversiones
-        if (!string.IsNullOrEmpty(estadoContableDto.inversionesActivoCorriente.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.inversionesActivoCorriente.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.inversionesActivoCorriente.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.inversionesActivoCorriente.ToString()))
             {
                 inversionesError = "No puedes ingresar caracteres en el campo ";
                 return false;
@@ -1074,9 +1070,9 @@
         }
 
         //Bienes de Cambio
-        if (!string.IsNullOrEmpty(estadoContableDto.bienesDeCambio.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.bienesDeCambio.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.bienesDeCambio.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.bienesDeCambio.ToString()))
             {
                 bienesDeCambioError = "No puedes ingresar caracteres en el campo ";
                 return false;
@@ -1095,9 +1091,9 @@
 
         //Activo  Corriente Restante
 
-        if (!string.IsNullOrEmpty(estadoContableDto.activoCorrienteRestante.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.activoCorrienteRestante.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.activoCorrienteRestante.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.activoCorrienteRestante.ToString()))
             {
                 activoCorrienteRestanteError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1115,9 +1111,9 @@
 
 
         //Bienes de Uso
-        if (!string.IsNullOrEmpty(estadoContableDto.bienesDeUso.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.bienesDeUso.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.bienesDeUso.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.bienesDeUso.ToString()))
             {
                 bienesDeUsoError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1135,9 +1131,9 @@
 
         //Propiedades de Inversion
 
-        if (!string.IsNullOrEmpty(estadoContableDto.propiedadesDeInversion.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.propiedadesDeInversion.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.propiedadesDeInversion.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.propiedadesDeInversion.ToString()))
             {
                 propiedadesDeInversionError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1155,9 +1151,9 @@
 
         //Activo No Corriente Restante
 
-        if (!string.IsNullOrEmpty(estadoContableDto.activoNoCorrienteRestante.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.activoNoCorrienteRestante.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.activoNoCorrienteRestante.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.activoNoCorrienteRestante.ToString()))
             {
                 activoNoCorrienteRestanteError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1177,9 +1173,9 @@
 
         //Deudas del Pasivo Corriente
 
-        if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoCorriente.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.deudorPasivoCorriente.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.capitalSuscripto.ToString()))
             {
                 deudasPasivoCorrienteError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1197,9 +1193,9 @@
 
         //Deudas del Pasivo No Corriente
 
-        if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoNoCorriente.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.deudorPasivoNoCorriente.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.deudorPasivoNoCorriente.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.deudorPasivoNoCorriente.ToString()))
             {
                 deudasPasivoNoCorrienteError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1218,9 +1214,9 @@
 
         //Capital Sucripto
 
-        if (!string.IsNullOrEmpty(estadoContableDto.capitalSuscripto.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.capitalSuscripto.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.capitalSuscripto.ToString()))
             {
                 capitalSuscriptoError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1237,9 +1233,9 @@
         }
 
         //Ajuste al capital
-        if (!string.IsNullOrEmpty(estadoContableDto.ajusteCapital.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.ajusteCapital.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.ajusteCapital.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.ajusteCapital.ToString()))
             {
                 ajusteCapitalError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1256,9 +1252,9 @@
         }
 
         //Aporte Irrevocables
-        if (!string.IsNullOrEmpty(estadoContableDto.aportesIrrevocables.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.aportesIrrevocables.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.aportesIrrevocables.ToString()) )
+            if (!Validator.IsNumeric(viewModel.ToRegistry.aportesIrrevocables.ToString()))
             {
                 aportesIrrevocablesError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1277,9 +1273,9 @@
 
         //Prima Emision
 
-        if (!string.IsNullOrEmpty(estadoContableDto.primaEmision.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.primaEmision.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.primaEmision.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.primaEmision.ToString()))
             {
                 primaEmisionError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1297,9 +1293,9 @@
 
         //Ganancias Reservadas
 
-        if (!string.IsNullOrEmpty(estadoContableDto.gananciasReservadas.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.gananciasReservadas.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.gananciasReservadas.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.gananciasReservadas.ToString()))
             {
                 gananciasReservadasError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1316,9 +1312,9 @@
         }
 
         //Perdidas Acumuladas
-        if (!string.IsNullOrEmpty(estadoContableDto.perdidasAcumuladas.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.perdidasAcumuladas.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.perdidasAcumuladas.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.perdidasAcumuladas.ToString()))
             {
                 perdidasAcumuladasError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1336,9 +1332,9 @@
 
 
         //Ganancias  Perdidas del Ejercicio
-        if (!string.IsNullOrEmpty(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.gananciasPerdidasEjercicio.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.gananciasPerdidasEjercicio.ToString()))
             {
                 gananciasPerdidasEjercicioError = "No puedes ingresar caracteres en el campo";
                 return false;
@@ -1357,9 +1353,9 @@
 
         //Reserva Legal
 
-        if (!string.IsNullOrEmpty(estadoContableDto.reservaLegal.ToString()))
+        if (!string.IsNullOrEmpty(viewModel.ToRegistry.reservaLegal.ToString()))
         {
-            if (!Validator.IsNumeric(estadoContableDto.reservaLegal.ToString()))
+            if (!Validator.IsNumeric(viewModel.ToRegistry.reservaLegal.ToString()))
             {
                 reservaLegalError = "No puedes ingresar caracteres en el campo";
                 return false;

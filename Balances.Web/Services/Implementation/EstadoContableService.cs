@@ -1,4 +1,4 @@
-﻿using Balances.DTO;
+﻿/*using Balances.DTO;
 using Balances.Web.Services.Implementation;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
@@ -110,4 +110,4 @@ namespace Balances.Web.Services.Contracts
         }
 
     }
-}
+}*/
