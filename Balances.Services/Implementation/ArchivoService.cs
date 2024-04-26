@@ -1,4 +1,4 @@
-﻿using Balances.Model;
+﻿using Balances.DTO;
 using Balances.Services.Contract;
 using Balances.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -40,7 +40,7 @@ namespace Balances.Services.Implementation
 
         public bool Upload(string balanceId, IFormFileCollection files)
         {
-            var listaArchivos = new List<Archivo>();
+            var listaArchivos = new List<ArchivoDTO>();
             var balance = _balanceService.GetById(balanceId);
 
             if (balance == null)
@@ -52,7 +52,7 @@ namespace Balances.Services.Implementation
             {
 
 
-                var newFile = new Archivo
+                var newFile = new ArchivoDTO
                 {
                     Id = Guid.NewGuid().ToString(),
                     FechaCreacion = DateTime.Now,
@@ -83,7 +83,7 @@ namespace Balances.Services.Implementation
                     //balance.Archivos.Add(newFile);
 
                 }
-                balance.Archivos = listaArchivos;
+                balance.Archivos = (ICollection<Model.Archivo>)listaArchivos;
             }
             _balanceService.UpdateBalance(balance);
             return true;

@@ -1,4 +1,4 @@
-﻿@page "/IntegranteJuridico"
+﻿@page "/IntegranteJuridico/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
@@ -6,7 +6,9 @@
 
 @inject ISociosClientService socioService;
 @inject IBalanceClientService balanceService
-@inject ISessionClientService sessionService
+@inject ISessionClientService sesionService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
 
@@ -135,7 +137,10 @@
     private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
     private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
 
-
+    [Parameter]
+    public string? balid { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
 
     private string msgErrorDenominacion = "";
     private string msgErrorCuit = "";
@@ -150,46 +155,51 @@
     }
 
     private async Task Load()
+
     {
+        ResponseDTO<BalanceDto> rsp = new();
+        sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+
         try
         {
-            var idSession = await sessionService.GetSessionBalanceId();
-
-            if (idSession!=null)
+            if (sesionId == null)
             {
-                var response = await balanceService.getBalance(idSession);
+                var sesionRespuesta = await sesionService.getNewSession();
 
-                if (response.IsSuccess == true)
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
+            }
+            else
+            {
+                var rst = await sesionService.getBalanceId(sesionId);
+
+                if (rst is not null)
                 {
+                    balid = rst;
+                    rsp = await balanceService.getBalance(balid);
 
-                    try
+                    if (rsp.IsSuccess)
                     {
-                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
 
-                        resultPersonaJuridica(response.Result.Socios.PersonasJuridicas);
+                        resultPersonaJuridica(rsp.Result.Socios.PersonasJuridicas);
 
                         StateHasChanged();
 
                     }
-                    catch (Exception ex)
-                    {
-
-                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                    }
                 }
             }
-            else
-            {
-                Console.WriteLine($"No se ha encontrado el idSession");
-            }
         }
+
         catch (Exception ex)
         {
             Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
 
         }
+        
 
     }
+
 
     private async Task<ResponseDTO<BalanceDto>> addPersonaJuridica()
     {
@@ -199,7 +209,7 @@
 
             try
             {
-
+                modelPersonaJuridica.SesionId = sesionId;
                 respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
 
 

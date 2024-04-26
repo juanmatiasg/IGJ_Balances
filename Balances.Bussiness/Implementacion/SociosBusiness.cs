@@ -1,5 +1,6 @@
 ﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
+using Balances.Services.Contract;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -9,16 +10,18 @@ namespace Balances.Bussiness.Implementacion
 
     {
         private readonly IBalanceBusiness _balanceBusiness;
+        private readonly ISessionService _sessionService;
 
         private readonly ILogger<SociosBusiness> _logger;
 
         public SociosBusiness(IBalanceBusiness balanceBusiness,
-                               ILogger<SociosBusiness> logger
+                               ILogger<SociosBusiness> logger,
+                               ISessionService sessionService
                               )
         {
             _balanceBusiness = balanceBusiness;
-            ;
             _logger = logger;
+            _sessionService = sessionService;
         }
 
         public ResponseDTO<BalanceDto> InsertPersonaJuriridica(PersonaJuridicaDto modelo)
@@ -28,25 +31,28 @@ namespace Balances.Bussiness.Implementacion
 
             try
             {
-                var bDto = _balanceBusiness.BalanceActual;
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+
+                var bDto = _balanceBusiness.GetById(id);
+
 
                 modelo.Id = Guid.NewGuid().ToString();
 
 
-                if (bDto.Socios == null) bDto.Socios = new SociosDto();
+                if (bDto.Result.Socios == null) bDto.Result.Socios = new SociosDto();
 
-                if (bDto.Socios.PersonasJuridicas == null)
-                    bDto.Socios.PersonasJuridicas = new List<PersonaJuridicaDto>();
+                if (bDto.Result.Socios.PersonasJuridicas == null)
+                    bDto.Result.Socios.PersonasJuridicas = new List<PersonaJuridicaDto>();
 
-                bDto.Socios.PersonasJuridicas.Add(modelo);
-
-
+                bDto.Result.Socios.PersonasJuridicas.Add(modelo);
 
 
-                _balanceBusiness.Update(bDto);
+
+
+                _balanceBusiness.Update(bDto.Result);
 
                 respuesta.IsSuccess = true;
-                respuesta.Result = bDto;
+                respuesta.Result = bDto.Result;
                 respuesta.Message = $"Persona juridica guardada correctamente";
                 _logger.LogInformation($"SociosBusiness.InsertPersonaJuriridica : ---> {pjSerializada}");
 
@@ -68,24 +74,26 @@ namespace Balances.Bussiness.Implementacion
 
             try
             {
-                var bDto = _balanceBusiness.BalanceActual;
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+                var bDto = _balanceBusiness.GetById(id);
+
 
                 modelo.Id = Guid.NewGuid().ToString();
 
-                if (bDto.Socios == null) bDto.Socios = new SociosDto();
+                if (bDto.Result.Socios == null) bDto.Result.Socios = new SociosDto();
 
-                if (bDto.Socios.PersonasHumanas == null)
-                    bDto.Socios.PersonasHumanas = new List<PersonaHumanaDto>();
+                if (bDto.Result.Socios.PersonasHumanas == null)
+                    bDto.Result.Socios.PersonasHumanas = new List<PersonaHumanaDto>();
 
-                bDto.Socios.PersonasHumanas.Add(modelo);
-
-
+                bDto.Result.Socios.PersonasHumanas.Add(modelo);
 
 
-                _balanceBusiness.Update(bDto);
+
+
+                _balanceBusiness.Update(bDto.Result);
 
                 respuesta.IsSuccess = true;
-                respuesta.Result = bDto;
+                respuesta.Result = bDto.Result;
                 respuesta.Message = "Persona humana guardada correctamente";
                 _logger.LogInformation($"SociosBusiness.InsertPersonaHumana : ---> {pjSerializada}");
 
@@ -107,14 +115,18 @@ namespace Balances.Bussiness.Implementacion
             respuesta.IsSuccess = false;
             try
             {
-                var bal = _balanceBusiness.BalanceActual;
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+                var bal = _balanceBusiness.GetById(id);
 
-                var humano = bal.Socios.PersonasHumanas.FirstOrDefault(x => x.Id == modelo.Id);
 
-                if (humano != null) bal.Socios.PersonasHumanas.Remove(humano);
 
-                _balanceBusiness.Update(bal);
-                respuesta.Result = bal;
+
+                var humano = bal.Result.Socios.PersonasHumanas.FirstOrDefault(x => x.Id == modelo.Id);
+
+                if (humano != null) bal.Result.Socios.PersonasHumanas.Remove(humano);
+
+                _balanceBusiness.Update(bal.Result);
+                respuesta.Result = bal.Result;
                 respuesta.IsSuccess = true;
                 respuesta.Message = "persona humana borrada correctamente";
                 _logger.LogInformation($"SociosBusiness.DeletePersonaHumana :  ---> {pjSerializada}");
@@ -137,14 +149,15 @@ namespace Balances.Bussiness.Implementacion
             var pjSerializada = JsonConvert.SerializeObject(modelo);
             try
             {
-                var bal = _balanceBusiness.BalanceActual;
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+                var bal = _balanceBusiness.GetById(id);
 
-                var juridica = bal.Socios.PersonasJuridicas.FirstOrDefault(x => x.Id == modelo.Id);
+                var juridica = bal.Result.Socios.PersonasJuridicas.FirstOrDefault(x => x.Id == modelo.Id);
 
-                if (juridica != null) bal.Socios.PersonasJuridicas.Remove(juridica);
+                if (juridica != null) bal.Result.Socios.PersonasJuridicas.Remove(juridica);
 
-                _balanceBusiness.Update(bal);
-                respuesta.Result = bal;
+                _balanceBusiness.Update(bal.Result);
+                respuesta.Result = bal.Result;
                 respuesta.IsSuccess = true;
                 respuesta.Message = "persona juridica borrada correctamente";
                 _logger.LogInformation($"SociosBusiness.DeletePersonaJuriridica : ---> {pjSerializada}");

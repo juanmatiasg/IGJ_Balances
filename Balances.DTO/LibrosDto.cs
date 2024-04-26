@@ -22,6 +22,9 @@
             this.Resultados = new LibroDto();
 
         }
+
+        public string SessionId { get; set; }
+
         private LibroDto _Memoria;
         public LibroDto Memoria
         {

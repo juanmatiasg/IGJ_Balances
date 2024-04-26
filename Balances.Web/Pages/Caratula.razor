@@ -43,7 +43,7 @@
         <!--Navegacion-->
 
        
-        <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado"></Navegacion>
+        <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
 
         <!--Loading-->
 
@@ -260,7 +260,9 @@
     private Modal modalRef;
 
     [Parameter]
-    public string? balid { get; set; }
+    public string? balid { get; set; } = null;
+
+
     [Parameter]
     public string sesionId { get; set; }
     //[Parameter]
@@ -295,7 +297,8 @@
     {
         try
         {
-           sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            
             if(sesionId == null)
             {
                 var sesionRespuesta = await sesionService.getNewSession();
@@ -307,91 +310,45 @@
             {
                 var rsp = await sesionService.getBalanceId(sesionId);
 
-                if(/*rsp.IsSuccess*/ rsp is not null)
+                if(rsp is not null)
                 {
-                    balid = rsp ;
-                    var response = await balanceService.getBalance(balid);
+                    balid = rsp;
+
+                    var response = await balanceService.getBalance(rsp);
 
                     if (response.IsSuccess)
                     {
                         var result = response.Result;
                         Model.Caratula caratula = result.Caratula;
 
-                                    modelo.Email = caratula.Email;
-                                    modelo.FechaInicio = caratula.FechaInicio;
-                                    modelo.FechaDeCierre = caratula.FechaDeCierre;
-                                    modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
-                                    modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
-                                    modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
-                                    modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
-                                    modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+                        modelo.Email = caratula.Email;
+                        modelo.FechaInicio = caratula.FechaInicio;
+                        modelo.FechaDeCierre = caratula.FechaDeCierre;
+                        modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
+                        modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
+                        modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+                        modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+                        modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
 
-                                    TipoEntidad = caratula.Entidad.TipoEntidad;
-                                    //  RazonSocial = caratula.Entidad.RazonSocial;
+                        TipoEntidad = caratula.Entidad.TipoEntidad;
+                        //  RazonSocial = caratula.Entidad.RazonSocial;
 
 
-                                    entidadEncontrada = true;
-                                    tramiteIniciado = true;
+                        entidadEncontrada = true;
+                        tramiteIniciado = true;
                     }
 
                 }
-              
+                else
+                {
+                    entidadEncontrada = false;
+                }
 
+                StateHasChanged();
                 
             }
 
            
-
-            //SetSessionStorage();
-
-
-
-            //var sesion = await sesionService.getSession();
-
-            //if (sesion.Result != null)
-            //{
-
-            //    var balanceId = await sesionService.GetSessionBalanceId();
-
-
-            //    var response = await balanceService.getBalance(balanceId);
-
-            //    if (response.IsSuccess)
-            //    {
-            //        var result = response.Result;
-
-            //        if (result != null)
-            //        {
-            //            Model.Caratula caratula = result.Caratula;
-
-            //            modelo.Email = caratula.Email;
-            //            modelo.FechaInicio = caratula.FechaInicio;
-            //            modelo.FechaDeCierre = caratula.FechaDeCierre;
-            //            modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
-            //            modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
-            //            modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
-            //            modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
-            //            modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
-
-            //            TipoEntidad = caratula.Entidad.TipoEntidad;
-            //            //  RazonSocial = caratula.Entidad.RazonSocial;
-
-
-            //            entidadEncontrada = true;
-            //            tramiteIniciado = true;
-            //        }
-            //    }
-
-            //    else
-            //    {
-            //        entidadEncontrada = false;
-
-            //    }
-
-            //    StateHasChanged();
-
-
-            //}
 
         }
 
@@ -407,41 +364,7 @@
     }
 
 
-    public void SetSessionStorage()
-    {
-
-
-        sessionStorage.SetItemAsync("SessionId", sesionId);
-
-
-    }
-
-    public async Task<String> GetSessionStorage()
-    {
-        sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
-
-        return sesionId;
-    }
-
-    //public async Task<String> GetBalanceId(string sesionId)
-    //{
-
-    //    //var rsp = await sesionService.getBalanceId(sesionId);
-    //    //string balanceId = rsp.Result ;
-
-    //    //return balanceId;
-    //}
-
-    public async Task <BalanceDto> GetBalance(string balanceId)
-    {
-
-        var rsp = await balanceService.getBalance(balanceId);
-        var balance = rsp.Result;
-        return balance;
-    }
-
-
-
+    
 
 
 
@@ -520,19 +443,12 @@
 
                 if (rsp.IsSuccess)
                 {
-                    //await sesionService.setBalanceId(sesionId, rsp.Result.Id);
-
-                    //var rspBalanceId = await sesionService.getBalanceId(sesionId);
-
-                    //balid = rsp.Result;
-
-
-                    //await sesionService.setSession(response.Result.Id);
+                  
                    
                     isActive = true;
                     tramiteIniciado = true;
 
-                    //await sesionService.getBalanceId(sesionId);
+                  
                     StateHasChanged();
                 }
             }

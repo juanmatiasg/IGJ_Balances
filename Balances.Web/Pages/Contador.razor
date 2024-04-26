@@ -1,4 +1,4 @@
-﻿@page "/Contador"
+﻿@page "/Contador/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
@@ -8,7 +8,8 @@
 @inject IBalanceClientService balanceService
 @inject IContadorClientService contadorService
 @inject ISessionClientService sessionService
-
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <!DOCTYPE html>
 <html lang="en">
@@ -123,7 +124,10 @@
     [Parameter] public string? TipoEntidad { get; set; }
     private string[] tiposDocumentos = { "DNI", "Pasaporte", "Cédula" };
     private string tipoDocSeleccionado = "";
-
+    [Parameter]
+    public string? balid { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
 
     private ResponseDTO<BalanceDto> modeloRespuesta = new ResponseDTO<BalanceDto>();
     private ContadorDto modelo = new ContadorDto();
@@ -163,34 +167,53 @@
         try
         {
 
-            var idSession = await sesionService.GetSessionBalanceId();
-            rsp = await balanceService.getBalance(idSession);
-
-            if (rsp.IsSuccess)
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            if (sesionId == null)
             {
+                var sesionRespuesta = await sesionService.getNewSession();
 
-
-                TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
-                modelo.id = rsp.Result.Id;
-                modelo.Nombre = rsp.Result.Contador.Nombre;
-                modelo.Apellido = rsp.Result.Contador.Apellido;   
-                modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
-                modelo.NroDocumento = rsp.Result.Contador.NroDocumento;
-                modelo.NroFiscal = rsp.Result.Contador.NroFiscal;
-                modelo.Tomo = rsp.Result.Contador.Tomo;
-                modelo.Folio = rsp.Result.Contador.Folio;
-                modelo.FechaInformeAuditorExt = rsp.Result.Contador.FechaInformeAuditorExt;
-                modelo.NroLegalInfoAudExt = rsp.Result.Contador.NroLegalInfoAudExt;
-
-
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
             }
             else
             {
-                rsp.Message = $"error al obtener el contador {rsp.Message}";
+                var rst = await sesionService.getBalanceId(sesionId);
+
+                if (rst is not null)
+                {
+                    balid = rst;
+                    rsp  = await balanceService.getBalance(balid);
+
+                    if (rsp.IsSuccess)
+                    {
+
+
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+                        modelo.id = rsp.Result.Id;
+                        modelo.Nombre = rsp.Result.Contador.Nombre;
+                        modelo.Apellido = rsp.Result.Contador.Apellido;
+                        modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
+                        modelo.NroDocumento = rsp.Result.Contador.NroDocumento;
+                        modelo.NroFiscal = rsp.Result.Contador.NroFiscal;
+                        modelo.Tomo = rsp.Result.Contador.Tomo;
+                        modelo.Folio = rsp.Result.Contador.Folio;
+                        modelo.FechaInformeAuditorExt = rsp.Result.Contador.FechaInformeAuditorExt;
+                        modelo.NroLegalInfoAudExt = rsp.Result.Contador.NroLegalInfoAudExt;
+
+
+                    }
+
+                    else
+                    {
+                        rsp.Message = $"error al obtener el contador {rsp.Message}";
+                    }
+
+                }
+
+
+                StateHasChanged();
             }
 
-
-            StateHasChanged();
 
         }
         catch (Exception ex)
@@ -210,6 +233,7 @@
         {
             if (checkData())
             {
+                modelo.SesionId = sesionId;
                 //modelo.TipoDocumento = tipoDocSeleccionado;
                 respuesta = await contadorService.postContador(modelo);
                 respuesta.IsSuccess = true;

@@ -7,14 +7,13 @@ namespace Balances.Web.Services.Contracts
     public class ContadorService : IContadorClientService
     {
         private readonly HttpClient _httpClient;
-        private readonly SessionClientService _sessionClientService;
 
 
 
-        public ContadorService(HttpClient httpClient, SessionClientService sessionClientService)
+        public ContadorService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _sessionClientService = sessionClientService;
+
 
         }
 
@@ -35,7 +34,7 @@ namespace Balances.Web.Services.Contracts
             rsp.IsSuccess = false;
             try
             {
-                //_sessionClientService.
+
 
                 // Enviar la solicitud POST directamente con PostAsJsonAsync
                 var respuesta = await _httpClient.PostAsJsonAsync("Contador/Insert", contador);

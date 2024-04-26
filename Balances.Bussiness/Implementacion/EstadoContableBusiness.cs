@@ -37,8 +37,11 @@ namespace Balances.Bussiness.Implementacion
             var EECCSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
-                var id = _sessionService.GetSessionBalanceId();
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+
                 var resultadoDto = _balanceBusiness.GetById(id);
+
+
 
                 if (resultadoDto.IsSuccess)
                 {
@@ -72,9 +75,11 @@ namespace Balances.Bussiness.Implementacion
             var rubroSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
-                var id = _sessionService.GetSessionBalanceId();
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
 
                 var resultadoDto = _balanceBusiness.GetById(id);
+
+
 
                 if (resultadoDto.IsSuccess)
                 {
@@ -117,18 +122,20 @@ namespace Balances.Bussiness.Implementacion
             try
             {
                 // RECUPERO EL BALANCE ACTUAL
-                var bDto = _balanceBusiness.BalanceActual;
+                var balanceId = _sessionService.GetBalanceId(modelo.SesionId);
+                var bDto = _balanceBusiness.GetById(balanceId);
+                //var bDto = _balanceBusiness.BalanceActual;
 
                 //BUSCO EL OTRO RUBRO A BORRAR
-                var rubro = bDto.EstadoContable.OtrosRubros.FirstOrDefault(p => p.Codigo == modelo.codigo);
+                var rubro = bDto.Result.EstadoContable.OtrosRubros.FirstOrDefault(p => p.Codigo == modelo.codigo);
 
                 if (rubro != null)
                 {
-                    bDto.EstadoContable.OtrosRubros.Remove(rubro);
+                    bDto.Result.EstadoContable.OtrosRubros.Remove(rubro);
                 }
 
                 //ACTUALIZO LA DB
-                var rst = _balanceBusiness.Update(bDto);
+                var rst = _balanceBusiness.Update(bDto.Result);
 
                 resultadoDto = rst;
 

@@ -143,7 +143,7 @@ namespace Balances.Services.Implementation
 
             var path = _webHostEnvironment.ContentRootPath + "/Plantillas";
             var Plantilla = path + "/PlantillaEmail.html";
-            var PlantillaHTML = File.ReadAllText(Plantilla);
+            var PlantillaHTML = System.IO.File.ReadAllText(Plantilla);
 
             PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
             PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);

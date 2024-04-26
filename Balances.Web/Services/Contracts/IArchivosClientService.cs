@@ -5,9 +5,9 @@ namespace Balances.Web.Services.Implementation
     public interface IArchivosClientService
     {
 
-        Task<ResponseDTO<BalanceDto>> uploadArchivo(List<FileDTO> files);
+        Task<ResponseDTO<BalanceDto>> uploadArchivo(List<ArchivoDTO> files);
 
-        Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO archivo);
+        Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo);
 
 
     }

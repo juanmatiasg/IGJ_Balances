@@ -142,11 +142,11 @@ namespace Balances.Bussiness.Implementacion
             var pathImage = _webHostEnvironment.ContentRootPath + "/Plantillas/Imagenes";
 
             /* A G R E G AM O S   I M A G E N E S   H E A D E R */
-            var imgIGJ = builder.LinkedResources.Add("igj.png", File.ReadAllBytes(pathImage + "/igj.png"));
+            var imgIGJ = builder.LinkedResources.Add("igj.png", System.IO.File.ReadAllBytes(pathImage + "/igj.png"));
             imgIGJ.ContentId = MimeUtils.GenerateMessageId();
             html = html.Replace("{{igjImage}}", imgIGJ.ContentId);
 
-            var imgMIN = builder.LinkedResources.Add("ministerio.png", File.ReadAllBytes(pathImage + "/ministerio.png"));
+            var imgMIN = builder.LinkedResources.Add("ministerio.png", System.IO.File.ReadAllBytes(pathImage + "/ministerio.png"));
             imgMIN.ContentId = MimeUtils.GenerateMessageId();
             html = html.Replace("{{MinImage}}", imgMIN.ContentId);
 
@@ -169,7 +169,7 @@ namespace Balances.Bussiness.Implementacion
 
             var path = _webHostEnvironment.ContentRootPath + "/Plantillas";
             var Plantilla = path + "/PlantillaEmail.html";
-            var PlantillaHTML = File.ReadAllText(Plantilla);
+            var PlantillaHTML = System.IO.File.ReadAllText(Plantilla);
 
             PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
             PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);

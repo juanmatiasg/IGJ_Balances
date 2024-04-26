@@ -1,4 +1,4 @@
-﻿@page "/Archivos"
+﻿@page "/Archivos/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -10,10 +10,12 @@
 @using System.Net.Http.Headers;
 @using Microsoft.Extensions.Primitives;
 @using System.Security.Cryptography;
+
 @inject IArchivosClientService archivoService
 @inject IBalanceClientService balanceService
 @inject ISessionClientService sesionService
-
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
 
@@ -98,7 +100,8 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                 
+
+                                    <th scope="col">Id</th>
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Tipo</th>
                                     <th scope="col">Hash</th>
@@ -113,7 +116,7 @@
                                 {
                                     <tbody>
                                         <tr>
-                                            
+                                            <td>@archivo.Id</td>
                                             <td>@(archivo.NombreArchivo?.Length > 10 ? archivo.NombreArchivo.Substring(0, 10) + "..." : archivo.NombreArchivo)</td>
                                             <td>@(archivo.Categoria?.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
                                             <td>@archivo.Hash</td>
@@ -143,6 +146,10 @@
 
     [Parameter] public string? TipoEntidad { get; set; }
 
+    [Parameter]
+    public string? balid { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
     private bool isLoading = false;
     private double progressPercentage = 0.0;
 
@@ -151,7 +158,7 @@
     private string msgErrorTipoArchivo = "";
 
     private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
-    private List<FileDTO> listArchivo = new List<FileDTO>();
+    private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
 
     private bool isUploaded = false;
 
@@ -164,53 +171,62 @@
 
     private async Task Load()
     {
+        ResponseDTO<BalanceDto> rsp = new();
+        sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+
         try
         {
-            var idSession = await sesionService.GetSessionBalanceId();
-
-
-            if (idSession!=null)
+            if (sesionId == null)
             {
-                var response = await balanceService.getBalance(idSession);
+                var sesionRespuesta = await sesionService.getNewSession();
 
-                if (response.IsSuccess == true)
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
+            }
+            else
+            {
+                var rst = await sesionService.getBalanceId(sesionId);
+
+                if (rst is not null)
                 {
+                    balid = rst;
+                    rsp = await balanceService.getBalance(balid);
 
-                    try
+                    if (rsp.IsSuccess)
                     {
-                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
-                        var rspArchivos = response.Result.Archivos;
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+
+                        var rspArchivos = rsp.Result.Archivos;
 
                         setListArchivos(rspArchivos);
 
                         StateHasChanged();
 
                     }
-                    catch (Exception ex)
-                    {
-
-                        response.Message = $"GetBalance: Hubo un problema con la solicitud fetch: {ex.Message}";
-                    }
                 }
             }
-
         }
+
         catch (Exception ex)
         {
             Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
 
         }
 
+
     }
 
-    private void setListArchivos(List<FileDTO> list){
+
+    private void setListArchivos(List<ArchivoDTO> list){
         if (list != null)
         {
             foreach (var x in list)
             {
-                var archivo = new FileDTO
+                var archivo = new ArchivoDTO
                     {
+
                         Id = x.Id,
+                        SesionId = sesionId ,
                         NombreArchivo = x.NombreArchivo,
                         Categoria = x.Categoria,
                         Hash = x.Hash,
@@ -262,7 +278,7 @@
         try
         {
             isLoading = true; // Mostrar indicador de carga
-           
+
 
             foreach (var file in e.GetMultipleFiles())
             {
@@ -331,7 +347,7 @@
             if (checkData())
             {
 
-                var archivo = new FileDTO();
+                var archivo = new ArchivoDTO();
                 foreach (var file in selectedFiles)
                 {
 
@@ -339,8 +355,8 @@
                     {
 
                         var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
-                        
-                       
+
+                        archivo.SesionId = sesionId;
                         archivo.Tamaño = binario.Length;
                         archivo.ContentType = file.ContentType;
                         archivo.Categoria = categoria;
@@ -361,7 +377,6 @@
 
                         listArchivo.Add(archivo);
 
-                       
                         response = await archivoService.uploadArchivo(listArchivo);
 
                         if (response.IsSuccess)
@@ -418,7 +433,7 @@
         return true;
     }
 
-    private async Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO archivo)
+    private async Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo)
     {
         var response = new ResponseDTO<BalanceDto>();
         try

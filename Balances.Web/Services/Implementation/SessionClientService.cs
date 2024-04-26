@@ -42,84 +42,51 @@ namespace Balances.Web.Services.Implementation
 
             return responseDto;
         }
-        public async Task<ResponseDTO<bool>> setBalanceId(string sessionId, string balanceId)
+        public async Task<bool> setBalanceId(string sessionId, string balanceId)
 
         {
-            var responseDto = new ResponseDTO<bool>();
+            bool rsp = false;
+            //var responseDto = new ResponseDTO<bool>();
             try
             {
 
-                var rsp = await _httpClient.GetFromJsonAsync<ResponseDTO<bool>>($"Session/SetBalanceId?sesionId={sessionId}&balanceId={balanceId}");
+                //var rsp = await _httpClient.GetFromJsonAsync<ResponseDTO<bool>>($"Session/SetBalanceId?sesionId={sessionId}&balanceId={balanceId}");
 
-
-                responseDto.Result = rsp.Result;
-                responseDto.IsSuccess = rsp.IsSuccess;
-                responseDto.Message = rsp.Message;
-
-
+                var rst = await _httpClient.GetAsync($"Session/SetBalanceId?sesionId={sessionId}&balanceId={balanceId}");
+                if (rst.StatusCode == System.Net.HttpStatusCode.OK) rsp = true;
 
             }
             catch (Exception ex)
             {
+                throw ex;
 
-                responseDto.Result = false;
-                responseDto.IsSuccess = false;
-                responseDto.Message = $"{"Error:SetBalanceId" + ex.Message}";
             }
 
-            return responseDto;
+            return rsp;
         }
-        //public async Task<string> getBalanceId(string sessionId)
-        //{
 
-        //    string rsp;
-
-        //    try
-        //    {
-
-        //        rsp = await _httpClient.GetFromJsonAsync<string>($"Session/getBalanceId?sesionId={sessionId}");
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        throw ex;
-        //    }
-
-        //    return rsp;
-        //}
 
         public async Task<string> getBalanceId(string sessionId)
         {
             string rsp;
-            //var responseDto = new ResponseDTO<string>();
+
 
             try
             {
-                //var rsp = await _httpClient.GetFromJsonAsync<ResponseDTO<string>>($"Session/getBalanceId?sesionId={sessionId}");
+
                 rsp = await _httpClient.GetStringAsync($"Session/getBalanceId?sesionId={sessionId}");
 
-                //// Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
-                //var result = await rsp.Content.ReadFromJsonAsync<ResponseDTO<string>>();
-
-
-                //responseDto.Result = rsp.Result;
-                //responseDto.IsSuccess = rsp.IsSuccess;
-                //responseDto.Message = rsp.Message;
 
             }
             catch (Exception ex)
             {
 
                 throw ex;
-                //responseDto.Result = null;
-                //responseDto.Message = $"{"Error:getBalanceId" + ex.Message}";
-                //responseDto.IsSuccess = false;
+
             }
             return rsp;
 
-            //return responseDto;
+
         }
 
 

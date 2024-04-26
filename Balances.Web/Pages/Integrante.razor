@@ -1,11 +1,14 @@
-﻿@page "/Integrante/"
+﻿@page "/Integrante/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
-@inject ISociosClientService socioService;
+
+@inject ISociosClientService socioService
 @inject IBalanceClientService balanceService
-@inject ISessionClientService sessionService
+@inject ISessionClientService sesionService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
 <!DOCTYPE html>
@@ -162,6 +165,11 @@
     private string msgErrorCuotas = "";
     private string msgErrorVotos = "";
 
+    [Parameter]
+    public string? balid { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
+
 
 
     protected override async Task OnInitializedAsync()
@@ -174,34 +182,39 @@
 
     private async Task Load()
     {
+        ResponseDTO<BalanceDto> rsp = new();
         try
         {
-            var idSession = await sessionService.GetSessionBalanceId();
-            
-            if (idSession!=null)
+
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+
+            if (sesionId == null)
             {
-                var response = await balanceService.getBalance(idSession);
+                var sesionRespuesta = await sesionService.getNewSession();
 
-                if (response.IsSuccess == true)
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
+            }
+            else
+            {
+                var rst = await sesionService.getBalanceId(sesionId);
+
+                if (rst is not null)
                 {
+                    balid = rst;
+                    rsp = await balanceService.getBalance(balid);
 
-                    try
+                    if (rsp.IsSuccess)
                     {
-                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
 
-                        resultPersonaHumana(response.Result.Socios.PersonasHumanas);
+                        resultPersonaHumana(rsp.Result.Socios.PersonasHumanas);
 
                         StateHasChanged();
 
                     }
-                    catch (Exception ex)
-                    {
-
-                        Console.WriteLine($"GetBalance: Hubo un problema con la solicitud fetch: {ex.Message}");
-                    }
                 }
             }
-
         }
         catch (Exception ex)
         {
@@ -210,6 +223,8 @@
         }
 
     }
+    
+
 
     private async Task<ResponseDTO<BalanceDto>> addPersonaHumana()
     {
@@ -219,6 +234,7 @@
 
             try
             {
+                modelPersonaHumana.SesionId = sesionId;
                 respuesta = await socioService.insertPersonaHumana(modelPersonaHumana);
 
                 if (respuesta.IsSuccess)
@@ -256,6 +272,7 @@
         var respuesta = new ResponseDTO<BalanceDto>();
         try
         {
+            personaHumanaDto.SesionId = sesionId;
             respuesta = await socioService.deletePersonaHumana(personaHumanaDto);
 
             if (respuesta.IsSuccess)

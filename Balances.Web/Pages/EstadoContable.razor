@@ -1,4 +1,4 @@
-﻿@page "/EstadoContable"
+﻿@page "/EstadoContable/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -9,13 +9,13 @@
 @using System.Reflection;
 @using Blazorise.Extensions;
 @using Microsoft.AspNetCore.Http;
+
 @inject IEstadoContableClientService estadoContableService;
 @inject NavigationManager NavigationManager
-
-
 @inject IBalanceClientService balanceService
 @inject ISessionClientService sesionService
-
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <!DOCTYPE html>
 <html lang="en">
@@ -507,7 +507,11 @@
 
     private bool firstTimeInput = true;
 
-    
+    [Parameter]
+    public string? balid { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
 
@@ -518,42 +522,38 @@
 
     private async Task Load()
     {
+        ResponseDTO<BalanceDto> rsp = new();
         try
         {
-        
 
-            var idSession = await sesionService.GetSessionBalanceId();
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
 
-            if (idSession!=null)
+            if (sesionId == null)
             {
+                var sesionRespuesta = await sesionService.getNewSession();
 
-                var response = await balanceService.getBalance(idSession);
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
+            }
+            else
+            {
+                var rst = await sesionService.getBalanceId(sesionId);
 
-                if (response.IsSuccess)
+                if (rst is not null)
                 {
+                    balid = rst;
+                    rsp = await balanceService.getBalance(balid);
 
-                    try
+                    if (rsp.IsSuccess)
                     {
-                        var rsp = response.Result.EstadoContable;
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
 
-                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
-
-                        estadoContableDto = new EstadoContableDto(rsp);
-
-                    
+                        estadoContableDto = new EstadoContableDto(rsp.Result.EstadoContable);
 
                         StateHasChanged();
 
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                    }
                 }
-            }
-            else
-            {
-                Console.WriteLine($"No se ha encontrado el idSession");
             }
         }
         catch (Exception ex)
@@ -563,6 +563,55 @@
         }
 
     }
+
+    //private async Task Load()
+    //{
+    //    try
+    //    {
+
+
+    //        var idSession = await sesionService.GetSessionBalanceId();
+
+    //        if (idSession!=null)
+    //        {
+    //            balid = idSession;
+
+    //            var response = await balanceService.getBalance(idSession);
+
+    //            if (response.IsSuccess)
+    //            {
+
+    //                try
+    //                {
+    //                    var rsp = response.Result.EstadoContable;
+
+    //                    TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
+    //                    estadoContableDto = new EstadoContableDto(rsp);
+
+
+
+    //                    StateHasChanged();
+
+    //                }
+    //                catch (Exception ex)
+    //                {
+    //                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            Console.WriteLine($"No se ha encontrado el idSession");
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+    //    }
+
+    //}
 
 
 
@@ -585,7 +634,7 @@
         {
             if (checkData())
             {
-
+                estadoContableDto.SesionId = sesionId;
                 rsp = await estadoContableService.insertEECC(estadoContableDto);
 
                 if (rsp.IsSuccess)
@@ -623,7 +672,7 @@
                 rubroDto.codigo = Guid.NewGuid().ToString();
                 rubroDto.denominacion = denominacionDto;
                 rubroDto.importe = importeDto;
-
+                rubroDto.SesionId = sesionId;
 
 
 
@@ -663,7 +712,7 @@
 
         try
         {
-
+            rubroDto.SesionId = sesionId;
             respuesta = await estadoContableService.deleteRubro(rubroDto);
 
             if (respuesta.IsSuccess)

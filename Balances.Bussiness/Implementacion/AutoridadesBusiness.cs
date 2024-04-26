@@ -34,8 +34,10 @@ namespace Balances.Bussiness.Implementacion
             try
             {
                 //RECUPERO BALANCE 
-                var bal = _balanceBusiness.BalanceActual;
-
+                //var bal = _balanceBusiness.BalanceActual;
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+                var rst = _balanceBusiness.GetById(id);
+                var bal = rst.Result;
                 //BUSCO AUTORIDAD
                 var autoridad = bal.Autoridades.FirstOrDefault(x => x.Id == modelo.Id);
 
@@ -66,9 +68,9 @@ namespace Balances.Bussiness.Implementacion
             var autoridadSerializada = JsonConvert.SerializeObject(modelo);
             try
             {
-                var sesionId = _sessionService.GetNewSesion();
-                var id = _sessionService.GetBalanceId(sesionId);
-
+                //var sesionId = _sessionService.GetNewSesion();
+                //var id = _sessionService.GetBalanceId(sesionId);
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
 
                 var resultadoDto = _balanceBusiness.GetById(id);
 

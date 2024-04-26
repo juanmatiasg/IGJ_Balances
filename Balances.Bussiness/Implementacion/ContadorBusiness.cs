@@ -13,6 +13,7 @@ namespace Balances.Bussiness.Implementacion
 
 
         private readonly ISessionService _sessionService;
+
         private readonly IBalanceBusiness _balanceBusiness;
 
         private readonly ILogger<ContadorBusiness> _logger;
@@ -45,8 +46,7 @@ namespace Balances.Bussiness.Implementacion
             var contadorSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
-
-                var id = _sessionService.GetSessionBalanceId();
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
 
                 var responsedto = _balanceBusiness.GetById(id);
 
@@ -62,7 +62,6 @@ namespace Balances.Bussiness.Implementacion
                     // si inserto correctamente
                     if (rsp.IsSuccess)
                     {
-                        //_sessionService.SetBalanceId(balancedto.Result.Id);
 
                         respuesta.IsSuccess = true;
                         respuesta.Message = "Contador generado correctamente:";

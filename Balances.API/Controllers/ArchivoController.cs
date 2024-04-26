@@ -17,7 +17,7 @@ namespace Balances.API.Controllers
 
         [HttpPost]
         [Route("InsertArchivos")]
-        public ResponseDTO<BalanceDto> InsertArchivos([FromBody] List<FileDTO> files)
+        public ResponseDTO<BalanceDto> InsertArchivos([FromBody] List<ArchivoDTO> files)
         {
 
             var rsp = _archivoBusiness.UploadFilesDTO(files);
@@ -27,7 +27,7 @@ namespace Balances.API.Controllers
 
         [HttpDelete]
         [Route("DeleteArchivo")]
-        public ResponseDTO<BalanceDto> Delete([FromBody] FileDTO file)
+        public ResponseDTO<BalanceDto> Delete([FromBody] ArchivoDTO file)
         {
 
             var rsp = _archivoBusiness.Delete(file);

@@ -7,7 +7,7 @@
         string GetNewSesion();
         string GetBalanceId(string sessionId);
         string GetSessionBalanceId();
-        //string GetSessionToken();
+
     }
 
 

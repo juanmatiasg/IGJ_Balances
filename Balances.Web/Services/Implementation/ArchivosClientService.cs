@@ -21,7 +21,7 @@ namespace Balances.Web.Services.Contracts
 
 
 
-        public async Task<ResponseDTO<BalanceDto>> uploadArchivo(List<FileDTO> files)
+        public async Task<ResponseDTO<BalanceDto>> uploadArchivo(List<ArchivoDTO> files)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace Balances.Web.Services.Contracts
 
 
 
-        public async Task<ResponseDTO<BalanceDto>> deleteArchivo(FileDTO archivo)
+        public async Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo)
         {
             ResponseDTO<BalanceDto> rsp = new ResponseDTO<BalanceDto>();
             rsp.IsSuccess = false;

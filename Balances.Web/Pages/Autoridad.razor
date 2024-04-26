@@ -1,11 +1,15 @@
-﻿@page "/Autoridad"
+﻿@page "/Autoridad/{balid?}"
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
+
 @inject IAutoridadClientService autoridadService
 @inject ISessionClientService sesionService
 @inject IBalanceClientService balanceService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
 @inject NavigationManager NavigationManager
 
 
@@ -183,7 +187,10 @@
     private string msgErrorTipoDeDoc = "";
     private string nroIdentificacionSocial = "Nro de Identificación Fiscal";
 
-
+    [Parameter]
+    public string? balid { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
     // reference to the modal component
     private Modal? modalRef;
 
@@ -212,36 +219,37 @@
 
     private async Task Load()
     {
+        ResponseDTO<BalanceDto> rsp = new();
         try
         {
-            var idSession = await sesionService.GetSessionBalanceId();
-            
-            if (idSession!=null)
+
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            if (sesionId == null)
             {
-                var response = await balanceService.getBalance(idSession);
+                var sesionRespuesta = await sesionService.getNewSession();
 
-                if (response.IsSuccess == true)
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
+            }
+            else
+            {
+                var rst = await sesionService.getBalanceId(sesionId);
+
+                if(rst is not null)
                 {
+                    balid = rst;
+                    rsp = await balanceService.getBalance(balid);
 
-                    try
+                    if (rsp.IsSuccess)
                     {
-                        TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
 
-                        resultAutoridades(response.Result.Autoridades);
+                        resultAutoridades(rsp.Result.Autoridades);
 
                         StateHasChanged();
 
                     }
-                    catch (Exception ex)
-                    {
-
-                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                    }
                 }
-            }
-            else
-            {
-                Console.WriteLine($"No se ha encontrado el idSession");
             }
         }
         catch (Exception ex)
@@ -273,6 +281,7 @@
                 }
                 else
                 {
+                    modelo.SesionId = sesionId;
                     respuesta = await autoridadService.insertAutoridad(modelo);
 
 
@@ -319,6 +328,8 @@
     private async Task<ResponseDTO<BalanceDto>> deleteAutoridad(AutoridadDto autoridad)
     {
         var respuesta = new ResponseDTO<BalanceDto>();
+
+        autoridad.SesionId = sesionId;
         try
         {
             respuesta = await autoridadService.deleteAutoridad(autoridad);

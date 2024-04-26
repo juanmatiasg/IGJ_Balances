@@ -112,7 +112,7 @@ namespace Balances.Services.Implementation
                 SetTag("{{" + libroNombre + ".FolioUltimaRegistracion}}", "N/C");
             }
 
-      
+
 
         }
 
@@ -173,7 +173,7 @@ namespace Balances.Services.Implementation
             var path = _webHostEnvironment.ContentRootPath + "/Plantillas";
             var Plantilla = path + "/" + plantilla;
 
-            var PlantillaHTML = File.ReadAllText(Plantilla);
+            var PlantillaHTML = System.IO.File.ReadAllText(Plantilla);
             return PlantillaHTML;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
+using Balances.Services.Contract;
 
 namespace Balances.Bussiness.Implementacion
 {
@@ -8,30 +9,38 @@ namespace Balances.Bussiness.Implementacion
         private readonly IBalanceBusiness _balanceBusiness;
 
         private const string _baseDir = @"c:\datos\balances";
+        private readonly ISessionService _sessionService;
 
-        public ArchivoBusiness(IBalanceBusiness balanceBusiness)
+        public ArchivoBusiness(IBalanceBusiness balanceBusiness, ISessionService sessionService)
         {
             _balanceBusiness = balanceBusiness;
-
+            _sessionService = sessionService;
         }
 
-        public ResponseDTO<BalanceDto> Delete(FileDTO modelo)
+        public ResponseDTO<BalanceDto> Delete(ArchivoDTO modelo)
         {
             var resultadoDto = new ResponseDTO<BalanceDto>();
             resultadoDto.IsSuccess = false;
 
             try
             {
+
+                //RECUPERO SESION EN EL ARCHIVO
+
+                var sesionid = modelo.SesionId;
+
                 // RECUPERO BALANCE
-                var bal = _balanceBusiness.BalanceActual;
+                var id = _sessionService.GetBalanceId(sesionid);
+                var bal = _balanceBusiness.GetById(id);
+                //var bal = _balanceBusiness.BalanceActual;
 
                 // BUSCO EL ARCHIVO EN EL BALANCE
-                var archivo = bal.Archivos.FirstOrDefault(x => x.Id == modelo.Id);
+                var archivo = bal.Result.Archivos.FirstOrDefault(x => x.Id == modelo.Id);
 
                 if (archivo != null)
                 {
                     // If archivo is not null, proceed with deletion
-                    bal.Archivos.Remove(archivo);
+                    bal.Result.Archivos.Remove(archivo);
 
                     // Check if FechaCreacion is not null before using it
                     if (archivo.FechaCreacion != null)
@@ -39,14 +48,14 @@ namespace Balances.Bussiness.Implementacion
                         string Periodo = CalcularPeriodo(archivo.FechaCreacion);
                         string fullPath = $@"{_baseDir}\{Periodo}\{archivo.Id}{Path.GetExtension(archivo.NombreArchivo)}";
 
-                        if (File.Exists(fullPath))
-                            File.Delete(fullPath);
+                        if (System.IO.File.Exists(fullPath))
+                            System.IO.File.Delete(fullPath);
 
-                        _balanceBusiness.Update(bal);
+                        _balanceBusiness.Update(bal.Result);
 
                         resultadoDto.IsSuccess = true;
                         resultadoDto.Message = "archivo eliminado correctamente";
-                        resultadoDto.Result = bal;
+                        resultadoDto.Result = bal.Result;
                     }
                     else
                     {
@@ -85,19 +94,29 @@ namespace Balances.Bussiness.Implementacion
 
         }
 
-        public ResponseDTO<BalanceDto> UploadFilesDTO(List<FileDTO> ufDto)
+        public ResponseDTO<BalanceDto> UploadFilesDTO(List<ArchivoDTO> ufDto)
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
-            var bDto = _balanceBusiness.BalanceActual;
-            var listaArchivos = new List<FileDTO>();
+
+
+            //RECUPERO SESION EN EL ARCHIVO
+            var archivo = ufDto.FirstOrDefault();
+            var sesionid = archivo.SesionId;
+
+            //busqueda del balance
+            var id = _sessionService.GetBalanceId(sesionid);
+            var bDto = _balanceBusiness.GetById(id);
+
+            var listaArchivos = new List<ArchivoDTO>();
 
 
             try
             {
                 foreach (var file in ufDto)
                 {
-                    var newFile = new FileDTO
+                    var newFile = new ArchivoDTO
                     {
+
                         Id = Guid.NewGuid().ToString(),
                         FechaCreacion = DateTime.UtcNow,
                         Categoria = file.Categoria,
@@ -122,11 +141,12 @@ namespace Balances.Bussiness.Implementacion
                 }
 
                 // Update the business object outside the loop
-                bDto.Archivos = listaArchivos;
-                _balanceBusiness.Update(bDto);
+                bDto.Result.Archivos = listaArchivos;
+
+                _balanceBusiness.Update(bDto.Result);
 
                 respuesta.IsSuccess = true;
-                respuesta.Result = bDto;
+                respuesta.Result = bDto.Result;
                 respuesta.Message = "Archivo(s) guardado(s) correctamente";
             }
             catch (Exception ex)
