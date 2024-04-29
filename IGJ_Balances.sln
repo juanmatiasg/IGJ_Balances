@@ -19,9 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Balances.Bussiness", "Balan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Balances.Web", "Balances.Web\Balances.Web.csproj", "{7BD3DCA1-9504-4363-9060-467945ACF292}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Balances.ViewModel", "Balances.ViewModel\Balances.ViewModel.csproj", "{F97FBFF9-3871-4B1E-BFFA-DEBE916F4F16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Balances.ViewModel", "Balances.ViewModel\Balances.ViewModel.csproj", "{F97FBFF9-3871-4B1E-BFFA-DEBE916F4F16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Balances.Http.Client", "Balances.Http.Client\Balances.Http.Client.csproj", "{05B6F751-F528-4B19-9F3F-7F2C7D1ADE55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Balances.Http.Client", "Balances.Http.Client\Balances.Http.Client.csproj", "{05B6F751-F528-4B19-9F3F-7F2C7D1ADE55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

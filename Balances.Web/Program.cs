@@ -1,6 +1,7 @@
 using Balances.Http.Client;
 using Balances.ViewModel;
 using Balances.Web;
+using Balances.Web.Pages;
 using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
 using Blazored.LocalStorage;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Http;
+using Radzen;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -30,6 +32,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https:/
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddScoped<DialogService>();
 
 builder.Services.AddScoped<ICaratulaClientService, CaratulaClientService>();
 builder.Services.AddScoped<IContadorClientService, ContadorService>();

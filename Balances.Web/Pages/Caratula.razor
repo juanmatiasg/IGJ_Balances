@@ -3,14 +3,18 @@
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
+@using GoogleMapsComponents.Maps.Places;
 @using Microsoft.AspNetCore.Http;
 @using Microsoft.JSInterop
 @using Balances.Web.Services
 @using System.Text.RegularExpressions;
-@using Newtonsoft.Json;
-@using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
-@inject IJSRuntime JS
+
+@using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
+@using System.Text.Json;
+
+
+@inject IJSRuntime jsRuntime
 @inject ICaratulaClientService caratulaService
 @inject IBalanceClientService balanceService
 @inject IBaseSessionClientService sesionService
@@ -36,6 +40,10 @@
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+     
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACfsyUC5V53TEgdiaGLE05NfUb-QHMTqA&libraries=places&callback=initMap"> </script>
+
+
 </head>
 
 <body>
@@ -144,7 +152,9 @@
                 <div class="row ps-3 pt-3">
                     <div class="form-group col">
                         <label for="location">Domicilio</label>
-                        <input type="text" @bind=@modelo.Entidad.Domicilio class="form-control" id="domicilio" placeholder="Domicilio" disabled="@tramiteIniciado">
+                        <!--<input type="text" @bind=@modelo.Entidad.Domicilio class="form-control" id="domicilio" placeholder="Domicilio" disabled="@tramiteIniciado">-->
+                        <RadzenTextBox  @ref="addressBoxRadzenTextBox" Name="BusinessAddress1" value="@formattedAddress" Change=@GoogleAddressAutoComplete />
+
                         <small id="fechaError" class="text-danger">@domicilioError</small>
 
                     </div>
@@ -192,7 +202,8 @@
                 <div class="row ps-3 pt-3">
                     <div class="form-group col">
                         <label for="location">Domicilio</label>
-                        <input type="text" class="form-control" id="domicilio" placeholder="Domicilio" disabled>
+                        <!--<input type="text" @bind=@modelo.Entidad.Domicilio class="form-control" id="domicilio" placeholder="Domicilio" disabled="@tramiteIniciado">-->
+                        <RadzenTextBox @ref="addressBoxRadzenTextBox" Name="BusinessAddress1" value="@formattedAddress" Change=@GoogleAddressAutoComplete Disabled />
 
                     </div>
 
@@ -236,328 +247,394 @@
 
         </div>
     </div>
-
+    
 </body>
 
 
 </html>
 
 @code {
-
+   
+    private IJSObjectReference? jsModule;
+    private ElementReference addressBox;
+    private RadzenTextBox? addressBoxRadzenTextBox;
+    private Autocomplete? autocomplete;
+    private string? placeData;
+    private string? formattedAddress;
 
     private string busquedaError = "";
-        private string emailError = "";
-        private string fechaErrorInicio = "";
-        private string fechaErrorCierre = "";
-        private string domicilioError = "";
+    private string emailError = "";
+    private string fechaErrorInicio = "";
+    private string fechaErrorCierre = "";
+    private string domicilioError = "";
 
-        private bool entidadEncontrada;
-        private string idSession = "";
-        public static bool isActive = false;
-
-
-        // reference to the modal component
-        private Modal modalRef;
-
-        [Parameter]
-        public string? balid { get; set; } = null;
+    private bool entidadEncontrada;
+    private string idSession = "";
+    public static bool isActive = false;
 
 
-        [Parameter] public string? TipoEntidad { get; set; }
-        // [Parameter] public string? RazonSocial { get; set; }
+    // reference to the modal component
+    private Modal modalRef;
 
-        private bool tramiteIniciado = false;
+    [Parameter]
+    public string? balid { get; set; } = null;
 
 
-        private CaratulaDto modelo = new CaratulaDto
+    [Parameter] public string? TipoEntidad { get; set; }
+    // [Parameter] public string? RazonSocial { get; set; }
+
+    private bool tramiteIniciado = false;
+
+
+    private CaratulaDto modelo = new CaratulaDto
         {
             Entidad = new Model.Entidad()
 
         };
 
-        private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
+    private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
 
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        await Load();
+
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        try
         {
 
+            var sesion = await sesionService.getSession();
 
-            await Load();
-
-
-            await base.OnInitializedAsync();
-        }
-
-        private async Task Load()
-        {
-            try
+            if (sesion.Result != null)
             {
 
-                var sesion = await sesionService.getSession();
+                var balanceId = await sesionService.GetSessionBalanceId();
 
-                if (sesion.Result != null)
+                if (balanceId != null)
                 {
+                    balid = balanceId;
 
-                    var balanceId = await sesionService.GetSessionBalanceId();
-
-                    if (balanceId != null)
-                    {
-                        balid = balanceId;
-
-                        var response = await balanceService.getBalance(balanceId);
-
-                        if (response.IsSuccess)
-                        {
-                            var result = response.Result;
-
-                            if (result != null)
-                            {
-                                Model.Caratula caratula = result.Caratula;
-
-                                modelo.Email = caratula.Email;
-                                modelo.FechaInicio = caratula.FechaInicio;
-                                modelo.FechaDeCierre = caratula.FechaDeCierre;
-                                modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
-                                modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
-                                modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
-                                modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
-                                modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
-
-                                TipoEntidad = caratula.Entidad.TipoEntidad;
-                                //  RazonSocial = caratula.Entidad.RazonSocial;
-
-
-                                entidadEncontrada = true;
-                                tramiteIniciado = true;
-                            }
-                        }
-
-                        else
-                        {
-                            entidadEncontrada = false;
-
-                        }
-                    }
-
-                }
-
-                StateHasChanged();
-
-
-            }
-
-
-
-            catch (Exception ex)
-            {
-                Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
-                throw;
-
-            }
-        }
-
-
-
-
-        private async Task FindEntities()
-        {
-
-
-            int numericNroCorrelativo;
-
-            if (modelo != null)
-            {
-                if (string.IsNullOrEmpty(modelo.Entidad.Correlativo))
-                {
-                    busquedaError = "El campo no puede estar vacío";
-                    return;
-                }
-
-                if (int.TryParse(modelo.Entidad.Correlativo, out numericNroCorrelativo))
-                {
-                    busquedaError = "";
-
-
-                    try
-                    {
-                        await ShowLoadingModal();
-
-                        var response = await busquedaSociedadService.findSociedad(modelo.Entidad.Correlativo);
-
-                        if (response != null)
-                        {
-                            modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
-                            modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
-
-                            TipoEntidad = response.Result.TipoEntidad;
-                            //   RazonSocial = response.Result.RazonSocial;
-
-                            entidadEncontrada = true;
-
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                    }
-                    finally
-                    {
-                        await HideLoadingModal();
-                        StateHasChanged();
-                    }
-
-                }
-                else
-                {
-                    busquedaError = "El campo tiene que ser numérico";
-                }
-            }
-            else
-            {
-                modelo = new CaratulaDto();
-            }
-
-        }
-
-        private async Task IniciarTramites()
-        {
-
-            await ShowLoadingModal();
-
-            try
-            {
-                if (checkData())
-                {
-                    var response = await caratulaService.insertCaratula(modelo);
+                    var response = await balanceService.getBalance(balanceId);
 
                     if (response.IsSuccess)
                     {
+                        var result = response.Result;
 
-                        await sesionService.setSession(response.Result.Id);
+                        if (result != null)
+                        {
+                            Model.Caratula caratula = result.Caratula;
 
-                        isActive = true;
-                        tramiteIniciado = true;
+                            modelo.Email = caratula.Email;
+                            modelo.FechaInicio = caratula.FechaInicio;
+                            modelo.FechaDeCierre = caratula.FechaDeCierre;
+                            modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
+                            modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
+                            modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+                            modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+                            modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+
+                            TipoEntidad = caratula.Entidad.TipoEntidad;
+                            //  RazonSocial = caratula.Entidad.RazonSocial;
 
 
-                        StateHasChanged();
+                            entidadEncontrada = true;
+                            tramiteIniciado = true;
+                        }
                     }
-                }
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: IniciarTramites {ex.Message}");
-            }
-            finally
-            {
-                await HideLoadingModal();
-                StateHasChanged();
-            }
-
-
-        }
-
-        private bool checkData()
-        {
-            if (modelo.Entidad.Domicilio != null)
-            {
-                domicilioError = "";
-            }
-            else
-            {
-                domicilioError = "El campo no puede estar vacío";
-                return false;
-            }
-
-
-            if (modelo.FechaInicio != null)
-            {
-                fechaErrorInicio = "";
-            }
-            else
-            {
-                fechaErrorInicio = "Seleccioná la fecha correspondiente";
-                return false;
-            }
-
-            if (modelo.FechaDeCierre != null)
-            {
-                fechaErrorCierre = "";
-            }
-            else
-            {
-                fechaErrorCierre = "Seleccioná la fecha correspondiente";
-                return false;
-            }
-
-
-
-            if (modelo.FechaInicio != null && modelo.FechaDeCierre != null)
-            {
-                if (modelo.FechaInicio.Value == modelo.FechaDeCierre.Value)
-                {
-                    fechaErrorInicio = "Ambas fechas son iguales";
-                    fechaErrorCierre = "Ambas fechas son iguales";
-
-                    return false;
-                }
-                else
-                {
-                    if (modelo.FechaInicio.Value < modelo.FechaDeCierre.Value)
-                    {
-                        fechaErrorInicio = "";
-                        fechaErrorCierre = "";
-
-                    }
                     else
                     {
-                        fechaErrorInicio = "La fecha de inicio tiene que ser menor a la fecha del cierre";
+                        entidadEncontrada = false;
 
-                        return false;
                     }
-
                 }
+
             }
 
-            if (modelo.Email != null)
+            StateHasChanged();
+
+
+        }
+
+
+
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+            throw;
+
+        }
+    }
+
+
+
+
+    private async Task FindEntities()
+    {
+
+
+        int numericNroCorrelativo;
+
+        if (modelo != null)
+        {
+            if (string.IsNullOrEmpty(modelo.Entidad.Correlativo))
             {
-                emailError = "";
-                if (Validator.IsEmail(modelo.Email))
+                busquedaError = "El campo no puede estar vacío";
+                return;
+            }
+
+            if (int.TryParse(modelo.Entidad.Correlativo, out numericNroCorrelativo))
+            {
+                busquedaError = "";
+
+
+                try
                 {
-                    emailError = "";
+                    await ShowLoadingModal();
+
+                    var response = await busquedaSociedadService.findSociedad(modelo.Entidad.Correlativo);
+
+                    if (response != null)
+                    {
+                        modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
+                        modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
+
+                        TipoEntidad = response.Result.TipoEntidad;
+                        //   RazonSocial = response.Result.RazonSocial;
+
+                        entidadEncontrada = true;
+
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    emailError = "Ingresa tu mail correcto";
-                    return false;
+                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                }
+                finally
+                {
+                    await HideLoadingModal();
+                    StateHasChanged();
                 }
 
             }
             else
             {
-                emailError = "El campo no puede esta vacio";
-                return false;
+                busquedaError = "El campo tiene que ser numérico";
+            }
+        }
+        else
+        {
+            modelo = new CaratulaDto();
+        }
+
+    }
+
+    private async Task IniciarTramites()
+    {
+
+        await ShowLoadingModal();
+
+        try
+        {
+            if (checkData())
+            {
+                var response = await caratulaService.insertCaratula(modelo);
+
+                if (response.IsSuccess)
+                {
+
+                    await sesionService.setSession(response.Result.Id);
+
+                    isActive = true;
+                    tramiteIniciado = true;
+
+
+                    StateHasChanged();
+                }
             }
 
-            emailError = "";
-            domicilioError = "";
-            fechaErrorCierre = "";
-            fechaErrorInicio = "";
-            return true;
         }
-
-
-        // Método para mostrar el modal de carga
-        private Task ShowLoadingModal()
+        catch (Exception ex)
         {
-            return modalRef.Show();
+            Console.WriteLine($"Error: IniciarTramites {ex.Message}");
         }
-
-        // Método para ocultar el modal de carga
-        private Task HideLoadingModal()
+        finally
         {
-            return modalRef.Hide();
+            await HideLoadingModal();
+            StateHasChanged();
         }
 
 
     }
+
+    private bool checkData()
+    {
+        if (modelo.Entidad.Domicilio != null)
+        {
+            domicilioError = "";
+        }
+        else
+        {
+            domicilioError = "El campo no puede estar vacío";
+            return false;
+        }
+
+
+        if (modelo.FechaInicio != null)
+        {
+            fechaErrorInicio = "";
+        }
+        else
+        {
+            fechaErrorInicio = "Seleccioná la fecha correspondiente";
+            return false;
+        }
+
+        if (modelo.FechaDeCierre != null)
+        {
+            fechaErrorCierre = "";
+        }
+        else
+        {
+            fechaErrorCierre = "Seleccioná la fecha correspondiente";
+            return false;
+        }
+
+
+
+        if (modelo.FechaInicio != null && modelo.FechaDeCierre != null)
+        {
+            if (modelo.FechaInicio.Value == modelo.FechaDeCierre.Value)
+            {
+                fechaErrorInicio = "Ambas fechas son iguales";
+                fechaErrorCierre = "Ambas fechas son iguales";
+
+                return false;
+            }
+            else
+            {
+                if (modelo.FechaInicio.Value < modelo.FechaDeCierre.Value)
+                {
+                    fechaErrorInicio = "";
+                    fechaErrorCierre = "";
+
+                }
+                else
+                {
+                    fechaErrorInicio = "La fecha de inicio tiene que ser menor a la fecha del cierre";
+
+                    return false;
+                }
+
+            }
+        }
+
+        if (modelo.Email != null)
+        {
+            emailError = "";
+            if (Validator.IsEmail(modelo.Email))
+            {
+                emailError = "";
+            }
+            else
+            {
+                emailError = "Ingresa tu mail correcto";
+                return false;
+            }
+
+        }
+        else
+        {
+            emailError = "El campo no puede esta vacio";
+            return false;
+        }
+
+        emailError = "";
+        domicilioError = "";
+        fechaErrorCierre = "";
+        fechaErrorInicio = "";
+        return true;
+    }
+
+
+    // Método para mostrar el modal de carga
+    private Task ShowLoadingModal()
+    {
+        return modalRef.Show();
+    }
+
+    // Método para ocultar el modal de carga
+    private Task HideLoadingModal()
+    {
+        return modalRef.Hide();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            // convert RadzenTextBox to ElementReference
+            addressBox = addressBoxRadzenTextBox!.Element;
+
+
+            // setup google address auto complete
+            await SetupGoogleAddressAutoComplete();
+        }
+    }
+
+    private async Task GoogleAddressAutoComplete()
+    {
+
+        System.Threading.Thread.Sleep(500); // this is a hack. with no wait place was null first time
+
+        var place = await this.autocomplete!.GetPlace();
+
+
+        var placeDataTest = JsonSerializer.Serialize(place);
+
+
+        if (place?.AddressComponents == null)
+        {
+            this.domicilioError = "No results available for " + place?.Name;
+        }
+        else
+        {
+            var placeId = place.PlaceId;
+            var streetNumber = place.AddressComponents.FirstOrDefault(a => a.Types != null && a.Types.Contains("street_number"))?.LongName;
+            var street = place.AddressComponents.FirstOrDefault(a => a.Types != null && (a.Types.Contains("route") || a.Types.Contains("street_address")))?.LongName;
+            var city = place.AddressComponents.FirstOrDefault(a => a.Types != null && (a.Types.Contains("locality") || a.Types.Contains("neighborhood")))?.LongName;
+            var state = place.AddressComponents.FirstOrDefault(a => a.Types != null && a.Types.Contains("administrative_area_level_1"))?.LongName;
+            var country = place.AddressComponents.FirstOrDefault(a => a.Types != null && a.Types.Contains("country"))?.LongName;
+            var postcode = place.AddressComponents.FirstOrDefault(a => a.Types != null && a.Types.Contains("postal_code"))?.LongName;
+            formattedAddress = place.FormattedAddress;
+            placeData = JsonSerializer.Serialize(place);
+
+        }
+    }
+
+
+
+    private async Task SetupGoogleAddressAutoComplete()
+    {
+
+        this.autocomplete = await Autocomplete.CreateAsync(jsRuntime, addressBox, new AutocompleteOptions
+            {
+                StrictBounds = false,
+            });
+
+        await this.autocomplete.SetFields(new[] { "address_components", "place_id", "formatted_address" });
+
+
+
+    }
+
+    
+}
 
