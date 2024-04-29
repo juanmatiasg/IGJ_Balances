@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Http;
+using Radzen;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -42,6 +43,7 @@ builder.Services.AddScoped<ISessionClientService, SessionClientService>();
 builder.Services.AddScoped<IBusquedaDeSociedadesClientService, BusquedaDesociedadesClientService>();
 builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
 
+builder.Services.AddScoped<DialogService>();
 
 
 // Ejemplo de configuración para ASP.NET Core
