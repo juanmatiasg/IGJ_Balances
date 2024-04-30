@@ -29,12 +29,13 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
 </head>
 
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Archivos" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Archivos" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <div class="container-fluid mt-5">
@@ -63,7 +64,14 @@
                                 </select>
                                 <small id="msgError" class="text-danger">@msgErrorTipoArchivo</small>
                             </div>
-                            <div class="col d-flex justify-content-between">
+                            <RadzenCard>
+                                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Drag and drop files to upload</RadzenText>
+                                <RadzenUpload id="ddUpload" @ref="uploadDD" ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true" Url="upload/multiple" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
+                                              Progress=@(args => OnProgress(args, "Drag and drop files to upload")) class="w-100" />
+                                <RadzenButton Text="Upload" Click=@(args => uploadDD.Upload()) class="d-block mt-4" />
+                            </RadzenCard>
+
+                           <!-- <div class="col d-flex justify-content-between">
                                 <InputFile OnChange="@HandleFileUpload" multiple />
                                 @if (!isUploaded)
                                 {
@@ -77,10 +85,10 @@
 
                             @if (isLoading)
                             {
-                                <!-- Barra de progreso -->
+                               
                                 <progress max="100" value="@progressPercentage" class="w-100 mt-3"></progress>
                                 <span class="d-flex justify-content-center">@progressPercentage%</span>
-                            }
+                            }-->
 
                         </form>
                         <div class="d-flex justify-content-center mt-4">
@@ -143,6 +151,14 @@
 
 
 @code {
+    RadzenUpload upload;
+    RadzenUpload uploadDD;
+
+    int progress;
+    bool showProgress;
+    bool showComplete;
+    string completionMessage;
+    bool cancelUpload = false;
 
     [Parameter] public string? TipoEntidad { get; set; }
 
@@ -427,7 +443,7 @@
             return false;
         }
 
-        
+
         msgErrorTipoArchivo = "";
 
         return true;
@@ -462,6 +478,89 @@
         }
     }
 
+
+    void CompleteUpload(UploadCompleteEventArgs args)
+    {
+        if (!args.Cancelled)
+            completionMessage = "Upload Complete!";
+        else
+            completionMessage = "Upload Cancelled!";
+
+        showProgress = false;
+        showComplete = true;
+
+    }
+
+    void TrackProgress(UploadProgressArgs args)
+    {
+        showProgress = true;
+        showComplete = false;
+        progress = args.Progress;
+
+        // cancel upload
+        args.Cancel = cancelUpload;
+
+        // reset cancel flag
+        cancelUpload = false;
+    }
+
+    void CancelUpload()
+    {
+        cancelUpload = true;
+    }
+
+    int customParameter = 1;
+
+    void OnChange(UploadChangeEventArgs args, string name)
+    {
+        foreach (var file in args.Files)
+        {
+            
+            Console.WriteLine($"File: {file.Name} / {file.Size} bytes");
+        }
+
+        Console.WriteLine($"{name} changed");
+    }
+
+    void OnProgress(UploadProgressArgs args, string name)
+    {
+        Console.WriteLine($"{args.Progress}% '{name}' / {args.Loaded} of {args.Total} bytes.");
+
+        if (args.Progress == 100)
+        {
+            foreach (var file in args.Files)
+            {
+                Console.WriteLine($"Uploaded: {file.Name} / {file.Size} bytes");
+            }
+        }
+    }
+
+    void OnComplete(UploadCompleteEventArgs args)
+    {
+        Console.WriteLine($"Server response: {args.RawResponse}");
+    }
+
+    void OnClientChange(UploadChangeEventArgs args)
+    {
+        Console.WriteLine($"Client-side upload changed");
+
+        foreach (var file in args.Files)
+        {
+            Console.WriteLine($"File: {file.Name} / {file.Size} bytes");
+
+            try
+            {
+                long maxFileSize = 10 * 1024 * 1024;
+                // read file
+                var stream = file.OpenReadStream(maxFileSize);
+                stream.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Client-side file read error: {ex.Message}");
+            }
+        }
+    }
 
 
 

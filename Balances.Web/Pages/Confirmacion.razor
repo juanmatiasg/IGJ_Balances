@@ -1,4 +1,4 @@
-﻿@page "/Confirmacion"
+﻿@page "/Confirmacion/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -22,6 +22,7 @@
 
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
 
     <style>
         body {
@@ -119,7 +120,7 @@
 
 <body>
     
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Confirmacion" TramiteIniciado="true"></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Confirmacion" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!--Loading-->
 
@@ -524,6 +525,10 @@
 
     [Parameter] public string? TipoEntidad { get; set; }
 
+    [Parameter] public string? balid { get; set; } = null;
+
+
+
     private BalanceDto balance = new BalanceDto();
 
     private CaratulaDto caratula = new CaratulaDto();
@@ -557,8 +562,10 @@
     {
         try
         {
-         
+
             var balanceId = await sesionService.GetSessionBalanceId();
+
+            balid = balanceId;
 
             if (balanceId != null)
             {

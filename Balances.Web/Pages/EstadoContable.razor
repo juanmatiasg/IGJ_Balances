@@ -25,12 +25,13 @@
     <title>Estado Contable</title>
     <!-- Agrega los enlaces a los estilos de Bootstrap y otros recursos aquí -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
 
  
 </head>
 <body>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="EstadoContable" TramiteIniciado = "true" ></Navegacion>
+    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="EstadoContable" TramiteIniciado = "true"  balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <div class="container mt-4">
@@ -564,59 +565,7 @@
 
     }
 
-    //private async Task Load()
-    //{
-    //    try
-    //    {
-
-
-    //        var idSession = await sesionService.GetSessionBalanceId();
-
-    //        if (idSession!=null)
-    //        {
-    //            balid = idSession;
-
-    //            var response = await balanceService.getBalance(idSession);
-
-    //            if (response.IsSuccess)
-    //            {
-
-    //                try
-    //                {
-    //                    var rsp = response.Result.EstadoContable;
-
-    //                    TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
-
-    //                    estadoContableDto = new EstadoContableDto(rsp);
-
-
-
-    //                    StateHasChanged();
-
-    //                }
-    //                catch (Exception ex)
-    //                {
-    //                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-    //                }
-    //            }
-    //        }
-    //        else
-    //        {
-    //            Console.WriteLine($"No se ha encontrado el idSession");
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
-
-    //    }
-
-    //}
-
-
-
-
-
+ 
 
     private async Task<ResponseDTO<BalanceDto>> insertEECC()
     {

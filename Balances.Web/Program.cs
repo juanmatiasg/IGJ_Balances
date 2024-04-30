@@ -44,7 +44,7 @@ builder.Services.AddScoped<IBusquedaDeSociedadesClientService, BusquedaDesocieda
 builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
 
 builder.Services.AddScoped<DialogService>();
-
+builder.Services.AddRadzenComponents();
 
 // Ejemplo de configuración para ASP.NET Core
 builder.Services.Configure<CookiePolicyOptions>(options =>

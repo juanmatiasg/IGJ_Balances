@@ -7,10 +7,11 @@
 @using Microsoft.JSInterop
 @using Balances.Web.Services
 @using System.Text.RegularExpressions;
-@using Newtonsoft.Json;
+@using System.Text.Json;
+@using GoogleMapsComponents.Maps.Places
+
 @using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 @inject IJSRuntime JS
-
 @inject ICaratulaClientService caratulaService
 @inject IBalanceClientService balanceService 
 @inject ISessionClientService sesionService
@@ -37,11 +38,12 @@
         <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
         <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
         <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
-        <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+         <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
     </head>
 
     <body>
 
+    
         <!--Navegacion-->
 
        
@@ -53,13 +55,13 @@
 
         <!---------------------------------------------------------------->
         <!--Entidad-->
-
+           
+            
         <div class="container mt-2">
             <div class="card mx-auto">
                     <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                         Entidad
                     </div>
-
 
                     <div class="card-body">
                         <div class="row d-flex justify-content-center align-items-end position-relative">
@@ -104,7 +106,8 @@
                     <div class="row ps-3 pt-3">
                         <div class="form-group col">
                             <RadzenFormField Text="Domicilio" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@modelo.Entidad.Domicilio" Disabled="@tramiteIniciado" />
+                            <RadzenTextBox @bind-Value="@modelo.Entidad.Domicilio" Disabled="@tramiteIniciado" id="txtAddress" />
+
                             </RadzenFormField>
                             <small id="fechaError" class="text-danger">@domicilioError</small>
 
@@ -155,7 +158,8 @@
                 <div class="row ps-3 pt-3 pe-3">
                         <div class="form-group col">
                             <RadzenFormField Text="Domicilio" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@modelo.Entidad.Domicilio" Disabled/>
+                                <RadzenTextBox @bind-Value="@modelo.Entidad.Domicilio" Disabled id="txtAddress" />
+
                             </RadzenFormField>
 
                         </div>
@@ -205,8 +209,7 @@
             </div> 
               
          </div>
-        
-     
+
     </body>
     
 
@@ -214,6 +217,7 @@
 
 @code {
 
+    
 
     private string busquedaError = "";
     private string emailError = "";
@@ -265,6 +269,7 @@
     }
 
 
+    
 
     private async Task Load()
     {
@@ -554,7 +559,7 @@
         await dialogService.OpenAsync("", ds =>
     @<RadzenStack AlignItems="AlignItems.Center" Gap="2rem" Class="rz-p-12">
         <RadzenImage Path="img/community.svg" Style="width: 200px;" AlternateText="community" />
-        <RadzenText TextStyle="TextStyle.H6">Loading, please wait...</RadzenText>
+        <RadzenText TextStyle="TextStyle.H6">Cargando...</RadzenText>
     </RadzenStack>, new DialogOptions() { ShowTitle = false, Style = "min-height:auto;min-width:auto;width:auto", CloseDialogOnEsc = false });
     }
 

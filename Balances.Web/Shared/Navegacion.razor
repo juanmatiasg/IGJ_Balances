@@ -1,5 +1,6 @@
 @using Balances.DTO;
 @using Balances.Web.Pages;
+@inject NavigationManager NavigationManager
 
 <div>
     <h3 class="fs-2 font-weight mt-4 mb-4 d-flex justify-content-center">
@@ -7,32 +8,41 @@
     </h3>
 </div>
 
-<ul class="nav nav-tabs d-flex justify-content-center">
-    <li class="nav-item">
-        <a class="nav-link text-primary @(PaginaActiva == "Caratula" ? "active" : "")" href="/Caratula/@balid">Caratula</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-primary @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "EstadoContable" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/EstadoContable/@balid">Estado Contable</a>
-    </li>
-      <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Libros" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Libros/@balid">Libros</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Contador" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Contador/@balid">Contador</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Autoridad" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Autoridad/@balid">Autoridades</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Integrante" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Integrante/@balid">Integrantes</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Archivos" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Archivos/@balid">Archivos</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-primary  @(TramiteIniciado ? "text-primary" : "text-secondary") @(PaginaActiva == "Confirmacion" ? "active" : "") @(TramiteIniciado ? "" : "disabled")" href="/Confirmacion/@balid">Confirmación</a>
-    </li>
-</ul>
+
+<RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center" Gap="0.5rem" Class="rz-pt-4">
+    
+    <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()"  RenderMode="TabRenderMode.Client">
+        <Tabs>
+            <RadzenTabsItem Text="Carátula" Class="@((PaginaActiva == "Caratula"))"></RadzenTabsItem>
+            
+            
+            <RadzenTabsItem Text="Estado Contable" Class="@((PaginaActiva == "EstadoContable"))" Disabled="@(TramiteIniciado ? false : true)">
+          
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Libros" Class="@((PaginaActiva == "Libros") )" Disabled="@(TramiteIniciado ? false : true)">
+           
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Contador" Class="@((PaginaActiva == "Contador"))" Disabled="@(TramiteIniciado ? false : true)">
+           
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Autoridades" Class="@((PaginaActiva == "Autoridades"))" Disabled="@(TramiteIniciado ? false : true)">
+            
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Integrantes" Class="@((PaginaActiva == "Integrantes") )" Disabled="@(TramiteIniciado ? false : true)">
+       
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Archivos" Class="@((PaginaActiva == "Archivos"))" Disabled="@(TramiteIniciado ? false : true)">
+               
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Confirmación" Class="@((PaginaActiva == "Confirmacion") )" Disabled="@(TramiteIniciado ? false : true)">
+           
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenStack>
+
+
+
 
 @code {
     [Parameter] public string? Entidad { get; set; }
@@ -40,5 +50,74 @@
     [Parameter] public bool TramiteIniciado { get; set; }
     [Parameter] public string? balid { get; set; } = null;
 
+    Radzen.TabPosition tabPosition = Radzen.TabPosition.Top;
+        
+   
+    void OnChange(int index)
+    {
+        Console.WriteLine($"Tab with index {index} was selected.");
+        
+
+        switch (index)
+        {
+            case 0:
+                PaginaActiva = "Caratula";
+                break;
+            case 1:
+                PaginaActiva = "EstadoContable";
+                break;
+            case 2:
+                PaginaActiva = "Libros";
+                break;
+            case 3:
+                PaginaActiva = "Contador";
+                break;
+            case 4:
+                PaginaActiva = "Autoridad";
+                break;
+
+            case 5:
+                PaginaActiva = "Integrante";
+                break;
+            case 6:
+                PaginaActiva = "Archivos";
+                break;
+            case 7:
+                PaginaActiva = "Confirmacion";
+                break;
+            default:
+                // Por defecto, no hacer nada
+                break;
+        }
+
+        // Después de actualizar PaginaActiva, puedes construir la URL y navegar a ella
+        var url = PaginaActiva + "/" + balid;
+        Console.WriteLine("Navegando a: " + url);
+        NavigationManager.NavigateTo(url);
+    }
+    int GetSelectedIndex()
+    {
+        switch (PaginaActiva)
+        {
+            case "Caratula":
+                return 0;
+            case "EstadoContable":
+                return 1;
+            case "Libros":
+                return 2;
+            case "Contador":
+                return 3;
+            case "Autoridad":
+                return 4;
+            case "Integrante":
+                return 5;
+            case "Archivos":
+                return 6;
+            case "Confirmacion":
+                return 7;// Agrega más casos según sea necesario para las demás pestañas
+            default:
+                return 0; // Si no se encuentra ninguna coincidencia, selecciona la primera pestaña como predeterminada
+        }
+    }
 
 }

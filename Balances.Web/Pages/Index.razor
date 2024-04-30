@@ -47,22 +47,15 @@
     private string msgError = "";
     private bool isChecked = false;
 
-    [Parameter]
-    public string balid { get; set; }
-
     
     public void handleAccept()
     {
         if (checkData())
         {
-            if (balid != null)
-            {
-                NavigationManager.NavigateTo($"ContinuarCarga/{balid}");
-            }
-            else
-            {
-                NavigationManager.NavigateTo($"Caratula");
-            }
+           
+            
+          NavigationManager.NavigateTo($"Caratula");
+            
         }
     }
 
