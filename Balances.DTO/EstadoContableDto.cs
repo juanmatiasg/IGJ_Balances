@@ -52,6 +52,7 @@ namespace Balances.DTO
         public decimal gananciasPerdidasEjercicio { get; set; }
         public decimal reservaLegal { get; set; }
 
+
         private List<RubroPatrimonioNetoDto> _otrosRubros;
         public List<RubroPatrimonioNetoDto> otrosRubros
         {

@@ -26,6 +26,7 @@
     <!-- Agrega los enlaces a los estilos de Bootstrap y otros recursos aquí -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
 
  
 </head>
@@ -44,21 +45,29 @@
                         <div class="card-body">
                             <h5 class="card-title d-flex justify-content-center">Período</h5>
                             <div class="form-group">
+                                <RadzenFormField Text="Tipo de balance" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@estadoContableDto.tipoBalance" Change="insertEECC"> </RadzenTextBox>
+                                </RadzenFormField>
 
-                                <input type="text" class="form-control" id="fechaInicio" placeholder="Tipo de balance" @bind=estadoContableDto.tipoBalance @onblur="insertEECC">
                                 <small id="tipoBalanceError" class="text-danger">@tipoBalanceError</small>
-
                             </div>
-                            <div class="form-group">
-                                <label for="fechaInicio">Fecha de Inicio</label>
-                                <input type="date" class="form-control" id="fechaInicio" placeholder="Fecha de Inicio" @bind=estadoContableDto.fechaInicio @onblur="insertEECC">
-                                <small id="tipoBalanceError" class="text-danger">@fechaInicioError</small>
 
+                            <div class="form-group">
+                           
+                                <RadzenStack>
+                                    <RadzenLabel Text="Fecha de inicio" Component="DatePickerTimeOnlyType" Style="width:100%"  />
+                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaInicio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Change="insertEECC" Placeholder="dd/MM/yyyy"></RadzenDatePicker>
+                                </RadzenStack>
+                               
+                                <small id="tipoBalanceError" class="text-danger">@fechaInicioError</small>
                             </div>
                    
                             <div class="form-group">
-                                <label for="fechaEstado">Fecha de Cierre</label>
-                            <input type="date" class="form-control" id="fechaEstado" placeholder="Fecha de Cierre" @bind=estadoContableDto.fechaEstado @onblur="insertEECC">
+                            <RadzenStack>
+                                <RadzenLabel Text="Fecha de cierre" Component="DatePickerTimeOnlyType" Style="width:100%"  />
+                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaEstado)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Change="insertEECC" Placeholder="dd/MM/yyyy"></RadzenDatePicker>
+                             </RadzenStack>
+                            
                             <small id="tipoBalanceError" class="text-danger">@fechaEstadoError</small>
 
                         </div>
@@ -68,16 +77,21 @@
                     <!-- Aprobado por -->
                     <div class="card mb-4">
                         <div class="card-body">
-                        <h5 class="card-title d-flex justify-content-center">Aprobado por</h5>
-                            <div class="form-group">
-                                <label for="fechaReunionDirectorio">Fecha de Acta de Reunión de Autoridades</label>
-                            <input type="date" class="form-control" id="fechaReunionDirectorio" placeholder="Fecha de Acta de Renión de Autoridades" @bind=estadoContableDto.fechaReunionDirectorio @onblur="insertEECC">
-                            <small id="tipoBalanceError" class="text-danger">@fechaReunionDirectorioError</small>
+                            <h5 class="card-title d-flex justify-content-center">Aprobado por</h5>
+                                <div class="form-group">
+                                <RadzenStack>
+                                <RadzenLabel Text="Fecha de Acta de Reunión de Autoridades" Component="DatePickerTimeOnlyType" Style="width:100%"  />
+                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaReunionDirectorio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/MM/yyyy" Change="insertEECC"></RadzenDatePicker>
+                                </RadzenStack>                            
+                                <small id="tipoBalanceError" class="text-danger">@fechaReunionDirectorioError</small>
 
-                        </div>
+                            </div>
+                        
                             <div class="form-group">
-                                <label for="fechaAsamblea">Fecha de Acta de Reunión de Socios</label>
-                                <input type="date" class="form-control" id="fechaAsamblea" placeholder="Fecha de Acta de Reunión de Socios" @bind=estadoContableDto.fechaAsamblea @onblur="insertEECC">
+                                <RadzenStack>
+                                <RadzenLabel Text="Fecha de Acta de Reunión de Socios" Component="DatePickerTimeOnlyType" Style="width:100%"  />
+                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaAsamblea)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Change="insertEECC" Placeholder="dd/MM/yyyy"></RadzenDatePicker>
+                                </RadzenStack>
                                 <small id="tipoBalanceError" class="text-danger">@fechaAsambleaError</small>
                             </div>
                         </div>
@@ -94,11 +108,7 @@
                                     <div class="form-group">
                                         <label for="activoCorriente">Caja Y Bancos</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                        <input type="text" class="form-control" id="numero" @bind-value=estadoContableDto.cajaYBancos @onblur="insertEECC" />
-                                        
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.cajaYBancos InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                     </div>
                                     <small id="tipoBalanceError" class="text-danger">@cajaYBancosError</small>
 
@@ -107,10 +117,7 @@
                                     <div class="form-group">
                                         <label for="activoCorriente">Inversiones</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" @bind="estadoContableDto.inversionesActivoCorriente"  @onblur="insertEECC" />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.inversionesActivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@inversionesError</small>
                                     </div>
@@ -118,10 +125,7 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Bienes de Cambios</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                        <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeCambio"   @onblur="insertEECC" />
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeCambio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Change="insertEECC" Style="width:100%" />
                                         </div>
                                     <small id="tipoBalanceError" class="text-danger">@bienesDeCambioError</small>
 
@@ -130,11 +134,8 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Activo Corriente Restante</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-    
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorrienteRestante"  @onblur="insertEECC" />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@activoCorrienteRestanteError</small>
 
@@ -143,21 +144,15 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Total Activo Corriente</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoCorriente"   @onblur="insertEECC" disabled/>
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC"  Style="width:100%" Disabled />
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Bienes de Uso</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.bienesDeUso"   @onblur="insertEECC"  />
-                                        </div>
+                                         <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeUso InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                     </div>
                                     <small id="tipoBalanceError" class="text-danger">@bienesDeUsoError</small>
 
                                     </div>
@@ -165,10 +160,7 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Propiedades de Inversión</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.propiedadesDeInversion"   @onblur="insertEECC"  />
+                                         <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.propiedadesDeInversion InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@propiedadesDeInversionError</small>
 
@@ -177,10 +169,8 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Activo No Corriente Restante</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorrienteRestante"  @onblur="insertEECC" />
+                                         <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
                                     </div>
@@ -188,10 +178,8 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Total Activo No Corriente</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.activoNoCorriente"  @onblur="insertEECC" disabled />
+                                         <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" Disabled />
+
                                         </div>
                                     </div>
 
@@ -200,10 +188,8 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Total Activo</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalActivo"   @onblur="insertEECC" disabled />
+                                         <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalActivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" Disabled />
+
                                         </div>
                                     </div>
 
@@ -211,10 +197,7 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Deudas del Pasivo Corriente</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoCorriente"   @onblur="insertEECC" />
+                                         <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@deudasPasivoCorrienteError</small>
 
@@ -224,10 +207,8 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Deudas del Pasivo No Corriente</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.deudorPasivoNoCorriente"   @onblur="insertEECC" />
+                                         <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+
                                         </div>
                                         <small id="tipoBalanceError" class="text-danger">@deudasPasivoNoCorrienteError</small>
                                     </div>
@@ -237,10 +218,7 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Total Pasivo</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.totalPasivo" @onblur="insertEECC" disabled />
+                                         <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalPasivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" Disabled />
                                         </div>
                                     </div>
 
@@ -248,10 +226,7 @@
                                     <div class="form-group">
                                         <label for="inversionesActivoCorriente">Patrimonio Neto</label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">ARS $</span>
-                                            </div>
-                                            <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.patrimonioNeto"   @onblur="insertEECC" disabled />
+                                         <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.patrimonioNeto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" Disabled />
                                         </div>
 
                                     </div>
@@ -281,10 +256,7 @@
                             <div class="form-group">
                                 <label for="inversionesActivoCorriente">Capital Suscripto</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.capitalSuscripto"  @onblur="insertEECC" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.capitalSuscripto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@capitalSuscriptoError</small>
                             </div>
@@ -292,10 +264,7 @@
                             <div class="form-group">
                                 <label for="inversionesActivoCorriente">Ajuste de Capital</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.ajusteCapital"   @onblur="insertEECC" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.ajusteCapital InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@ajusteCapitalError</small>
                             </div>
@@ -304,11 +273,7 @@
                             <div class="form-group">
                                 <label for="inversionesActivoCorriente">Aportes Irrevocables</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.aportesIrrevocables"  @onblur="insertEECC" />
-
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.aportesIrrevocables InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@aportesIrrevocablesError</small>
 
@@ -318,10 +283,7 @@
                             <div class="form-group">
                                 <label for="inversionesActivoCorriente">Prima Emisión</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.primaEmision"  @onblur="insertEECC" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.primaEmision InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@primaEmisionError</small>
 
@@ -332,10 +294,7 @@
                             <div class="form-group">
                                 <label for="inversionesActivoCorriente">Ganancias Reservadas</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasReservadas"  @onblur="insertEECC" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasReservadas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@gananciasReservadasError</small>
 
@@ -345,10 +304,7 @@
                             <div class="form-group">
                                 <label for="inversionesActivoCorriente">Pérdidas Acumuladas</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.perdidasAcumuladas"   @onblur="insertEECC" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.perdidasAcumuladas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@perdidasAcumuladasError</small>
 
@@ -359,10 +315,7 @@
                             <div class="form-group">
                                 <label for="inversionesActivoCorriente">Ganancias / Pérdidas del Ejercicio</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.gananciasPerdidasEjercicio"  @onblur="insertEECC" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasPerdidasEjercicio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                 </div>
                                 <small id="tipoBalanceError" class="text-danger">@gananciasPerdidasEjercicioError</small>
 
@@ -372,12 +325,9 @@
                             <div class="form-group">
                                 <label for="inversionesActivoCorriente">Reserva Legal</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">ARS $</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="activoCorriente" @bind="estadoContableDto.reservaLegal"  @onblur="insertEECC"  />
-                                </div>
-                                <small id="tipoBalanceError" class="text-danger">@reservaLegalError</small>
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.reservaLegal InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                               </div>
+                               <small id="tipoBalanceError" class="text-danger">@reservaLegalError</small>
 
                             </div>     
                         
@@ -391,19 +341,18 @@
                             <h5 class="card-title d-flex justify-content-center">
                                 Otros Rubros del Patrimonio Neto
                             </h5>
-
-                            <label for="capitalSuscripto">Denominación</label>
-                            <input type="text" class="form-control" id="capitalSuscripto"  @bind = "denominacionDto">
+                            <RadzenFormField Text="Denominación" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@denominacionDto"  id="txtAddress" />
+                            </RadzenFormField>
                             <small id="tipoBalanceError" class="text-danger">@denominacionError</small>
 
                         </div>
                         <div class="form-group">
                             <label for="inversionesActivoCorriente">Pasivo No Corriente</label>
                             <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">ARS $</span>
+                                <div class="input-group">
+                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@importeDto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                                 </div>
-                                <input type="text" class="form-control" id="activoCorriente" @bind="importeDto" />
                             </div>
                             <small id="tipoBalanceError" class="text-danger">@pasivoNoCorrienteError</small>
                         </div>
@@ -412,34 +361,20 @@
                     </div>
                 </div>
 
-                <div class="card-body">
-                    @if (estadoContableDto.otrosRubros != null)
-                    {
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>       
-                                    <th scope="col">Denominación</th>
-                                    <th scope="col">Importe</th>
-                                    <th scope="col">Acción</th>
-                                </tr>
-                            </thead>
+                <RadzenGrid Data="@estadoContableDto.otrosRubros.AsEnumerable()" TItem="RubroPatrimonioNetoDto">
+                    <Columns>
+                        <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Property="denominacion" Title="Denominación" />
+                        <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Property="importe" Title="Importe" Format="{0.00}" Type="decimal" />
+                        <RadzenGridColumn TItem="RubroPatrimonioNetoDto">
+                            <Template Context="rubro" >
+                                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteRubro(rubro))">Eliminar</RadzenButton>
+                            </Template>
+                        </RadzenGridColumn>
+                    </Columns>
+                </RadzenGrid>
 
-                            @foreach (var rubro in estadoContableDto.otrosRubros)
-                            {
-                                <tbody>
-                                    <tr>
-                                        
-                                        <td>@rubro.denominacion</td>
-                                        <td>$@rubro.importe</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger" @onclick="() => deleteRubro(rubro)">Eliminar</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            }
-                        </table>
-                    }
-                </div>
+              
+               
             </div>
 
         </div>
@@ -454,6 +389,8 @@
 
 
 @code {
+    private CultureInfo argentinianCulture = new CultureInfo("es-AR");
+
     [Parameter] public string? TipoEntidad { get; set; }
 
     private string tipoBalanceError = "";
@@ -507,6 +444,8 @@
     decimal cantidad;
 
     private bool firstTimeInput = true;
+
+
 
     [Parameter]
     public string? balid { get; set; }
@@ -569,7 +508,7 @@
 
     private async Task<ResponseDTO<BalanceDto>> insertEECC()
     {
-        // setFormatMiles();
+        
         sumatoriaTotalActivoCorriente();
         sumatoriaTotalActivoNoCorriente();
         sumatorialTotalActivo();
@@ -773,94 +712,6 @@
         return statusPatrimonioNeto;
 
     }
-
-
-
-    private void setFormatMiles()
-    {
-        try
-        {
-            // Obtener todas las propiedades públicas de EstadoContableDto
-            PropertyInfo[] propiedades = estadoContableDto.GetType().GetProperties();
-
-            foreach (PropertyInfo propiedad in propiedades)
-            {
-                switch (propiedad.PropertyType.Name)
-                {
-
-                    case "Decimal":
-                        object valorOriginal = propiedad.GetValue(estadoContableDto);
-
-                        // Verificar si el valor es un decimal
-                        if (valorOriginal != null && valorOriginal is decimal)
-                        {
-                            decimal valorDecimal = (decimal)valorOriginal;
-
-                            // Crear una nueva cultura con la configuración específica
-                            CultureInfo culturaAR = new CultureInfo("es-AR");
-                            culturaAR.NumberFormat.CurrencyDecimalSeparator = ",";
-                            culturaAR.NumberFormat.CurrencyGroupSeparator = ".";
-
-                            // Formatear el valor como cadena en la cultura modificada
-                            //string valorFormateado = valorDecimal.ToString("#,##0.00", culturaAR);
-
-                            string valorFormateado = valorDecimal.ToString("N2");
-
-                            //Intentar convertir la cadena formateada a decimal
-                            if (decimal.TryParse(valorFormateado, NumberStyles.Currency, culturaAR, out decimal valorDecimalNuevo))
-                            {
-                                // Asignar el nuevo valor decimal a la propiedad
-                                propiedad.SetValue(estadoContableDto, valorDecimalNuevo);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"No se pudo convertir la cadena a un valor decimal para {propiedad.Name}.");
-                            }
-                        }
-                        break;
-
-                    case "DateTime":
-                        object valorOriginalDate = propiedad.GetValue(estadoContableDto);
-                        // Verificar si el valor es una cadena
-                        if (valorOriginalDate != null && valorOriginalDate is string)
-                        {
-                            string valorCadena = (string)valorOriginalDate;
-
-                            // Intentar convertir la cadena a DateTime
-                            if (DateTime.TryParse(valorCadena, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime valorFecha))
-                            {
-                                // Formatear la fecha como cadena
-                                string fechaFormateada = valorFecha.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-                                // Asignar el valor formateado a la propiedad
-                                propiedad.SetValue(estadoContableDto, fechaFormateada);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"No se pudo convertir la cadena a DateTime para {propiedad.Name}.");
-                            }
-                        }
-                        break;
-
-
-
-                    // Agregar más casos según sea necesario para otros tipos
-
-                    default:
-                        // Lógica para otros tipos de propiedades si es necesario
-                        break;
-                }
-
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Excepción en setFormatMiles: {ex.ToString()}");
-            throw;  // Lanza la excepción original para que puedas ver el mensaje completo y la pila de llamadas.
-        }
-    }
-
-
-
 
 
     private bool checkDataOtrosRubros()
