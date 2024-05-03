@@ -23,201 +23,173 @@
 @inject DialogService dialogService
 
 
-
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Búsqueda de Entidad</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-
-        <!-- Bootstrap 5 CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-        <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
-        <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
-        <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
-         <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
-    </head>
-
-    <body>
-
-    
-        <!--Navegacion-->
-
-       
-        <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
-
-        <!--Loading-->
-        <RadzenDialog />
+<!--Navegacion-->
 
 
-        <!---------------------------------------------------------------->
-        <!--Entidad-->
-           
-            
-        <div class="container mt-2">
-            <div class="card mx-auto">
-                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                        Entidad
-                    </div>
+<Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
 
-                    <div class="card-body">
-                        <div class="row d-flex justify-content-center align-items-end position-relative">
-                    
-                            <div class="col">
-                                <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style ="width:100%">
-                                    <RadzenTextBox @bind-Value="@modelo.Entidad.Correlativo" />
-                                </RadzenFormField>
-                            </div>
+<!--Loading-->
+<RadzenDialog />
 
-                            <div class="col mt-4">                                
-                                <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
-                            </div>
-                        </div>
-                        <small id="busquedaError" class="text-danger">@busquedaError</small>
 
-                                <RadzenCard class="rz-background-color-primary-dark --rz-primary-darker rz-border-radius-20 rz-pt-8 rz-ps-8 rz-pe-8" style="margin-top:20px;">
-                                    <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><strong>Detalles de Identidad</strong></RadzenText>
-                                    <RadzenRow RowGap="0">
-                                        <RadzenColumn SizeSM="4">
-                                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Razón Social</RadzenText>
-                                        <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@modelo.Entidad.RazonSocial</b></RadzenText>
-                                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Tipo de Entidad</RadzenText>
-                                        <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@modelo.Entidad.TipoEntidad</b></RadzenText>
-                                        </RadzenColumn>  
-                                    </RadzenRow>
-                               </RadzenCard>
-                    
-                    </div>
-            </div>
-        
-            <!--Datos Personales -->
+<!---------------------------------------------------------------->
+<!--Entidad-->
 
-           <div class="card mx-auto mt-4 mb-4">
- 
-                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                    Datos Personales
+
+<div class="container mt-2">
+    <div class="card mx-auto  bg-light">
+        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+            Entidad
+        </div>
+
+        <div class="card-body">
+            <div class="row d-flex justify-content-center align-items-end position-relative">
+
+                <div class="col">
+                    <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@modelo.Entidad.Correlativo" />
+                    </RadzenFormField>
                 </div>
-            
-                @if (@entidadEncontrada)
-                {
-                    <div class="row ps-3 pt-3">
-                        <div class="form-group col">
-                            <RadzenFormField Text="Domicilio" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelo.Entidad.Domicilio" Disabled="@tramiteIniciado" id="txtAddress" />
 
-                            </RadzenFormField>
-                            <small id="fechaError" class="text-danger">@domicilioError</small>
+                <div class="col mt-4">
+                    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                </div>
+            </div>
+            <small id="busquedaError" class="text-danger">@busquedaError</small>
 
-                        </div>
+            <RadzenCard class="rz-background-color-primary-dark --rz-primary-darker rz-border-radius-20 rz-pt-8 rz-ps-8 rz-pe-8" style="margin-top:20px;">
+                <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><strong>Detalles de Identidad</strong></RadzenText>
+                <RadzenRow RowGap="0">
+                    <RadzenColumn SizeSM="4">
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Razón Social</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@modelo.Entidad.RazonSocial</b></RadzenText>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Tipo de Entidad</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@modelo.Entidad.TipoEntidad</b></RadzenText>
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenCard>
 
-                        <div class="col mt-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@modelo.Entidad.SedeSocialInscripta" disabled="@tramiteIniciado">
-                                <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
-                            </div>
-                        </div>
+        </div>
+    </div>
+
+    <!--Datos Personales -->
+
+    <div class="card mx-auto mt-4 mb-4  bg-light">
+
+        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+            Datos Personales
+        </div>
+
+        @if (@entidadEncontrada)
+        {
+            <div class="row ps-3 pt-3">
+                <div class="form-group col">
+                    <RadzenFormField Text="Domicilio" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@modelo.Entidad.Domicilio" Disabled="@tramiteIniciado" id="txtAddress" />
+
+                    </RadzenFormField>
+                    <small id="fechaError" class="text-danger">@domicilioError</small>
+
+                </div>
+
+                <div class="col mt-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@modelo.Entidad.SedeSocialInscripta" disabled="@tramiteIniciado">
+                        <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
                     </div>
+                </div>
+            </div>
 
-                    <div class="row  ps-3 pt-3 pe-3">
-                        <div class="col">                     
-                            <RadzenStack>
-                                <RadzenLabel Text="Fecha de inicio" Component="DatePickerTimeOnlyType" Style="width:100%" />
-                            <RadzenDatePicker @bind-Value="@modelo.FechaInicio" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled="@tramiteIniciado" Placeholder="dd/MM/yyyy" />
-                            </RadzenStack>
-                            <small id="fechaError" class="text-danger">@fechaErrorInicio</small>
+            <div class="row  ps-3 pt-3 pe-3">
+                <div class="col">
+                    <RadzenStack>
+                      
+                        <RadzenDatePicker @bind-Value="@modelo.FechaInicio" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled="@tramiteIniciado" Placeholder="Fecha de Inicio" />
+                    </RadzenStack>
+                    <small id="fechaError" class="text-danger">@fechaErrorInicio</small>
 
-                        </div>
-                        <div class="col">
-                            <RadzenStack>
-                                <RadzenLabel Text="Fecha de cierre" Component="DatePickerTimeOnlyType" Style="width:100%" />
-                                <RadzenDatePicker @bind-Value="@modelo.FechaDeCierre" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled="@tramiteIniciado" Placeholder="dd/MM/yyyy" />
-                             </RadzenStack>
-                            <small id="fechaError" class="text-danger">@fechaErrorCierre</small>
-                        </div>
-                    </div>
+                </div>
+                <div class="col">
+                    <RadzenStack>
+                        
+                        <RadzenDatePicker @bind-Value="@modelo.FechaDeCierre" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled="@tramiteIniciado" Placeholder="Fecha de Cierre" />
+                    </RadzenStack>
+                    <small id="fechaError" class="text-danger">@fechaErrorCierre</small>
+                </div>
+            </div>
 
-                    <div class="row  ps-3 pt-3 pe-3">
-                        <div class="col mb-4">
-                            <RadzenFormField Text="Email" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@modelo.Email" Disabled="@tramiteIniciado" />
-                            </RadzenFormField>
-                            <small id="emailError" class="text-danger">@emailError</small>
-                        </div>
-                    </div>
+            <div class="row  ps-3 pt-3 pe-3">
+                <div class="col mb-4">
+                    <RadzenFormField Text="Email" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@modelo.Email" Disabled="@tramiteIniciado" />
+                    </RadzenFormField>
+                    <small id="emailError" class="text-danger">@emailError</small>
+                </div>
+            </div>
 
-                    <div class="col mt-4 mb-4 d-flex justify-content-center">
-                        <RadzenButton  Variant="Variant.Flat" Shade="Shade.Dark" Click=IniciarTramites Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
-                    </div>
-                
-                }
-                else
-                {
-                <div class="row ps-3 pt-3 pe-3">
-                        <div class="form-group col">
-                            <RadzenFormField Text="Domicilio" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@modelo.Entidad.Domicilio" Disabled id="txtAddress" />
+            <div class="col mt-4 mb-4 d-flex justify-content-center">
+                <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=IniciarTramites Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
+            </div>
 
-                            </RadzenFormField>
+        }
+        else
+        {
+            <div class="row ps-3 pt-3 pe-3">
+                <div class="form-group col">
+                    <RadzenFormField Text="Domicilio" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@modelo.Entidad.Domicilio" Disabled id="txtAddress" />
 
-                        </div>
+                     </RadzenFormField>
 
-                        <div class="col mt-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" disabled>
-                                <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
-                            </div>
-                        </div>
-                    </div>
+                 </div>
 
-                    <div class="row  ps-3 pt-3 pe-3">
-                        <div class="col">
-                            <RadzenStack>
-                                <RadzenLabel Text="Fecha de inicio" Component="DatePickerTimeOnlyType" Style="width:100%" />
-                            <RadzenDatePicker @bind-Value="@modelo.FechaInicio" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled Placeholder="dd/MM/yyyy" />
-                            </RadzenStack>
-                            <small id="fechaError" class="text-danger"></small>
+                 <div class="col mt-4">
+                     <div class="form-check">
+                         <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" disabled>
+                         <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+                     </div>
+                 </div>
+             </div>
 
-                        </div>
-                        <div class="col">
-                             <RadzenStack>
-                                 <RadzenLabel Text="Fecha de cierre" Component="DatePickerTimeOnlyType" Style="width:100%" />
-                             <RadzenDatePicker @bind-Value="@modelo.FechaDeCierre" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled Placeholder="dd/MM/yyyy" />
-                             </RadzenStack>
-                            <small id="fechaError" class="text-danger"></small>
-                        </div>
-                    </div>
 
-                    <div class="row  ps-3 pt-3 pe-3">
-                        <div class="col mb-4">
-                            <RadzenFormField Text="Email" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@modelo.Email" Disabled />
-                            </RadzenFormField>
-                            <small id="emailError" class="text-danger"></small>
-                        </div>
-                    </div>
+            <div class="row  ps-3 pt-3 pe-3">
+                <div class="col">
+                    <RadzenStack>
 
-               
-                    <div class="col mt-4 mb-4 d-flex justify-content-center">
-                        <RadzenButton  Variant="Variant.Flat" Shade="Shade.Dark" Click=IniciarTramites Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Secondary" Disabled />
-                    </div>
-        
-                 }
-    
-            </div> 
-              
-         </div>
+                        <RadzenDatePicker @bind-Value="@modelo.FechaInicio" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled Placeholder="Fecha de Inicio" />
+                    </RadzenStack>
+                    <small id="fechaError" class="text-danger">@fechaErrorInicio</small>
 
-    </body>
-    
+                </div>
+                <div class="col">
+                    <RadzenStack>
 
-</html>
+                         <RadzenDatePicker @bind-Value="@modelo.FechaDeCierre" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled Placeholder="Fecha de Cierre" />
+                    </RadzenStack>
+                    <small id="fechaError" class="text-danger">@fechaErrorCierre</small>
+                </div>
+            </div>
+            <div class="row  ps-3 pt-3 pe-3">
+                <div class="col mb-4">
+                    <RadzenFormField Text="Email" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@modelo.Email" Disabled />
+                     </RadzenFormField>
+                     <small id="emailError" class="text-danger"></small>
+                 </div>
+             </div>
+
+
+            <div class="col mt-4 mb-4 d-flex justify-content-center">
+                <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=IniciarTramites Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Secondary" Disabled />
+             </div>
+
+        }
+
+    </div>
+</div>
+
 
 @code {
-
-    
 
     private string busquedaError = "";
     private string emailError = "";
