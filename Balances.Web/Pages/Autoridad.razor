@@ -11,23 +11,13 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 @inject NavigationManager NavigationManager
+@inject DialogService dialogService;
 
 
 
-<Modal @ref="modalRef">
-    <ModalContent Centered>
-        <ModalHeader>
-            <ModalTitle>Autoridades</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <p class="d-flex justify-content-center">No puede haber más dos firmantes.</p>
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+<RadzenDialog></RadzenDialog>
+
+
 
 
 <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Autoridad" TramiteIniciado="true" balid="@balid"></Navegacion>
@@ -38,74 +28,76 @@
     <div class="col-md-6">
         <div class="container-fluid mt-4">
             <div class="card">
-                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                    Datos de la Autoridad
-                </div>
+                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                        Datos de la Autoridad
+                    </div>
 
-                <div class="card-body">
-                    <form>
-                       
-                            <div class="form-group mt-2 mb-2">
-                                <RadzenFormField Text="Nombre" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="@modelo.Nombre" Style="width:100%" />
-                                </RadzenFormField>
+                    <div class="card-body">
 
-                                <small id="msgError" class="text-danger">@msgErrorNombre</small>
-                            </div>
+                        <RadzenStack class="mt-2 mb-2">
+                            <RadzenFormField Text="Nombre" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@modelo.Nombre" Style="width:100%" />
+                            </RadzenFormField>
 
-                            <div class="form-group mt-2 mb-2">
-                                <RadzenFormField Text="Apellido" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="@modelo.Apellido" Style="width:100%" />
-                                </RadzenFormField>
+                            <small id="msgError" class="text-danger">@msgErrorNombre</small>
+                        </RadzenStack>
 
-                                <small id="msgError" class="text-danger">@msgErrorApellido</small>
-                            </div>
+                        <RadzenStack class="mt-2 mb-2">
+                            <RadzenFormField Text="Apellido" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@modelo.Apellido" Style="width:100%" />
+                            </RadzenFormField>
+                            <small id="msgError" class="text-danger">@msgErrorApellido</small>
+                        </RadzenStack>
 
-                            <div class="form-group mt-2 mb-2">
-                                <RadzenDropDown @bind-Value=@modelo.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" Placeholder="Tipo de Documento" Style="width:100%" />
-                                <small id="msgError" class="text-danger">@msgErrorTipoDeDoc</small>
-                            </div>
 
-                            <div class="form-row">
-                                <div class="form-group mt-2 mb-2">
-                                    <RadzenFormField Text="Nro. de Documento" Style="width:100%">
-                                        <RadzenTextBox @bind-Value="@modelo.NroDocumento" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
-                                </div>
+                        <RadzenStack class="mt-2 mb-2">
+                            <RadzenFormField Text="Tipo de Documento">
+                                <RadzenDropDown @bind-Value=@modelo.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" Style="width:100%" />
+                            </RadzenFormField>
+                            <small id="msgError" class="text-danger">@msgErrorTipoDeDoc</small>
+                        </RadzenStack>
 
-                                <div class="form-group mt-2 mb-2">
-                                    <RadzenFormField Text="Número de Identificación Fiscal" Style="width:100%">
-                                        <RadzenTextBox @bind-Value="@modelo.NroFiscal" Style="width:100%" />
-                                    </RadzenFormField>
 
-                                    <small id="msgError" class="text-danger">@msgErrorNroIdFiscal</small>
-                                </div>
+                        <RadzenStack class="mt-2 mb-2">
+                            <RadzenFormField Text="Nro. de Documento" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@modelo.NroDocumento" Style="width:100%" />
+                            </RadzenFormField>
+                            <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
+                        </RadzenStack>
 
-                                <div class="form-group mt-2 mb-2">
+                        <RadzenStack class="mt-2 mb-2">
+                            
+                            <RadzenFormField Text="Número de Identificación Fiscal" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@modelo.NroFiscal" Style="width:100%" />
+                            </RadzenFormField>
 
-                                    <RadzenFormField Text="Cargo" Style="width:100%">
-                                        <RadzenTextBox @bind-Value="@modelo.Cargo" Style="width:100%" />
-                                    </RadzenFormField>
+                            <small id="msgError" class="text-danger">@msgErrorNroIdFiscal</small>
+                        </RadzenStack>
 
-                                    <small id="msgError" class="text-danger">@msgErrorCargo</small>
-                                </div>
-                            </div>
-                            <div class="form-group form-check mt-2 mb-2">
-                                <input type="checkbox" class="form-check-input" id="checkboxFirmante" @bind="modelo.EsFirmante">
-                                <label class="form-check-label" for="checkboxFirmante">Es Firmante</label>
-                            </div>
+                        <RadzenStack class="mt-2 mb-2">
 
-                            <div class="d-flex justify-content-center mt-2">
-                                <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@insertAutoridad">Agregar</RadzenButton>
-                            </div>
-                       
+                            <RadzenFormField Text="Cargo" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@modelo.Cargo" Style="width:100%" />
+                            </RadzenFormField>
 
-                    </form>
+                            <small id="msgError" class="text-danger">@msgErrorCargo</small>
+                        </RadzenStack>
+
+
+                        <RadzenStack class="mt-2 mb-2">
+                            <input type="checkbox" class="form-check-input" id="checkboxFirmante" @bind="modelo.EsFirmante">
+                            <label class="form-check-label" for="checkboxFirmante">Es Firmante</label>
+                        </RadzenStack>
+
+                        <RadzenStack class="d-flex justify-content-center mt-2">
+                            <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@insertAutoridad">Agregar</RadzenButton>
+                        </RadzenStack>
+              
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
 
 
 
@@ -116,35 +108,24 @@
                     Autoridades
                 </div>
                 <div class="card-body mb-4">
-
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">Apellido y Nombre</th>
-                                <th scope="col">Nro Documento</th>
-                                <th scope="col">CUIT</th>
-                                <th scope="col">Cargo</th>
-                                <th scope="col">Firmante</th>
-                                <th scope="col">Acción</th>
-
-                            </tr>
-                        </thead>
-                        @foreach (var autoridad in listAutoridades)
-                        {
-                            <tbody>
-                                <tr>
-                                    <td>@autoridad.Apellido @autoridad.Nombre</td>
-                                    <td>@autoridad.NroDocumento</td>
-                                    <td>@autoridad.NroFiscal</td>
-                                    <td>@autoridad.Cargo</td>
-                                    <td>@(autoridad.EsFirmante ? "Sí" : "No")</td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger" @onclick="() => deleteAutoridad(autoridad)">Eliminar</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
+                    <RadzenGrid Data="listAutoridades" TItem="AutoridadDto">
+                        <Columns>
+                            <RadzenGridColumn TItem="AutoridadDto" Property="Apellido" Title="Apellido" />
+                            <RadzenGridColumn TItem="AutoridadDto" Property="Nombre" Title="Nombre" />
+                            <RadzenGridColumn TItem="AutoridadDto" Property="NroDocumento" Title="Nro. Documento" />
+                            <RadzenGridColumn TItem="AutoridadDto" Property="Cargo" Title="Cargo" />
+                            <RadzenGridColumn TItem="AutoridadDto" Property="EsFirmante" Title="Firmante">
+                               <Template Context="data">
+                                    @((data.EsFirmante) ? "Si" : "No")
+                                </Template>
+                            </RadzenGridColumn>
+                            <RadzenGridColumn TItem="AutoridadDto" Title="Acción">
+                                <Template Context="autoridad">
+                                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteAutoridad(autoridad))">Eliminar</RadzenButton>
+                                </Template>
+                            </RadzenGridColumn>
+                        </Columns>
+                    </RadzenGrid>                         
                 </div>
             </div>
         </div>
@@ -154,7 +135,19 @@
 
 
 
-
+@code{
+    async Task ShowDialogFirmantes()
+    {
+        await dialogService.OpenAsync("Autoridades", ds =>
+        @<div>
+            No puede haber más dos firmantes.
+        </div>, new DialogOptions()
+          {
+              CssClass = "custom-dialog-class",
+              WrapperCssClass = "custom-dialog-wrapper-class"
+          });
+    }
+}
 
 
 

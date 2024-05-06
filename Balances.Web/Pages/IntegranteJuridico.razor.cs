@@ -25,6 +25,13 @@ namespace Balances.Web.Pages
 {
     public partial class IntegranteJuridico
     {
+        private string[] tiposDocumentos =
+       {
+            "DNI",
+            "Pasaporte",
+            "Cédula"
+        };
+
         [Parameter]
         public string? TipoEntidad { get; set; }
 

@@ -11,22 +11,11 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
+    <Navegacion Entidad="@($"{TipoEntidad}")" TramiteIniciado=true PaginaActiva="Integrante" balid="@balid"></Navegacion>
 
-
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true" balid="@balid"></Navegacion>
-
-    <!---------------------------------------------------------------->
-    <!-- Tabs -->
+    
     <div class="container-fluid mt-4">
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" href="#">Integrante Humano</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/IntegranteJuridico">Integrante Jurídico</a>
-            </li>
-        </ul>
-        
+        <NavegacionIntegrantes PaginaActiva="Integrante"  balid="@balid"></NavegacionIntegrantes>
     </div>
 
     <!-- Formulario de Datos del Integrante -->
@@ -38,53 +27,72 @@
                         Datos del Integrante
                     </div>
                     <div class="card-body">
-                        <div class="form-group">
-                            <label for="accionistaNombre">Nombre</label>
-                            <input type="text" class="form-control" @bind="modelPersonaHumana.Nombre">
-                            <small id="msgError" class="text-danger">@msgErrorNombre</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="accionistaNombre">Apellido</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.Apellido">
-                            <small id="msgError" class="text-danger">@msgErrorApellido</small>
-                        </div>
-                       
-                        <div class="form-group">
-                            <label for="selectTipoDocumento">Tipo de Documento</label>
-                            <select id="selectTipoDocumento" class="form-select" @bind="modelPersonaHumana.TipoDocumento">
-                                <option selected>Seleccionar...</option>
-                                <option value="DNI">DNI</option>
-                                <option value="Pasaporte">Pasaporte</option>
-                                <option value="Cédula">Cédula</option>
-                            </select>
-                            <small id="msgError" class="text-danger">@msgErrorTipoDoc</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="accionistaNombre">Numero de Documento</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroDocumento">
-                            <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
 
-                        </div>
-                        <div class="form-group">
-                            <label for="accionistaNombre">Número de Identificación Fiscal</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroFiscal">
-                            <small id="msgError" class="text-danger">@msgErrorCuit</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="accionistaNombre">Cuotas</label>
-                            <input type="text" class="form-control" @bind="modelPersonaHumana.Cuotas">
-                            <small id="msgError" class="text-danger">@msgErrorCuotas</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="accionistaNombre">Votos</label>
-                            <input type="text" class="form-control" @bind="modelPersonaHumana.Votos">
-                            <small id="msgError" class="text-danger">@msgErrorVotos</small>
-                        </div>
-                        <!-- Rest of the form content -->
-                        <div class="form-group text-center mt-4">
-                            <button type="button" class="btn btn-primary w-100" @onclick="addPersonaHumana">Agregar</button>
-                        </div>
+                    <RadzenStack class="mt-2 mb-2">
+
+                        <RadzenFormField Text="Nombre" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaHumana.Nombre" Style="width:100%" />
+                        </RadzenFormField>
+
+                        <small id="msgError" class="text-danger">@msgErrorNombre</small>
+                    </RadzenStack>
+                    <RadzenStack class="mt-2 mb-2">
+
+                        <RadzenFormField Text="Apellido" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaHumana.Apellido" Style="width:100%" />
+                        </RadzenFormField>
+
+                        <small id="msgError" class="text-danger">@msgErrorApellido</small>
+                    </RadzenStack>
+                   
+                    <RadzenStack class="mt-2 mb-2">
+                        <RadzenFormField Text="Tipo de Documento">
+                            <RadzenDropDown @bind-Value=@modelPersonaHumana.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" Style="width:100%" />
+                        </RadzenFormField>
+                        <small id="msgError" class="text-danger">@msgErrorTipoDoc</small>
+                    </RadzenStack>
+
+                    <RadzenStack class="mt-2 mb-2">
+
+                        <RadzenFormField Text="Número de Documento" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaHumana.NroDocumento" Style="width:100%" />
+                        </RadzenFormField>
+
+                        <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
+                    </RadzenStack>
+
+                    <RadzenStack class="mt-2 mb-2">
+
+                        <RadzenFormField Text="Número de Identificación Fiscal" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaHumana.NroFiscal" Style="width:100%" />
+                        </RadzenFormField>
+
+                        <small id="msgError" class="text-danger">@msgErrorCuit</small>
+                    </RadzenStack>
+
+
+                    <RadzenStack class="mt-2 mb-2">
+
+                        <RadzenFormField Text="Cuotas" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaHumana.Cuotas" Style="width:100%" />
+                        </RadzenFormField>
+
+                        <small id="msgError" class="text-danger">@msgErrorCuotas</small>
+                    </RadzenStack>
+
+                    <RadzenStack class="mt-2 mb-2">
+
+                        <RadzenFormField Text="Votos" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaHumana.Votos" Style="width:100%" />
+                        </RadzenFormField>
+
+                        <small id="msgError" class="text-danger">@msgErrorVotos</small>
+                    </RadzenStack>
+
+                    <RadzenStack class="mt-2 mb-2">
+                        <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@addPersonaHumana">Agregar</RadzenButton>
+                    </RadzenStack>
+                       
                     </div>
                 </form>
             </div>
@@ -96,36 +104,21 @@
                             Integrantes
                         </div>
                         <div class="card-body">
-
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                      
-                                        <th scope="col">Apellido y Nombre</th>
-                                        <th scope="col">Nro Documento</th>
-                                        <th scope="col">CUIT</th>
-                                        <th scope="col">Cantidad</th>
-                                        <th scope="col">Acción</th>
-                                    </tr>
-                                </thead>
-                                @foreach (var personaHumana in listPersonaHumana)
-                                {
-                                    <tbody>
-                                        <tr>
-                                        
-                                            <td>@personaHumana.Apellido @personaHumana.Nombre</td>
-                                            <td>@personaHumana.NroDocumento</td>
-                                            <td>@personaHumana.NroFiscal</td>
-                                            <td>@personaHumana.Cuotas / @personaHumana.Votos </td>
-
-                                            <td>
-                                                <button type="button" class="btn btn-danger" @onclick="() => deletePersonaHumana(personaHumana)">Eliminar</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-
-                                }
-                            </table>
+                        <RadzenGrid Data="listPersonaHumana" TItem="PersonaHumanaDto">
+                            <Columns>
+                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="Apellido" Title="Apellido" />
+                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="Nombre" Title="Nombre" />
+                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="NroDocumento" Title="Nro. Documento" />
+                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="NroFiscal" Title="Nro. Fiscal" />
+                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="Cuotas" Title="Cuotas" />
+                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="Votos" Title="Votos" />
+                                <RadzenGridColumn TItem="PersonaHumanaDto" Title="Acción">
+                                    <Template Context="personaHumana">
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deletePersonaHumana(personaHumana))">Eliminar</RadzenButton>
+                                    </Template>
+                                </RadzenGridColumn>
+                            </Columns>
+                        </RadzenGrid>                     
                             
                         </div>
                     </div>

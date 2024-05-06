@@ -11,25 +11,13 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
+<Navegacion Entidad="@($"{TipoEntidad}")" TramiteIniciado=true PaginaActiva="Integrante" balid="@balid"></Navegacion>
 
-
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true" balid="@balid"></Navegacion>
-
-    <!---------------------------------------------------------------->
-    <!-- Tabs -->
     <div class="container-fluid mt-4">
-        <ul class="nav nav-tabs" style="width: 1200px;">
-            <li class="nav-item">
-                <a class="nav-link" href="/Integrante">Integrante Humano</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="/IntegranteJuridico">Integrante Jurídico</a>
-            </li>
-        </ul>
-      
+        <NavegacionIntegrantes PaginaActiva="IntegranteJuridico" balid="@balid"></NavegacionIntegrantes>
     </div>
 
-
+   
     <!-- Formulario de Datos del Integrante -->
     <div class="container-fluid mt-4">
         <div class="row">

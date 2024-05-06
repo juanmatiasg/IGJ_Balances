@@ -20,11 +20,15 @@ using Balances.DTO;
 using Balances.Utilities;
 using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
+using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace Balances.Web.Pages
 {
     public partial class Autoridad
     {
+       
 
         private string[] tiposDocumentos =
        {
@@ -36,20 +40,18 @@ namespace Balances.Web.Pages
         [Parameter]
         public string? TipoEntidad { get; set; }
 
-        [CascadingParameter]
-        IModalService Modal { get; set; } = default !;
 
-        private string idSession = "";
         private AutoridadDto modelo = new AutoridadDto();
         private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
-        private string resultNameAndSurname = "";
+
         private string msgErrorNombre = "";
         private string msgErrorApellido = "";
         private string msgErrorNroIdFiscal = "";
         private string msgErrorNroDoc = "";
         private string msgErrorCargo = "";
         private string msgErrorTipoDeDoc = "";
-        private string nroIdentificacionSocial = "Nro de Identificación Fiscal";
+        
+
         [Parameter]
         public string? balid { get; set; }
 
@@ -118,7 +120,7 @@ namespace Balances.Web.Pages
                     // Check if the current autoridad is a firmante
                     if (modelo.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
                     {
-                        ShowModal();
+                        await ShowDialogFirmantes();
                         return null;
                     }
                     else
@@ -298,4 +300,8 @@ namespace Balances.Web.Pages
             return true;
         }
     }
+
+  
+
+
 }

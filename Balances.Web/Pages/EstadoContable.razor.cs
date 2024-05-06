@@ -32,6 +32,8 @@ namespace Balances.Web.Pages
     public partial class EstadoContable
     {
         private CultureInfo argentinianCulture = new CultureInfo("es-AR");
+       
+        
         [Parameter]
         public string? TipoEntidad { get; set; }
 
@@ -62,12 +64,13 @@ namespace Balances.Web.Pages
         private string pasivoNoCorrienteError = "";
         private string denominacionDto = "";
         private decimal importeDto = 0;
+        
         private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
         private EstadoContableDto estadoContableDto = new EstadoContableDto();
         private Boolean statusPatrimonioNeto = false;
-        private string otraCosa = "";
-        decimal cantidad;
-        private bool firstTimeInput = true;
+
+
+
         [Parameter]
         public string? balid { get; set; }
 
@@ -102,6 +105,9 @@ namespace Balances.Web.Pages
                         if (rsp.IsSuccess)
                         {
                             TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+                            estadoContableDto.tipoBalance = rsp.Result.Caratula.Entidad.RazonSocial;
+                            estadoContableDto.fechaInicio = rsp.Result.Caratula.FechaInicio;
+                            estadoContableDto.fechaEstado = rsp.Result.Caratula.FechaDeCierre;
                             estadoContableDto = new EstadoContableDto(rsp.Result.EstadoContable);
                         }
                     }

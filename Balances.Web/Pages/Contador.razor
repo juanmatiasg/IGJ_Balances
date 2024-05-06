@@ -42,7 +42,9 @@
 
 
                     <div class="form-group mt-2">
-                        <RadzenDropDown @bind-Value=@modelo.TipoDocumento Data=@tiposDocumentos Style="width: 100%;" Name="DropDownBindValue" Change="PostContador" Placeholder="Tipo de Documento" />
+                        <RadzenFormField Text="Tipo de Documento" Style="width:100%">
+                            <RadzenDropDown @bind-Value=@modelo.TipoDocumento Data=@tiposDocumentos Style="width: 100%;" Name="DropDownBindValue" Change="PostContador"/>
+                        </RadzenFormField>
                         <small id="msgErrorTipoDocumento" class="text-danger">@msgErrorTipoDocumento</small>
                     </div>
 
@@ -80,7 +82,9 @@
 
                     <div class="form-group mt-2">
                         <RadzenStack>
-                            <RadzenDatePicker @bind-Value="@modelo.FechaInformeAuditorExt" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="Fecha del Informe del Auditor Externo" Change="PostContador" />
+                            <RadzenFormField Text="Fecha del Informe del Auditor Externo" Style="width:100%">
+                                <RadzenDatePicker @bind-Value="@modelo.FechaInformeAuditorExt" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" Change="PostContador"  />
+                            </RadzenFormField>
                         </RadzenStack>
 
                         <small id="msgErrorFechaInformeAuditorExt" class="text-danger">@msgErrorFechaInformeAuditorExt</small>
@@ -88,6 +92,7 @@
                     </div>
 
                     <div class="form-group mt-2">
+                      
                         <RadzenFormField Text="Nro. de Legalización del Informe del Auditor Externo" Style="width:100%">
                             <RadzenTextBox @bind-Value="@modelo.NroLegalInfoAudExt" Change="PostContador" />
                         </RadzenFormField>

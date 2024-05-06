@@ -38,6 +38,14 @@ namespace Balances.Web.Pages
         private string msgErrorCuit = "";
         private string msgErrorCuotas = "";
         private string msgErrorVotos = "";
+
+        private string[] tiposDocumentos =
+       {
+            "DNI",
+            "Pasaporte",
+            "Cédula"
+        };
+
         [Parameter]
         public string? balid { get; set; }
 
