@@ -26,7 +26,7 @@
 
 
     <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Contador" TramiteIniciado="true"></Navegacion>
-   
+
 
     <div class="container-fluid">
             <div class="col">
@@ -36,77 +36,84 @@
                             Datos del Contador Certificante
                         </div>
                         <div class="card-body">
+                        <EditForm Model="modelo" >
+                            <FluentValidationValidator  />
                             <div>
                                 <div class="form-group">
                                     <label for="contadorNombre">Nombre</label>
-                                    <input type="text" class="form-control" id="contadorNombre" :value="form.nombre"  required @bind="modelo.Nombre" @onblur=postContador>
-                                    <small id="msgError" class="text-danger">@msgErrorNombre</small>
+                                    <input type="text" class="form-control" id="contadorNombre"   @bind="modelo.Nombre" >
+                              
+                                    <ValidationMessage For="@(()=> modelo.Nombre)" />
                                 </div>
 
                                 <div class="form-group">
                                     <label for="ContadorApellido">Apellido</label>
-                                    <input type="text" class="form-control" id="ContadorApellido" :value="form.apellido"  required @bind="modelo.Apellido" @onblur=postContador>
-                                    <small id="msgError" class="text-danger">@msgErrorApellido</small>
+                                    <input type="text" class="form-control" id="ContadorApellido"    @bind="modelo.Apellido" >
+                               
+                                    <ValidationMessage For="@(()=> modelo.Apellido)" />
                                 </div>
 
 
                             <div class="form-group">
                                 <label for="tipoDocumento">Tipo de Documento</label>
-                                <select class="form-select" @bind="modelo.TipoDocumento" @onblur="postContador">
+                                <select class="form-select" @bind="modelo.TipoDocumento">
                                     <option value="">--- Seleccionar un tipo de documento ---</option>
                                     <option value="DNI">DNI</option>
                                     <option value="Pasaporte">Pasaporte</option>
                                     <option value="Cedula">Cédula</option>
                                 </select>
-                                <small id="msgErrorTipoDocumento" class="text-danger">@msgErrorTipoDocumento</small>
+                                    <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
+                            
                             </div>
                             
                             <div class="form-group">
                                 <label for="contadorNroDocumento">Número de Documento</label>
-                                <input type="text" class="form-control" id="contadorNroDocumento" :value="form.nroDocumento"  required @bind="modelo.NroDocumento" @onblur=postContador>
-                                <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
-
+                                <input type="text" class="form-control" id="contadorNroDocumento"   @bind="modelo.NroDocumento" >
+                             
+                                    <ValidationMessage For="@(()=> modelo.NroDocumento)" />
                             </div>
 
                             <div class="form-group">
-                                <label for="contadorNuFiscal">Nro. de Identificación Fiscal</label>
-                                <input type="text" class="form-control" id="contadorNuFiscal" :value="form.nroFiscal"  required @bind="modelo.NroFiscal" @onblur=postContador>
-                                <small id="msgError" class="text-danger">@msgErrorNroIdFiscal</small>
-
+                                <label for="contadorNuFiscal">Nro. de CUIL/CUIT</label>
+                                <input type="text" class="form-control" id="contadorNuFiscal"    @bind="modelo.NroFiscal" >
+                             
+                                    <ValidationMessage For="@(()=> modelo.NroFiscal)" />
 
                             </div>
 
                             <div class="form-group">
                                 <label for="tomo">Tomo</label>
-                                <input type="text" class="form-control" id="tomo" :value="form.tomo"  required @bind="modelo.Tomo" @onblur=postContador>
-                                <small id="msgError" class="text-danger">@msgErrorTomo</small>
-
+                                <input type="text" class="form-control" id="tomo" :value="form.tomo"   @bind="modelo.Tomo" >
+                            
+                                    <ValidationMessage For="@(()=> modelo.Tomo)" />
                             </div>
 
                             <div class="form-group">
                                 <label for="folio">Folio</label>
-                                <input type="text" class="form-control" id="folio" :value="form.folio"  required @bind="modelo.Folio" @onblur=postContador>
-                                <small id="msgError" class="text-danger">@msgErrorFolio</small>
-
+                                <input type="text" class="form-control" id="folio"   @bind="modelo.Folio">
+                            
+                                    <ValidationMessage For="@(()=> modelo.Folio)" />
                             </div>
 
                             <div class="form-group">
                                 <label for="feInformeAuditorExt">Fecha del Informe del Auditor Externo</label>
-                                <input type="date" class="form-control" id="feInformeAuditorExt" :value="form.fechaInformeAuditorExt"  required @bind="modelo.FechaInformeAuditorExt" @onblur=postContador>
-                                <small id="msgErrorFechaInformeAuditorExt" class="text-danger">@msgErrorFechaInformeAuditorExt</small>
+                                <input type="date" class="form-control" id="feInformeAuditorExt"  @bind="modelo.FechaInformeAuditorExt" >
+                            
 
                             </div>
 
                             <div class="form-group">
                                 <label for="nroLegalInfoAudExt">Nro. de Legalización del Informe del Auditor Externo</label>
-                                <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt" required @bind="modelo.NroLegalInfoAudExt" @onblur=postContador>
-                                <small id="msgError" class="text-danger">@msgErrorNroLegInf</small>
-
+                                <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt"  @bind="modelo.NroLegalInfoAudExt" @onblur=postContador>
+                            
+                                    <ValidationMessage For="@(()=> modelo.FechaInformeAuditorExt)" />
                             </div>
 
-
-
                         </div>
+                            <Button Clicked="postContador" Color="Color.Primary"><i class="bi bi-floppy-fill"></i> Guardar</Button>
+                            @*<RadzenButton class="my-4" @onclick="postContador" ButtonType="Radzen.ButtonType.Submit" Text="Guardar" ButtonStyle="Radzen.ButtonStyle.Primary" />*@
+                         @*   <RadzenButton class="my-4" ButtonType="Radzen.ButtonType.Submit"  type  ButtonStyle="Radzen.ButtonStyle.Primary"><i class="bi bi-floppy-fill"></i></RadzenButton>*@
+                        </EditForm>
                     </div>
                 </div>
 
@@ -133,15 +140,15 @@
     private ContadorDto modelo = new ContadorDto();
 
 
-    private string msgErrorNombre = "";
-    private string msgErrorApellido = "";
-    private string msgErrorNroDoc = "";
-    private string msgErrorFolio = "";
-    private string msgErrorTomo = "";
-    private string msgErrorNroLegInf = "";
-    private string msgErrorNroIdFiscal = "";
-    private string msgErrorFechaInformeAuditorExt = "";
-    private string msgErrorTipoDocumento = "";
+    //private string msgErrorNombre = "";
+    //private string msgErrorApellido = "";
+    //private string msgErrorNroDoc = "";
+    //private string msgErrorFolio = "";
+    //private string msgErrorTomo = "";
+    //private string msgErrorNroLegInf = "";
+    //private string msgErrorNroIdFiscal = "";
+    //private string msgErrorFechaInformeAuditorExt = "";
+    //private string msgErrorTipoDocumento = "";
 
 
 
@@ -231,15 +238,13 @@
         respuesta.IsSuccess = false;
         try
         {
-            if (checkData())
-            {
+        
+
+               ContadorValidator contadorValidator = new();
+                
                 modelo.SesionId = sesionId;
-                //modelo.TipoDocumento = tipoDocSeleccionado;
                 respuesta = await contadorService.postContador(modelo);
                 respuesta.IsSuccess = true;
-
-            }
-
         }
 
         catch (Exception ex)
@@ -254,168 +259,9 @@
 
 
 
-    private bool checkData()
-    {
-
-        // Apellido
-        if (!string.IsNullOrEmpty(modelo.Nombre))
-        {
-            if (Validator.IsNumeric(modelo.Nombre))
-            {
-                msgErrorNombre = "No puedes ingresar un valor numérico";
-                return false;
-            }
-            else
-            {
-                msgErrorNombre = "";
-
-            }
-        }
-        else
-        {
-            msgErrorNombre = "El campo no puede estar vacio";
-            return false;
-        }
 
 
-
-        // Apellido
-        if (!string.IsNullOrEmpty(modelo.Apellido))
-        {
-            if (Validator.IsNumeric(modelo.Apellido))
-            {
-                msgErrorApellido = "No puedes ingresar un valor numérico";
-                return false;
-            }
-            else
-            {
-                msgErrorApellido = "";
-
-            }
-        }
-        else
-        {
-            msgErrorApellido = "El campo no puede estar vacio";
-            return false;
-        }
-
-        // TipoDocumento
-        if (string.IsNullOrEmpty(modelo.TipoDocumento))
-        {
-            msgErrorTipoDocumento = "Debes seleccionar un tipo de documento";
-            return false;
-        }
-        else
-        {
-            msgErrorTipoDocumento = "";
-        }
-
-        // NroDocumento
-        if (!string.IsNullOrEmpty(modelo.NroDocumento))
-        {
-            if (!Validator.IsNumeric(modelo.NroDocumento))
-            {
-                msgErrorNroDoc = "No puedes ingresar caracteres en el campo NroDocumento";
-                return false;
-            }
-            else
-            {
-                msgErrorNroDoc = "";
-            }
-        }
-        else
-        {
-            msgErrorNroDoc = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-        // NroFiscal
-        if (!string.IsNullOrEmpty(modelo.NroFiscal))
-        {
-            if (!Validator.IsNumeric(modelo.NroFiscal))
-            {
-                msgErrorNroIdFiscal = "No puedes ingresar caracteres en el campo NroFiscal";
-                return false;
-            }
-            else
-            {
-                msgErrorNroIdFiscal = "";
-            }
-        }
-
-        else
-        {
-            msgErrorNroIdFiscal = "El campo no puede estar vacio";
-            return false;
-        }
-
-        // Tomo
-        if (!string.IsNullOrEmpty(modelo.Tomo))
-        {
-            msgErrorTomo = "";
-        }
-        else
-        {
-            msgErrorTomo = "El campo no puede estar vacio";
-            return false;
-        }
-
-        // Folio
-        if (!string.IsNullOrEmpty(modelo.Folio))
-        {
-            msgErrorFolio = "";
-        }
-        else
-        {
-            msgErrorFolio = "El campo no puede estar vacio";
-            return false;
-        }
-
-        // FechaInformeAuditorExt
-        if (modelo.FechaInformeAuditorExt != null)
-        {
-            msgErrorFechaInformeAuditorExt = "";
-
-        }
-        else
-        {
-            msgErrorFechaInformeAuditorExt = "Seleccioná la fecha correspondiente";
-            return false;
-        }
-
-
-        // NroLegalInfoAudExt
-        if (!string.IsNullOrEmpty(modelo.NroLegalInfoAudExt))
-        {
-            if (!Validator.IsNumeric(modelo.NroLegalInfoAudExt))
-            {
-                msgErrorNroLegInf = "No puedes ingresar caracteres en el campo NroLegalInfoAudExt";
-                return false;
-            }
-            else
-            {
-                msgErrorNroLegInf = "";           
-            }
-        }
-        else
-        {
-            msgErrorNroLegInf = "El campo no puede estar vacio";
-            return false;
-        }
-
-        msgErrorNombre = "";
-        msgErrorTomo = "";
-        msgErrorApellido = "";
-        msgErrorNroIdFiscal = "";
-        msgErrorNroLegInf = "";
-        msgErrorNroDoc = "";
-        msgErrorTipoDocumento = "";
-        msgErrorFechaInformeAuditorExt = "";
-
-
-        return true;
-    }
+  
 
   
 

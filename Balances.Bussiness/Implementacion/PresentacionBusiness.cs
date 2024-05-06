@@ -16,6 +16,8 @@ namespace Balances.Bussiness.Implementacion
     {
         private readonly IBalanceBusiness _balanceBusiness;
 
+        private readonly ISessionService _sessionService;
+
         private readonly IEmailSenderService _emailSenderService;
 
         private readonly IQRService _qRService;
@@ -31,6 +33,7 @@ namespace Balances.Bussiness.Implementacion
 
         public PresentacionBusiness(IBalanceBusiness balanceBusiness,
                                     IEmailSenderService emailSenderService,
+                                    ISessionService sessionService,
                                     IQRService qRService,
                                     IPresentacionService presentacionService,
                                     ILogger<IPresentacionBusiness> logger,
@@ -39,6 +42,7 @@ namespace Balances.Bussiness.Implementacion
                                     )
         {
             _balanceBusiness = balanceBusiness;
+            _sessionService = sessionService;
             _emailSenderService = emailSenderService;
             _qRService = qRService;
             _presentacionService = presentacionService;
@@ -46,43 +50,47 @@ namespace Balances.Bussiness.Implementacion
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
 
+
         }
 
-        public ResponseDTO<BalanceDto> PresentarTramite()
+        public ResponseDTO<BalanceDto> PresentarTramite(string sesionId)
         {
 
             _logger.LogInformation("Metodo presentar tramite invocado");
 
             var respuesta = new ResponseDTO<BalanceDto>();
             //busco balance
-            var bal = _balanceBusiness.BalanceActual;
+            var id = _sessionService.GetBalanceId(sesionId);
+
+            var bal = _balanceBusiness.GetById(id);
+
 
             //genero QR (PNG en Base 64) con el id  como enlace oculto
-            var qr = _qRService.QRGenerator(bal.Id);
+            var qr = _qRService.QRGenerator(bal.Result.Id);
 
             //filtro busqueda autoridad y socio condicion firmante para llenar la plantilla
-            var balPresentacion = _presentacionService.GetBalanceAutoridadySocioFirmante(bal);
+            var balPresentacion = _presentacionService.GetBalanceAutoridadySocioFirmante(bal.Result);
             // lleno la plantilla con los datos del balance
             var plantillapdf = _presentacionService.CrearPlantillaPresentacionPdf(balPresentacion, qr);
 
             //pdf
-                
+
             var binariopdf = _pdfService.HtmlToPDF(plantillapdf, balPresentacion);
 
             //agrego la presentacion al balance
-            if (bal.Presentacion == null)
+            if (bal.Result.Presentacion == null)
             {
-                bal.Presentacion = new Presentacion();
+                bal.Result.Presentacion = new Presentacion();
             }
 
-            bal.Presentacion.Fecha = DateTime.Now;
-            bal.Presentacion.BinarioPdf = binariopdf;
+            bal.Result.Presentacion.Fecha = DateTime.Now;
+            bal.Result.Presentacion.BinarioPdf = binariopdf;
 
             var plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(balPresentacion, qr);
 
             //File.WriteAllBytes("c:/prueba.pdf", pdf);
             // paso como parametro el balance y la plantilla para armar el emailRequest 
-            var EmailRequest = CrearEmailPresentacion(bal, plantillahtml, binariopdf, qr);
+            var EmailRequest = CrearEmailPresentacion(bal.Result, plantillahtml, binariopdf, qr);
 
             var presentacionSerializada = JsonConvert.SerializeObject(balPresentacion);
             try
@@ -91,7 +99,7 @@ namespace Balances.Bussiness.Implementacion
                 _emailSenderService.SendEmailAsync(EmailRequest);
 
                 respuesta.Message = "Presentacion generada y enviada correctamente";
-                respuesta.Result = bal;
+                respuesta.Result = bal.Result;
                 respuesta.IsSuccess = true;
                 _logger.LogInformation($" PresentacionBusiness.PresentarTramite: ---> {presentacionSerializada}");
 
@@ -104,7 +112,7 @@ namespace Balances.Bussiness.Implementacion
             }
 
             //actualizo la base con los datos de la presentacion
-            _balanceBusiness.Update(bal);
+            _balanceBusiness.Update(bal.Result);
 
             return respuesta;
         }
@@ -192,43 +200,5 @@ namespace Balances.Bussiness.Implementacion
             throw new NotImplementedException();
         }
 
-        //public string PlantillaPresentacionHtml(BalanceDto balance, string qr)
-        //{
-        //    var path = _webHostEnvironment.ContentRootPath + "/Plantillas";
-        //    var Plantilla = path + "/PlantillaPresentacionBalance.html";
-
-        //    ////var Plantilla = path + "/PlantillaPresentacion.html";
-        //    //var Plantilla = path + ROUTEHTML;
-
-        //    var PlantillaHTML = File.ReadAllText(Plantilla);
-
-
-        //    PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
-        //    PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
-        //    PlantillaHTML = PlantillaHTML.Replace("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
-        //    PlantillaHTML = PlantillaHTML.Replace("{{FechaEstado}}", balance.Caratula.FechaDeCierre.ToShortDateString());
-        //    PlantillaHTML = PlantillaHTML.Replace("{{Domicilio}}", balance.Caratula.Entidad.Domicilio);
-        //    PlantillaHTML = PlantillaHTML.Replace("{{QR}}", qr);
-
-
-        //    return PlantillaHTML;
-        //}
-
-        //public string QRGenerator(string id)
-        //{
-        //    ;
-        //    //CREAR QR CON DATA
-        //    QRCodeGenerator qrGenerator = new QRCodeGenerator();
-        //    QRCodeData qrData = QRCodeGenerator.GenerateQrCode(id, QRCodeGenerator.ECCLevel.Q);
-
-        //    //VISUALIZACION DEL QR
-        //    PngByteQRCode qrCode = new PngByteQRCode(qrData);
-        //    byte[] qrCodeImage = qrCode.GetGraphic(5);
-
-        //    //VISUALIZAR EN BASE  64
-        //    string model = Convert.ToBase64String(qrCodeImage);
-        //    return model;
-
-        //}
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Http;
+using Radzen;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -43,6 +44,9 @@ builder.Services.AddScoped<IBusquedaDeSociedadesClientService, BusquedaDesocieda
 builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
 
 
+// R A D Z E N
+builder.Services.AddRadzenComponents();
+
 
 // Ejemplo de configuración para ASP.NET Core
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -50,7 +54,6 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.CheckConsentNeeded = context => true;
     options.MinimumSameSitePolicy = SameSiteMode.None;
 });
-
 
 
 

@@ -8,7 +8,8 @@
 @inject IPresentacionClientService presentacionService
 @inject IBalanceClientService balanceService
 @inject ISessionClientService sesionService
-
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <!DOCTYPE html>
 
@@ -520,13 +521,16 @@
 
     private Modal modalSuccess;
 
-
+    [Parameter]
+    public string? balid { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
 
     [Parameter] public string? TipoEntidad { get; set; }
 
-    private BalanceDto balance = new BalanceDto();
+    private BalanceDto balance;/*= new BalanceDto();*/
 
-    private CaratulaDto caratula = new CaratulaDto();
+    private CaratulaDto caratula; /*= new CaratulaDto();*/
 
     private AutoridadDto autoridades = new AutoridadDto();
 
@@ -538,7 +542,7 @@
     private LibroDto libro = new LibroDto();
 
     private ContadorDto contador = new ContadorDto();
-    private List<Archivo> listArchivo = new List<Archivo>();
+    private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
 
 
     private SociosDto socios = new SociosDto();
@@ -555,94 +559,80 @@
 
     private async Task Load()
     {
+        ResponseDTO<BalanceDto> rsp = new();
         try
         {
-         
-            var balanceId = await sesionService.GetSessionBalanceId();
 
-            if (balanceId != null)
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            if (sesionId == null)
             {
-                var response = await balanceService.getBalance(balanceId);
+                var sesionRespuesta = await sesionService.getNewSession();
 
-                if (response.IsSuccess == true)
-                {
-
-                    try
-                    {
-
-                        if (response.Result != null)
-                        {
-
-                            //TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
-
-                            setBalance(balance);
-
-                            //Caratula
-                            setCaratula(response.Result.Caratula);
-
-                            //EstadoContable
-                            //setEstadoContable(response.Result.EstadoContable);
-
-                            this.estadoContable.tipoBalance = response.Result.EstadoContable.TipoBalance;
-                            this.estadoContable.fechaInicio = response.Result.EstadoContable.FechaInicio;
-                            this.estadoContable.fechaEstado = response.Result.EstadoContable.FechaEstado;
-                            this.estadoContable.fechaAsamblea = response.Result.EstadoContable.FechaAsamblea;
-                            this.estadoContable.fechaReunionDirectorio = response.Result.EstadoContable.FechaReunionDirectorio;
-                            this.estadoContable.cajaYBancos = response.Result.EstadoContable.CajaYBancos;
-                            this.estadoContable.inversionesActivoCorriente = response.Result.EstadoContable.InversionesActivoCorriente;
-                            //this.estadoContable.otrosRubros = response.Result.EstadoContable.OtrosRubros;
-
-                            // this.balance.Caratula = response.Result.Caratula;
-                            this.libros.Asamblea = response.Result.Libros.Asamblea;
-                            this.libros.Administracion = response.Result.Libros.Administracion;
-                            this.libros.AsistenciaAsamblea = response.Result.Libros.AsistenciaAsamblea;
-                            this.libros.Auditor = response.Result.Libros.Auditor;
-                            this.libros.Efectivo = response.Result.Libros.Efectivo;
-                            this.libros.Fiscalizacion = response.Result.Libros.Fiscalizacion;
-                            this.libros.IVA = response.Result.Libros.IVA;
-                            this.libros.IVACompras = response.Result.Libros.IVACompras;
-                            this.libros.IVAVentas = response.Result.Libros.IVAVentas;
-                            this.libros.Resultados = response.Result.Libros.Resultados;
-                            this.libros.EstadosContablesConsolidados = response.Result.Libros.EstadosContablesConsolidados;
-                            this.libros.PatrimonioNeto = response.Result.Libros.PatrimonioNeto;
-                            this.libros.SituacionPatrimonial = response.Result.Libros.SituacionPatrimonial;
-                            this.libros.Memoria = response.Result.Libros.Memoria;
-                            this.libros.Informacion = response.Result.Libros.Informacion;
-
-                            //Contador
-                            setContador(response.Result.Contador);
-
-                            //Autoridades
-                            setAutoridades(response.Result.Autoridades);
-
-                            //Integrante
-
-                            this.listPersonaHumana = response.Result.Socios.PersonasHumanas;
-                            this.listPersonaJuridica = response.Result.Socios.PersonasJuridicas;
-
-
-                            //Archivos
-                            //setArchivos(response.Result.Archivos);
-
-                            StateHasChanged();
-
-                        }
-                        else
-                        {
-                            Console.WriteLine($"No hay resultados en la respuesta");
-                        }
-
-                    }
-                    catch (Exception ex)
-                    {
-
-                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                    }
-                }
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
             }
             else
             {
-                Console.WriteLine($"No se ha encontrado el idSession");
+                var rst = await sesionService.getBalanceId(sesionId);
+
+                if (rst is not null)
+                {
+                    balid = rst;
+                    rsp = await balanceService.getBalance(balid);
+
+                    if (rsp.IsSuccess)
+                    {
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+
+                        setBalance(balance);
+
+                        //Caratula
+                        setCaratula(rsp.Result.Caratula);
+
+                        //EstadoContable
+                        setEstadoContable(rsp.Result.EstadoContable);
+                        this.estadoContable.SesionId = sesionId;
+                        this.estadoContable.tipoBalance = rsp.Result.EstadoContable.TipoBalance;
+                        this.estadoContable.fechaInicio = rsp.Result.EstadoContable.FechaInicio;
+                        this.estadoContable.fechaEstado = rsp.Result.EstadoContable.FechaEstado;
+                        this.estadoContable.fechaAsamblea = rsp.Result.EstadoContable.FechaAsamblea;
+                        this.estadoContable.fechaReunionDirectorio = rsp.Result.EstadoContable.FechaReunionDirectorio;
+                        this.estadoContable.cajaYBancos = rsp.Result.EstadoContable.CajaYBancos;
+                        this.estadoContable.inversionesActivoCorriente = rsp.Result.EstadoContable.InversionesActivoCorriente;
+                        //this.estadoContable.otrosRubros = response.Result.EstadoContable.OtrosRubros;
+
+                        // this.balance.Caratula = response.Result.Caratula;
+                        this.libros.Asamblea = rsp.Result.Libros.Asamblea;
+                        this.libros.Administracion = rsp.Result.Libros.Administracion;
+                        this.libros.AsistenciaAsamblea = rsp.Result.Libros.AsistenciaAsamblea;
+                        this.libros.Auditor = rsp.Result.Libros.Auditor;
+                        this.libros.Efectivo = rsp.Result.Libros.Efectivo;
+                        this.libros.Fiscalizacion = rsp.Result.Libros.Fiscalizacion;
+                        this.libros.IVA = rsp.Result.Libros.IVA;
+                        this.libros.IVACompras = rsp.Result.Libros.IVACompras;
+                        this.libros.IVAVentas = rsp.Result.Libros.IVAVentas;
+                        this.libros.Resultados = rsp.Result.Libros.Resultados;
+                        this.libros.EstadosContablesConsolidados = rsp.Result.Libros.EstadosContablesConsolidados;
+                        this.libros.PatrimonioNeto = rsp.Result.Libros.PatrimonioNeto;
+                        this.libros.SituacionPatrimonial = rsp.Result.Libros.SituacionPatrimonial;
+                        this.libros.Memoria = rsp.Result.Libros.Memoria;
+                        this.libros.Informacion = rsp.Result.Libros.Informacion;
+
+                        //Contador
+                        setContador(rsp.Result.Contador);
+
+                        //Autoridades
+                        setAutoridades(rsp.Result.Autoridades);
+
+                        //Integrante
+
+                        this.listPersonaHumana = rsp.Result.Socios.PersonasHumanas;
+                        this.listPersonaJuridica = rsp.Result.Socios.PersonasJuridicas;
+
+                        //Archivos
+                       setArchivos(rsp.Result.Archivos);
+                    }
+                }
             }
         }
         catch (Exception ex)
@@ -652,6 +642,106 @@
         }
 
     }
+
+    //private async Task Load()
+    //{
+    //    try
+    //    {
+
+    //        var balanceId = await sesionService.GetSessionBalanceId();
+
+    //        if (balanceId != null)
+    //        {
+    //            var response = await balanceService.getBalance(balanceId);
+
+    //            if (response.IsSuccess == true)
+    //            {
+
+    //                try
+    //                {
+
+    //                    if (response.Result != null)
+    //                    {
+
+    //                        //TipoEntidad = response.Result.Caratula.Entidad.TipoEntidad;
+
+    //                        setBalance(balance);
+
+    //                        //Caratula
+    //                        setCaratula(response.Result.Caratula);
+
+    //                        //EstadoContable
+    //                        //setEstadoContable(response.Result.EstadoContable);
+
+    //                        this.estadoContable.tipoBalance = response.Result.EstadoContable.TipoBalance;
+    //                        this.estadoContable.fechaInicio = response.Result.EstadoContable.FechaInicio;
+    //                        this.estadoContable.fechaEstado = response.Result.EstadoContable.FechaEstado;
+    //                        this.estadoContable.fechaAsamblea = response.Result.EstadoContable.FechaAsamblea;
+    //                        this.estadoContable.fechaReunionDirectorio = response.Result.EstadoContable.FechaReunionDirectorio;
+    //                        this.estadoContable.cajaYBancos = response.Result.EstadoContable.CajaYBancos;
+    //                        this.estadoContable.inversionesActivoCorriente = response.Result.EstadoContable.InversionesActivoCorriente;
+    //                        //this.estadoContable.otrosRubros = response.Result.EstadoContable.OtrosRubros;
+
+    //                        // this.balance.Caratula = response.Result.Caratula;
+    //                        this.libros.Asamblea = response.Result.Libros.Asamblea;
+    //                        this.libros.Administracion = response.Result.Libros.Administracion;
+    //                        this.libros.AsistenciaAsamblea = response.Result.Libros.AsistenciaAsamblea;
+    //                        this.libros.Auditor = response.Result.Libros.Auditor;
+    //                        this.libros.Efectivo = response.Result.Libros.Efectivo;
+    //                        this.libros.Fiscalizacion = response.Result.Libros.Fiscalizacion;
+    //                        this.libros.IVA = response.Result.Libros.IVA;
+    //                        this.libros.IVACompras = response.Result.Libros.IVACompras;
+    //                        this.libros.IVAVentas = response.Result.Libros.IVAVentas;
+    //                        this.libros.Resultados = response.Result.Libros.Resultados;
+    //                        this.libros.EstadosContablesConsolidados = response.Result.Libros.EstadosContablesConsolidados;
+    //                        this.libros.PatrimonioNeto = response.Result.Libros.PatrimonioNeto;
+    //                        this.libros.SituacionPatrimonial = response.Result.Libros.SituacionPatrimonial;
+    //                        this.libros.Memoria = response.Result.Libros.Memoria;
+    //                        this.libros.Informacion = response.Result.Libros.Informacion;
+
+    //                        //Contador
+    //                        setContador(response.Result.Contador);
+
+    //                        //Autoridades
+    //                        setAutoridades(response.Result.Autoridades);
+
+    //                        //Integrante
+
+    //                        this.listPersonaHumana = response.Result.Socios.PersonasHumanas;
+    //                        this.listPersonaJuridica = response.Result.Socios.PersonasJuridicas;
+
+
+    //                        //Archivos
+    //                        //setArchivos(response.Result.Archivos);
+
+    //                        StateHasChanged();
+
+    //                    }
+    //                    else
+    //                    {
+    //                        Console.WriteLine($"No hay resultados en la respuesta");
+    //                    }
+
+    //                }
+    //                catch (Exception ex)
+    //                {
+
+    //                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            Console.WriteLine($"No se ha encontrado el idSession");
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+
+    //    }
+
+    //}
 
 
 
@@ -664,11 +754,12 @@
             await ShowLoadingModal();
 
             var responseDto = new ResponseDTO<BalanceDto>();
-            var response = await presentacionService.generarPresentacion();
+
+            var response = await presentacionService.generarPresentacion(sesionId);
 
             if (response.IsSuccess)
             {
-         
+
 
                 responseDto.IsSuccess = response.IsSuccess;
                 responseDto.Message = response.Message;
@@ -756,7 +847,7 @@
     }
 
 
-    private void setArchivos(List<Archivo>archivos)
+    private void setArchivos(List<ArchivoDTO>archivos)
     {
 
         this.listArchivo = archivos;
@@ -781,7 +872,7 @@
 
     private void setContador(Model.Contador contador)
     {
-
+        this.contador.SesionId = sesionId;
         this.contador.Nombre = contador.Nombre;
         this.contador.Apellido = contador.Apellido;
         this.contador.TipoDocumento = contador.TipoDocumento;
