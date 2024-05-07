@@ -19,9 +19,59 @@ namespace Balances.Web.Services.Contracts
 
 
 
+        public async Task<ResponseDTO<BalanceDto>> UploadArchivo(List<ArchivoDTO> files)
+        {
+        
+            try
+            {
+                using var response = await _httpClient.PostAsJsonAsync("Archivo/InsertArchivos", files);
 
+                response.EnsureSuccessStatusCode(); // Lanzará una excepción si la solicitud no tiene éxito (código de estado diferente de 2xx)
 
-        public async Task<ResponseDTO<BalanceDto>> uploadArchivo(List<ArchivoDTO> files)
+                var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
+
+                if (result.IsSuccess)
+                {
+                    return new ResponseDTO<BalanceDto>
+                    {
+                        Result = result.Result,
+                        IsSuccess = true,
+                        Message = "Upload successful"
+                    };
+                }
+                else
+                {
+                    return new ResponseDTO<BalanceDto>
+                    {
+                        Result = null,
+                        IsSuccess = false,
+                        Message = result.Message ?? "Error: Response message is empty"
+                    };
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Si hay un error de comunicación (por ejemplo, problemas de red), capturamos la excepción y devolvemos un mensaje de error
+                return new ResponseDTO<BalanceDto>
+                {
+                    Result = null,
+                    IsSuccess = false,
+                    Message = $"Error: {ex.Message}"
+                };
+            }
+            catch (Exception ex)
+            {
+                // Capturamos cualquier otra excepción y devolvemos un mensaje de error
+                return new ResponseDTO<BalanceDto>
+                {
+                    Result = null,
+                    IsSuccess = false,
+                    Message = $"Error: {ex.Message}"
+                };
+            }
+        }
+
+       /* public async Task<ResponseDTO<BalanceDto>> uploadArchivo(List<ArchivoDTO> files)
         {
             try
             {
@@ -29,7 +79,7 @@ namespace Balances.Web.Services.Contracts
                 var response = await _httpClient.PostAsJsonAsync("Archivo/InsertArchivos", files);
 
                 // Check if the request was successful (status code 2xx)
-                // response.EnsureSuccessStatusCode();
+                 response.EnsureSuccessStatusCode();
 
                 // Deserialize the response
                 var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
@@ -50,17 +100,9 @@ namespace Balances.Web.Services.Contracts
                     Message = $"Error: {ex.Message}"
                 };
             };
-        }
+        }*/
 
-        private async Task<byte[]> ToByteArrayAsync(Stream stream)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                await stream.CopyToAsync(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
-
+        
 
 
         public async Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo)

@@ -21,39 +21,46 @@
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
     <link href="~/css/bootstrap/background.css" rel="stylesheet">
 
-
 </head>
+
 <body>
     <div class="page">
         <main>
-            <header class="bg">
-                <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom mb-3">
-                    <div class="container-fluid d-flex justify-content-center">
-                        <nav class="navbar navbar-expand-lg">
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
-                            <div class="collapse navbar-collapse  d-flex justify-content-center" id="navbarNav">
-                                <ul class="navbar-nav ml-auto justify-content-center">
-                                    <!-- Agregamos justify-content-center -->
-                                    <li class="nav-item">
-                                        <a class="nav-link"><img src="img/logo_IGJ_1.jpeg" width="100" height="100" alt="Icono 1"></a>
-                                    </li>
-                                   
-                                    <li class="nav-item navbar-separator">
-                                        <!-- Agregamos la clase navbar-separator -->
-                                        <a class="nav-link"><img src="img/PresidenciaDeLaNacion.jpeg" w alt="Icono 3"></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </nav>
-                    </div>
-                </nav>
+            <header>
+
+                <div class="container-fluid d-flex justify-content-center">
+                    <a class="nav-link"><img src="img/logo_IGJ_5.jpeg" width="150" height="150" alt="Icono 1"></a>
+                </div>
+
+
+                @if (@Entidad != null)
+                {
+                    <RadzenCard Class="rz-my-12 rz-mx-auto" Style="max-width: 420px">
+                        <RadzenStack Gap="0">
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-2 rz-my-0">Entidad</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1"><b>@Entidad</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Razón Social</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1"><b>@RazonSocial</b></RadzenText>
+                        </RadzenStack>
+                    </RadzenCard>
+                }
+
             </header>
-            <article class="content px-4 bg-light">
+           
+            <div>
+                <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Info" Value="100" ShowValue="false" Style="width:100%;" />
+            </div>
+
+            <article class="content px-4 bg-light" style="background-size: cover; background-position: center;">
                 @Body
             </article>
         </main>
     </div>
 </body>
 </html>
+
+
+@code{
+    [Parameter] public string? Entidad { get; set; }
+    [Parameter] public string? RazonSocial { get; set; }
+}

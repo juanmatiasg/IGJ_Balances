@@ -105,7 +105,7 @@ namespace Balances.Web.Pages
                         if (rsp.IsSuccess)
                         {
                             TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
-                            estadoContableDto.tipoBalance = rsp.Result.Caratula.Entidad.RazonSocial;
+                    
                             estadoContableDto.fechaInicio = rsp.Result.Caratula.FechaInicio;
                             estadoContableDto.fechaEstado = rsp.Result.Caratula.FechaDeCierre;
                             estadoContableDto = new EstadoContableDto(rsp.Result.EstadoContable);

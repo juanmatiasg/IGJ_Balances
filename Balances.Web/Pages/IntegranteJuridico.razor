@@ -13,97 +13,95 @@
 
 <Navegacion Entidad="@($"{TipoEntidad}")" TramiteIniciado=true PaginaActiva="Integrante" balid="@balid"></Navegacion>
 
-    <div class="container-fluid mt-4">
-        <NavegacionIntegrantes PaginaActiva="IntegranteJuridico" balid="@balid"></NavegacionIntegrantes>
-    </div>
+<div class="container-fluid mt-4">
+    <NavegacionIntegrantes PaginaActiva="IntegranteJuridico" balid="@balid"></NavegacionIntegrantes>
+</div>
 
-   
-    <!-- Formulario de Datos del Integrante -->
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <div class="col-md-6">
-                <form class="card">
-                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                        Datos del Integrante
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Denominación</label>
-                            <input type="text" class="form-control" @bind="modelPersonaJuridica.Denominacion">
-                            <small id="msgError" class="text-danger">@msgErrorDenominacion</small>
+<div class="container-fluid mt-4 mb-4">
+    <div class="row">
+        <div class="col-md-6">
+            <form class="card">
+                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                    Datos del Integrante
+                </div>
+                <div class="card-body">
 
-                        </div>
-                        <div class="form-group">
-                            <label>Nro. de Identificación Fiscal</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.NroFiscal">
-                            <small id="msgError" class="text-danger">@msgErrorCuit</small>
+                    <RadzenStack class="mt-2 mb-2">
 
-                        </div>
+                        <RadzenFormField Text="Denominación" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.Denominacion" Style="width:100%" />
+                        </RadzenFormField>
 
-                        <div class="form-group">
-                            <label>Cuotas</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Cuotas">
-                            <small id="msgError" class="text-danger">@msgErrorCuotas</small>
+                        <small id="msgError" class="text-danger">@msgErrorDenominacion</small>
+                    </RadzenStack>
+                    <RadzenStack class="mt-2 mb-2">
 
-                        </div>
-                        <div class="form-group">
-                            <label>Votos</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Votos">
-                            <small id="msgError" class="text-danger">@msgErrorVotos</small>
+                        <RadzenFormField Text="Nro. Fiscal" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.NroFiscal" Style="width:100%" />
+                        </RadzenFormField>
 
-                        </div>
-                        <!-- Rest of the form content -->
-                        <div class="form-group text-center mt-4">
-                            <button type="button" class="btn btn-primary w-100" @onclick="addPersonaJuridica">Agregar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <!-- Lista de Integrantes -->
+                        <small id="msgError" class="text-danger">@msgErrorCuit</small>
+                    </RadzenStack>
+
+                  
+
+                    <RadzenStack class="mt-2 mb-2">
+
+                        <RadzenFormField Text="Cuotas" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.Cuotas" Style="width:100%" />
+                        </RadzenFormField>
+
+                        <small id="msgError" class="text-danger">@msgErrorCuotas</small>
+                    </RadzenStack>
+
+                    <RadzenStack class="mt-2 mb-2">
+
+                        <RadzenFormField Text="Votos" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.Votos" Style="width:100%" />
+                        </RadzenFormField>
+
+                        <small id="msgError" class="text-danger">@msgErrorVotos</small>
+                    </RadzenStack>
+
+                
+                    <RadzenStack class="mt-2 mb-2">
+                        <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@addPersonaJuridica">Agregar</RadzenButton>
+                    </RadzenStack>
+
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <!-- Lista de Integrantes -->
+            <div class="container">
                 <div class="card">
                     <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                         Integrantes
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                   
-                                    <th scope="col">Denominación</th>
-                                    <th scope="col">Nro Documento</th>
-                                    <th scope="col">CUIT</th>
-                                    <th scope="col">Cantidad</th>
-                                    <th scope="col">Acción</th>
-                                </tr>
-                            </thead>
-                            @foreach (var personaJuridica in listPersonaJuridica)
-                            {
-                                <tbody>
-                                    <tr>
-                                       
-                                        <td>@personaJuridica.Denominacion</td>
-                                        <td>@personaJuridica.NroFiscal</td>
-                                        <td>@personaJuridica.NroFiscal</td>
-                                        <td>@personaJuridica.Cuotas / @personaJuridica.Votos </td>
-
-                                        <td>
-                                            <button type="button" class="btn btn-danger" @onclick="() => deletePersonaJuridica(personaJuridica)">Eliminar</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-
-                            }
-                        </table>
+                        <RadzenGrid Data="listPersonaJuridica" TItem="PersonaJuridicaDto">
+                            <Columns>
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Denominacion" Title="Denominación" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="NroFiscal" Title="Nro. Fiscal" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Cuotas" Title="Cuotas" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Votos" Title="Votos" />
+                            
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Title="Acción">
+                                    <Template Context="personaJuridica">
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deletePersonaJuridica(personaJuridica))">Eliminar</RadzenButton>
+                                    </Template>
+                                </RadzenGridColumn>
+                            </Columns>
+                        </RadzenGrid>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
+</div>
 
-
+   
 
 
 

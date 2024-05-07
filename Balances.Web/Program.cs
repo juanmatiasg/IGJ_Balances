@@ -65,14 +65,6 @@ builder.Services
     .AddFontAwesomeIcons();
 
 
-/*builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 6000000; // Set the limit to a larger value (e.g., 6 MB)
-});*/
-
-
-
-//builder.Services.AddBlazoredLocalStorageAsSingleton();
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredLocalStorage();
 await builder.Build().RunAsync();

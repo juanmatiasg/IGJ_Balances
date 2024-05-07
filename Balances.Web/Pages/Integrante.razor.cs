@@ -28,7 +28,7 @@ namespace Balances.Web.Pages
         [Parameter]
         public string? TipoEntidad { get; set; }
 
-        private string idSession = "";
+
         private PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
         private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
         private string msgErrorNombre = "";
@@ -64,6 +64,7 @@ namespace Balances.Web.Pages
             try
             {
                 sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+                
                 if (sesionId == null)
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
@@ -101,9 +102,10 @@ namespace Balances.Web.Pages
                 {
                     modelPersonaHumana.SesionId = sesionId;
                     respuesta = await socioService.insertPersonaHumana(modelPersonaHumana);
+                   
                     if (respuesta.IsSuccess)
                     {
-                        resultPersonaHumana(respuesta.Result.Socios.PersonasHumanas);
+                        resultPersonaHumana(respuesta.Result!.Socios.PersonasHumanas);
                         cleanInputsHumana();
                     }
                 }
@@ -138,9 +140,10 @@ namespace Balances.Web.Pages
             {
                 personaHumanaDto.SesionId = sesionId;
                 respuesta = await socioService.deletePersonaHumana(personaHumanaDto);
+               
                 if (respuesta.IsSuccess)
                 {
-                    listPersonaHumana = respuesta.Result.Socios.PersonasHumanas;
+                    listPersonaHumana = respuesta.Result!.Socios.PersonasHumanas;
                 }
             }
             catch (Exception ex)

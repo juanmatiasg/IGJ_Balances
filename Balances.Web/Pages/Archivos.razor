@@ -18,7 +18,15 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
-
+    <style>
+        #ddUpload .rz-fileupload-buttonbar .rz-fileupload-choose {
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+            padding: 100px 0;
+            border-radius: 0;
+        }
+    </style>
 
     <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Archivos" TramiteIniciado="true" balid="@balid"></Navegacion>
 
@@ -35,28 +43,24 @@
                         Enviar Archivos
                     </div>
                     <div class="card-body">
-                        <form class="">
-                            <div class="form-group">
-                                <label for="tipoArchivo">Tipo de Archivo</label>
-                                <select class="form-select" @bind="@categoria"> 
-                                    <option value="">---- Seleccionar un tipo de Archivo ----</option>
-                                    <option value="Estado Contable">Estado Contable</option>
-                                    <option value="Acta reunión organo">Acta reunión organo</option>
-                                    <option value="Acta reunión administradores">Acta reunión administradores</option>
-                                    <option value="Registro Asistencia">Registro Asistencia</option>
-                                    <option value="Informe Fiscalizacion">Informe Fiscalizacion</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                                <small id="msgError" class="text-danger">@msgErrorTipoArchivo</small>
-                            </div>
-                            <RadzenCard>
-                                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Drag and drop files to upload</RadzenText>
-                                <RadzenUpload id="ddUpload" @ref="uploadDD" ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true" Url="upload/multiple" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
-                                              Progress=@(args => OnProgress(args, "Drag and drop files to upload")) class="w-100" />
-                                <RadzenButton Text="Upload" Click=@(args => uploadDD.Upload()) class="d-block mt-4" />
-                            </RadzenCard>
 
-                           <!-- <div class="col d-flex justify-content-between">
+
+                    <RadzenStack class="mt-2 mb-2">
+                        <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
+                            <RadzenDropDown @bind-Value=@archivo.Categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
+                        </RadzenFormField>
+                        <small id="msgError" class="text-danger">@msgErrorTipoArchivo</small>
+                    </RadzenStack>
+
+
+                    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Drag and drop files to upload</RadzenText>
+                    <RadzenUpload id="ddUpload" @ref="upload" ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true" Url="Archivo/InsertArchivos" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
+                                  Progress=  "@(args =>  OnProgress(args, "Drag and drop files to upload"))" class="w-100" />
+                    <RadzenButton Text="Upload" Click=@(args => upload.Upload()) class="d-block mt-4" />
+
+                          
+
+                        <!-- <div class="col d-flex justify-content-between">
                                 <InputFile OnChange="@HandleFileUpload" multiple />
                                 @if (!isUploaded)
                                 {
@@ -75,7 +79,7 @@
                                 <span class="d-flex justify-content-center">@progressPercentage%</span>
                             }-->
 
-                        </form>
+                       
                         <div class="d-flex justify-content-center mt-4">
                             <small class="text-danger">@msgError</small>
                         </div>
@@ -90,7 +94,22 @@
                         Archivo Recibido
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered">
+                    <RadzenGrid Data="listArchivo" TItem="ArchivoDTO">
+                        <Columns>
+                            <RadzenGridColumn TItem="ArchivoDTO" Property="NombreArchivo" Title="Nombre de Archivo" />
+                            <RadzenGridColumn TItem="ArchivoDTO" Property="Categoria" Title="Categoría" />
+                            <RadzenGridColumn TItem="ArchivoDTO" Property="Hash" Title="Hash" />
+                            <RadzenGridColumn TItem="ArchivoDTO" Property="FechaCreacion" Title="Fecha Creación" />
+                            <RadzenGridColumn TItem="ArchivoDTO" Property="Tamaño" Title="Tamaño" />
+                            <RadzenGridColumn TItem="ArchivoDTO" Title="Acción">
+                                <Template Context="archivo">
+                                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteArchivo(archivo))">Eliminar</RadzenButton>
+                                </Template>
+                            </RadzenGridColumn>
+                        </Columns>
+                    </RadzenGrid>
+
+                       <!-- <table class="table table-bordered">
                             <thead>
                                 <tr>
 
@@ -103,6 +122,7 @@
                                     <th scope="col">Acción</th>
                                 </tr>
                             </thead>
+                            
                             @if (listArchivo != null && listArchivo.Count > 0)
                             {
                                 @foreach (var archivo in listArchivo)
@@ -122,7 +142,7 @@
                                     </tbody>
                                 }
                             }
-                        </table>
+                        </table>-->
 
                     </div>
                 </div>

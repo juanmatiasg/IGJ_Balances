@@ -25,8 +25,7 @@
 
 <!--Navegacion-->
 
-
-<Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
+<Navegacion Entidad="@($"{TipoEntidad}")" TipoDeBalance="@($"{RazonSocial}")" PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
 
 <!--Loading-->
 <RadzenDialog />
@@ -209,7 +208,7 @@
 
 
     [Parameter] public string? TipoEntidad { get; set; }
-    // [Parameter] public string? RazonSocial { get; set; }
+    [Parameter] public string? RazonSocial { get; set; }
 
     private bool tramiteIniciado = false;
 
@@ -337,13 +336,13 @@
 
                     if (response != null)
                     {
-
+                        
                         modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
                         modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
 
                         TipoEntidad = response.Result.TipoEntidad;
-                        //   RazonSocial = response.Result.RazonSocial;
-
+                        RazonSocial = response.Result.RazonSocial;
+         
                         entidadEncontrada = true;
 
                     }

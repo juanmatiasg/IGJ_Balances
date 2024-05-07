@@ -7,6 +7,6 @@ namespace Balances.Bussiness.Contrato
         ResponseDTO<BalanceDto> InsertPersonaHumana(PersonaHumanaDto modelo);
         ResponseDTO<BalanceDto> InsertPersonaJuriridica(PersonaJuridicaDto modelo);
         ResponseDTO<BalanceDto> DeletePersonaHumana(PersonaHumanaDto modelo);
-        ResponseDTO<BalanceDto> DeletePersonaJuriridica(PersonaJuridicaDto modelo);
+        ResponseDTO<BalanceDto> DeletePersonaJuridica(PersonaJuridicaDto modelo);
     }
 }

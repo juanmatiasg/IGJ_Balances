@@ -25,19 +25,14 @@ namespace Balances.Web.Pages
 {
     public partial class IntegranteJuridico
     {
-        private string[] tiposDocumentos =
-       {
-            "DNI",
-            "Pasaporte",
-            "Cédula"
-        };
+      
 
         [Parameter]
         public string? TipoEntidad { get; set; }
 
-        private string idSession = "";
         private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
         private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
+        
         [Parameter]
         public string? balid { get; set; }
 
@@ -54,12 +49,14 @@ namespace Balances.Web.Pages
             await base.OnInitializedAsync();
         }
 
+
         private async Task Load()
         {
             ResponseDTO<BalanceDto> rsp = new();
-            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
             try
             {
+                sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+
                 if (sesionId == null)
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
@@ -84,9 +81,10 @@ namespace Balances.Web.Pages
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+                rsp.Message = $"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}";
             }
         }
+     
 
         private async Task<ResponseDTO<BalanceDto>> addPersonaJuridica()
         {
@@ -95,12 +93,13 @@ namespace Balances.Web.Pages
                 ResponseDTO<BalanceDto> respuesta = new();
                 try
                 {
+                   
                     modelPersonaJuridica.SesionId = sesionId;
                     respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
+                    
                     if (respuesta.IsSuccess)
                     {
-                        resultPersonaJuridica(respuesta.Result.Socios.PersonasJuridicas);
-                        // Limpiar los campos después de una inserción exitosa
+                        resultPersonaJuridica(respuesta.Result!.Socios.PersonasJuridicas);
                         cleanInputsJuridica();
                     }
                 }
@@ -133,10 +132,12 @@ namespace Balances.Web.Pages
             var respuesta = new ResponseDTO<BalanceDto>();
             try
             {
+                personaJuridicaDto.SesionId = sesionId;
                 respuesta = await socioService.deletePersonaJuridica(personaJuridicaDto);
+                
                 if (respuesta.IsSuccess)
                 {
-                    listPersonaJuridica = respuesta.Result.Socios.PersonasJuridicas;
+                    listPersonaJuridica = respuesta.Result!.Socios.PersonasJuridicas;
                 }
             }
             catch (Exception ex)

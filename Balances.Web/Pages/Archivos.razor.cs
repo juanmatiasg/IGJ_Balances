@@ -27,18 +27,34 @@ using Microsoft.AspNetCore.Http.Internal;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Primitives;
 using System.Security.Cryptography;
+using Microsoft.Win32;
+using Blazorise.Extensions;
 
 namespace Balances.Web.Pages
 {
     public partial class Archivos
     {
+
+        private string[] tipoDeArchivo =
+        {
+            "Estado Contable",
+            "Acta reunión organo",
+            "Acta reunión administradores",
+            "Informe Fiscalizacion",
+            "Otro"
+        };
+
+
         RadzenUpload upload;
-        RadzenUpload uploadDD;
+
+
         int progress;
         bool showProgress;
         bool showComplete;
         string completionMessage;
         bool cancelUpload = false;
+
+
         [Parameter]
         public string? TipoEntidad { get; set; }
 
@@ -48,14 +64,13 @@ namespace Balances.Web.Pages
         [Parameter]
         public string sesionId { get; set; }
 
-        private bool isLoading = false;
-        private double progressPercentage = 0.0;
-        private string categoria = "";
+ 
         private string msgError = "";
         private string msgErrorTipoArchivo = "";
-        private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
+
+        private ArchivoDTO archivo = new ArchivoDTO();
         private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
-        private bool isUploaded = false;
+       
         protected override async void OnInitialized()
         {
             await Load();
@@ -103,170 +118,25 @@ namespace Balances.Web.Pages
             {
                 foreach (var x in list)
                 {
-                    var archivo = new ArchivoDTO
-                    {
-                        Id = x.Id,
-                        SesionId = sesionId,
-                        NombreArchivo = x.NombreArchivo,
-                        Categoria = x.Categoria,
-                        Hash = x.Hash,
-                        Tamaño = x.Tamaño,
-                        FechaCreacion = x.FechaCreacion
-                    };
-                    this.listArchivo.Add(archivo);
+
+                    archivo.Id = x.Id;
+                    archivo.SesionId = sesionId;
+                    archivo.NombreArchivo = x.NombreArchivo;
+                    archivo.Categoria = x.Categoria;
+                    archivo.Hash = x.Hash;
+                    archivo.Tamaño = x.Tamaño;
+                    archivo.FechaCreacion = x.FechaCreacion;
+
+                    listArchivo.Add(archivo);
                 }
             }
         }
 
-        private string conversionesDeArchivos(long file)
-        {
-            // Tamaño del archivo en bytes (esto podría provenir de tu archivo subido)
-            long fileSizeInBytes = file;
-            if (fileSizeInBytes < 1024)
-            {
-                return $"{Math.Round((double)fileSizeInBytes)} Bytes";
-            }
-            else if (fileSizeInBytes < 1024 * 1024)
-            {
-                double fileSizeInKB = (double)fileSizeInBytes / 1024;
-                return $"{Math.Round(fileSizeInKB)} KB";
-            }
-            else if (fileSizeInBytes < 1024L * 1024 * 1024)
-            {
-                double fileSizeInMB = (double)fileSizeInBytes / (1024 * 1024);
-                return $"{Math.Round(fileSizeInMB)} MB";
-            }
-            else if (fileSizeInBytes < 1024L * 1024 * 1024 * 1024)
-            {
-                double fileSizeInGB = (double)fileSizeInBytes / (1024 * 1024 * 1024);
-                return $"{Math.Round(fileSizeInGB)} GB";
-            }
-            else
-            {
-                double fileSizeInTB = (double)fileSizeInBytes / (1024L * 1024 * 1024 * 1024);
-                return $"{Math.Round(fileSizeInTB)} TB";
-            }
-        }
 
-        private void HandleFileUpload(InputFileChangeEventArgs e)
-        {
-            try
-            {
-                isLoading = true; // Mostrar indicador de carga
-                foreach (var file in e.GetMultipleFiles())
-                {
-                    msgError = "";
-                    if (Path.GetExtension(file.Name).ToLower() == ".pdf")
-                    {
-                        if (file.Size <= 20 * 1024 * 1024) // 20 MB en bytes
-                        {
-                            msgError = "";
-                            selectedFiles = e.GetMultipleFiles();
-                        }
-                        else
-                        {
-                            msgError = $"El archivo {file.Name} excede el tamaño máximo permitido de 20 MB.";
-                        }
-                    }
-                    else
-                    {
-                        msgError = $"El archivo {file.Name} no es un archivo PDF.";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: HandleFileUpload {ex.Message}");
-            }
-            finally
-            {
-                isLoading = false; // Ocultar indicador de carga
-                isUploaded = false;
-            }
-        }
-
-        private bool checkDataFile()
-        {
-            if (selectedFiles.Count < 0)
-            {
-                msgError = "No seleccionaste ningún archivo";
-                return false;
-            }
-
-            msgError = "";
-            return true;
-        }
-
-        private async Task<ResponseDTO<BalanceDto>> UploadFile()
-        {
-            var response = new ResponseDTO<BalanceDto>();
-            try
-            {
-                isLoading = true;
-                isUploaded = true;
-                if (checkData())
-                {
-                    var archivo = new ArchivoDTO();
-                    foreach (var file in selectedFiles)
-                    {
-                        if (file.Size > 0)
-                        {
-                            var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024)); // 20 MB
-                            archivo.SesionId = sesionId;
-                            archivo.Tamaño = binario.Length;
-                            archivo.ContentType = file.ContentType;
-                            archivo.Categoria = categoria;
-                            archivo.NombreArchivo = file.Name;
-                            archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
-                            // Calcular el progreso de la carga
-                            double totalFileSize = selectedFiles.Sum(file => file.Size);
-                            double uploadedSize = 0.0;
-                            double stepSize = totalFileSize / 5; // Dividir en 5 pasos (20, 40, 60, 80, 100)
-                            for (int i = 1; i <= 5; i++)
-                            {
-                                uploadedSize += stepSize;
-                                progressPercentage = (uploadedSize / totalFileSize) * 100;
-                                await Task.Delay(1000); // Esperar 1 segundo en cada paso (simulando una carga más lenta)
-                            }
-
-                            listArchivo.Add(archivo);
-                            response = await archivoService.uploadArchivo(listArchivo);
-                            if (response.IsSuccess)
-                            {
-                                StateHasChanged();
-                            }
-                            else
-                            {
-                                response.Message = $"Error uploading files";
-                            }
-                        }
-                        else
-                        {
-                            msgError = $"El archivo {file.Name} está vacío. Por favor, seleccione un archivo válido.";
-                        }
-                    }
-                }
-                else
-                {
-                    response.Message = $"El campo categoria no puede estar vacio";
-                }
-            }
-            catch (Exception ex)
-            {
-                response.Message = $"An error occurred while uploading files: {ex.Message}";
-            }
-            finally
-            {
-                isLoading = false;
-                isUploaded = false;
-            }
-
-            return response;
-        }
-
+         
         private bool checkData()
         {
-            if (!string.IsNullOrEmpty(categoria))
+            if (archivo.Categoria.IsNullOrEmpty())
             {
                 msgErrorTipoArchivo = "";
             }
@@ -308,78 +178,62 @@ namespace Balances.Web.Pages
             }
         }
 
-        void CompleteUpload(UploadCompleteEventArgs args)
-        {
-            if (!args.Cancelled)
-                completionMessage = "Upload Complete!";
-            else
-                completionMessage = "Upload Cancelled!";
-            showProgress = false;
-            showComplete = true;
-        }
+        
 
-        void TrackProgress(UploadProgressArgs args)
-        {
-            showProgress = true;
-            showComplete = false;
-            progress = args.Progress;
-            // cancel upload
-            args.Cancel = cancelUpload;
-            // reset cancel flag
-            cancelUpload = false;
-        }
 
-        void CancelUpload()
-        {
-            cancelUpload = true;
-        }
 
-        int customParameter = 1;
-        void OnChange(UploadChangeEventArgs args, string name)
+
+        private async Task<ResponseDTO<BalanceDto>> OnProgress(UploadProgressArgs args, string name)
         {
-            foreach (var file in args.Files)
+
+
+            var response = new ResponseDTO<BalanceDto>();
+            try
+            {                
+                if (args.Progress == 100)
+                {
+                    foreach (var file in args.Files)
+                    {
+                      
+                        if (file.Size > 0)
+                        {
+                            var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024)); // 20 MB
+                            archivo.SesionId = sesionId;
+                            archivo.Tamaño = file.Size;
+                            archivo.ContentType = file.ContentType;
+                            //archivo.Categoria = categoria;
+                            archivo.NombreArchivo = file.Name;
+                            archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
+
+
+                            listArchivo.Add(archivo);
+                            
+                            response = await archivoService.UploadArchivo(listArchivo);
+
+                            if (response.IsSuccess)
+                            {
+                                StateHasChanged();
+                            }
+                            else
+                            {
+                                response.Message = $"Error uploading files";
+                            }
+                        }
+                        else
+                        {
+                            msgError = $"El archivo {file.Name} está vacío. Por favor, seleccione un archivo válido.";
+                        }
+                    }
+                }
+               
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine($"File: {file.Name} / {file.Size} bytes");
+                response.Message = $"An error occurred while uploading files: {ex.Message}";
             }
 
-            Console.WriteLine($"{name} changed");
+            return response;
         }
 
-        void OnProgress(UploadProgressArgs args, string name)
-        {
-            Console.WriteLine($"{args.Progress}% '{name}' / {args.Loaded} of {args.Total} bytes.");
-            if (args.Progress == 100)
-            {
-                foreach (var file in args.Files)
-                {
-                    Console.WriteLine($"Uploaded: {file.Name} / {file.Size} bytes");
-                }
-            }
-        }
-
-        void OnComplete(UploadCompleteEventArgs args)
-        {
-            Console.WriteLine($"Server response: {args.RawResponse}");
-        }
-
-        void OnClientChange(UploadChangeEventArgs args)
-        {
-            Console.WriteLine($"Client-side upload changed");
-            foreach (var file in args.Files)
-            {
-                Console.WriteLine($"File: {file.Name} / {file.Size} bytes");
-                try
-                {
-                    long maxFileSize = 10 * 1024 * 1024;
-                    // read file
-                    var stream = file.OpenReadStream(maxFileSize);
-                    stream.Close();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Client-side file read error: {ex.Message}");
-                }
-            }
-        }
     }
 }
