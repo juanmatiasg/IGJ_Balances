@@ -52,9 +52,8 @@ namespace Balances.API.Controllers
 
 
         [HttpPut("Update")]
-        public IActionResult Update(/*[FromBody] */BalanceDto balance)
+        public IActionResult Update(BalanceDto balance)
         {
-            //_balanceService.UpdateBalance(balance.Id, balance);
 
             var balancedto = _balanceBusiness.Update(balance);
 

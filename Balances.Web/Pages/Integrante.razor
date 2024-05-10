@@ -4,6 +4,8 @@
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 
+@using FluentValidation.Results
+
 @inject ISociosClientService socioService
 @inject IBalanceClientService balanceService
 @inject ISessionClientService sesionService
@@ -42,60 +44,84 @@
     <div class="container-fluid mt-4 mb-4">
         <div class="row">
             <div class="col-md-6">
-                <form class="card">
+          
                     <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                         Datos del Integrante
                     </div>
                     <div class="card-body">
-                        <div class="form-group">
-                            <label for="accionistaNombre">Nombre</label>
-                            <input type="text" class="form-control" @bind="modelPersonaHumana.Nombre">
-                            <small id="msgError" class="text-danger">@msgErrorNombre</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="accionistaNombre">Apellido</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.Apellido">
-                            <small id="msgError" class="text-danger">@msgErrorApellido</small>
-                        </div>
-                       
-                        <div class="form-group">
-                            <label for="selectTipoDocumento">Tipo de Documento</label>
-                            <select id="selectTipoDocumento" class="form-select" @bind="modelPersonaHumana.TipoDocumento">
-                                <option selected>Seleccionar...</option>
-                                <option value="DNI">DNI</option>
-                                <option value="Pasaporte">Pasaporte</option>
-                                <option value="Cédula">Cédula</option>
-                            </select>
-                            <small id="msgError" class="text-danger">@msgErrorTipoDoc</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="accionistaNombre">Numero de Documento</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroDocumento">
-                            <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
+                        <EditForm Model="modelPersonaHumana" class="card">
+                        <FluentValidationValidator/>
+                        <div class="form-group mt-2">
+                            <RadzenFormField Text="Nombre" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@modelPersonaHumana.Nombre" />
+                            </RadzenFormField>
 
+                            <ValidationMessage For="@(()=> modelPersonaHumana.Nombre)" />
                         </div>
-                        <div class="form-group">
-                            <label for="accionistaNombre">Número de Identificación Fiscal</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaHumana.NroFiscal">
-                            <small id="msgError" class="text-danger">@msgErrorCuit</small>
+                        <div class="form-group mt-2">
+                            <RadzenFormField Text="Apellido" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@modelPersonaHumana.Apellido" />
+                            </RadzenFormField>
+
+                            <ValidationMessage For="@(()=> modelPersonaHumana.Apellido)" />
+                            <div class="form-group">
+                                <label for="tipoDocumento">Tipo de Documento</label>
+                                <select class="form-select" @bind="modelPersonaHumana.TipoDocumento">
+                                    <option value="">--- Seleccionar un tipo de documento ---</option>
+                                    <option value="DNI">DNI</option>
+                                    <option value="Pasaporte">Pasaporte</option>
+                                    <option value="Cedula">Cédula</option>
+                                </select>
+                                <ValidationMessage For="@(()=> modelPersonaHumana.TipoDocumento)" />
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Numero de Documento" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelPersonaHumana.NroDocumento" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelPersonaHumana.NroDocumento)" />
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Nro. de CUIL/CUIT" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelPersonaHumana.NroFiscal" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelPersonaHumana.NroFiscal)" />
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Cuotas" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelPersonaHumana.Cuotas" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelPersonaHumana.Cuotas)" />
+                            </div>
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Votos" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelPersonaHumana.Votos" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelPersonaHumana.Votos)" />
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <RadzenCheckBox @bind-Value="@modelPersonaHumana.EsFirmante" Name="CheckBox3" />
+                                <RadzenLabel class="col-6" Text="Es Firmante" Component="CheckBox3" />
+
+                                <ValidationMessage For="@(()=> modelPersonaHumana.EsFirmante)" />
+                            </div>
+
+
+                            <RadzenStack class="d-flex justify-content-center mt-2">
+                                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@addPersonaHumana" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
+                            </RadzenStack>
                         </div>
-                        <div class="form-group">
-                            <label for="accionistaNombre">Cuotas</label>
-                            <input type="text" class="form-control" @bind="modelPersonaHumana.Cuotas">
-                            <small id="msgError" class="text-danger">@msgErrorCuotas</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="accionistaNombre">Votos</label>
-                            <input type="text" class="form-control" @bind="modelPersonaHumana.Votos">
-                            <small id="msgError" class="text-danger">@msgErrorVotos</small>
-                        </div>
-                        <!-- Rest of the form content -->
-                        <div class="form-group text-center mt-4">
-                            <button type="button" class="btn btn-primary w-100" @onclick="addPersonaHumana">Agregar</button>
-                        </div>
+               
+                    </EditForm>
                     </div>
-                </form>
+                
             </div>
             <div class="col-md-6">
                 <!-- Lista de Integrantes -->
@@ -157,14 +183,6 @@
     private PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
     private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
 
-    private string msgErrorNombre = "";
-    private string msgErrorApellido = "";
-    private string msgErrorTipoDoc = "";
-    private string msgErrorNroDoc = "";
-    private string msgErrorCuit = "";
-    private string msgErrorCuotas = "";
-    private string msgErrorVotos = "";
-
     [Parameter]
     public string? balid { get; set; }
     [Parameter]
@@ -223,38 +241,43 @@
         }
 
     }
-    
+
 
 
     private async Task<ResponseDTO<BalanceDto>> addPersonaHumana()
     {
-        if (checkData())
+
+        ResponseDTO<BalanceDto> respuesta = new();
+
+        try
         {
-            ResponseDTO<BalanceDto> respuesta = new();
+            modelPersonaHumana.SesionId = sesionId;
 
-            try
+            PersonaHumanaValidator personaHumanaValidator = new();
+            ValidationResult result = personaHumanaValidator.Validate(modelPersonaHumana);
+
+            if (result.IsValid)
             {
-                modelPersonaHumana.SesionId = sesionId;
                 respuesta = await socioService.insertPersonaHumana(modelPersonaHumana);
-
                 if (respuesta.IsSuccess)
                 {
                     resultPersonaHumana(respuesta.Result.Socios.PersonasHumanas);
+                    // Limpiar los campos después de una inserción exitosa
                     cleanInputsHumana();
                 }
+            }
 
-            }
-            catch (Exception ex)
-            {
-                respuesta.Message = ex.Message;
-            }
-            return respuesta;
         }
-        else
+        catch (Exception e)
         {
-            return null;    
+            throw e;
         }
+         
+        return respuesta;
+        
     }
+        
+    
 
     private void cleanInputsHumana()
     {
@@ -291,157 +314,5 @@
         return respuesta;
     }
 
-    private bool checkData()
-    {
-
-        // Nombre
-        if (!string.IsNullOrEmpty(modelPersonaHumana.Nombre))
-        {
-            if (Validator.IsNumeric(modelPersonaHumana.Nombre))
-            {
-                msgErrorNombre = "No puedes ingresar un valor numérico";
-                return false;
-            }
-            else
-            {
-                msgErrorNombre = "";
-            }
-        }
-        else
-        {
-            msgErrorNombre = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-
-        // Apellido
-        if (!string.IsNullOrEmpty(modelPersonaHumana.Apellido))
-        {
-            if (Validator.IsNumeric(modelPersonaHumana.Apellido))
-            {
-                msgErrorApellido = "No puedes ingresar un valor numérico";
-                return false;
-            }
-            else
-            {
-                msgErrorApellido = "";
-            }
-        }
-        else
-        {
-            msgErrorApellido = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-        //Tipo Doc
-        if (!string.IsNullOrEmpty(modelPersonaHumana.TipoDocumento))
-        {
-            msgErrorTipoDoc = "";
-        }
-        else
-        {
-            msgErrorTipoDoc = "El campo no puede estar vacio";
-            return false;    
-        }
-
-
-
-        // NroDocumento
-        if (!string.IsNullOrEmpty(modelPersonaHumana.NroDocumento))
-        {
-            if (!Validator.IsNumeric(modelPersonaHumana.NroDocumento))
-            {
-                msgErrorNroDoc = "No puedes ingresar caracteres";
-                return false;
-            }
-            else
-            {
-                msgErrorNroDoc = "";
-            }
-        }
-        else
-        {
-            msgErrorNroDoc = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-        // CUIT
-        if (!string.IsNullOrEmpty(modelPersonaHumana.NroFiscal))
-        {
-            if (!Validator.IsNumeric(modelPersonaHumana.NroFiscal))
-            {
-                msgErrorCuit = "No puedes ingresar caracteres";
-                return false;
-            }
-            else
-            {
-                msgErrorCuit = "";
-            }
-        }
-        else
-        {
-            msgErrorCuit = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-
-
-        // Cuotas
-        if (!string.IsNullOrEmpty(modelPersonaHumana.Cuotas))
-        {
-            if (!Validator.IsNumeric(modelPersonaHumana.Cuotas))
-            {
-                msgErrorCuotas = "No puedes ingresar caracteres";
-                return false;
-            }
-            else
-            {
-                msgErrorCuotas = "";
-            }
-        }
-        else
-        {
-            msgErrorCuotas = "El campo no puede estar vacio";
-            return false;
-        }
-
-        // Votos
-        if (!string.IsNullOrEmpty(modelPersonaHumana.Votos))
-        {
-            if (!Validator.IsNumeric(modelPersonaHumana.Votos))
-            {
-                msgErrorVotos = "No puedes ingresar caracteres";
-                return false;
-            }
-            else
-            {
-                msgErrorVotos = "";
-            }
-        }
-        else
-        {
-            msgErrorVotos = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-
-
-
-        // Si todos los campos pasan la validación, devuelve true
-
-        msgErrorNombre = "";
-        msgErrorApellido = "";
-        msgErrorTipoDoc = "";
-        msgErrorNroDoc = "";
-        msgErrorCuit = "";
-        msgErrorCuotas = "";
-        msgErrorVotos = "";
-
-        return true;
-    }
+    
 }

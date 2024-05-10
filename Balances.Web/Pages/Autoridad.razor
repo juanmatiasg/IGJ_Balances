@@ -3,6 +3,7 @@
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
 
 @inject IAutoridadClientService autoridadService
 @inject ISessionClientService sesionService
@@ -47,59 +48,77 @@
                     </div>
 
                     <div class="card-body">
-                        <form>
-                            <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label for="inputNombre">Nombre</label>
-                                    <input type="text" class="form-control" id="inputNombre" placeholder="Nombre" @bind=modelo.Nombre>
-                                    <small id="msgError" class="text-danger">@msgErrorNombre</small>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="inputApellido">Apellido</label>
-                                    <input type="text" class="form-control" id="inputApellido" placeholder="Apellido" @bind=modelo.Apellido>
-                                    <small id="msgError" class="text-danger">@msgErrorApellido</small>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="selectTipoDocumento">Tipo de Documento</label>
-                                    <select id="selectTipoDocumento" class="form-select" @bind="modelo.TipoDocumento">
-                                        <option selected>Seleccionar...</option>
-                                        <option value="DNI">DNI</option>
-                                        <option value="Pasaporte">Pasaporte</option>
-                                        <option value="Cédula">Cédula</option>
-                                    </select>
-                                    <small id="msgError" class="text-danger">@msgErrorTipoDeDoc</small>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label for="inputNumeroDocumento">Nro. de Documento</label>
-                                    <input type="text" class="form-control" id="inputNumeroDocumento" placeholder="Número de Documento" @bind="modelo.NroDocumento">
-                                    <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="inputNumeroFiscal">Nro de Id. Fiscal</label>                                    
-                                    <input type="text" class="form-control" id="inputNumeroFiscal" placeholder="Número de Identificación Fiscal" @bind="modelo.NroFiscal">
-                                    <small id="msgError" class="text-danger">@msgErrorNroIdFiscal</small>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="inputCargo">Cargo</label>
-                                    <input type="text" class="form-control" id="inputCargo" placeholder="Cargo" @bind="modelo.Cargo">
-                                    <small id="msgError" class="text-danger">@msgErrorCargo</small>
+                        <EditForm Model="modelo">
+                            <FluentValidationValidator />
 
-                                </div>
-                            </div>
-                            <div class="form-group form-check">
-                                <input type="checkbox" class="form-check-input" id="checkboxFirmante" @bind="modelo.EsFirmante">
-                                <label class="form-check-label" for="checkboxFirmante">Es Firmante</label>
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Nombre" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.Nombre"  />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> modelo.Nombre)"  />
                             </div>
 
-                            <button type="button" class="btn btn-primary w-100" @onclick="insertAutoridad">Agregar</button>
-                        </form>
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Apellido" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.Apellido"  />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> modelo.Apellido)" />
+                            </div>
+                            <div class="form-group">
+                                <label for="tipoDocumento">Tipo de Documento</label>
+                                <select class="form-select" @bind="modelo.TipoDocumento">
+                                    <option value="">--- Seleccionar un tipo de documento ---</option>
+                                    <option value="DNI">DNI</option>
+                                    <option value="Pasaporte">Pasaporte</option>
+                                    <option value="Cedula">Cédula</option>
+                                </select>
+                                <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Numero de Documento" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.NroDocumento"  />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Nro. de CUIL/CUIT" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.NroFiscal" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelo.NroFiscal)" />
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Cargo" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.Cargo"  />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelo.Cargo)" />
+                            </div>
+
+                             <div class="form-group mt-2">
+                                <RadzenCheckBox  @bind-Value="@modelo.EsFirmante" Name="CheckBox3" />
+                                <RadzenLabel class="col-6"  Text="Es Firmante" Component="CheckBox3" />
+                                
+                                <ValidationMessage For="@(()=> modelo.EsFirmante)" />
+                            </div>
+                          
+                           
+                            <RadzenStack class="d-flex justify-content-center mt-2">
+                                <RadzenButton ButtonType="Radzen.ButtonType.Submit"  Click="@insertAutoridad" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
+                            </RadzenStack>
+                        </EditForm>
                     </div>
                 </div>
             </div>
         </div>
 
+       
 
 
         <div class="col-md-6">
@@ -110,34 +129,26 @@
                     </div>
                     <div class="card-body mb-4">
 
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Apellido y Nombre</th>
-                                    <th scope="col">Nro Documento</th>
-                                    <th scope="col">CUIT</th>
-                                    <th scope="col">Cargo</th>
-                                    <th scope="col">Firmante</th>
-                                    <th scope="col">Acción</th>
-                                   
-                                </tr>
-                            </thead>
-                            @foreach (var autoridad in listAutoridades)
-                            {
-                                <tbody>
-                                    <tr>
-                                        <td>@autoridad.Apellido @autoridad.Nombre</td>
-                                        <td>@autoridad.NroDocumento</td>
-                                        <td>@autoridad.NroFiscal</td>
-                                        <td>@autoridad.Cargo</td>
-                                        <td>@(autoridad.EsFirmante ? "Sí" : "No")</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger" @onclick="() => deleteAutoridad(autoridad)">Eliminar</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            }
-                        </table>
+                        <RadzenGrid Data="listAutoridades" TItem="AutoridadDto">
+                            <Columns>
+                                <RadzenGridColumn TItem="AutoridadDto" Property="Apellido" Title="Apellido" />
+                                <RadzenGridColumn TItem="AutoridadDto" Property="Nombre" Title="Nombre" />
+                                <RadzenGridColumn TItem="AutoridadDto" Property="NroDocumento" Title="Nro. Documento" />
+                                <RadzenGridColumn TItem="AutoridadDto" Property="Cargo" Title="Cargo" />
+                                <RadzenGridColumn TItem="AutoridadDto" Property="EsFirmante" Title="Firmante">
+                                    <Template Context="data">
+                                        @((data.EsFirmante) ? "Si" : "No")
+                                    </Template>
+                                </RadzenGridColumn>
+                                <RadzenGridColumn TItem="AutoridadDto" Title="Acción">
+                                    <Template Context="autoridad">
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteAutoridad(autoridad))">Eliminar</RadzenButton>
+                                    </Template>
+                                </RadzenGridColumn>
+                            </Columns>
+                            
+                        </RadzenGrid>
+                        
                     </div>
                 </div>
             </div>
@@ -169,6 +180,7 @@
 
 
 @code {
+
     [Parameter] public string? TipoEntidad { get; set; }
 
 
@@ -179,13 +191,7 @@
     private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
     private string resultNameAndSurname ="";
 
-    private string msgErrorNombre = "";
-    private string msgErrorApellido = "";
-    private string msgErrorNroIdFiscal = "";
-    private string msgErrorNroDoc = "";
-    private string msgErrorCargo = "";
-    private string msgErrorTipoDeDoc = "";
-    private string nroIdentificacionSocial = "Nro de Identificación Fiscal";
+
 
     [Parameter]
     public string? balid { get; set; }
@@ -260,55 +266,39 @@
 
     }
 
-
     private async Task<ResponseDTO<BalanceDto>> insertAutoridad()
-
     {
 
-
-        if (checkData())
+        ResponseDTO<BalanceDto> respuesta = new();
+        try
         {
-            ResponseDTO<BalanceDto> respuesta = new();
+          
+                modelo.SesionId = sesionId;
+                AutoridadValidator autoridadValidator = new();
+                ValidationResult result = autoridadValidator.Validate(modelo);
 
-
-            try
-            {
-                // Check if the current autoridad is a firmante
-                if (modelo.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
+                if(result.IsValid)
                 {
-                    ShowModal();
-                    return null;
-                }
-                else
-                {
-                    modelo.SesionId = sesionId;
                     respuesta = await autoridadService.insertAutoridad(modelo);
-
-
-                    if (respuesta.IsSuccess)
-                    {
-
-                        resultAutoridades(respuesta.Result.Autoridades);
-
-                        // Limpiar los campos después de una inserción exitosa
-                        cleanInputs();
-
-
-                    }
+                       if (respuesta.IsSuccess)
+                       {
+                            resultAutoridades(respuesta.Result.Autoridades);
+                         // Limpiar los campos después de una inserción exitosa
+                         cleanInputs();
+                     }
                 }
+             }
 
-            }
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
             }
+
             return respuesta;
-        }
-        else
-        {
-            return null;    
-        }
+       
     }
+
+  
 
 
     private void cleanInputs()
@@ -349,144 +339,6 @@
         }
         return respuesta;
     }
-
-
-    private bool checkData()
-    {
-
-        // Nombre
-        if (!string.IsNullOrEmpty(modelo.Nombre))
-        {
-            if (Validator.IsNumeric(modelo.Nombre))
-            {
-                msgErrorNombre = "No puedes ingresar un valor numérico";
-                return false;
-            }
-            else
-            {
-                msgErrorNombre = "";
-
-            }
-        }
-        else
-        {
-            msgErrorNombre = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-
-        // Apellido
-        if (!string.IsNullOrEmpty(modelo.Apellido))
-        {
-            if (Validator.IsNumeric(modelo.Apellido))
-            {
-                msgErrorApellido = "No puedes ingresar un valor numérico";
-                return false;
-            }
-            else
-            {
-                msgErrorApellido = "";
-
-            }
-        }
-        else
-        {
-            msgErrorApellido = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-
-        // Apellido
-        if (!string.IsNullOrEmpty(modelo.TipoDocumento))
-        {
-            msgErrorTipoDeDoc = "";
-        }
-        else
-        {
-            msgErrorTipoDeDoc = "El campo no puede estar vacio";
-            return false;
-        }
-
-        // NroDocumento
-        if (!string.IsNullOrEmpty(modelo.NroDocumento))
-        {
-            if (!Validator.IsNumeric(modelo.NroDocumento))
-            {
-                msgErrorNroDoc = "No puedes ingresar caracteres";
-                return false;
-            }
-            else
-            {
-                msgErrorNroDoc = "";
-            }
-        }
-        else
-        {
-            msgErrorNroDoc = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-        // NroFiscal
-        if (!string.IsNullOrEmpty(modelo.NroFiscal))
-        {
-            if (!Validator.IsNumeric(modelo.NroFiscal))
-            {
-                msgErrorNroIdFiscal = "No puedes ingresar caracteres";
-                return false;
-            }
-            else
-            {
-                msgErrorNroIdFiscal = "";
-            }
-        }
-        else
-        {
-            msgErrorNroIdFiscal = "El campo no puede estar vacio";
-            return false;
-        }
-
-        // Cargo
-        if (!string.IsNullOrEmpty(modelo.Cargo))
-        {
-            if (Validator.IsNumeric(modelo.Cargo))
-            {
-                msgErrorCargo = "No puedes ingresar un valor numérico";
-                return false;
-            }
-            else
-            {
-                msgErrorCargo = "";
-
-            }
-        }
-
-        else
-        {
-            msgErrorCargo = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-
-
-        // Si todos los campos pasan la validación, devuelve true
-
-        msgErrorTipoDeDoc = "";
-        msgErrorNombre = "";
-        msgErrorApellido = "";
-        msgErrorNroIdFiscal = "";
-        msgErrorNroDoc = "";
-        msgErrorCargo = "";
-
-        return true;
-    }
-
-    
-
-
 
 
   

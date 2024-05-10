@@ -4,6 +4,7 @@
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
 @using Microsoft.AspNetCore.Http;
 @using BlazorInputFileExtended;
 @using Microsoft.AspNetCore.Http.Internal;
@@ -16,8 +17,6 @@
 @inject ISessionClientService sesionService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -49,47 +48,28 @@
                         Enviar Archivos
                     </div>
                     <div class="card-body">
-                        <form class="">
-                            <div class="form-group">
-                                <label for="tipoArchivo">Tipo de Archivo</label>
-                                <select class="form-select" @bind="@categoria"> 
-                                    <option value="">---- Seleccionar un tipo de Archivo ----</option>
-                                    <option value="Estado Contable">Estado Contable</option>
-                                    <option value="Acta reunión organo">Acta reunión organo</option>
-                                    <option value="Acta reunión administradores">Acta reunión administradores</option>
-                                    <option value="Registro Asistencia">Registro Asistencia</option>
-                                    <option value="Informe Fiscalizacion">Informe Fiscalizacion</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                                <small id="msgError" class="text-danger">@msgErrorTipoArchivo</small>
-                            </div>
+                       <EditForm Model="archivo">
+                            <FluentValidationValidator />
+                            <RadzenStack class="mt-2 mb-2">
+                                <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
+                                    <RadzenDropDown @bind-Value=@archivo.Categoria Data=@categoria Name="DropDownBindValue" Style="width:100%" />
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> archivo.Categoria)" />
+                            </RadzenStack>
+                            <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
+                            <ValidationMessage For="@(()=> archivo.ContentType)" />
+                         
                             <div class="col d-flex justify-content-between">
                                 <InputFile OnChange="@HandleFileUpload" multiple />
-                                @if (!isUploaded)
-                                {
-                                    <button type="button" class="btn-primary" @onclick="UploadFile">Subir Archivo</button>
-                                }
-                                else
-                                {
-                                    <button type="button" class="btn-secondary">Subir Archivo</button>
-                                }
+                                  
+                                    <RadzenButton Text="Upload" ButtonType="Radzen.ButtonType.Submit" Click=@UploadFile class="d-block mt-4" />
+                                
                             </div>
-
-                            @if (isLoading)
-                            {
-                                <!-- Barra de progreso -->
-                                <progress max="100" value="@progressPercentage" class="w-100 mt-3"></progress>
-                                <span class="d-flex justify-content-center">@progressPercentage%</span>
-                            }
-
-                        </form>
-                        <div class="d-flex justify-content-center mt-4">
-                            <small class="text-danger">@msgError</small>
-                        </div>
+                        </EditForm>
                     </div>
                 </div>
             </div>
-          
+
             <!-- Tarjeta: Archivo Recibido -->
             <div class="col mt-4">
                 <div class="card">
@@ -97,39 +77,21 @@
                         Archivo Recibido
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-
-                                    <th scope="col">Id</th>
-                                    <th scope="col">Nombre</th>
-                                    <th scope="col">Tipo</th>
-                                    <th scope="col">Hash</th>
-                                    <th scope="col">Fecha de Creación</th>
-                                    <th scope="col">Tamaño</th>
-                                    <th scope="col">Acción</th>
-                                </tr>
-                            </thead>
-                            @if (listArchivo != null && listArchivo.Count > 0)
-                            {
-                                @foreach (var archivo in listArchivo)
-                                {
-                                    <tbody>
-                                        <tr>
-                                            <td>@archivo.Id</td>
-                                            <td>@(archivo.NombreArchivo?.Length > 10 ? archivo.NombreArchivo.Substring(0, 10) + "..." : archivo.NombreArchivo)</td>
-                                            <td>@(archivo.Categoria?.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
-                                            <td>@archivo.Hash</td>
-                                            <td>@archivo.FechaCreacion.ToString("dd/MM/yyyy")</td>
-                                            <td>@conversionesDeArchivos(archivo.Tamaño)</td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger" @onclick="() => deleteArchivo(archivo)">Eliminar</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                }
-                            }
-                        </table>
+                        <RadzenGrid Data="listArchivo" TItem="ArchivoDTO">
+                            <Columns>
+                                <RadzenGridColumn TItem="ArchivoDTO" Property="NombreArchivo" Title="Nombre de Archivo" />
+                                <RadzenGridColumn TItem="ArchivoDTO" Property="Categoria" Title="Categoría" />
+                                <RadzenGridColumn TItem="ArchivoDTO" Property="Hash" Title="Hash" />
+                                <RadzenGridColumn TItem="ArchivoDTO" Property="FechaCreacion" Title="Fecha Creación" />
+                                <RadzenGridColumn TItem="ArchivoDTO" Property="Tamaño" Title="Tamaño" />
+                                <RadzenGridColumn TItem="ArchivoDTO" Title="Acción">
+                                    <Template Context="archivo">
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteArchivo(archivo))">Eliminar</RadzenButton>
+                                    </Template>
+                                </RadzenGridColumn>
+                            </Columns>
+                        </RadzenGrid>
+                     
 
                     </div>
                 </div>
@@ -144,6 +106,15 @@
 
 @code {
 
+    private string[] categoria =
+      {
+            "Estado Contable",
+            "Acta reunión organo",
+            "Acta reunión administradores",
+            "Informe Fiscalizacion",
+            "Otro"
+    };
+
     [Parameter] public string? TipoEntidad { get; set; }
 
     [Parameter]
@@ -153,14 +124,15 @@
     private bool isLoading = false;
     private double progressPercentage = 0.0;
 
-    private string categoria = "";
+    // private string categoria = "";
     private string msgError = "";
     private string msgErrorTipoArchivo = "";
 
     private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
+    private ArchivoDTO archivo = new ArchivoDTO();
     private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
 
-    private bool isUploaded = false;
+  
 
 
     protected override async void OnInitialized()
@@ -217,7 +189,8 @@
     }
 
 
-    private void setListArchivos(List<ArchivoDTO> list){
+    private void setListArchivos(List<ArchivoDTO> list)
+    {
         if (list != null)
         {
             foreach (var x in list)
@@ -226,7 +199,7 @@
                     {
 
                         Id = x.Id,
-                        SesionId = sesionId ,
+                        SesionId = sesionId,
                         NombreArchivo = x.NombreArchivo,
                         Categoria = x.Categoria,
                         Hash = x.Hash,
@@ -272,109 +245,53 @@
     }
 
 
-
     private void HandleFileUpload(InputFileChangeEventArgs e)
     {
-        try
-        {
-            isLoading = true; // Mostrar indicador de carga
-
-
+      
             foreach (var file in e.GetMultipleFiles())
-            {
-                msgError = "";
+             {
+                
 
-                if (Path.GetExtension(file.Name).ToLower() == ".pdf")
-                {
-                    if (file.Size <= 20 * 1024 * 1024) // 20 MB en bytes
-                    {
-                        msgError = "";
-                        selectedFiles = e.GetMultipleFiles();
-                    }
-                    else
-                    {
-                        msgError = $"El archivo {file.Name} excede el tamaño máximo permitido de 20 MB.";
-                    }
+            selectedFiles = e.GetMultipleFiles();
 
-                }
-                else
-                {
-                    msgError = $"El archivo {file.Name} no es un archivo PDF.";
-
-                }
-
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: HandleFileUpload {ex.Message}");
-        }
-        finally
-        {
-            isLoading = false; // Ocultar indicador de carga
-            isUploaded = false;
-
-        }
+         }
     }
 
-    private bool checkDataFile()
+
+        private async Task<ResponseDTO<BalanceDto>> UploadFile()
     {
-        if (selectedFiles.Count < 0)
-        {
-            msgError = "No seleccionaste ningún archivo";
-            return false;
-        }
-
-        msgError = "";
-
-        return true;
-    }
-
-    private async Task<ResponseDTO<BalanceDto>> UploadFile()
-    {
-
-
 
         var response = new ResponseDTO<BalanceDto>();
 
+        //verificar que adjunto un archivo
+        archivo.CantidadArchivos = selectedFiles.Count();
+
         try
         {
 
-            isLoading = true;
-            isUploaded = true;
-
-
-            if (checkData())
+            // var archivo = new ArchivoDTO();
+            foreach (var file in selectedFiles)
             {
 
-                var archivo = new ArchivoDTO();
-                foreach (var file in selectedFiles)
+                if (file.Size > 0)
                 {
 
-                    if (file.Size > 0)
+                    var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
+
+                    archivo.SesionId = sesionId;
+                    archivo.Tamaño = binario.Length;
+                    archivo.ContentType = file.ContentType;
+                    archivo.NombreArchivo = file.Name;
+                    archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
+
+                    ArchivosValidator archivoValidator = new();
+                    ValidationResult result = archivoValidator.Validate(archivo);
+                
+                   
+                    if (result.IsValid)
+
                     {
-
-                        var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
-
-                        archivo.SesionId = sesionId;
-                        archivo.Tamaño = binario.Length;
-                        archivo.ContentType = file.ContentType;
-                        archivo.Categoria = categoria;
-                        archivo.NombreArchivo = file.Name;
-                        archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
-
-                        // Calcular el progreso de la carga
-                        double totalFileSize = selectedFiles.Sum(file => file.Size);
-                        double uploadedSize = 0.0;
-                        double stepSize = totalFileSize / 5; // Dividir en 5 pasos (20, 40, 60, 80, 100)
-
-                        for (int i = 1; i <= 5; i++)
-                        {
-                            uploadedSize += stepSize;
-                            progressPercentage = (uploadedSize / totalFileSize) * 100;
-                            await Task.Delay(1000); // Esperar 1 segundo en cada paso (simulando una carga más lenta)
-                        }
-
+                  
                         listArchivo.Add(archivo);
 
                         response = await archivoService.uploadArchivo(listArchivo);
@@ -383,55 +300,23 @@
                         {
                             StateHasChanged();
                         }
-                        else
-                        {
-                            response.Message = $"Error uploading files";
-                        }
                     }
-                    else
-                    {
-                        msgError = $"El archivo {file.Name} está vacío. Por favor, seleccione un archivo válido.";
+
                     }
                 }
+
             }
-            else
+
+            catch (Exception ex)
             {
-                response.Message = $"El campo categoria no puede estar vacio";
+                response.Message = $"An error occurred while uploading files: {ex.Message}";
             }
-
-
-        }
-
-        catch (Exception ex)
-        {
-            response.Message = $"An error occurred while uploading files: {ex.Message}";
-        }
-        finally
-        {
-            isLoading = false; 
-            isUploaded = false;
-        }
+           
+       
         return response;
     }
 
 
-    private bool checkData()
-    {
-        if (!string.IsNullOrEmpty(categoria))
-        {
-            msgErrorTipoArchivo = "";
-        }
-        else
-        {
-            msgErrorTipoArchivo = "El campo no puede estar vacio";
-            return false;
-        }
-
-        
-        msgErrorTipoArchivo = "";
-
-        return true;
-    }
 
     private async Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo)
     {
@@ -466,3 +351,4 @@
 
 
 }
+

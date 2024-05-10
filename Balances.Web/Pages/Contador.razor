@@ -4,6 +4,7 @@
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using System.Globalization;
+@using FluentValidation.Results
 @inject ISessionClientService sesionService
 @inject IBalanceClientService balanceService
 @inject IContadorClientService contadorService
@@ -20,6 +21,7 @@
     <title>Datos del Contador Certificante</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
 </head>
 
 <body>
@@ -36,24 +38,24 @@
                             Datos del Contador Certificante
                         </div>
                         <div class="card-body">
-                        <EditForm Model="modelo" >
-                            <FluentValidationValidator  />
-                            <div>
-                                <div class="form-group">
-                                    <label for="contadorNombre">Nombre</label>
-                                    <input type="text" class="form-control" id="contadorNombre"   @bind="modelo.Nombre" >
-                              
-                                    <ValidationMessage For="@(()=> modelo.Nombre)" />
-                                </div>
+                        <EditForm Model="modelo">
+                            <FluentValidationValidator />
 
-                                <div class="form-group">
-                                    <label for="ContadorApellido">Apellido</label>
-                                    <input type="text" class="form-control" id="ContadorApellido"    @bind="modelo.Apellido" >
-                               
-                                    <ValidationMessage For="@(()=> modelo.Apellido)" />
-                                </div>
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Nombre" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.Nombre" />
+                                </RadzenFormField>
 
+                                <ValidationMessage For="@(()=> modelo.Nombre)" />
+                            </div>
 
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Apellido" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.Apellido" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> modelo.Apellido)" />
+                            </div>
                             <div class="form-group">
                                 <label for="tipoDocumento">Tipo de Documento</label>
                                 <select class="form-select" @bind="modelo.TipoDocumento">
@@ -62,57 +64,57 @@
                                     <option value="Pasaporte">Pasaporte</option>
                                     <option value="Cedula">Cédula</option>
                                 </select>
-                                    <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
-                            
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="contadorNroDocumento">Número de Documento</label>
-                                <input type="text" class="form-control" id="contadorNroDocumento"   @bind="modelo.NroDocumento" >
-                             
-                                    <ValidationMessage For="@(()=> modelo.NroDocumento)" />
+                                <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
                             </div>
 
-                            <div class="form-group">
-                                <label for="contadorNuFiscal">Nro. de CUIL/CUIT</label>
-                                <input type="text" class="form-control" id="contadorNuFiscal"    @bind="modelo.NroFiscal" >
-                             
-                                    <ValidationMessage For="@(()=> modelo.NroFiscal)" />
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Numero de Documento" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.NroDocumento" />
+                                </RadzenFormField>
 
+                                <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
                             </div>
 
-                            <div class="form-group">
-                                <label for="tomo">Tomo</label>
-                                <input type="text" class="form-control" id="tomo" :value="form.tomo"   @bind="modelo.Tomo" >
-                            
-                                    <ValidationMessage For="@(()=> modelo.Tomo)" />
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Nro. de CUIL/CUIT" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.NroFiscal" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelo.NroFiscal)" />
                             </div>
 
-                            <div class="form-group">
-                                <label for="folio">Folio</label>
-                                <input type="text" class="form-control" id="folio"   @bind="modelo.Folio">
-                            
-                                    <ValidationMessage For="@(()=> modelo.Folio)" />
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Tomo" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.Tomo" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelo.Tomo)" />
                             </div>
 
-                            <div class="form-group">
-                                <label for="feInformeAuditorExt">Fecha del Informe del Auditor Externo</label>
-                                <input type="date" class="form-control" id="feInformeAuditorExt"  @bind="modelo.FechaInformeAuditorExt" >
-                            
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Folio" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.Folio" />
+                                </RadzenFormField>
 
+                                <ValidationMessage For="@(()=> @modelo.Folio)" />
                             </div>
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Fecha del informe del Auditor Externo" Style="width:100%">
+                                    <RadzenDatePicker @bind-Value="@modelo.FechaInformeAuditorExt" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType"  Placeholder="dd/mm/yyyy" />
+                                </RadzenFormField>
 
-                            <div class="form-group">
-                                <label for="nroLegalInfoAudExt">Nro. de Legalización del Informe del Auditor Externo</label>
-                                <input type="text" class="form-control" id="nroLegalInfoAudExt" :value="form.nroLegalInfoAudExt"  @bind="modelo.NroLegalInfoAudExt" @onblur=postContador>
-                            
-                                    <ValidationMessage For="@(()=> modelo.FechaInformeAuditorExt)" />
+                                <ValidationMessage For="@(()=> @modelo.FechaInformeAuditorExt)" />
                             </div>
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Nro. de Legalización del Informe del Auditor Externo" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.NroLegalInfoAudExt" />
+                                </RadzenFormField>
 
-                        </div>
-                            <Button Clicked="postContador" Color="Color.Primary"><i class="bi bi-floppy-fill"></i> Guardar</Button>
-                            @*<RadzenButton class="my-4" @onclick="postContador" ButtonType="Radzen.ButtonType.Submit" Text="Guardar" ButtonStyle="Radzen.ButtonStyle.Primary" />*@
-                         @*   <RadzenButton class="my-4" ButtonType="Radzen.ButtonType.Submit"  type  ButtonStyle="Radzen.ButtonStyle.Primary"><i class="bi bi-floppy-fill"></i></RadzenButton>*@
+                                <ValidationMessage For="@(()=> @modelo.NroLegalInfoAudExt)" />
+                            </div>
+                            <RadzenStack class="d-flex justify-content-center mt-2">
+                                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@postContador" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
+                            </RadzenStack>
                         </EditForm>
                     </div>
                 </div>
@@ -138,19 +140,6 @@
 
     private ResponseDTO<BalanceDto> modeloRespuesta = new ResponseDTO<BalanceDto>();
     private ContadorDto modelo = new ContadorDto();
-
-
-    //private string msgErrorNombre = "";
-    //private string msgErrorApellido = "";
-    //private string msgErrorNroDoc = "";
-    //private string msgErrorFolio = "";
-    //private string msgErrorTomo = "";
-    //private string msgErrorNroLegInf = "";
-    //private string msgErrorNroIdFiscal = "";
-    //private string msgErrorFechaInformeAuditorExt = "";
-    //private string msgErrorTipoDocumento = "";
-
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -196,7 +185,6 @@
 
 
                         TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
-                        modelo.id = rsp.Result.Id;
                         modelo.Nombre = rsp.Result.Contador.Nombre;
                         modelo.Apellido = rsp.Result.Contador.Apellido;
                         modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
@@ -238,13 +226,21 @@
         respuesta.IsSuccess = false;
         try
         {
-        
 
-               ContadorValidator contadorValidator = new();
-                
-                modelo.SesionId = sesionId;
+            ContadorValidator contadorValidator = new();
+
+            modelo.SesionId = sesionId;
+
+            // respuesta = await contadorService.postContador(modelo);
+
+            ValidationResult result = contadorValidator.Validate(modelo);
+
+            if (result.IsValid)
+            {
                 respuesta = await contadorService.postContador(modelo);
-                respuesta.IsSuccess = true;
+               
+            }
+            
         }
 
         catch (Exception ex)

@@ -1,5 +1,9 @@
 ﻿@inherits LayoutComponentBase
 
+@(new MarkupString($@"<script> _content/Radzen.Blazor/Radzen.Blazor.js""> </script>"))
+
+
+       
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,9 +23,8 @@
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
-  
     <link href="~/css/bootstrap/background.css" rel="stylesheet">
-
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
 
 </head>
 <body>
@@ -59,6 +62,7 @@
         </article>
     </main>
 </div>
- 
+     
+
 </body>
 </html>

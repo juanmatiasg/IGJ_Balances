@@ -1,8 +1,10 @@
 @page "/Caratula/{balid?}"
 @using Balances.DTO;
+@using Balances.Model
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
 @using Microsoft.AspNetCore.Http;
 @using Microsoft.JSInterop
 @using Balances.Web.Services
@@ -19,7 +21,7 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IHttpContextAccessor httpContextAccessor
-
+@inject DialogService dialogService
 
 
 <!DOCTYPE html>
@@ -39,115 +41,84 @@
     </head>
 
     <body>
+    <!--Navegacion-->
+      <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
 
-        <!--Navegacion-->
-
-       
-        <Navegacion Entidad="@($"{TipoEntidad}")"  PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
-
-        <!--Loading-->
-
-        <Modal @ref="modalRef">
-            <ModalContent>
-                <ModalBody>
-                    <div class="d-flex justify-content-center align-items-center" >
-                        <div class="text-center">
-                            <div class="spinner-grow text-primary" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-secondary" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-success" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-danger" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-warning" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-info" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-light" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div class="spinner-grow text-dark" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                            <div>
-                                Loading...
-                            </div>
-                        </div>
-                    </div>
-                </ModalBody>
-            </ModalContent>
-        </Modal>
-     
-
-        <!---------------------------------------------------------------->
-        <!--Entidad-->
-
-        <div class="container mt-2 mb-3">
-            <div class="card mx-auto">
-                <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                    Entidad
-                </div>
+    <!--Loading-->
+    <RadzenDialog />
 
 
-                <div class="card-body">
-                    <div class="row d-flex justify-content-center align-items-end position-relative">
-                    
-                        <div class="col">
-                            <label for="busqueda">Nro.Correlativo/CUIT/CUIL</label>
-                            <input type="text w-50"  @bind="@modelo.Entidad.Correlativo" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled ="@tramiteIniciado" >
-                           
-                        </div>
+    <!---------------------------------------------------------------->
+    <!--Entidad-->
 
-                        <div class="col mt-4">
-                            <button type="submit" id="btnBuscar" class="btn btn-primary" @onclick="FindEntities">Buscar</button>
-                        </div>
-                    </div>
-                    <small id="busquedaError" class="text-danger">@busquedaError</small>
-                    
-                   
-                    <div class="row mt-2">
-                        <div class="col-12 col-md-3">
-                            <p class="control texto">Razón Social:</p>
-                        </div>
-                        <div class="col">
-                        <p id="razonSocial">@modelo.Entidad.RazonSocial</p>
-                        </div>                       
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-12 col-md-3">
-                            <p class="control texto">Tipo de Entidad:</p>
-                        </div>
-                        <div class="col">
-                        <p id="tipoEntidad">@modelo.Entidad.TipoEntidad</p>
-                        </div>
-                    </div>
-                </div>
+
+    <div class="container mt-2">
+            
+        <div class="card mx-auto  bg-light">
+            <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                Entidad
             </div>
-        
-            <!--Datos Personales -->
 
-       <div class="card mx-auto mt-4 ">
- 
+            <div class="card-body">
+                <EditForm Model="modelbusqueda">
+                    <FluentValidationValidator />
+                    <div class="row d-flex justify-content-center align-items-end position-relative">
+               
+                    <div class="col">
+                        <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
+                                <RadzenTextBox @bind-Value="modelbusqueda. NroCorrelativoNroCUIL" />
+                          
+                        </RadzenFormField>
+                            <ValidationMessage For="@(()=> modelbusqueda. NroCorrelativoNroCUIL)" />
+                    </div>
+
+                    <div class="col mt-4">
+                            <RadzenButton ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                    </div>
+                </div>
+                </EditForm>
+                @if(modelo is not null){
+                    <RadzenCard class="rz-background-color-primary-dark --rz-primary-darker rz-border-radius-20 rz-pt-8 rz-ps-8 rz-pe-8" style="margin-top:20px;">
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><strong>Detalles de Identidad</strong></RadzenText>
+                        <RadzenRow RowGap="0">
+                            <RadzenColumn SizeSM="4">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Correlativo</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@modelo.Entidad.Correlativo</b></RadzenText>
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Razón Social</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@modelo.Entidad.RazonSocial</b></RadzenText>
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Tipo de Entidad</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@modelo.Entidad.TipoEntidad</b></RadzenText>
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenCard>
+                }
+                
+
+            </div>
+        </div>
+
+        <!--Datos Personales -->
+
+        <div class="card mx-auto mt-4 mb-4  bg-light">
+
             <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                 Datos Personales
             </div>
-            
+
             @if (@entidadEncontrada)
             {
+               <EditForm Model="modelo">
+                <FluentValidationValidator />
+                
                 <div class="row ps-3 pt-3">
+                
                     <div class="form-group col">
-                        <label for="location">Domicilio</label>
-                        <input type="text" @bind=@modelo.Entidad.Domicilio class="form-control" id="domicilio" placeholder="Domicilio" disabled="@tramiteIniciado">
-                        <small id="fechaError" class="text-danger">@domicilioError</small>
-
+                        <RadzenFormField Text="Domicilio" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelo.Entidad.Domicilio" Disabled="@tramiteIniciado" id="txtAddress" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @modelo.Entidad.Domicilio)" />
                     </div>
+                     
 
                     <div class="col mt-4">
                         <div class="form-check">
@@ -159,100 +130,46 @@
 
                 <div class="row  ps-3 pt-3 pe-3">
                     <div class="col">
-                        <label for="domicilio">Fecha de inicio</label>
-                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" @bind=@modelo.FechaInicio disabled="@tramiteIniciado" />
-                        <small id="fechaError" class="text-danger">@fechaErrorInicio</small>
+                        <RadzenFormField Text="Fecha de Inicio" Style="width:100%">
+                            <RadzenDatePicker @bind-Value="@modelo.FechaInicio" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled="@tramiteIniciado" Placeholder="dd/mm/yyyy" />
+                        </RadzenFormField>
 
+                        <ValidationMessage For="@(()=> @modelo.FechaInicio)" />
                     </div>
                     <div class="col">
-                        <label for="domicilio">Fecha de Cierre</label>
-                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" @bind=@modelo.FechaDeCierre disabled="@tramiteIniciado" />
-                        <small id="fechaError" class="text-danger">@fechaErrorCierre</small>
+                        <RadzenFormField  Text="Fecha de Cierre" Style="width:100%">
+                            <RadzenDatePicker @bind-Value="@modelo.FechaDeCierre" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Disabled="@tramiteIniciado" Placeholder="dd/mm/yyyy" />
+                        </RadzenFormField>
+
+                        <ValidationMessage For="@(()=> @modelo.FechaDeCierre)" />
                     </div>
                 </div>
 
                 <div class="row  ps-3 pt-3 pe-3">
                     <div class="col mb-4">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" @bind=@modelo.Email data-bs-placement="top" disabled="@tramiteIniciado" />
-                        <small id="emailError" class="text-danger">@emailError</small>
+                        <RadzenFormField Text="Email" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelo.Email" Disabled="@tramiteIniciado" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @modelo.Email)" />
                     </div>
                 </div>
 
                 <div class="col mt-4 mb-4 d-flex justify-content-center">
-                    <button type="button" id="btnInit" class="btn btn-primary w-50 @(!entidadEncontrada || tramiteIniciado ? "btn-secondary" : "btn-primary")" @onclick="@IniciarTramites" disabled="@(!entidadEncontrada ||tramiteIniciado )">Iniciar trámite</button>
+                        <RadzenButton   ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=IniciarTramite Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
                 </div>
 
-             
-                
-           
-            }
-            else
-            {
-                <div class="row ps-3 pt-3">
-                    <div class="form-group col">
-                        <label for="location">Domicilio</label>
-                        <input type="text" class="form-control" id="domicilio" placeholder="Domicilio" disabled>
-
-                    </div>
-
-                    <div class="col mt-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" disabled>
-                            <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row  ps-3 pt-3 pe-3">
-                    <div class="col">
-                        <label for="domicilio">Fecha de inicio</label>
-                        <input type="date" id="fechaDeInicio" class="form-control" placeholder="Fecha de Inicio" disabled />
-                        <small id="fechaError" class="text-danger"></small>
-
-                    </div>
-                    <div class="col">
-                        <label for="domicilio">Fecha de Cierre</label>
-                        <input type="date" id="fechaDeCierre" class="form-control" placeholder="Fecha de Cierre" disabled />
-                        <small id="fechaError" class="text-danger"></small>
-                    </div>
-                </div>
-
-                <div class="row  ps-3 pt-3 pe-3">
-                    <div class="col mb-4">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control" required data-bs-toggle="tooltip" data-bs-placement="top" disabled />
-                        <small id="emailError" class="text-danger"></small>
-                    </div>
-                </div>
-
+                </EditForm>
                
-                <div class="col mt-4 mb-4 d-flex justify-content-center">
-                    <button type="button" id="btnInit" class="btn btn-secondary w-50" disabled>Iniciar Trámite</button>
-                </div>
-        
             }
-
-             
-             </div>
+                          
         </div>
-     
+    </div>
     </body>
-    
-
 </html>
 
 @code {
-
-
-    private string busquedaError = "";
-    private string emailError = "";
-    private string fechaErrorInicio = "";
-    private string fechaErrorCierre = "";
-    private string domicilioError = "";
-
+    private BusquedaEntidadRequest modelbusqueda = new();
     private bool entidadEncontrada;
-    private string idSession = "";
     public static bool isActive = false;
 
 
@@ -268,6 +185,7 @@
     //[Parameter]
     public string? sesion { get; set; }
 
+    [Parameter] public string? RazonSocial { get; set; }
 
     [Parameter] public string? TipoEntidad { get; set; }
     // [Parameter] public string? RazonSocial { get; set; }
@@ -298,7 +216,7 @@
         try
         {
             sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
-            
+
             if(sesionId == null)
             {
                 var sesionRespuesta = await sesionService.getNewSession();
@@ -345,10 +263,10 @@
                 }
 
                 StateHasChanged();
-                
+
             }
 
-           
+
 
         }
 
@@ -364,7 +282,7 @@
     }
 
 
-    
+
 
 
 
@@ -376,198 +294,124 @@
 
         if (modelo != null)
         {
-            if (string.IsNullOrEmpty(modelo.Entidad.Correlativo))
+            BusquedaEntidadValidator busquedavalidator = new BusquedaEntidadValidator();
+            ValidationResult result = busquedavalidator.Validate(modelbusqueda);
+
+            if (result.IsValid)
             {
-                busquedaError = "El campo no puede estar vacío";
-                return;
-            }
 
-            if (int.TryParse(modelo.Entidad.Correlativo, out numericNroCorrelativo))
-            {
-                busquedaError = "";
-
-
-                try
+                if (int.TryParse(modelbusqueda.NroCorrelativoNroCUIL, out numericNroCorrelativo))
                 {
-                    await ShowLoadingModal();
-
-                    var response = await busquedaSociedadService.findSociedad(modelo.Entidad.Correlativo);
-
-                    if (response != null)
+                    try
                     {
-                        modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
-                        modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
+                         await ShowBusyDialog();
 
-                        TipoEntidad = response.Result.TipoEntidad;
-                        //   RazonSocial = response.Result.RazonSocial;
 
-                        entidadEncontrada = true;
+                        var response = await busquedaSociedadService.findSociedad(modelbusqueda.NroCorrelativoNroCUIL);
 
+                        if (response != null)
+                        {
+                            modelo.Entidad.Correlativo = response.Result.NroCorrelativo  ;
+                            modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
+                            modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
+                            
+                            TipoEntidad = response.Result.TipoEntidad;
+                            //   RazonSocial = response.Result.RazonSocial;
+
+                            entidadEncontrada = true;
+
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
-                }
-                finally
-                {
-                    await HideLoadingModal();
-                    StateHasChanged();
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
+                    }
+                        StateHasChanged();
+
                 }
 
-            } 
+            }
             else
             {
-                busquedaError = "El campo tiene que ser numérico";
+                modelo = new CaratulaDto();
             }
-        }
-        else
-        {
-            modelo = new CaratulaDto();    
-        }
+
+            }
+           
 
     }
 
-    private async Task IniciarTramites()
+    private async Task IniciarTramite()
     {
 
-        await ShowLoadingModal();
+        await ShowBusyDialog();
 
         try
         {
-            if (checkData())
-            {
+           
                 sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
                 modelo.SesionId = sesionId;
-                var rsp = await caratulaService.insertCaratula(modelo);
 
-                if (rsp.IsSuccess)
+                CaratulaValidator caratulaValidator = new();
+                ValidationResult result = caratulaValidator.Validate(modelo);
+
+                if (result.IsValid)
                 {
-                  
-                   
-                    isActive = true;
-                    tramiteIniciado = true;
+                    var rsp = await caratulaService.insertCaratula(modelo);
 
-                  
-                    StateHasChanged();
+                    if (rsp.IsSuccess)
+                    {
+
+
+                        isActive = true;
+                        tramiteIniciado = true;
+
+
+                        StateHasChanged();
+                    }
                 }
-            }
-
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: IniciarTramites {ex.Message}");
         }
-        finally
-        {
-            await HideLoadingModal();
+
             StateHasChanged();
-        }
-
 
     }
 
-    private bool checkData()
+   
+
+
+    async Task ShowBusyDialog()
     {
-        if (modelo.Entidad.Domicilio != null)
-        {
-            domicilioError = "";
-        }
-        else
-        {
-            domicilioError = "El campo no puede estar vacío";
-            return false;
-        }
-
-
-        if (modelo.FechaInicio != null)
-        {
-            fechaErrorInicio = "";
-        }
-        else
-        {
-            fechaErrorInicio = "Seleccioná la fecha correspondiente";
-            return false;
-        }
-
-        if (modelo.FechaDeCierre != null)
-        {
-            fechaErrorCierre = "";
-        }
-        else
-        {
-            fechaErrorCierre = "Seleccioná la fecha correspondiente";
-            return false;
-        }
-
-
-
-        if (modelo.FechaInicio != null && modelo.FechaDeCierre != null)
-        {
-            if (modelo.FechaInicio.Value == modelo.FechaDeCierre.Value)
-            {
-                fechaErrorInicio = "Ambas fechas son iguales";
-                fechaErrorCierre = "Ambas fechas son iguales";
-
-                return false;
-            }
-            else
-            {
-                if (modelo.FechaInicio.Value < modelo.FechaDeCierre.Value)
-                {
-                    fechaErrorInicio = "";
-                    fechaErrorCierre = "";
-
-                }
-                else
-                {
-                    fechaErrorInicio = "La fecha de inicio tiene que ser menor a la fecha del cierre"; 
-
-                    return false;    
-                }
-
-            }
-        }
-
-        if (modelo.Email != null)
-        {
-            emailError = "";
-            if (Validator.IsEmail(modelo.Email))
-            {
-                emailError = "";
-            }
-            else
-            {
-                emailError = "Ingresa tu mail correcto";
-                return false;
-            }
-
-        }
-        else
-        {
-            emailError = "El campo no puede esta vacio";
-            return false;
-        }
-
-        emailError = "";
-        domicilioError = "";
-        fechaErrorCierre = "";
-        fechaErrorInicio = "";
-        return true;    
-    }
-
-
-    // Método para mostrar el modal de carga
-    private Task ShowLoadingModal()
+        InvokeAsync(async () =>
     {
-        return modalRef.Show();
+        // Simulate background task
+        await Task.Delay(2000);
+
+        // Close the dialog
+        dialogService.Close();
+    });
+
+
+
+        await BusyDialog();
+
     }
 
-    // Método para ocultar el modal de carga
-    private Task HideLoadingModal()
+    // Busy dialog from markup
+    async Task BusyDialog()
     {
-        return modalRef.Hide();
+        await dialogService.OpenAsync("", ds =>
+    @<RadzenStack AlignItems="AlignItems.Center" Gap="2rem" Class="rz-p-12">
+        <RadzenImage Path="img/community.svg" Style="width: 200px;" AlternateText="community" />
+        <RadzenText TextStyle="TextStyle.H6">Cargando...</RadzenText>
+    </RadzenStack>, new DialogOptions() { ShowTitle = false, Style = "min-height:auto;min-width:auto;width:auto", CloseDialogOnEsc = false });
     }
+
+
+
 
 
 }

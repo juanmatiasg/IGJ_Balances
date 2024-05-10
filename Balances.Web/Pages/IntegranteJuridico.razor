@@ -3,6 +3,7 @@
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
 
 @inject ISociosClientService socioService;
 @inject IBalanceClientService balanceService
@@ -44,42 +45,44 @@
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-md-6">
-                <form class="card">
-                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                        Datos del Integrante
+                <EditForm Model="modelPersonaJuridica" class="card">
+                    <FluentValidationValidator />
+                    <div class="form-group mt-2">
+                        <RadzenFormField Text="Denominacion" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.Denominacion" />
+                        </RadzenFormField>
+
+                        <ValidationMessage For="@(()=> modelPersonaJuridica.Denominacion)" />
                     </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Denominación</label>
-                            <input type="text" class="form-control" @bind="modelPersonaJuridica.Denominacion">
-                            <small id="msgError" class="text-danger">@msgErrorDenominacion</small>
+                    
+                        <div class="form-group mt-2">
+                            <RadzenFormField Text="Nro. de CUIL/CUIT" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.NroFiscal" />
+                            </RadzenFormField>
 
-                        </div>
-                        <div class="form-group">
-                            <label>Nro. de Identificación Fiscal</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.NroFiscal">
-                            <small id="msgError" class="text-danger">@msgErrorCuit</small>
-
+                        <ValidationMessage For="@(()=> @modelPersonaJuridica.NroFiscal)" />
                         </div>
 
-                        <div class="form-group">
-                            <label>Cuotas</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Cuotas">
-                            <small id="msgError" class="text-danger">@msgErrorCuotas</small>
+                        <div class="form-group mt-2">
+                            <RadzenFormField Text="Cuotas" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.Cuotas" />
+                            </RadzenFormField>
 
+                        <ValidationMessage For="@(()=> @modelPersonaJuridica.Cuotas)" />
                         </div>
-                        <div class="form-group">
-                            <label>Votos</label>
-                            <input type="text" class="form-control" id="accionistaNombre" @bind="modelPersonaJuridica.Votos">
-                            <small id="msgError" class="text-danger">@msgErrorVotos</small>
+                        <div class="form-group mt-2">
+                            <RadzenFormField Text="Votos" Style="width:100%">
+                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.Votos" />
+                            </RadzenFormField>
 
+                        <ValidationMessage For="@(()=> @modelPersonaJuridica.Votos)" />
                         </div>
-                        <!-- Rest of the form content -->
-                        <div class="form-group text-center mt-4">
-                            <button type="button" class="btn btn-primary w-100" @onclick="addPersonaJuridica">Agregar</button>
-                        </div>
+
+                        <RadzenStack class="d-flex justify-content-center mt-2">
+                        <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@addPersonaJuridica" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
+                        </RadzenStack>
+                </EditForm>|
                     </div>
-                </form>
             </div>
             <div class="col-md-6">
                 <!-- Lista de Integrantes -->
@@ -122,7 +125,7 @@
             </div>
 
         </div>
-    </div>
+    
 
 
 
@@ -203,26 +206,27 @@
 
     private async Task<ResponseDTO<BalanceDto>> addPersonaJuridica()
     {
-        if (checkData())
-        {
+        
             ResponseDTO<BalanceDto> respuesta = new();
 
             try
             {
-                modelPersonaJuridica.SesionId = sesionId;
+
+            modelPersonaJuridica.SesionId = sesionId;
+
+            PersonaJuridicaValidator personaJuridicaValidator = new();
+            ValidationResult result = personaJuridicaValidator.Validate(modelPersonaJuridica);
+
+            if (result.IsValid)
+            {
                 respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
-
-
                 if (respuesta.IsSuccess)
                 {
-
                     resultPersonaJuridica(respuesta.Result.Socios.PersonasJuridicas);
-
                     // Limpiar los campos después de una inserción exitosa
                     cleanInputsJuridica();
-
-
                 }
+            }
 
             }
             catch (Exception ex)
@@ -230,11 +234,7 @@
                 respuesta.Message = ex.Message;
             }
             return respuesta;
-        }
-        else
-        {
-            return null;    
-        }
+       
     }
 
     private void cleanInputsJuridica()
@@ -272,102 +272,5 @@
         return respuesta;
     }
 
-    private bool checkData()
-    {
-
-
-        // Apellido
-        if (!string.IsNullOrEmpty(modelPersonaJuridica.Denominacion))
-        {
-            if (Validator.IsNumeric(modelPersonaJuridica.Denominacion))
-            {
-                msgErrorDenominacion = "No puedes ingresar un valor numérico";
-                return false;
-            }
-            else
-            {
-                msgErrorDenominacion = "";
-            }
-        }
-        else
-        {
-            msgErrorDenominacion = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-        // Nro id Fiscal
-        if (!string.IsNullOrEmpty(modelPersonaJuridica.NroFiscal))
-        {
-            if (!Validator.IsNumeric(modelPersonaJuridica.NroFiscal))
-            {
-                msgErrorCuit = "No puedes ingresar caracteres";
-                return false;
-            }
-            else
-            {
-                msgErrorCuit = "";
-            }
-        }
-        else
-        {
-            msgErrorCuit = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-
-
-        // Cuotas
-        if (!string.IsNullOrEmpty(modelPersonaJuridica.Cuotas))
-        {
-            if (!Validator.IsNumeric(modelPersonaJuridica.Cuotas))
-            {
-                msgErrorCuotas = "No puedes ingresar caracteres";
-                return false;
-            }
-            else
-            {
-                msgErrorCuotas = "";
-            }
-        }
-        else
-        {
-            msgErrorCuotas = "El campo no puede estar vacio";
-            return false;
-        }
-
-        // Votos
-        if (!string.IsNullOrEmpty(modelPersonaJuridica.Votos))
-        {
-            if (!Validator.IsNumeric(modelPersonaJuridica.Votos))
-            {
-                msgErrorVotos = "No puedes ingresar caracteres";
-                return false;
-            }
-            else
-            {
-                msgErrorVotos = "";
-            }
-        }
-        else
-        {
-            msgErrorVotos = "El campo no puede estar vacio";
-            return false;
-        }
-
-
-
-
-
-        // Si todos los campos pasan la validación, devuelve true
-
-        msgErrorDenominacion = "";
-        msgErrorCuit = "";
-        msgErrorCuotas = "";
-        msgErrorVotos = "";
-
-        return true;
-    }
 }
 
