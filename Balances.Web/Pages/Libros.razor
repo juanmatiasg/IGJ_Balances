@@ -13,7 +13,6 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
-
     <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Libros" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <div class="container-fluid mt-2 mb-4">
@@ -22,30 +21,27 @@
                 Datos de Libros
             </div>
 
-            <div class="card-body" >
-              
-                <Libro libroP="modelo.Memoria" OnBlur="() => HandleBlur(modelo.Memoria)"></Libro>
-                <Libro libroP="modelo.Administracion" OnBlur="() => HandleBlur(modelo.Administracion)"></Libro>
-                <Libro libroP="modelo.Asamblea" OnBlur="() => HandleBlur(modelo.Asamblea)"></Libro>
-                <Libro libroP="modelo.SituacionPatrimonial" OnBlur="() => HandleBlur(modelo.SituacionPatrimonial)"></Libro>
-                <Libro libroP="modelo.Resultados" OnBlur="() => HandleBlur(modelo.Resultados)"></Libro>
-                <Libro libroP="modelo.PatrimonioNeto" OnBlur="() => HandleBlur(modelo.PatrimonioNeto)"></Libro>
-                <Libro libroP="modelo.Efectivo" OnBlur="() => HandleBlur(modelo.Efectivo)"></Libro>
-                <Libro libroP="modelo.Informacion" OnBlur="() => HandleBlur(modelo.Informacion)"></Libro>
-                <Libro libroP="modelo.EstadosContablesConsolidados" OnBlur="() => HandleBlur(modelo.EstadosContablesConsolidados)"></Libro>
-                <Libro libroP="modelo.Fiscalizacion" OnBlur="() => HandleBlur(modelo.Fiscalizacion)"></Libro>
-                <Libro libroP="modelo.Auditor" OnBlur="() => HandleBlur(modelo.Auditor)"></Libro>
-                <Libro libroP="modelo.AsistenciaAsamblea" OnBlur="() => HandleBlur(modelo.AsistenciaAsamblea)"></Libro>
-                <Libro libroP="modelo.IVA" OnBlur="() => HandleBlur(modelo.IVA)"></Libro>
-                <Libro libroP="modelo.IVACompras" OnBlur="() => HandleBlur(modelo.IVACompras)"></Libro>
-                <Libro libroP="modelo.IVAVentas" OnBlur="() => HandleBlur(modelo.IVAVentas)"></Libro>                           
-
-            </div>
+                <Libro libroP="modelo.Memoria" OnBlur="() => HandleChange(modelo.Memoria)"></Libro>
+                <Libro libroP="modelo.Administracion" OnBlur="() => HandleChange(modelo.Administracion)"></Libro>
+                <Libro libroP="modelo.Asamblea" OnBlur="() => HandleChange(modelo.Asamblea)"></Libro>
+                <Libro libroP="modelo.SituacionPatrimonial" OnBlur="() => HandleChange(modelo.SituacionPatrimonial)"></Libro>
+                <Libro libroP="modelo.Resultados" OnBlur="() => HandleChange(modelo.Resultados)"></Libro>
+                <Libro libroP="modelo.PatrimonioNeto" OnBlur="() => HandleChange(modelo.PatrimonioNeto)"></Libro>
+                <Libro libroP="modelo.Efectivo" OnBlur="() => HandleChange(modelo.Efectivo)"></Libro>
+                <Libro libroP="modelo.Informacion" OnBlur="() => HandleChange(modelo.Informacion)"></Libro>
+                <Libro libroP="modelo.EstadosContablesConsolidados" OnBlur="()=> HandleChange(modelo.EstadosContablesConsolidados)"></Libro>
+                <Libro libroP="modelo.Fiscalizacion" OnBlur="() => HandleChange(modelo.Fiscalizacion)"></Libro>
+                <Libro libroP="modelo.Auditor" OnBlur="() => HandleChange(modelo.Auditor)"></Libro>
+                <Libro libroP="modelo.AsistenciaAsamblea" OnBlur="() => HandleChange(modelo.AsistenciaAsamblea)"></Libro>
+                <Libro libroP="modelo.IVA" OnBlur="() => HandleChange(modelo.IVA)"></Libro>
+                <Libro libroP="modelo.IVACompras" OnBlur="() => HandleChange(modelo.IVACompras)"></Libro>
+                <Libro libroP="modelo.IVAVentas" OnBlur="()=> HandleChange(modelo.IVAVentas)"></Libro>  
 
 
-        </div>
-      
-    </div>
+         </div>
+
+
+     </div>
 
 
 

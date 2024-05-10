@@ -31,6 +31,8 @@ namespace Balances.Web.Pages
         private string msgErrormsgErrorFolioUltimaRegistracion = "";
         private const string ESTADO_CONTABLE = "Estados Contables Consolidados";
         private const string INFORME_ORGANO = "Informe Organo Fiscalización";
+        
+        
         [Parameter]
         public LibroDto libroP
         {
@@ -46,6 +48,8 @@ namespace Balances.Web.Pages
         }
 
         private LibroDtoExtended libext = new LibroDtoExtended();
+
+
         [Parameter]
         public bool NoSabeONoConstesta { get; set; }
 
@@ -55,9 +59,10 @@ namespace Balances.Web.Pages
         private async Task OnBlurHandler()
         {
             await OnBlur.InvokeAsync(libroP);
+            
             if (checkData())
             {
-                await OnBlur.InvokeAsync(libroP);
+                 await OnBlur.InvokeAsync(libroP);
             }
         }
 

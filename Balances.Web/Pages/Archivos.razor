@@ -46,17 +46,16 @@
 
 
                     <RadzenStack class="mt-2 mb-2">
-                        <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
+                        <RadzenFormField Text="Seleccionar un tipo de archivo">
                             <RadzenDropDown @bind-Value=@archivo.Categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
                         </RadzenFormField>
                         <small id="msgError" class="text-danger">@msgErrorTipoArchivo</small>
                     </RadzenStack>
 
-
                     <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Drag and drop files to upload</RadzenText>
-                    <RadzenUpload id="ddUpload" @ref="upload" ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true" Url="Archivo/InsertArchivos" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
-                                  Progress=  "@(args =>  OnProgress(args, "Drag and drop files to upload"))" class="w-100" />
-                    <RadzenButton Text="Upload" Click=@(args => upload.Upload()) class="d-block mt-4" />
+                    <RadzenUpload id="ddUpload" @ref="upload" Url="https://localhost:7172/Archivo/InsertArchivos" ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true" 
+                                  Progress="@OnProgress" class="w-100" />
+                    <RadzenButton Icon="upload" Style="width:100%" Text="Upload" Click="UploadFiles" class="d-block mt-4" />
 
                           
 

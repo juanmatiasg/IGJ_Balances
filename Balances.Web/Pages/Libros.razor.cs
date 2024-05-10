@@ -29,6 +29,8 @@ namespace Balances.Web.Pages
     public partial class Libros
     {
         private LibrosDto modelo = new LibrosDto();
+        
+        
         [Parameter]
         public string? TipoEntidad { get; set; }
 
@@ -44,7 +46,10 @@ namespace Balances.Web.Pages
             base.OnInitialized();
         }
 
-        private async Task HandleBlur(LibroDto libro)
+
+    
+
+        private async Task HandleChange(LibroDto libro)
         {
             // Encuentra el libro correspondiente en el modelo y actualiza sus valores
             if (libro != null)

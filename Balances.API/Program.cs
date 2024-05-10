@@ -96,8 +96,9 @@ try
     {
         options.AddPolicy("NuevaPolitica", app =>
         {
-            app.AllowAnyOrigin().
+            app.WithOrigins("https://localhost:7052").
             AllowAnyHeader()
+            .AllowCredentials()
              .SetIsOriginAllowedToAllowWildcardSubdomains()
              .WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")
              .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));

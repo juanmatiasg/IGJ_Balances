@@ -69,7 +69,7 @@ namespace Balances.Web.Pages
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
                     sesionId = sesionRespuesta.Result;
-                    sessionStorage.SetItemAsync("SessionId", sesionId);
+                    await sessionStorage.SetItemAsync("SessionId", sesionId);
                 }
                 else
                 {

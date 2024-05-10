@@ -5,8 +5,139 @@
 @using Balances.Utilities;
 
 
+@if (libext.Tipo.Equals(ESTADO_CONTABLE) || libext.Tipo.Equals(INFORME_ORGANO))
+{
+    if (!libext.Original.NoSabeNoContesta)
+    {
+        <div class="row d-flex justify-content-center">
+
+            <div class="col-md-2 mt-1">
+                <label>@libext.Tipo</label>
+            </div>
+            <div class="col-md-2 mt-1">
+                <input placeholder="Nombre del Libro" class="form-control" @bind="libext.Nombre" @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrorNombre</small>
+            </div>
+
+            <div class="col-md-1  mt-1">
+                <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
+            </div>
+
+            <div class="col-md-1  mt-1">
+                <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
+            </div>
+
+            <div class="col-md-1  mt-1">
+                <input placeholder="Folio" class="form-control" @bind=libext.FolioObraTranscripcion @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrorFolio</small>
+            </div>
+
+            <div class="col-md-1  mt-1">
+                <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
+
+            </div>
 
 
+            <div class="col-md-1  mt-1">
+                <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
+            </div>
+
+            <div class="col-md-1 mt-1">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" @onblur="OnBlurHandler" />
+                    <label class="form-check-label">N/C</label>
+                </div>
+            </div>
+            <small id="msgError" class="text-danger"></small>
+        </div>
+    }
+    else
+    {
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-2 mt-1">
+                <label>@libext.Tipo</label>
+            </div>
+            <div class="col-md-2 mt-1">
+                <input placeholder="N/C" @bind="libext.Nombre" class="form-control" disabled @onblur="OnBlurHandler" />
+            </div>
+            <div class="col-md-1  mt-1">
+                <input placeholder="N/C" @bind=libext.NumeroRubrica class="form-control" disabled @onblur="OnBlurHandler" />
+            </div>
+            <div class="col-md-1  mt-1">
+                <input type="date" placeholder="N/C" @bind=libext.FechaRubrica class="form-control" disabled @onblur="OnBlurHandler" />
+            </div>
+            <div class="col-md-1  mt-1">
+                <input placeholder="N/C" @bind=libext.FolioObraTranscripcion class="form-control" disabled @onblur="OnBlurHandler" />
+            </div>
+            <div class="col-md-1  mt-1">
+                <input type="date" @bind=libext.FechaUltimaRegistracion placeholder="N/C" class="form-control" disabled @onblur="OnBlurHandler" />
+            </div>
+
+
+            <div class="col-md-1  mt-1">
+                <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" disabled />
+                <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
+            </div>
+
+            <div class="col-md-1 mt-1">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" @onblur="OnBlurHandler" />
+                    <label class="form-check-label">N/C</label>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="row d-flex justify-content-center">
+
+        <div class="col-md-2 mt-1">
+            <label>@libext.Tipo</label>
+        </div>
+        <div class="col-md-2 mt-1">
+            <input placeholder="Nombre del Libro" class="form-control" @bind="libext.Nombre" @onblur="OnBlurHandler" />
+            <small id="msgError" class="text-danger">@msgErrorNombre</small>
+        </div>
+
+        <div class="col-md-1  mt-1">
+            <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
+            <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
+        </div>
+
+        <div class="col-md-1  mt-1">
+            <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind="libext.FechaRubrica" @onblur="OnBlurHandler" />
+            <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
+        </div>
+
+        <div class="col-md-1  mt-1">
+            <input placeholder="Folio" class="form-control" @bind=libext.FolioObraTranscripcion @onblur="OnBlurHandler" />
+            <small id="msgError" class="text-danger">@msgErrorFolio</small>
+        </div>
+
+        <div class="col-md-1  mt-1">
+            <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
+            <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
+
+        </div>
+
+        <div class="col-md-1  mt-1">
+            <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
+            <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
+        </div>
+
+        <div class="col-md-1 mt-1">
+        </div>
+
+    </div>
+}
+
+
+<!--
 <div class="row d-flex justify-content-center">
     <div class="col-md-2 mt-1">
         <label>@libext.Tipo</label>
@@ -98,90 +229,4 @@
         </div>
     }
 </div>
-
-<!--
-
-    <div class="row d-flex justify-content-center">
-
-        <div class="col-md-2 mt-1">
-            <label>@libext.Tipo</label>
-        </div>
-        <div class="col-md-2 mt-1">
-            <input placeholder="Nombre del Libro" class="form-control" @bind="libext.Nombre" @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorNombre</small>
-        </div>
-
-        <div class="col-md-1  mt-1">
-            <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
-        </div>
-
-        <div class="col-md-1  mt-1">
-            <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
-        </div>
-
-        <div class="col-md-1  mt-1">
-            <input placeholder="Folio" class="form-control" @bind=libext.FolioObraTranscripcion @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorFolio</small>
-        </div>
-
-        <div class="col-md-1  mt-1">
-            <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
-
-        </div>
-
-
-        <div class="col-md-1  mt-1">
-            <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
-        </div>
-
-        <div class="col-md-1 mt-1">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" @onblur="OnBlurHandler" />
-                <label class="form-check-label">N/C</label>
-            </div>
-        </div>
-        <small id="msgError" class="text-danger"></small>
-    </div>
-}
-else
-{
-    <div class="row d-flex justify-content-center">
-        <div class="col-md-2 mt-1">
-            <label>@libext.Tipo</label>
-        </div>
-        <div class="col-md-2 mt-1">
-            <input placeholder="N/C" @bind="libext.Nombre" class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-        <div class="col-md-1  mt-1">
-            <input placeholder="N/C" @bind=libext.NumeroRubrica class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-        <div class="col-md-1  mt-1">
-            <input type="date" placeholder="N/C" @bind=libext.FechaRubrica class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-        <div class="col-md-1  mt-1">
-            <input placeholder="N/C" @bind=libext.FolioObraTranscripcion class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-        <div class="col-md-1  mt-1">
-            <input type="date" @bind=libext.FechaUltimaRegistracion placeholder="N/C" class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-
-
-        <div class="col-md-1  mt-1">
-            <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler"  disabled/>
-            <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
-        </div>
-
-        <div class="col-md-1 mt-1">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" @onblur="OnBlurHandler" />
-                <label class="form-check-label">N/C</label>
-            </div>
-        </div>
-    </div>
-}
 -->
-

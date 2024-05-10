@@ -25,13 +25,12 @@
 
 <!--Navegacion-->
 
-<Navegacion Entidad="@($"{TipoEntidad}")" TipoDeBalance="@($"{RazonSocial}")" PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
+<Navegacion PaginaActiva="Caratula" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
 
 <!--Loading-->
 <RadzenDialog />
 
 
-<!---------------------------------------------------------------->
 <!--Entidad-->
 
 
@@ -186,6 +185,7 @@
 
 @code {
 
+
     private string busquedaError = "";
     private string emailError = "";
     private string fechaErrorInicio = "";
@@ -207,8 +207,8 @@
     public string? sesion { get; set; }
 
 
-    [Parameter] public string? TipoEntidad { get; set; }
-    [Parameter] public string? RazonSocial { get; set; }
+     public static string? TipoEntidad { get; set; }
+     public static string? RazonSocial { get; set; }
 
     private bool tramiteIniciado = false;
 
@@ -231,7 +231,7 @@
     }
 
 
-    
+
 
     private async Task Load()
     {
@@ -272,8 +272,11 @@
                         modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
                         modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
 
+                        //MainLayout.RazonSocial = caratula.Entidad.RazonSocial;
+                        //MainLayout.TipoEntidad = caratula.Entidad.TipoEntidad;
+
                         TipoEntidad = caratula.Entidad.TipoEntidad;
-                        //  RazonSocial = caratula.Entidad.RazonSocial;
+                        RazonSocial = caratula.Entidad.RazonSocial;
 
 
                         entidadEncontrada = true;
@@ -336,14 +339,24 @@
 
                     if (response != null)
                     {
-                        
-                        modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
+
+                        modelo.Entidad.RazonSocial = response.Result!.RazonSocial ?? "Entidad no encontrada";
                         modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
 
+
+
+                        //MainLayout.RazonSocial = response.Result.TipoEntidad;
+                        //MainLayout.TipoEntidad = response.Result.TipoEntidad;
+
+                  
                         TipoEntidad = response.Result.TipoEntidad;
-                        RazonSocial = response.Result.RazonSocial;
+                        RazonSocial = response.Result.TipoEntidad;
          
                         entidadEncontrada = true;
+
+
+                        StateHasChanged();
+
 
                     }
                 }
@@ -353,8 +366,6 @@
                 }
                
                   
-                    StateHasChanged();
-                
 
             } 
             else
