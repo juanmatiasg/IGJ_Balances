@@ -11,11 +11,11 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" TramiteIniciado=true PaginaActiva="Integrante" balid="@balid"></Navegacion>
+    <Navegacion TramiteIniciado=true PaginaActiva="Integrante" balid="@balid"></Navegacion>
 
-    
+
     <div class="container-fluid mt-4">
-        <NavegacionIntegrantes PaginaActiva="Integrante"  balid="@balid"></NavegacionIntegrantes>
+        <NavegacionIntegrantes PaginaActiva="Integrante" TramiteIniciado=true  balid="@balid"></NavegacionIntegrantes>
     </div>
 
     <!-- Formulario de Datos del Integrante -->

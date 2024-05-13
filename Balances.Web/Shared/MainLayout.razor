@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Reflection;
+@inherits LayoutComponentBase
 
 <!DOCTYPE html>
 <html lang="en">
@@ -26,44 +27,56 @@
 <body>
     <div class="page">
         <main>
+            <header class=" d-flex text-white px-5  rounded-bottom-3 barraNav" style="background-color:#1b2a4a; height:100px;">
+                <a><img src="img/logo.png" style="height:190px; width:192px; z-index:2" alt="Alternate Text" /></a>
+                <div class="d-flex w-100 align-items-end gap-5 justify-content-around">
+                    @if (NroCorrelativo != null)
+                    {
+                        <p class="fw-bold">Correlativo: @NroCorrelativo</p>
+                        <p class="fw-bold">Denominación: @RazonSocial @TipoEntidad</p>
+                        <p class ="fw-bold">Fecha de Cierre:@FechaDeCierre</p>
+                    }
 
-              
-            <header class="d-flex justify-content-center" style="background-color:#1b2a4a">
+                </div>
+            </header>
+            <!--  
+            <header style="background-color:#1b2a4a">
 
 
                 <div class="col-md-5">
-                    <RadzenStack>                    
-                    </RadzenStack>
-                </div>
-             
-
-
-                <div class="col-md-5 d-flex justify-content-center align-items-center">
                     <RadzenStack>
                         <a class="nav-link">
                             <img src="img\logo_IGJ_4---copia.png" width="150" height="150" alt="Icono 1">
                         </a>
+                      
 
                     </RadzenStack>
 
                 </div>
 
-                <div class="col-md-5 justify-content-center">
+                <div class="col-md-5 ">
+                    <RadzenStack>
+                      
+
+
+                    </RadzenStack>
+
+                </div>
+
+
+                <div class="col-md-5">
                     <ContextBalance Entidad="@TipoEntidad" RazonSocial="@RazonSocial"></ContextBalance>
                 </div>
 
-            </header>
+            </header>-->
+            <RadzenStack class="rz-background-color-base-200" >
+                @Body
+            </RadzenStack>
 
 
-                <RadzenStack class="rz-background-color-base-200">
-                    @Body
-                </RadzenStack>
-                
-                <div>
-                    <footer class="py-3 my-4 d-flex justify-content-center flex-row align-items-center" style=" background-color:#1b2a4a">
-                        <p class="text-center text-muted" style="color:#FFF">© 2024 Inspección General de Justicia</p>
-                    </footer> 
-                </div>
+            <footer style="background-color:#121B3A;"  class="w-100  d-flex justify-content-center mt-1 p-4 rounded-top-3">
+                <img src="./img/logoFooter.png" style="width:300px; height:auto;" alt="Alternate Text" />
+            </footer>
 
            
         </main>
@@ -73,11 +86,10 @@
 </html>
 
 @code{
+
+
+    [Parameter] public static string? NroCorrelativo { get; set; }
     [Parameter] public  static string? TipoEntidad { get; set; }
     [Parameter] public  static string? RazonSocial { get; set; }
- 
-
-
+    [Parameter] public static DateTime FechaDeCierre { get; set; }
 }
-
- 
