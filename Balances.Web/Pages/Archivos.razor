@@ -39,23 +39,30 @@
             <!-- Tarjeta: Enviar Archivos -->
             <div class="col mt-4">
                 <div class="card">
-                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                        Enviar Archivos
+                    <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
+                        Enviar Documento
                     </div>
+                 
                     <div class="card-body">
-
 
                     <RadzenStack class="mt-2 mb-2">
                         <RadzenFormField Text="Seleccionar un tipo de archivo">
-                            <RadzenDropDown @bind-Value=@archivo.Categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
+                            <RadzenDropDown @bind-Value=@categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
                         </RadzenFormField>
                         <small id="msgError" class="text-danger">@msgErrorTipoArchivo</small>
                     </RadzenStack>
 
-                    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Drag and drop files to upload</RadzenText>
-                    <RadzenUpload id="ddUpload" @ref="upload" Url="https://localhost:7172/Archivo/InsertArchivos" ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true" 
+                    <RadzenCard>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Drag and drop files to upload</RadzenText>
+                        <RadzenUpload id="ddUpload" @ref="uploadDD" ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true" Url="Archivo/InsertArchivos" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
+                                      Progress=@(args => OnProgress(args, "Drag and drop files to upload")) class="w-100" />
+                        <RadzenButton Text="Upload" Click=@(args => uploadDD.Upload()) class="d-block mt-4" />
+                    </RadzenCard>
+
+                   <!-- <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Drag and drop files to upload</RadzenText>
+                    <RadzenUpload id="ddUpload" @ref="upload" Url="Archivo/InsertArchivos" method=RequestMethod.POST ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true"
                                   Progress="@OnProgress" class="w-100" />
-                    <RadzenButton Icon="upload" Style="width:100%" Text="Upload" Click="UploadFiles" class="d-block mt-4" />
+                    <RadzenButton Icon="upload" Style="width:100%" Text="Upload" Click="ddUpload.OnClientChange()" class="d-block mt-4" />-->
 
                           
 
@@ -89,9 +96,9 @@
             <!-- Tarjeta: Archivo Recibido -->
             <div class="col mt-4">
                 <div class="card">
-                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                        Archivo Recibido
-                    </div>
+                <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
+                    Documento Recibido
+                </div>
                     <div class="card-body">
                     <RadzenGrid Data="listArchivo" TItem="ArchivoDTO">
                         <Columns>

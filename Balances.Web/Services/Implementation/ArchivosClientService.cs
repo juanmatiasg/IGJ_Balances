@@ -24,13 +24,14 @@ namespace Balances.Web.Services.Contracts
         
             try
             {
+
                 using var response = await _httpClient.PostAsJsonAsync("Archivo/InsertArchivos", files);
 
                 response.EnsureSuccessStatusCode(); // Lanzará una excepción si la solicitud no tiene éxito (código de estado diferente de 2xx)
 
                 var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
 
-                if (result.IsSuccess)
+                if (result!.IsSuccess)
                 {
                     return new ResponseDTO<BalanceDto>
                     {
@@ -112,6 +113,8 @@ namespace Balances.Web.Services.Contracts
 
             try
             {
+            
+
                 // Crear una solicitud DELETE y adjuntar el objeto autoridad en el cuerpo (si es necesario)
                 var request = new HttpRequestMessage(HttpMethod.Delete, $"Archivo/DeleteArchivo");
                 request.Content = new StringContent(JsonConvert.SerializeObject(archivo), Encoding.UTF8, "application/json");
@@ -142,8 +145,19 @@ namespace Balances.Web.Services.Contracts
             return rsp;
         }
 
+        private async Task<byte[]> ToByteArrayAsync(Stream stream)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await stream.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
 
     }
+
+
 
 
 }

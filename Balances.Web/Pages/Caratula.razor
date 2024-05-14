@@ -33,7 +33,7 @@
 
 <!--Entidad-->
 
-<RadzenCard class="p-4 container mb-4 mt-2 d-flex rz-border-radius-6" Style="background-color:#30303030">
+
     <div class="container mt-2">
         <div class="card mx-auto  bg-light">
             <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
@@ -181,7 +181,7 @@
 
         </div>
     </div>
-</RadzenCard>
+
 
 
 @code{
@@ -220,13 +220,8 @@
     protected override async Task OnInitializedAsync()
     {
 
+
         await Load();
-
-        var initialValues = await SetInitialValues();
-        MainLayout.TipoEntidad = initialValues.TipoEntidad;
-        MainLayout.RazonSocial = initialValues.RazonSocial;
-
-
 
         await base.OnInitializedAsync();
     }
@@ -288,6 +283,11 @@
                         {
                             var resultCaratula = result.Caratula;
 
+                            MainLayout.TipoEntidad = resultCaratula.Entidad.TipoEntidad;
+                            MainLayout.RazonSocial = resultCaratula.Entidad.RazonSocial;
+                            MainLayout.NroCorrelativo = resultCaratula.Entidad.Correlativo;
+                            MainLayout.FechaDeCierre = resultCaratula.FechaDeCierre;
+
                             setPropertiesCaratula(resultCaratula);
 
                             entidadEncontrada = true;
@@ -334,10 +334,7 @@
         modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
         modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
 
-        MainLayout.TipoEntidad = caratula.Entidad.TipoEntidad;
-        MainLayout.RazonSocial = caratula.Entidad.RazonSocial;
-        MainLayout.NroCorrelativo = caratula.Entidad.Correlativo;
-        MainLayout.FechaDeCierre = caratula.FechaDeCierre;
+
     }
 
 
@@ -374,11 +371,7 @@
 
 
                         modelo.Entidad.RazonSocial = result!.RazonSocial ?? "Entidad no encontrada";
-                        modelo.Entidad.TipoEntidad = result.TipoEntidad;
-
-                        MainLayout.TipoEntidad = result.TipoEntidad;
-                        MainLayout.RazonSocial = result.RazonSocial;
-                        MainLayout.NroCorrelativo = result.NroCorrelativo;
+                        modelo.Entidad.TipoEntidad = result.TipoEntidad;                  
 
                         entidadEncontrada = true;
 
@@ -423,11 +416,17 @@
 
                 if (rsp.IsSuccess)
                 {
-                 
+                    var resultCaratula = rsp.Result.Caratula;
+
+                    MainLayout.TipoEntidad = resultCaratula.Entidad.TipoEntidad;
+                    MainLayout.RazonSocial = resultCaratula.Entidad.RazonSocial;
+                    MainLayout.NroCorrelativo = resultCaratula.Entidad.Correlativo;
+                    MainLayout.FechaDeCierre = resultCaratula.FechaDeCierre;
+
                     isActive = true;
                     tramiteIniciado = true;
 
-                  
+
                     StateHasChanged();
                 }
             }
@@ -437,10 +436,10 @@
         {
             Console.WriteLine($"Error: IniciarTramites {ex.Message}");
         }
-     
-        
-            StateHasChanged();
-        
+
+
+        StateHasChanged();
+
 
 
     }
@@ -535,27 +534,26 @@
     }
 
 
-   
 
-    async Task ShowBusyDialog()
+
+    private async Task ShowBusyDialog()
     {
-        InvokeAsync(async () =>
+         InvokeAsync(async () =>
         {
-    // Simulate background task
-    await Task.Delay(2000);
 
-    // Close the dialog
-    dialogService.Close();
+            await Task.Delay(2000);
+
+            dialogService.Close();
         });
 
         
         
-            await BusyDialog();
+       await BusyDialog();
         
     }
 
     // Busy dialog from markup
-    async Task BusyDialog()
+    private async Task BusyDialog()
     {
         await dialogService.OpenAsync("", ds =>
     @<RadzenStack AlignItems="AlignItems.Center" Gap="2rem" Class="rz-p-12">

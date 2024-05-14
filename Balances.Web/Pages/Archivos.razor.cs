@@ -44,15 +44,19 @@ namespace Balances.Web.Pages
             "Otro"
         };
 
+        private string categoria;
 
-        RadzenUpload upload = new RadzenUpload();
-        UploadProgressArgs args = new UploadProgressArgs();
+        RadzenUpload upload;
+        RadzenUpload uploadDD;
 
         int progress;
         bool showProgress;
         bool showComplete;
         string completionMessage;
         bool cancelUpload = false;
+
+       
+        UploadProgressArgs args = new UploadProgressArgs();
 
 
         [Parameter]
@@ -169,65 +173,9 @@ namespace Balances.Web.Pages
             return response;
         }
 
-        private async Task<byte[]> ToByteArrayAsync(Stream stream)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                await stream.CopyToAsync(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
+       
 
-
-
-
-
-
-        async Task OnProgress(UploadProgressArgs args)
-        {
-            this.args = args;
-            
-            try
-            {
-                if (this.args.Progress == 100)
-                {
-                    foreach (var file in this.args.Files)
-                    {
-                        if (file.Size > 0)
-                        {
-                            var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024)); // 20 MB
-                            var archivo = new ArchivoDTO(); // Crear una nueva instancia para cada archivo
-                            archivo.SesionId = sesionId;
-                            archivo.Tamaño = file.Size;
-                            archivo.ContentType = file.ContentType;
-                            archivo.NombreArchivo = file.Name;
-                            archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
-
-                            listArchivo.Add(archivo);
-                        }
-                        else
-                        {
-                            msgError = $"El archivo {file.Name} está vacío. Por favor, seleccione un archivo válido.";
-                        }
-                    }
-                    var response = await archivoService.UploadArchivo(listArchivo);
-                    if (response.IsSuccess)
-                    {
-                        StateHasChanged();
-                    }
-                    else
-                    {
-                        // Mostrar mensaje de error en caso de fallo en la carga
-                        response.Message = $"Error uploading files";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Manejar cualquier excepción que ocurra durante la carga
-                msgError = $"An error occurred while uploading files: {ex.Message}";
-            }
-        }
+       
 
         // Método para iniciar la carga de archivos
         public async Task UploadFiles()
@@ -242,6 +190,56 @@ namespace Balances.Web.Pages
                 Console.WriteLine($"Error al subir archivos: {ex.Message}");
             }
         }
+
+ 
+        
+       
+        async void OnProgress(UploadProgressArgs args, string name)
+        {
+            msgError = $"{args.Progress}% '{name}' / {args.Loaded} of {args.Total} bytes.";
+
+            if (args.Progress == 100)
+            {
+
+                foreach (var file in args.Files)
+                {
+
+                    if (file.Size > 0)
+                    {
+                        
+                       // var binario =  ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024)); // 20 MB
+                        var archivo = new ArchivoDTO();
+                        archivo.SesionId = sesionId;
+                        archivo.Tamaño = file.Size;
+                        archivo.ContentType = "pdf";
+                        archivo.NombreArchivo = file.Name;
+                        archivo.Categoria = categoria;
+                        archivo.FechaCreacion.ToString("dd/mm/yyyy");
+                        //archivo.Hash = Convert.ToHexString(SHA256.HashData(file));
+
+                        listArchivo.Add(archivo);
+                    }
+                    
+                    var response = await archivoService.UploadArchivo(listArchivo);
+                    if (response.IsSuccess)
+                    {
+                        StateHasChanged();
+                    }
+                    else
+                    {
+                        // Mostrar mensaje de error en caso de fallo en la carga
+                        response.Message = $"Error uploading files";
+                    }
+
+
+                    msgError = $"Uploaded: {file.Name} / {file.Size} bytes";
+                }
+            }
+        }
+
+       
+
+       
 
 
     }

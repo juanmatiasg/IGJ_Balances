@@ -3,10 +3,17 @@
 @inject NavigationManager NavigationManager
 
 
-<RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center"  class="z-index:1">
+<RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center">
     
     <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()"  RenderMode="TabRenderMode.Client">
         <Tabs>
+            <div class="container-fluid d-flex flex-row">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    
+                </div>
             <RadzenTabsItem Text="Carátula" Class="@((PaginaActiva == "Caratula"))"></RadzenTabsItem>
             
             
@@ -31,6 +38,7 @@
             <RadzenTabsItem Text="Confirmación" Class="@((PaginaActiva == "Confirmacion") )" Disabled="@(TramiteIniciado ? false : true)">
            
             </RadzenTabsItem>
+                </div>
         </Tabs>
     </RadzenTabs>
 </RadzenStack>

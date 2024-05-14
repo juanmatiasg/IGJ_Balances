@@ -27,49 +27,50 @@
 <body>
     <div class="page">
         <main>
-            <header class=" d-flex text-white px-5  rounded-bottom-3 barraNav" style="background-color:#1b2a4a; height:100px;">
-                <a><img src="img/logo.png" style="height:190px; width:192px; z-index:2" alt="Alternate Text" /></a>
-                <div class="d-flex w-100 align-items-end gap-5 justify-content-around">
-                    @if (NroCorrelativo != null)
-                    {
-                        <p class="fw-bold">Correlativo: @NroCorrelativo</p>
-                        <p class="fw-bold">Denominación: @RazonSocial @TipoEntidad</p>
-                        <p class ="fw-bold">Fecha de Cierre:@FechaDeCierre</p>
-                    }
+            <header class=" d-flex justify-content-between text-white px-5  rounded-bottom-3" style="background-color:#1b2a4a; height:120px">
+                
+                    <div class="col">
+                        <img src="img/logo.png" class="img-fluid" style="height:11.8rem; width:11.8rem;" alt="Alternate Text" />
+                    </div>
 
-                </div>
+
+                    <div class="col d-flex justify-content-center p-2">
+                        <img src="img/modificado.png" class="img-fluid" style="height:100px; width:100px;" alt="Alternate Text" />
+                    </div>
+
+
+                    <div class="col-md-4 mt-4 p-4">
+                        <h4 class="d-flex justify-content-center">Presentación de Balances y Asamblea</h4>
+                    </div>
+                    
+                    <div class=" col-md-4 d-flex justify-content-end ">
+
+
+                    <RadzenCard class=" rz-border-radius-20" style="background-color:#15153D; max-height:120px">
+                        
+                        <RadzenRow RowGap="4">
+                            <RadzenColumn >
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex  rz-mb-0">Correlativo</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-on-primary-light"><b>@NroCorrelativo</b></RadzenText>
+                            </RadzenColumn>
+                             <RadzenColumn >
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex  rz-mb-0">Fecha de Cierre</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-on-primary-light"><b>@FechaDeCierre?.ToString("dd/MM/yyyy")</b></RadzenText>
+                             </RadzenColumn >
+                        </RadzenRow>
+                        <RadzenRow RowGap="4">
+                              <RadzenColumn >
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 ">Denominación</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-on-primary-light"><b>@RazonSocial &nbsp @TipoEntidad</b></RadzenText>
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenCard>
+
+                    </div>
+               
             </header>
-            <!--  
-            <header style="background-color:#1b2a4a">
-
-
-                <div class="col-md-5">
-                    <RadzenStack>
-                        <a class="nav-link">
-                            <img src="img\logo_IGJ_4---copia.png" width="150" height="150" alt="Icono 1">
-                        </a>
-                      
-
-                    </RadzenStack>
-
-                </div>
-
-                <div class="col-md-5 ">
-                    <RadzenStack>
-                      
-
-
-                    </RadzenStack>
-
-                </div>
-
-
-                <div class="col-md-5">
-                    <ContextBalance Entidad="@TipoEntidad" RazonSocial="@RazonSocial"></ContextBalance>
-                </div>
-
-            </header>-->
-            <RadzenStack class="rz-background-color-base-200" >
+         
+            <RadzenStack class="rz-background-color-base-200 p-4" >
                 @Body
             </RadzenStack>
 
@@ -91,5 +92,5 @@
     [Parameter] public static string? NroCorrelativo { get; set; }
     [Parameter] public  static string? TipoEntidad { get; set; }
     [Parameter] public  static string? RazonSocial { get; set; }
-    [Parameter] public static DateTime FechaDeCierre { get; set; }
+    [Parameter] public static DateTime? FechaDeCierre { get; set; }
 }
