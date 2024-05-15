@@ -298,14 +298,14 @@
                 </div>
             </div>
 
-            <RadzenGrid Data="estadoContableDto.otrosRubros.AsEnumerable()" TItem="RubroPatrimonioNetoDto">
+            <RadzenGrid @ref=grid Data="estadoContableDto.otrosRubros.AsEnumerable()" TItem="RubroPatrimonioNetoDto">
                 <Columns>
                     <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Property="denominacion" Title="Denominación" />
                     <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Property="importe" Title="Importe" Format="{0.00}" Type="decimal" />
                     <RadzenGridColumn TItem="RubroPatrimonioNetoDto">
                         <Template Context="rubro">
                             <RadzenGridColumn TItem="RubroPatrimonioNetoDto"  Title="Acción" />
-                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteRubro(rubro))">Eliminar</RadzenButton>
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteRubro(rubro))"></RadzenButton>
                         </Template>
                     </RadzenGridColumn>
                 </Columns>

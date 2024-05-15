@@ -29,6 +29,7 @@ using Microsoft.Extensions.Primitives;
 using System.Security.Cryptography;
 using Microsoft.Win32;
 using Blazorise.Extensions;
+using System.Net.Mime;
 
 namespace Balances.Web.Pages
 {
@@ -44,20 +45,11 @@ namespace Balances.Web.Pages
             "Otro"
         };
 
-        private string categoria;
+        private string? categoria;
 
-        RadzenUpload upload;
         RadzenUpload uploadDD;
 
-        int progress;
-        bool showProgress;
-        bool showComplete;
-        string completionMessage;
-        bool cancelUpload = false;
-
-       
-        UploadProgressArgs args = new UploadProgressArgs();
-
+        RadzenGrid<ArchivoDTO> grid;
 
         [Parameter]
         public string? TipoEntidad { get; set; }
@@ -72,9 +64,11 @@ namespace Balances.Web.Pages
         private string msgError = "";
         private string msgErrorTipoArchivo = "";
 
-        private ArchivoDTO archivo = new ArchivoDTO();
+    
         private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
-       
+        private ArchivoDTO archivo = new ArchivoDTO();
+
+
         protected override async void OnInitialized()
         {
             await Load();
@@ -85,13 +79,16 @@ namespace Balances.Web.Pages
         {
             ResponseDTO<BalanceDto> rsp = new();
             sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            
             try
             {
                 if (sesionId == null)
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
-                    sesionId = sesionRespuesta.Result;
-                    sessionStorage.SetItemAsync("SessionId", sesionId);
+                    
+                    sesionId = sesionRespuesta.Result!;
+
+                    await sessionStorage.SetItemAsync("SessionId", sesionId);
                 }
                 else
                 {
@@ -105,6 +102,7 @@ namespace Balances.Web.Pages
                             TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
                             var rspArchivos = rsp.Result.Archivos;
                             setListArchivos(rspArchivos);
+                            await grid.Reload();
                             StateHasChanged();
                         }
                     }
@@ -122,22 +120,23 @@ namespace Balances.Web.Pages
             {
                 foreach (var x in list)
                 {
-
-                    archivo.Id = x.Id;
-                    archivo.SesionId = sesionId;
-                    archivo.NombreArchivo = x.NombreArchivo;
-                    archivo.Categoria = x.Categoria;
-                    archivo.Hash = x.Hash;
-                    archivo.Tamaño = x.Tamaño;
-                    archivo.FechaCreacion = x.FechaCreacion;
-
-                    listArchivo.Add(archivo);
+                    var archivo = new ArchivoDTO
+                    {
+                        Id = x.Id,
+                        SesionId = sesionId,
+                        NombreArchivo = x.NombreArchivo,
+                        Categoria = x.Categoria,
+                        Hash = x.Hash,
+                        Tamaño = x.Tamaño,
+                        FechaCreacion = x.FechaCreacion
+                    };
+                    this.listArchivo.Add(archivo);
                 }
             }
         }
 
 
-         
+
         private bool checkData()
         {
             if (archivo.Categoria.IsNullOrEmpty())
@@ -154,92 +153,131 @@ namespace Balances.Web.Pages
             return true;
         }
 
-        private async Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo)
+        private async Task<ResponseDTO<BalanceDto>> DeleteArchivo(ArchivoDTO archivo)
         {
             var response = new ResponseDTO<BalanceDto>();
             try
             {
+             
+
                 response = await archivoService.deleteArchivo(archivo);
+                
                 if (response.IsSuccess)
                 {
                     listArchivo.Remove(archivo);
+
+                    await grid.Reload();
+                    StateHasChanged();
+                    
+                   
+                }
+
+                else      {
+                    response.Message = response.Message;
+
                 }
             }
             catch (Exception ex)
             {
                 response.Message = ex.Message;
             }
+           
 
             return response;
         }
 
-       
-
-       
-
-        // Método para iniciar la carga de archivos
-        public async Task UploadFiles()
+        private async void OnProgress(UploadProgressArgs args)
         {
+            var response = new ResponseDTO<BalanceDto>();
             try
             {
-                await upload.Upload(); // Esperar la carga de archivos
+                if (checkData())
+                {
+                    if (args.Progress == 100)
+                    {
+                        var archivo = new ArchivoDTO();
+                        foreach (var file in args.Files)
+                        {
+                            if (file.Size > 0)
+                            {
+                                //var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024)); // 20 MB
+                                archivo.SesionId = sesionId;
+                                archivo.Tamaño = file.Size;
+                                archivo.ContentType = "pdf";
+                                archivo.Categoria = categoria;
+                                archivo.NombreArchivo = file.Name;
+                                //archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
+                                // Calcular el progreso de la carga
 
+
+                                listArchivo.Add(archivo);
+                                
+                                response = await archivoService.UploadArchivo(listArchivo);
+                               
+                                if (response.IsSuccess)
+                                {
+                                    await grid.Reload();
+                                    StateHasChanged();
+                                }
+                                else
+                                {
+                                    response.Message = $"Error uploading files";
+                                }
+                            }
+                            else
+                            {
+                                msgError = $"El archivo {file.Name} está vacío. Por favor, seleccione un archivo válido.";
+                            }
+
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al subir archivos: {ex.Message}");
+                response.Message = $"An error occurred while uploading files: {ex.Message}";
             }
         }
 
- 
-        
-       
-        async void OnProgress(UploadProgressArgs args, string name)
+
+
+        private string conversionesDeArchivos(long file)
         {
-            msgError = $"{args.Progress}% '{name}' / {args.Loaded} of {args.Total} bytes.";
-
-            if (args.Progress == 100)
+            // Tamaño del archivo en bytes (esto podría provenir de tu archivo subido)
+            long fileSizeInBytes = file;
+            if (fileSizeInBytes < 1024)
             {
-
-                foreach (var file in args.Files)
-                {
-
-                    if (file.Size > 0)
-                    {
-                        
-                       // var binario =  ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024)); // 20 MB
-                        var archivo = new ArchivoDTO();
-                        archivo.SesionId = sesionId;
-                        archivo.Tamaño = file.Size;
-                        archivo.ContentType = "pdf";
-                        archivo.NombreArchivo = file.Name;
-                        archivo.Categoria = categoria;
-                        archivo.FechaCreacion.ToString("dd/mm/yyyy");
-                        //archivo.Hash = Convert.ToHexString(SHA256.HashData(file));
-
-                        listArchivo.Add(archivo);
-                    }
-                    
-                    var response = await archivoService.UploadArchivo(listArchivo);
-                    if (response.IsSuccess)
-                    {
-                        StateHasChanged();
-                    }
-                    else
-                    {
-                        // Mostrar mensaje de error en caso de fallo en la carga
-                        response.Message = $"Error uploading files";
-                    }
-
-
-                    msgError = $"Uploaded: {file.Name} / {file.Size} bytes";
-                }
+                return $"{Math.Round((double)fileSizeInBytes)} Bytes";
+            }
+            else if (fileSizeInBytes < 1024 * 1024)
+            {
+                double fileSizeInKB = (double)fileSizeInBytes / 1024;
+                return $"{Math.Round(fileSizeInKB)} KB";
+            }
+            else if (fileSizeInBytes < 1024L * 1024 * 1024)
+            {
+                double fileSizeInMB = (double)fileSizeInBytes / (1024 * 1024);
+                return $"{Math.Round(fileSizeInMB)} MB";
+            }
+            else if (fileSizeInBytes < 1024L * 1024 * 1024 * 1024)
+            {
+                double fileSizeInGB = (double)fileSizeInBytes / (1024 * 1024 * 1024);
+                return $"{Math.Round(fileSizeInGB)} GB";
+            }
+            else
+            {
+                double fileSizeInTB = (double)fileSizeInBytes / (1024L * 1024 * 1024 * 1024);
+                return $"{Math.Round(fileSizeInTB)} TB";
             }
         }
-
-       
-
-       
+        private async Task<byte[]> ToByteArrayAsync(Stream stream)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await stream.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
 
 
     }

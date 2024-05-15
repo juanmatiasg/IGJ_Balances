@@ -72,39 +72,7 @@ namespace Balances.Web.Services.Contracts
             }
         }
 
-       /* public async Task<ResponseDTO<BalanceDto>> uploadArchivo(List<ArchivoDTO> files)
-        {
-            try
-            {
-
-                var response = await _httpClient.PostAsJsonAsync("Archivo/InsertArchivos", files);
-
-                // Check if the request was successful (status code 2xx)
-                 response.EnsureSuccessStatusCode();
-
-                // Deserialize the response
-                var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
-
-                return new ResponseDTO<BalanceDto>
-                {
-                    Result = result.Result,
-                    IsSuccess = result.IsSuccess,
-                    Message = result.Message
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDTO<BalanceDto>
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = $"Error: {ex.Message}"
-                };
-            };
-        }*/
-
-        
-
+      
 
         public async Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo)
         {
@@ -143,15 +111,6 @@ namespace Balances.Web.Services.Contracts
             }
 
             return rsp;
-        }
-
-        private async Task<byte[]> ToByteArrayAsync(Stream stream)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                await stream.CopyToAsync(memoryStream);
-                return memoryStream.ToArray();
-            }
         }
 
 

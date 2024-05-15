@@ -32,8 +32,9 @@ namespace Balances.Web.Pages
     public partial class EstadoContable
     {
         private CultureInfo argentinianCulture = new CultureInfo("es-AR");
-       
-        
+
+        RadzenGrid<RubroPatrimonioNetoDto> grid;
+
         [Parameter]
         public string? TipoEntidad { get; set; }
 
@@ -112,7 +113,7 @@ namespace Balances.Web.Pages
                         }
                     }
                 }
-
+                await grid.Reload();
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -173,6 +174,7 @@ namespace Balances.Web.Pages
                         {
                             setListOtrosRubros(result.EstadoContable.OtrosRubros);
                             rsp.Message = "Se inserto el rubro sastifactoriamente";
+                            await grid.Reload();
                             StateHasChanged();
                         }
                     }
@@ -201,6 +203,7 @@ namespace Balances.Web.Pages
                 {
                     estadoContableDto.otrosRubros.Remove(rubroDto);
                     respuesta.Message = "Se eliminó el rubro sastifactoriamente";
+                    await grid.Reload();
                     StateHasChanged();
                 }
                 else

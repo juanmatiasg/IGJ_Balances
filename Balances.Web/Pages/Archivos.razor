@@ -53,37 +53,12 @@
                     </RadzenStack>
 
                     <RadzenCard>
-                        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Drag and drop files to upload</RadzenText>
-                        <RadzenUpload id="ddUpload" @ref="uploadDD" ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true" Url="Archivo/InsertArchivos" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
-                                      Progress=@(args => OnProgress(args, "Drag and drop files to upload")) class="w-100" />
+                        
+                        <RadzenUpload id="ddUpload" @ref="uploadDD" ChooseText="Arrastre y suelte aquí o haga clic para elegir archivos" Auto="false" Multiple="true" Url="Archivo/InsertArchivos" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
+                                      Progress=@(args => OnProgress(args)) class="w-100" />
                         <RadzenButton Text="Upload" Click=@(args => uploadDD.Upload()) class="d-block mt-4" />
                     </RadzenCard>
 
-                   <!-- <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Drag and drop files to upload</RadzenText>
-                    <RadzenUpload id="ddUpload" @ref="upload" Url="Archivo/InsertArchivos" method=RequestMethod.POST ChooseText="Drag and drop here or click to choose files" Auto="false" Multiple="true"
-                                  Progress="@OnProgress" class="w-100" />
-                    <RadzenButton Icon="upload" Style="width:100%" Text="Upload" Click="ddUpload.OnClientChange()" class="d-block mt-4" />-->
-
-                          
-
-                        <!-- <div class="col d-flex justify-content-between">
-                                <InputFile OnChange="@HandleFileUpload" multiple />
-                                @if (!isUploaded)
-                                {
-                                    <button type="button" class="btn-primary" @onclick="UploadFile">Subir Archivo</button>
-                                }
-                                else
-                                {
-                                    <button type="button" class="btn-secondary">Subir Archivo</button>
-                                }
-                            </div>
-
-                            @if (isLoading)
-                            {
-                               
-                                <progress max="100" value="@progressPercentage" class="w-100 mt-3"></progress>
-                                <span class="d-flex justify-content-center">@progressPercentage%</span>
-                            }-->
 
                        
                         <div class="d-flex justify-content-center mt-4">
@@ -100,7 +75,9 @@
                     Documento Recibido
                 </div>
                     <div class="card-body">
-                    <RadzenGrid Data="listArchivo" TItem="ArchivoDTO">
+                      
+                    <RadzenGrid @ref=grid Data="listArchivo" TItem="ArchivoDTO" >
+                  
                         <Columns>
                             <RadzenGridColumn TItem="ArchivoDTO" Property="NombreArchivo" Title="Nombre de Archivo" />
                             <RadzenGridColumn TItem="ArchivoDTO" Property="Categoria" Title="Categoría" />
@@ -109,46 +86,11 @@
                             <RadzenGridColumn TItem="ArchivoDTO" Property="Tamaño" Title="Tamaño" />
                             <RadzenGridColumn TItem="ArchivoDTO" Title="Acción">
                                 <Template Context="archivo">
-                                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteArchivo(archivo))">Eliminar</RadzenButton>
+                                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => DeleteArchivo(archivo))"></RadzenButton>
                                 </Template>
                             </RadzenGridColumn>
                         </Columns>
-                    </RadzenGrid>
-
-                       <!-- <table class="table table-bordered">
-                            <thead>
-                                <tr>
-
-                                    <th scope="col">Id</th>
-                                    <th scope="col">Nombre</th>
-                                    <th scope="col">Tipo</th>
-                                    <th scope="col">Hash</th>
-                                    <th scope="col">Fecha de Creación</th>
-                                    <th scope="col">Tamaño</th>
-                                    <th scope="col">Acción</th>
-                                </tr>
-                            </thead>
-                            
-                            @if (listArchivo != null && listArchivo.Count > 0)
-                            {
-                                @foreach (var archivo in listArchivo)
-                                {
-                                    <tbody>
-                                        <tr>
-                                            <td>@archivo.Id</td>
-                                            <td>@(archivo.NombreArchivo?.Length > 10 ? archivo.NombreArchivo.Substring(0, 10) + "..." : archivo.NombreArchivo)</td>
-                                            <td>@(archivo.Categoria?.Length > 10 ? archivo.Categoria.Substring(0, 10) + "..." : archivo.Categoria)</td>
-                                            <td>@archivo.Hash</td>
-                                            <td>@archivo.FechaCreacion.ToString("dd/MM/yyyy")</td>
-                                            <td>@conversionesDeArchivos(archivo.Tamaño)</td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger" @onclick="() => deleteArchivo(archivo)">Eliminar</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                }
-                            }
-                        </table>-->
+                    </RadzenGrid>   
 
                     </div>
                 </div>
@@ -156,6 +98,9 @@
         </div>
     </div>
 
+    @code{
 
-
-
+      
+        
+  
+    }
