@@ -16,10 +16,15 @@ namespace Balances.Web.Services.FluentValidation
 
             //APROBADO POR
             RuleFor(_ => _.fechaReunionDirectorio).Cascade(CascadeMode.Stop)
-                            .NotEmpty().WithMessage("Debe ingresar la fecha de reunion autoridades");
+                            .NotEmpty().WithMessage("Debe ingresar la fecha de reunion autoridades")
+                            .GreaterThan(_ => _.fechaEstado)
+                            .WithMessage("la fecha de reunion de autoridades no puede ser anterior a la fecha de cierre del estado contable");
 
             RuleFor(_ => _.fechaAsamblea).Cascade(CascadeMode.Stop)
-                      .NotEmpty().WithMessage("Debe ingresar la fecha de reunion de socios");
+                    .NotEmpty().WithMessage("Debe ingresar la fecha de reunion de socios")
+                    .GreaterThan(_ => _.fechaEstado)
+                    .WithMessage("la fecha de reunion de socios no puede ser anterior a la fecha de cierre del estado contable");
+
 
             //RUBROBALANCE
             RuleFor(_ => _.cajaYBancos).Cascade(CascadeMode.Stop)
@@ -95,5 +100,7 @@ namespace Balances.Web.Services.FluentValidation
 
 
         }
+
+
     }
 }

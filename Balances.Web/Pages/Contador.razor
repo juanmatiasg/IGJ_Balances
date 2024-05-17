@@ -112,6 +112,44 @@
 
                                 <ValidationMessage For="@(()=> @modelo.NroLegalInfoAudExt)" />
                             </div>
+
+                            <div class="form-group">
+                                <label for="Opinion">Opinion del informe</label>
+                                <select class="form-select" @bind="modelo.Opinion">
+                                    <option value="">--- Seleccionar una opinion ---</option>
+                                    <option value="Favorable">Favorable</option>
+                                    <option value="Desfavorable">Desfavorable</option>
+                                   
+                                </select>
+                                <ValidationMessage For="@(()=> modelo.Opinion)" />
+                            </div>
+                            
+                            <div class="form-group mt-2">
+                                <RadzenCheckBox @bind-Value="@modelo.EsSocioEstudio" Name="CheckBox3" />
+                                <RadzenLabel class="col-6" Text="Es Socio Estudio" Component="CheckBox3" />
+
+                                <ValidationMessage For="@(()=> modelo.EsSocioEstudio)" />
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Tomo del Estudio" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.TomoEstudio" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelo.TomoEstudio)" />
+                            </div>
+                            <div class="form-group mt-2">
+                                <RadzenFormField Text="Folio del Estudio" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@modelo.FolioEstudio" />
+                                </RadzenFormField>
+
+                                <ValidationMessage For="@(()=> @modelo.FolioEstudio)" />
+                            </div>
+                            
+                            <RadzenFormField Text="Observaciones" Style="width:100%">
+                                <RadzenTextArea @bind-Value="@modelo.Observaciones" />
+                            </RadzenFormField>
+                          
                             <RadzenStack class="d-flex justify-content-center mt-2">
                                 <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@postContador" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
                             </RadzenStack>

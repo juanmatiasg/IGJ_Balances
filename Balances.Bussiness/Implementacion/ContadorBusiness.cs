@@ -106,6 +106,13 @@ namespace Balances.Bussiness.Implementacion
                 TipoDocumento = modelo.TipoDocumento,
                 NroLegalInfoAudExt = modelo.NroLegalInfoAudExt,
                 Tomo = modelo.Tomo,
+                Opinion = modelo.Opinion,
+                Observaciones = modelo.Observaciones,
+                TomoEstudio = modelo.TomoEstudio,
+                FolioEstudio = modelo.FolioEstudio,
+                EsSocioEstudio = modelo.EsSocioEstudio
+
+
             };
 
             return contadordto;
@@ -146,6 +153,11 @@ namespace Balances.Bussiness.Implementacion
                 NroLegalInfoAudExt = modelo.NroLegalInfoAudExt,
                 TipoDocumento = modelo.TipoDocumento,
                 Tomo = modelo.Tomo,
+                Opinion = modelo.Opinion,
+                Observaciones = modelo.Observaciones,
+                TomoEstudio = modelo.TomoEstudio,
+                FolioEstudio = modelo.FolioEstudio,
+                EsSocioEstudio = modelo.EsSocioEstudio
             };
 
             return contador;

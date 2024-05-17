@@ -48,7 +48,7 @@ namespace Balances.Bussiness.Implementacion
                     var balanceDto = resultadoDto.Result;
 
 
-                    balanceDto.EstadoContable = _mapper.Map<Model.EstadoContable>(modelo);
+                    balanceDto.EstadoContable = _mapper.Map<EstadoContable>(modelo);
 
                     var rsp = _balanceBusiness.Update(balanceDto);
 
@@ -75,6 +75,8 @@ namespace Balances.Bussiness.Implementacion
             var rubroSerializado = JsonConvert.SerializeObject(modelo);
             try
             {
+
+
                 var id = _sessionService.GetBalanceId(modelo.SesionId);
 
                 var resultadoDto = _balanceBusiness.GetById(id);

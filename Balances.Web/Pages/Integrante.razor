@@ -44,28 +44,31 @@
     <div class="container-fluid mt-4 mb-4">
         <div class="row">
             <div class="col-md-6">
-          
+            <div class="card">
                     <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
                         Datos del Integrante
                     </div>
                     <div class="card-body">
-                        <EditForm Model="modelPersonaHumana" class="card">
+                        <EditForm Model="modelPersonaHumana" >
                         <FluentValidationValidator/>
-                        <div class="form-group mt-2">
+                         
+                        <RadzenStack class="mx-3 my-3">
                             <RadzenFormField Text="Nombre" Style="width:100%">
                                 <RadzenTextBox @bind-Value="@modelPersonaHumana.Nombre" />
                             </RadzenFormField>
 
                             <ValidationMessage For="@(()=> modelPersonaHumana.Nombre)" />
-                        </div>
-                        <div class="form-group mt-2">
+                        </RadzenStack>
+
+                        <RadzenStack class="mx-3 my-3">
                             <RadzenFormField Text="Apellido" Style="width:100%">
                                 <RadzenTextBox @bind-Value="@modelPersonaHumana.Apellido" />
                             </RadzenFormField>
 
                             <ValidationMessage For="@(()=> modelPersonaHumana.Apellido)" />
-                            <div class="form-group">
-                                <label for="tipoDocumento">Tipo de Documento</label>
+                        </RadzenStack>
+                        <RadzenStack class="mx-3 my-3">
+                                <label for="tipoDocumento">Tipo de Documento</label> 
                                 <select class="form-select" @bind="modelPersonaHumana.TipoDocumento">
                                     <option value="">--- Seleccionar un tipo de documento ---</option>
                                     <option value="DNI">DNI</option>
@@ -73,55 +76,56 @@
                                     <option value="Cedula">Cédula</option>
                                 </select>
                                 <ValidationMessage For="@(()=> modelPersonaHumana.TipoDocumento)" />
-                            </div>
+                             </RadzenStack>
 
-                            <div class="form-group mt-2">
+                        <RadzenStack class="mx-3 my-3">
                                 <RadzenFormField Text="Numero de Documento" Style="width:100%">
                                     <RadzenTextBox @bind-Value="@modelPersonaHumana.NroDocumento" />
                                 </RadzenFormField>
 
                                 <ValidationMessage For="@(()=> @modelPersonaHumana.NroDocumento)" />
-                            </div>
+                            </RadzenStack>
 
-                            <div class="form-group mt-2">
+                        <RadzenStack class="mx-3 my-3">
                                 <RadzenFormField Text="Nro. de CUIL/CUIT" Style="width:100%">
                                     <RadzenTextBox @bind-Value="@modelPersonaHumana.NroFiscal" />
                                 </RadzenFormField>
 
                                 <ValidationMessage For="@(()=> @modelPersonaHumana.NroFiscal)" />
-                            </div>
+                        </RadzenStack>
 
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Cuotas" Style="width:100%">
+                        <RadzenStack class="mx-3 my-3">
+                                <RadzenFormField Text="Acciones" Style="width:100%">
                                     <RadzenTextBox @bind-Value="@modelPersonaHumana.Cuotas" />
                                 </RadzenFormField>
 
                                 <ValidationMessage For="@(()=> @modelPersonaHumana.Cuotas)" />
-                            </div>
-                            <div class="form-group mt-2">
+                           </RadzenStack>
+
+                        <RadzenStack class="mx-3 my-3">
                                 <RadzenFormField Text="Votos" Style="width:100%">
                                     <RadzenTextBox @bind-Value="@modelPersonaHumana.Votos" />
                                 </RadzenFormField>
 
                                 <ValidationMessage For="@(()=> @modelPersonaHumana.Votos)" />
-                            </div>
+                            </RadzenStack>
 
-                            <div class="form-group mt-2">
+                           <div class="form-group mt-2 ms-3">
                                 <RadzenCheckBox @bind-Value="@modelPersonaHumana.EsFirmante" Name="CheckBox3" />
                                 <RadzenLabel class="col-6" Text="Es Firmante" Component="CheckBox3" />
 
                                 <ValidationMessage For="@(()=> modelPersonaHumana.EsFirmante)" />
-                            </div>
+                           </div>
 
 
-                            <RadzenStack class="d-flex justify-content-center mt-2">
+                        <RadzenStack class="d-flex justify-content-center mx-3 my-2">
                                 <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@addPersonaHumana" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
                             </RadzenStack>
-                        </div>
+                        
                
                     </EditForm>
                     </div>
-                
+                    </div>
             </div>
             <div class="col-md-6">
                 <!-- Lista de Integrantes -->
@@ -132,15 +136,15 @@
                         </div>
                         <div class="card-body">
 
-                            <table class="table table-bordered">
+                            <table class="table table-striped">
                                 <thead>
                                     <tr>
                                       
                                         <th scope="col">Apellido y Nombre</th>
-                                        <th scope="col">Nro Documento</th>
                                         <th scope="col">CUIT</th>
+                                        <th scope="col">Acciones</th>
                                         <th scope="col">Cantidad</th>
-                                        <th scope="col">Acción</th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 @foreach (var personaHumana in listPersonaHumana)
@@ -149,12 +153,12 @@
                                         <tr>
                                         
                                             <td>@personaHumana.Apellido @personaHumana.Nombre</td>
-                                            <td>@personaHumana.NroDocumento</td>
                                             <td>@personaHumana.NroFiscal</td>
-                                            <td>@personaHumana.Cuotas / @personaHumana.Votos </td>
+                                            <td>@personaHumana.Cuotas</td>
+                                            <td>@personaHumana.Votos</td>
 
                                             <td>
-                                                <button type="button" class="btn btn-danger" @onclick="() => deletePersonaHumana(personaHumana)">Eliminar</button>
+                                                <button type="button" class="btn btn-outline-danger" @onclick="() => deletePersonaHumana(personaHumana)"><i class="bi bi-trash-fill"></i></button>
                                             </td>
                                         </tr>
                                     </tbody>

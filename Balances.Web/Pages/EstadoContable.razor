@@ -2,6 +2,7 @@
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
+@using Balances.Web.Services
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using System.Globalization;
@@ -9,6 +10,7 @@
 @using System.Reflection;
 @using Blazorise.Extensions;
 @using Microsoft.AspNetCore.Http;
+@using CurrieTechnologies.Razor.SweetAlert2;
 
 @inject IEstadoContableClientService estadoContableService;
 @inject NavigationManager NavigationManager
@@ -16,6 +18,7 @@
 @inject ISessionClientService sesionService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject SweetAlertService _swal
 
 <!DOCTYPE html>
 <html lang="en">
@@ -35,33 +38,36 @@
     <div class="container mt-4">
         <h2 class="text-center">Estado Contable</h2>
         <div class="row">
+            <EditForm Model="estadoContableDto">
             <div class="col">
-
+               
+                    <FluentValidationValidator />
                 <!-- Período -->
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title d-flex justify-content-center">Período</h5>
+                            
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Tipo de balance" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@estadoContableDto.tipoBalance" Change="insertEECC"> </RadzenTextBox>
+                                <RadzenTextBox @bind-Value="@estadoContableDto.tipoBalance"> </RadzenTextBox>
                             </RadzenFormField>
 
-                            <small id="tipoBalanceError" class="text-danger">@tipoBalanceError</small>
+                                <ValidationMessage For="@(()=> estadoContableDto.tipoBalance)" />
                         </RadzenStack>
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Fecha de Inicio" Style="width:100%" Component="DatePickerTimeOnlyType">
-                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaInicio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Change="insertEECC" Placeholder="dd/mm/yyyy" Disabled></RadzenDatePicker>
+                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaInicio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType"  Disabled></RadzenDatePicker>
                             </RadzenFormField>
 
-                            <small id="tipoBalanceError" class="text-danger">@fechaInicioError</small>
+                                <ValidationMessage For="@(()=> estadoContableDto.fechaInicio)" />
                         </RadzenStack>
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Fecha de Cierre" Style="width:100%" Component="DatePickerTimeOnlyType">
-                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaEstado)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Change="insertEECC" Placeholder="dd/mm/yyyy" Disabled></RadzenDatePicker>
+                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaEstado)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType"   Disabled></RadzenDatePicker>
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@fechaEstadoError</small>
+                                <ValidationMessage For="@(()=> estadoContableDto.fechaEstado)" />
                         </RadzenStack>
                     </div>
                 </div>
@@ -73,21 +79,30 @@
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Fecha de Acta de Reunión de Autoridades" Component="DatePickerTimeOnlyType" Style="width:100%">
-                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaReunionDirectorio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/MM/yyyy" Change="insertEECC"></RadzenDatePicker>
+                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaReunionDirectorio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dia/mes/año" ></RadzenDatePicker>
                             </RadzenFormField>
+                                <ValidationMessage For="@(()=> estadoContableDto.fechaReunionDirectorio)" />
                         </RadzenStack>
-                        <small id="tipoBalanceError" class="text-danger">@fechaReunionDirectorioError </small>
+                           
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Fecha de Acta de Reunión de Socios" Component="DatePickerTimeOnlyType" Style="width:100%">
-                                <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaAsamblea)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Change="insertEECC" Placeholder="dd/MM/yyyy"></RadzenDatePicker>
+                                    <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaAsamblea)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dia/mes/año"></RadzenDatePicker>
                             </RadzenFormField>
+                                <ValidationMessage For="@(()=> estadoContableDto.fechaAsamblea)" />
                         </RadzenStack>
-                        <small id="tipoBalanceError" class="text-danger">@fechaAsambleaError</small>
+                          
 
                     </div>
                 </div>
 
+                    <RadzenStack class="mt-2 mb-2">
+                        <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@insertEECC" ButtonStyle="ButtonStyle.Primary">Guardar</RadzenButton>
+                    </RadzenStack>
+                  
+                
+
+                
                 <!-- Rubros del Balance -->
                 <div class="card mb-4">
                     <div class="card-body">
@@ -98,114 +113,117 @@
                             <div class="col">
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Caja Y Bancos" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.cajaYBancos InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.cajaYBancos InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@cajaYBancosError</small>
+                                    <ValidationMessage For="@(()=> estadoContableDto.cajaYBancos)" />
                                 </RadzenStack>
 
+                               
+
                                 <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Inversiones" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.inversionesActivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@inversionesError</small>
+                                        <RadzenFormField Text="Bienes de Uso" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeUso InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.bienesDeUso)" />
                                 </RadzenStack>
 
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Bienes de Cambios" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeCambio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeCambio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@bienesDeCambioError</small>
+                                    <ValidationMessage For="@(()=> estadoContableDto.bienesDeCambio)" />
                                 </RadzenStack>
 
+                                <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Propiedades de Inversión" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.propiedadesDeInversion InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.propiedadesDeInversion)" />
+                                </RadzenStack>
 
+                                <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Inversiones" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.inversionesActivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.inversionesActivoCorriente)" />
+                                </RadzenStack>
+                                
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Activo Corriente Restante" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@activoCorrienteRestanteError</small>
+                                    <ValidationMessage For="@(()=> estadoContableDto.activoCorrienteRestante)" />
                                 </RadzenStack>
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Bienes de Uso" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeUso InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@bienesDeUsoError</small>
-                                </RadzenStack>
-
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Propiedades de Inversión" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.propiedadesDeInversion InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@propiedadesDeInversionError</small>
-                                </RadzenStack>
-
 
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Activo No Corriente Restante" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
+                                        <ValidationMessage For="@(()=> estadoContableDto.activoNoCorrienteRestante)" />
                                 </RadzenStack>
 
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Total Activo No Corriente" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" Disabled />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" Disabled />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
+                                    <ValidationMessage For="@(()=> estadoContableDto.activoNoCorriente)" />
                                 </RadzenStack>
 
 
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Total Activo" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalActivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" Disabled />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalActivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" Disabled />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
+                                    <ValidationMessage For="@(()=> estadoContableDto.totalActivo)" />
                                 </RadzenStack>
+                                
 
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Deudas del Pasivo Corriente" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
+                                    <ValidationMessage For="@(()=> estadoContableDto.deudorPasivoCorriente)" />
                                 </RadzenStack>
 
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Deudas del Pasivo No Corriente" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
+                                    <ValidationMessage For="@(()=> estadoContableDto.deudorPasivoNoCorriente)" />
                                 </RadzenStack>
 
 
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Total Pasivo" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalPasivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" Disabled />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalPasivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" Disabled />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
+                                    <ValidationMessage For="@(()=> estadoContableDto.totalPasivo)" />
                                 </RadzenStack>
 
 
                                 <RadzenStack class="mt-2 mb-2">
                                     <RadzenFormField Text="Patrimonio Neto" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.patrimonioNeto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" Disabled />
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.patrimonioNeto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" Disabled />
                                     </RadzenFormField>
-                                    <small id="tipoBalanceError" class="text-danger">@activoNoCorrienteRestanteError</small>
+                                    <ValidationMessage For="@(()=> estadoContableDto.patrimonioNeto)" />
                                 </RadzenStack>
 
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@insertEECC" ButtonStyle="ButtonStyle.Primary">Guardar</RadzenButton>
+                                    </RadzenStack>
 
-
-                                @if (statusPatrimonioNeto)
+                              @*   @if (statusPatrimonioNeto)
                                 {
                                     <div class="alert alert-danger" role="alert">
                                         No coinciden el Patrimonio Neto de Activo y Pasivo con
                                         el Detalle del Patrimonio Neto
                                     </div>
-                                }
+                                } *@
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
             <!-- Rubros del Patrimonio Neto -->
             <div class="col">
@@ -217,37 +235,37 @@
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Capital Suscripto" Style="width:100%">
-                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.capitalSuscripto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.capitalSuscripto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@capitalSuscriptoError</small>
+                            <ValidationMessage For="@(()=> estadoContableDto.capitalSuscripto)" />
                         </RadzenStack>
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Ajuste de Capital" Style="width:100%">
-                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.ajusteCapital InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.ajusteCapital InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@ajusteCapitalError</small>
+                            <ValidationMessage For="@(()=> estadoContableDto.ajusteCapital)" />
                         </RadzenStack>
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Aportes Irrevocables" Style="width:100%">
-                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.aportesIrrevocables InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.aportesIrrevocables InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@aportesIrrevocablesError</small>
+                            <ValidationMessage For="@(()=> estadoContableDto.aportesIrrevocables)" />
                         </RadzenStack>
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Prima Emisión" Style="width:100%">
-                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.primaEmision InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.primaEmision InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@primaEmisionError</small>
+                            <ValidationMessage For="@(()=> estadoContableDto.primaEmision)" />
                         </RadzenStack>
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Ganancias Reservadas" Style="width:100%">
-                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasReservadas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasReservadas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@gananciasReservadasError</small>
+                            <ValidationMessage For="@(()=> estadoContableDto.gananciasReservadas)" />
                         </RadzenStack>
 
 
@@ -255,57 +273,64 @@
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Pérdidas Acumuladas" Style="width:100%">
-                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.perdidasAcumuladas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.perdidasAcumuladas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@perdidasAcumuladasError</small>
+                            <ValidationMessage For="@(()=> estadoContableDto.perdidasAcumuladas)" />
                         </RadzenStack>
 
 
                         <RadzenStack class="mt-2 mb-2">
                             <RadzenFormField Text="Ganancias / Pérdidas del Ejercicio" Style="width:100%">
-                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasPerdidasEjercicio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasPerdidasEjercicio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@gananciasPerdidasEjercicioError</small>
+                            <ValidationMessage For="@(()=> estadoContableDto.gananciasPerdidasEjercicio)" />
                         </RadzenStack>
 
 
                         <RadzenStack class="mt-2 mb-2">
-                            <RadzenFormField Text="Reserva Lega" Style="width:100%">
-                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.reservaLegal InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                            <RadzenFormField Text="Reserva Legal" Style="width:100%">
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.reservaLegal InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@reservaLegalError</small>
+                            <ValidationMessage For="@(()=> estadoContableDto.reservaLegal)" />
                         </RadzenStack>
 
                     </div>
-
+                        <RadzenStack class="mt-2 mb-2">
+                            <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@insertEECC" ButtonStyle="ButtonStyle.Primary">Guardar</RadzenButton>
+                        </RadzenStack>
                 </div>
-
+           
                 <!--Otros Rubros PN -->
                 <div class="card mb-4">
+                        <Form   Model="rubroDto">
+                            <FluentValidationValidator />
                     <div class="card-body">
                         <div class="form-group">
                             <h5 class="card-title d-flex justify-content-center">
                                 Otros Rubros del Patrimonio Neto
                             </h5>
-                            <RadzenStack class="mt-2 mb-2">
+                            <RadzenStack  class="mt-2 mb-2">
                                 <RadzenFormField Text="Denominación" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="@denominacionDto" id="txtAddress" />
+                                    <RadzenTextBox @bind-Value=@rubroDto.denominacion id="txtAddress" />
                                 </RadzenFormField>
-                                <small id="tipoBalanceError" class="text-danger">@denominacionError</small>
+                                     
                             </RadzenStack>
                         </div>
 
-                        <RadzenStack class="mt-2 mb-2">
-                            <RadzenFormField Text="Pasivo No Corriente" Style="width:100%">
-                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@importeDto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
+                        <RadzenStack  class="mt-2 mb-2">
+                            <RadzenFormField   Text="Importe" Style="width:100%">
+                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@rubroDto.importe InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Change="insertEECC" Style="width:100%" />
                             </RadzenFormField>
-                            <small id="tipoBalanceError" class="text-danger">@pasivoNoCorrienteError</small>
+                                    <ValidationMessage For="@(()=>rubroDto.importe)" />
                         </RadzenStack>
 
                         <RadzenButton ButtonStyle="ButtonStyle.Primary" class="d-flex justify-content-center" Click="@insertRubro">Agregar</RadzenButton>
 
                     </div>
+                        </Form>
                 </div>
+
+               
 
                 <RadzenGrid Data="estadoContableDto.otrosRubros.AsEnumerable()" TItem="RubroPatrimonioNetoDto">
                     <Columns>
@@ -320,6 +345,7 @@
                     </Columns>
                 </RadzenGrid>
             </div>
+            </EditForm>
         </div>
     </div>
     </body>
@@ -328,157 +354,142 @@
 
 
 @code {
-    
-        private CultureInfo argentinianCulture = new CultureInfo("es-AR");
+
+    private CultureInfo argentinianCulture = new CultureInfo("es-AR");
 
 
-        [Parameter]
-        public string? TipoEntidad { get; set; }
+    [Parameter]
+    public string? TipoEntidad { get; set; }
 
-        private string tipoBalanceError = "";
-        private string fechaInicioError = "";
-        private string fechaAsambleaError = "";
-        private string fechaEstadoError = "";
-        private string fechaReunionDirectorioError = "";
-        private string cajaYBancosError = "";
-        private string inversionesError = "";
-        private string bienesDeCambioError = "";
-        private string activoCorrienteRestanteError = "";
-        private string activoNoCorrienteRestanteError = "";
-        private string ajusteCapitalError = "";
-        private string aportesIrrevocablesError = "";
-        private string bienesDeUsoError = "";
-        private string capitalSuscriptoError = "";
-        private string deudasPasivoCorrienteError = "";
-        private string deudasPasivoNoCorrienteError = "";
-        private string gananciasPerdidasEjercicioError = "";
-        private string gananciasReservadasError = "";
-        private string perdidasAcumuladasError = "";
-        private string primaEmisionError = "";
-        private string propiedadesDeInversionError = "";
-        private string reservaLegalError = "";
-        //OtrosRubros
-        private string denominacionError = "";
-        private string pasivoNoCorrienteError = "";
-        private string denominacionDto = "";
-        private decimal importeDto = 0;
+    private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
+    private EstadoContableDto estadoContableDto = new EstadoContableDto();
 
-        private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
-        private EstadoContableDto estadoContableDto = new EstadoContableDto();
-        private Boolean statusPatrimonioNeto = false;
+    private Boolean statusPatrimonioNeto = false;
 
 
 
-        [Parameter]
-        public string? balid { get; set; }
+    [Parameter]
+    public string? balid { get; set; }
 
-        [Parameter]
-        public string sesionId { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
 
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Load()
+    {
+        ResponseDTO<BalanceDto> rsp = new();
+        try
         {
-            await Load();
-            await base.OnInitializedAsync();
-        }
-
-        private async Task Load()
-        {
-            ResponseDTO<BalanceDto> rsp = new();
-            try
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            if (sesionId == null)
             {
-                sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
-                if (sesionId == null)
-                {
-                    var sesionRespuesta = await sesionService.getNewSession();
-                    sesionId = sesionRespuesta.Result;
-                    sessionStorage.SetItemAsync("SessionId", sesionId);
-                }
-                else
-                {
-                    var rst = await sesionService.getBalanceId(sesionId);
-                    if (rst is not null)
-                    {
-                        balid = rst;
-                        rsp = await balanceService.getBalance(balid);
-                        if (rsp.IsSuccess)
-                        {
-                            TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
-
-                            estadoContableDto.fechaInicio = rsp.Result.Caratula.FechaInicio;
-                            estadoContableDto.fechaEstado = rsp.Result.Caratula.FechaDeCierre;
-                            estadoContableDto = new EstadoContableDto(rsp.Result.EstadoContable);
-                        }
-                    }
-                }
-
-                StateHasChanged();
+                var sesionRespuesta = await sesionService.getNewSession();
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
-            }
-        }
-
-        private async Task<ResponseDTO<BalanceDto>> insertEECC()
-        {
-            sumatoriaTotalActivoCorriente();
-            sumatoriaTotalActivoNoCorriente();
-            sumatorialTotalActivo();
-            sumatoriaTotalPasivo();
-            resultadoPatrimonioNeto();
-            //resultadoPatNetDetailPatNeto();
-            ResponseDTO<BalanceDto> rsp = new();
-            try
-            {
-                if (checkData())
+                var rst = await sesionService.getBalanceId(sesionId);
+                if (rst is not null)
                 {
-                    estadoContableDto.SesionId = sesionId;
-                    rsp = await estadoContableService.insertEECC(estadoContableDto);
+                    balid = rst;
+                    rsp = await balanceService.getBalance(balid);
                     if (rsp.IsSuccess)
                     {
-                        rsp.Message = "Se inserto el Estado Contable sastifactoriamente";
-                    }
-                    else
-                    {
-                        rsp.Message = "No se inserto el Estado Contable";
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+
+                        estadoContableDto.fechaInicio = rsp.Result.Caratula.FechaInicio;
+                        estadoContableDto.fechaEstado = rsp.Result.Caratula.FechaDeCierre;
+                        estadoContableDto = new EstadoContableDto(rsp.Result.EstadoContable);
                     }
                 }
             }
-            catch (Exception ex)
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+        }
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> insertEECC()
+    {
+        ResponseDTO<BalanceDto> rsp = new();
+        try
+        {
+
+            estadoContableDto.totalActivo = SumaEECC.TotalActivo(estadoContableDto);
+            estadoContableDto.totalPasivo = SumaEECC.TotalPasivo(estadoContableDto);
+            estadoContableDto.activoCorriente = SumaEECC.ActivoCorriente(estadoContableDto);
+            estadoContableDto.activoNoCorriente = SumaEECC.ActivoNoCorriente(estadoContableDto);
+            estadoContableDto.patrimonioNeto = SumaEECC.PatrimonioNeto(estadoContableDto);
+            decimal OtrosRubrosPatrimonioNeto = SumaEECC.OtrosRubrosPatrimonioNeto(estadoContableDto);
+
+            if(estadoContableDto.patrimonioNeto != OtrosRubrosPatrimonioNeto)
             {
-                rsp.Message = ex.Message;
+                var alerta = await _swal.FireAsync(new SweetAlertOptions
+                    {
+                        Title = "Error en el balanceo",
+                        Text = $"El total del patrimonio neto: ${estadoContableDto.patrimonioNeto} ARS no coincide con el total de Rubros del Patrimonio neto: ${OtrosRubrosPatrimonioNeto} ARS",
+                        Icon = SweetAlertIcon.Warning,
+                        ConfirmButtonText = "Cerrar"
+                      
+                    });
+                
             }
 
-            return rsp;
+            StateHasChanged();
+
+            estadoContableDto.SesionId = sesionId;
+            rsp = await estadoContableService.insertEECC(estadoContableDto);
+            if (rsp.IsSuccess)
+            {
+                rsp.Message = "Se inserto el Estado Contable sastifactoriamente";
+            }
+            else
+            {
+                rsp.Message = "No se inserto el Estado Contable";
+            }
+
+        }
+        catch (Exception ex)
+        {
+            rsp.Message = ex.Message;
         }
 
-        private async Task<ResponseDTO<BalanceDto>> insertRubro()
+        return rsp;
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> insertRubro()
+    {
+        var rsp = new ResponseDTO<BalanceDto>();
+        try
         {
-            var rsp = new ResponseDTO<BalanceDto>();
-            try
+            rubroDto.SesionId = sesionId;
+            RubroDtoValidator rubrodtovalidator = new();
+
+            ValidationResult resultadoValidacion = rubrodtovalidator.Validate(rubroDto);
+
+            if (resultadoValidacion.IsValid)
             {
-                if (checkDataOtrosRubros())
+                rsp = await estadoContableService.insertRubro(rubroDto);
+                if (rsp.IsSuccess)
                 {
-                    rubroDto.codigo = Guid.NewGuid().ToString();
-                    rubroDto.denominacion = denominacionDto;
-                    rubroDto.importe = importeDto;
-                    rubroDto.SesionId = sesionId;
-                    rsp = await estadoContableService.insertRubro(rubroDto);
-                    if (rsp.IsSuccess)
+                    var result = rsp.Result;
+                    if (result != null)
                     {
-                        var result = rsp.Result;
-                        if (result != null)
-                        {
-                            setListOtrosRubros(result.EstadoContable.OtrosRubros);
-                            rsp.Message = "Se inserto el rubro sastifactoriamente";
-                            StateHasChanged();
-                        }
-                    }
-                    else
-                    {
-                        rsp.Message = "No se inserto el rubro";
+                        setListOtrosRubros(result.EstadoContable.OtrosRubros);
+                        rsp.Message = "Se inserto el rubro sastifactoriamente";
+                        StateHasChanged();
                     }
                 }
+            }
             }
             catch (Exception ex)
             {
@@ -514,122 +525,11 @@
             return respuesta;
         }
 
-        private void sumatoriaTotalActivoCorriente()
-        {
-            var sumatoriaTotalActivoCorriente = Convert.ToDecimal(estadoContableDto.cajaYBancos) + estadoContableDto.inversionesActivoCorriente + estadoContableDto.bienesDeCambio + estadoContableDto.activoCorrienteRestante;
-            estadoContableDto.activoCorriente = sumatoriaTotalActivoCorriente;
-        }
+      
 
-        private void sumatoriaTotalActivoNoCorriente()
-        {
-            var sumatoriaTotalActivoNoCorriente = estadoContableDto.bienesDeCambio + estadoContableDto.propiedadesDeInversion + estadoContableDto.inversionesActivoNoCorriente + estadoContableDto.activoNoCorrienteRestante;
-            estadoContableDto.activoNoCorriente = sumatoriaTotalActivoNoCorriente;
-        }
+      
 
-        private void sumatorialTotalActivo()
-        {
-            var sumatorialTotalActivo = estadoContableDto.activoCorriente + estadoContableDto.activoNoCorriente;
-            estadoContableDto.totalActivo = sumatorialTotalActivo;
-        }
-
-        private void sumatoriaTotalPasivo()
-        {
-            var sumatoriaTotalPasivo = estadoContableDto.deudorPasivoCorriente + estadoContableDto.deudorPasivoNoCorriente;
-            estadoContableDto.totalPasivo = sumatoriaTotalPasivo;
-        }
-
-        private decimal resultadoPatrimonioNeto()
-        {
-            if (estadoContableDto.totalActivo != 0 && estadoContableDto.totalPasivo != 0)
-            {
-                return estadoContableDto.patrimonioNeto = estadoContableDto.totalActivo - estadoContableDto.totalPasivo;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        private bool resultadoPatNetDetailPatNeto()
-        {
-            if (estadoContableDto.otrosRubros.Count > 0)
-            {
-                decimal sumatoriaImporte = 0;
-                foreach (var rubros in estadoContableDto.otrosRubros)
-                {
-                    sumatoriaImporte = sumatoriaImporte + rubros.importe;
-                }
-
-                var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.primaEmision + estadoContableDto.gananciasReservadas + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + estadoContableDto.reservaLegal + sumatoriaImporte;
-                if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
-                {
-                    return statusPatrimonioNeto = false;
-                }
-                else
-                {
-                    return statusPatrimonioNeto = true;
-                }
-            }
-            else
-            {
-                var sumatoriaDetallePatNeto = estadoContableDto.capitalSuscripto + estadoContableDto.ajusteCapital + estadoContableDto.aportesIrrevocables + estadoContableDto.primaEmision + estadoContableDto.gananciasReservadas + estadoContableDto.perdidasAcumuladas + estadoContableDto.gananciasPerdidasEjercicio + estadoContableDto.reservaLegal;
-                if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
-                {
-                    return statusPatrimonioNeto = false;
-                }
-                else
-                {
-                    return statusPatrimonioNeto = true;
-                }
-            }
-
-            return statusPatrimonioNeto;
-        }
-
-        private bool checkDataOtrosRubros()
-        {
-            // Denominacion
-            if (!string.IsNullOrEmpty(denominacionDto))
-            {
-                if (Validator.IsNumeric(denominacionDto))
-                {
-                    denominacionError = "No puedes ingresar un valor numérico";
-                    return false;
-                }
-                else
-                {
-                    denominacionError = "";
-                }
-            }
-            else
-            {
-                denominacionError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            if (importeDto > 0)
-            {
-                if (!Validator.IsNumeric(importeDto.ToString()))
-                {
-                    pasivoNoCorrienteError = "No puedes ingresar con caracteres";
-                    return false;
-                }
-                else
-                {
-                    pasivoNoCorrienteError = "";
-                }
-            }
-            else
-            {
-                pasivoNoCorrienteError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //OtrosRubros
-            denominacionError = "";
-            pasivoNoCorrienteError = "";
-            return true;
-        }
+       
 
         public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
         {
@@ -643,422 +543,7 @@
             }
         }
 
-        private string FormatWithThousandSeparators(decimal value)
-        {
-            return string.Format("{0:N}", value);
-        }
-
-        private bool checkData()
-        {
-            // Tipo Balance
-            if (!string.IsNullOrEmpty(estadoContableDto.tipoBalance))
-            {
-                if (Validator.IsNumeric(estadoContableDto.tipoBalance))
-                {
-                    tipoBalanceError = "No puedes ingresar un valor numérico";
-                    return false;
-                }
-                else
-                {
-                    tipoBalanceError = "";
-                }
-            }
-            else
-            {
-                tipoBalanceError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Fecha Inicio
-            if (estadoContableDto.fechaInicio == null)
-            {
-                fechaInicioError = "Seleccioná la fecha correspondiente";
-                return false;
-            }
-            else
-            {
-                fechaInicioError = "";
-            }
-
-            //Fecha Estado
-            if (estadoContableDto.fechaEstado == null)
-            {
-                fechaEstadoError = "Seleccioná la fecha correspondiente";
-                return false;
-            }
-            else
-            {
-                fechaEstadoError = "";
-            }
-
-            //Fecha Reunion Directorio
-            if (estadoContableDto.fechaReunionDirectorio == null)
-            {
-                fechaReunionDirectorioError = "Seleccioná la fecha correspondiente";
-                return false;
-            }
-            else
-            {
-                fechaReunionDirectorioError = "";
-            }
-
-            //Fecha Asamblea
-            if (estadoContableDto.fechaAsamblea == null)
-            {
-                fechaAsambleaError = "Seleccioná la fecha correspondiente";
-                return false;
-            }
-            else
-            {
-                fechaAsambleaError = "";
-            }
-
-            //Caja y Bancos
-            if (!string.IsNullOrEmpty(estadoContableDto.cajaYBancos.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.cajaYBancos.ToString()))
-                {
-                    cajaYBancosError = "No puedes ingresar caracteres en el campo ";
-                    return false;
-                }
-                else
-                {
-                    cajaYBancosError = "";
-                }
-            }
-            else
-            {
-                cajaYBancosError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Inversiones
-            if (!string.IsNullOrEmpty(estadoContableDto.inversionesActivoCorriente.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.inversionesActivoCorriente.ToString()))
-                {
-                    inversionesError = "No puedes ingresar caracteres en el campo ";
-                    return false;
-                }
-                else
-                {
-                    inversionesError = "";
-                }
-            }
-            else
-            {
-                inversionesError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Bienes de Cambio
-            if (!string.IsNullOrEmpty(estadoContableDto.bienesDeCambio.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.bienesDeCambio.ToString()))
-                {
-                    bienesDeCambioError = "No puedes ingresar caracteres en el campo ";
-                    return false;
-                }
-                else
-                {
-                    bienesDeCambioError = "";
-                }
-            }
-            else
-            {
-                bienesDeCambioError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Activo  Corriente Restante
-            if (!string.IsNullOrEmpty(estadoContableDto.activoCorrienteRestante.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.activoCorrienteRestante.ToString()))
-                {
-                    activoCorrienteRestanteError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    activoCorrienteRestanteError = "";
-                }
-            }
-            else
-            {
-                activoCorrienteRestanteError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Bienes de Uso
-            if (!string.IsNullOrEmpty(estadoContableDto.bienesDeUso.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.bienesDeUso.ToString()))
-                {
-                    bienesDeUsoError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    bienesDeUsoError = "";
-                }
-            }
-            else
-            {
-                bienesDeUsoError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Propiedades de Inversion
-            if (!string.IsNullOrEmpty(estadoContableDto.propiedadesDeInversion.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.propiedadesDeInversion.ToString()))
-                {
-                    propiedadesDeInversionError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    propiedadesDeInversionError = "";
-                }
-            }
-            else
-            {
-                propiedadesDeInversionError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Activo No Corriente Restante
-            if (!string.IsNullOrEmpty(estadoContableDto.activoNoCorrienteRestante.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.activoNoCorrienteRestante.ToString()))
-                {
-                    activoNoCorrienteRestanteError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    activoNoCorrienteRestanteError = "";
-                }
-            }
-            else
-            {
-                activoNoCorrienteRestanteError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Deudas del Pasivo Corriente
-            if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoCorriente.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
-                {
-                    deudasPasivoCorrienteError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    deudasPasivoCorrienteError = "";
-                }
-            }
-            else
-            {
-                deudasPasivoCorrienteError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Deudas del Pasivo No Corriente
-            if (!string.IsNullOrEmpty(estadoContableDto.deudorPasivoNoCorriente.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.deudorPasivoNoCorriente.ToString()))
-                {
-                    deudasPasivoNoCorrienteError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    deudasPasivoNoCorrienteError = "";
-                }
-            }
-            else
-            {
-                deudasPasivoNoCorrienteError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Capital Sucripto
-            if (!string.IsNullOrEmpty(estadoContableDto.capitalSuscripto.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.capitalSuscripto.ToString()))
-                {
-                    capitalSuscriptoError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    capitalSuscriptoError = "";
-                }
-            }
-            else
-            {
-                capitalSuscriptoError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Ajuste al capital
-            if (!string.IsNullOrEmpty(estadoContableDto.ajusteCapital.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.ajusteCapital.ToString()))
-                {
-                    ajusteCapitalError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    ajusteCapitalError = "";
-                }
-            }
-            else
-            {
-                ajusteCapitalError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Aporte Irrevocables
-            if (!string.IsNullOrEmpty(estadoContableDto.aportesIrrevocables.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.aportesIrrevocables.ToString()))
-                {
-                    aportesIrrevocablesError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    aportesIrrevocablesError = "";
-                }
-            }
-            else
-            {
-                aportesIrrevocablesError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Prima Emision
-            if (!string.IsNullOrEmpty(estadoContableDto.primaEmision.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.primaEmision.ToString()))
-                {
-                    primaEmisionError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    primaEmisionError = "";
-                }
-            }
-            else
-            {
-                primaEmisionError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Ganancias Reservadas
-            if (!string.IsNullOrEmpty(estadoContableDto.gananciasReservadas.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.gananciasReservadas.ToString()))
-                {
-                    gananciasReservadasError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    gananciasReservadasError = "";
-                }
-            }
-            else
-            {
-                gananciasReservadasError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Perdidas Acumuladas
-            if (!string.IsNullOrEmpty(estadoContableDto.perdidasAcumuladas.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.perdidasAcumuladas.ToString()))
-                {
-                    perdidasAcumuladasError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    perdidasAcumuladasError = "";
-                }
-            }
-            else
-            {
-                perdidasAcumuladasError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Ganancias  Perdidas del Ejercicio
-            if (!string.IsNullOrEmpty(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.gananciasPerdidasEjercicio.ToString()))
-                {
-                    gananciasPerdidasEjercicioError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    gananciasPerdidasEjercicioError = "";
-                }
-            }
-            else
-            {
-                gananciasPerdidasEjercicioError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Reserva Legal
-            if (!string.IsNullOrEmpty(estadoContableDto.reservaLegal.ToString()))
-            {
-                if (!Validator.IsNumeric(estadoContableDto.reservaLegal.ToString()))
-                {
-                    reservaLegalError = "No puedes ingresar caracteres en el campo";
-                    return false;
-                }
-                else
-                {
-                    reservaLegalError = "";
-                }
-            }
-            else
-            {
-                reservaLegalError = "El campo no puede estar vacio";
-                return false;
-            }
-
-            tipoBalanceError = "";
-            fechaInicioError = "";
-            fechaAsambleaError = "";
-            fechaEstadoError = "";
-            fechaReunionDirectorioError = "";
-            cajaYBancosError = "";
-            inversionesError = "";
-            bienesDeCambioError = "";
-            activoCorrienteRestanteError = "";
-            activoNoCorrienteRestanteError = "";
-            ajusteCapitalError = "";
-            aportesIrrevocablesError = "";
-            bienesDeUsoError = "";
-            capitalSuscriptoError = "";
-            deudasPasivoCorrienteError = "";
-            deudasPasivoNoCorrienteError = "";
-            gananciasPerdidasEjercicioError = "";
-            gananciasReservadasError = "";
-            primaEmisionError = "";
-            perdidasAcumuladasError = "";
-            propiedadesDeInversionError = "";
-            reservaLegalError = "";
-            return true;
-        }
+      
+       
     }
 }

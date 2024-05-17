@@ -9,6 +9,7 @@ namespace Balances.Web.Services.FluentValidation
         {
             RuleFor(_ => _.NroCorrelativoNroCUIL).Cascade(CascadeMode.Stop)
                                .NotEmpty().WithMessage("Debe ingresar el correlativo");
+
         }
     }
 }

@@ -1,8 +1,6 @@
-﻿using Balances.Model;
-
-namespace Balances.DTO
+﻿namespace Balances.DTO
 {
-   public class RubrosPatrimonioNetoDto
+    public class RubrosPatrimonioNetoDto
     {
         /*public RubrosPatrimonioNetoDto() { }
 

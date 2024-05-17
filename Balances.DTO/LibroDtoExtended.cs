@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Balances.DTO
+﻿namespace Balances.DTO
 {
     public class LibroDtoExtended
     {
@@ -45,13 +43,14 @@ namespace Balances.DTO
             {
                 Nombre = OldValue.Nombre;
                 NumeroRubrica = OldValue.NumeroRubrica;
-                FechaRubrica = OldValue.FechaRubrica ;
+                FechaRubrica = OldValue.FechaRubrica;
                 FechaUltimaRegistracion = OldValue.FechaUltimaRegistracion;
                 FolioObraTranscripcion = OldValue.FolioObraTranscripcion;
                 FolioUltimaRegistracion = OldValue.FolioUltimaRegistracion;
 
             }
-            else {
+            else
+            {
                 Nombre = "";
                 NumeroRubrica = "";
                 FechaRubrica = null;
@@ -59,7 +58,7 @@ namespace Balances.DTO
                 FolioObraTranscripcion = "";
                 FolioUltimaRegistracion = "";
             }
-          
+
         }
 
         public LibroDtoExtended(LibroDtoExtended other)

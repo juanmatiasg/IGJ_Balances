@@ -16,6 +16,12 @@
         public DateTime FechaInformeAuditorExt { get; set; }
         public string NroLegalInfoAudExt { get; set; }
 
+        public string Observaciones { get; set; }
+        public string Opinion { get; set; }
+        public bool EsSocioEstudio { get; set; }
+        public string TomoEstudio { get; set; }
+        public string FolioEstudio { get; set; }
+
 
     }
 }

@@ -3,6 +3,8 @@
     public class Libros
     {
 
+
+
         public Libro Memoria { get; set; }
         public Libro Administracion { get; set; }
         public Libro Asamblea { get; set; }

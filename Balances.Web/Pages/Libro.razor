@@ -1,10 +1,5 @@
-﻿
-
-
-@using Balances.DTO;
+﻿@using Balances.DTO;
 @using Balances.Utilities;
-
-
 
 
 @if (libext.Tipo.Equals(ESTADO_CONTABLE) || libext.Tipo.Equals(INFORME_ORGANO))
@@ -12,40 +7,47 @@
     if (!libext.Original.NoSabeNoContesta)
     {
         <div class="row d-flex justify-content-center">
-
+         @*    <EditForm Model="libext"> *@
+          @*    <FluentValidationValidator/> *@
             <div class="col-md-2 mt-1">
                 <label>@libext.Tipo</label>
             </div>
             <div class="col-md-2 mt-1">
                 <input placeholder="Nombre del Libro" class="form-control" @bind="libext.Nombre" @onblur="OnBlurHandler" />
-                <small id="msgError" class="text-danger">@msgErrorNombre</small>
+               @*  <ValidationMessage For="@(()=> libext.Nombre)" /> *@
+               <small id="msgError" class="text-danger">@msgErrorNombre</small> 
             </div>
 
             <div class="col-md-1  mt-1">
                 <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
-                <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
-            </div>
+                <small id="msgError" class="text-danger">@msgErrorNroRubrica</small> 
+                   @*  <ValidationMessage For="@(()=> libext.NumeroRubrica)" /> *@
+                </div>
 
             <div class="col-md-1  mt-1">
                 <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica @onblur="OnBlurHandler" />
-                <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
+             <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small> 
+                 @*   <ValidationMessage For="@(()=> libext.FechaRubrica)" /> *@
             </div>
 
             <div class="col-md-1  mt-1">
                 <input placeholder="Folio" class="form-control" @bind=libext.FolioObraTranscripcion @onblur="OnBlurHandler" />
-                <small id="msgError" class="text-danger">@msgErrorFolio</small>
+                 @*    <ValidationMessage For="@(()=> libext.NumeroRubrica)" /> *@
+                <small id="msgError" class="text-danger">@msgErrorFolio</small> 
             </div>
 
             <div class="col-md-1  mt-1">
                 <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
-                <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
+                @*     <ValidationMessage For="@(()=> libext.FechaUltimaRegistracion)" /> *@
+                <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small> 
 
             </div>
 
 
             <div class="col-md-1  mt-1">
                 <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
-                <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
+              @*       <ValidationMessage For="@(()=> libext.FolioUltimaRegistracion)" /> *@
+               <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small> 
             </div>
 
             <div class="col-md-1 mt-1">
@@ -55,11 +57,15 @@
                 </div>
             </div>
             <small id="msgError" class="text-danger"></small>
+        @*    </EditForm> *@
         </div>
+        
     }
     else
     {
+       
         <div class="row d-flex justify-content-center">
+           @*  <EditForm Model="libext"> *@
             <div class="col-md-2 mt-1">
                 <label>@libext.Tipo</label>
             </div>
@@ -82,7 +88,7 @@
 
             <div class="col-md-1  mt-1">
                 <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" disabled />
-                <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
+             
             </div>
 
             <div class="col-md-1 mt-1">
@@ -91,153 +97,86 @@
                     <label class="form-check-label">N/C</label>
                 </div>
             </div>
+          @*   </EditForm> *@
         </div>
     }
 }
 else
 {
     <div class="row d-flex justify-content-center">
-
+      @*     <EditForm Model="libext"> *@
+      @*    <FluentValidationValidator/> *@
         <div class="col-md-2 mt-1">
             <label>@libext.Tipo</label>
         </div>
         <div class="col-md-2 mt-1">
             <input placeholder="Nombre del Libro" class="form-control" @bind="libext.Nombre" @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorNombre</small>
+             @*    <ValidationMessage For="@(()=> libext.Nombre)" /> *@
+             <small id="msgError" class="text-danger">@msgErrorNombre</small> 
         </div>
 
         <div class="col-md-1  mt-1">
             <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
+               @*  <ValidationMessage For="@(()=> libext.NumeroRubrica)" /> *@
+            <small id="msgError" class="text-danger">@msgErrorNroRubrica</small> 
         </div>
 
         <div class="col-md-1  mt-1">
-            <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind= "libext.FechaRubrica" @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
+            <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind="libext.FechaRubrica" @onblur="OnBlurHandler" />
+              @*   <ValidationMessage For="@(()=> libext.FechaRubrica)" /> *@
+            <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small> 
         </div>
 
         <div class="col-md-1  mt-1">
             <input placeholder="Folio" class="form-control" @bind=libext.FolioObraTranscripcion @onblur="OnBlurHandler" />
+           @*      <ValidationMessage For="@(()=> libext.FolioObraTranscripcion)" /> *@
             <small id="msgError" class="text-danger">@msgErrorFolio</small>
         </div>
 
         <div class="col-md-1  mt-1">
             <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
             <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
+             @*    <ValidationMessage For="@(()=> libext.FechaUltimaRegistracion)" /> *@
 
         </div>
 
         <div class="col-md-1  mt-1">
             <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
+             @*    <ValidationMessage For="@(()=> libext.FolioUltimaRegistracion)" /> *@
             <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
         </div>
 
         <div class="col-md-1 mt-1">
         </div>
-
+      @*   </EditForm> *@
     </div>
 }
-<!--
 
-    <div class="row d-flex justify-content-center">
+   @code{
 
-        <div class="col-md-2 mt-1">
-            <label>@libext.Tipo</label>
-        </div>
-        <div class="col-md-2 mt-1">
-            <input placeholder="Nombre del Libro" class="form-control" @bind="libext.Nombre" @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorNombre</small>
-        </div>
-
-        <div class="col-md-1  mt-1">
-            <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
-        </div>
-
-        <div class="col-md-1  mt-1">
-            <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
-        </div>
-
-        <div class="col-md-1  mt-1">
-            <input placeholder="Folio" class="form-control" @bind=libext.FolioObraTranscripcion @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorFolio</small>
-        </div>
-
-        <div class="col-md-1  mt-1">
-            <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
-
-        </div>
-
-
-        <div class="col-md-1  mt-1">
-            <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
-            <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
-        </div>
-
-        <div class="col-md-1 mt-1">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" @onblur="OnBlurHandler" />
-                <label class="form-check-label">N/C</label>
-            </div>
-        </div>
-        <small id="msgError" class="text-danger"></small>
-    </div>
-}
-else
-{
-    <div class="row d-flex justify-content-center">
-        <div class="col-md-2 mt-1">
-            <label>@libext.Tipo</label>
-        </div>
-        <div class="col-md-2 mt-1">
-            <input placeholder="N/C" @bind="libext.Nombre" class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-        <div class="col-md-1  mt-1">
-            <input placeholder="N/C" @bind=libext.NumeroRubrica class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-        <div class="col-md-1  mt-1">
-            <input type="date" placeholder="N/C" @bind=libext.FechaRubrica class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-        <div class="col-md-1  mt-1">
-            <input placeholder="N/C" @bind=libext.FolioObraTranscripcion class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-        <div class="col-md-1  mt-1">
-            <input type="date" @bind=libext.FechaUltimaRegistracion placeholder="N/C" class="form-control" disabled @onblur="OnBlurHandler" />
-        </div>
-
-
-        <div class="col-md-1  mt-1">
-            <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler"  disabled/>
-            <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
-        </div>
-
-        <div class="col-md-1 mt-1">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" @onblur="OnBlurHandler" />
-                <label class="form-check-label">N/C</label>
-            </div>
-        </div>
-    </div>
-}
--->
-
-@code {
-
+           
     private string msgErrorFolio = "";
     private string msgErrorNroRubrica = "";
     private string msgErrorNombre = "";
-    private string msgErrorFechaRubrica = "";    
+    private string msgErrorFechaRubrica = "";
     private string msgErrorFechaUltimaRegistracion = "";
     private string msgErrormsgErrorFolioUltimaRegistracion = "";
     private const string ESTADO_CONTABLE = "Estados Contables Consolidados";
     private const string INFORME_ORGANO = "Informe Organo Fiscalización";
 
+
     [Parameter]
-    public LibroDto libroP {
-        set { libext.Original = value;}
-        get { return libext.Original; }
+    public LibroDto libroP
+    {
+        set
+        {
+            libext.Original = value;
+        }
+
+        get
+        {
+            return libext.Original;
+        }
     }
 
     private LibroDtoExtended libext = new LibroDtoExtended();
@@ -249,11 +188,8 @@ else
     [Parameter]
     public EventCallback<LibroDto> OnBlur { get; set; }
 
-
-
     private async Task OnBlurHandler()
     {
-        
         await OnBlur.InvokeAsync(libroP);
 
         if (checkData())
@@ -262,8 +198,6 @@ else
         }
     }
 
-
-   
     private bool checkData()
     {
         // Nombre
@@ -315,7 +249,6 @@ else
             msgErrorFolio = "El campo no puede estar vacío";
             return false;
         }
-    
         else
         {
             msgErrorFolio = "";
@@ -338,7 +271,6 @@ else
             msgErrormsgErrorFolioUltimaRegistracion = "El campo no puede estar vacío";
             return false;
         }
-
         else
         {
             msgErrormsgErrorFolioUltimaRegistracion = "";
@@ -348,5 +280,4 @@ else
         return true;
     }
 
-
-}
+   }

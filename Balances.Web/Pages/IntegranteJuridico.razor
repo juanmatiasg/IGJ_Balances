@@ -81,7 +81,7 @@
                         <RadzenStack class="d-flex justify-content-center mt-2">
                         <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@addPersonaJuridica" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
                         </RadzenStack>
-                </EditForm>|
+                </EditForm>
                     </div>
             </div>
             <div class="col-md-6">
@@ -91,15 +91,15 @@
                         Integrantes
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered">
+                        <table class="table table-striped">
                             <thead>
                                 <tr>
                                    
                                     <th scope="col">Denominación</th>
-                                    <th scope="col">Nro Documento</th>
-                                    <th scope="col">CUIT</th>
+                                    <th scope="col"> CUIT</th>
+                                    <th scope="col">Cuotas</th>
                                     <th scope="col">Cantidad</th>
-                                    <th scope="col">Acción</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             @foreach (var personaJuridica in listPersonaJuridica)
@@ -109,11 +109,11 @@
                                        
                                         <td>@personaJuridica.Denominacion</td>
                                         <td>@personaJuridica.NroFiscal</td>
-                                        <td>@personaJuridica.NroFiscal</td>
-                                        <td>@personaJuridica.Cuotas / @personaJuridica.Votos </td>
+                                        <td>@personaJuridica.Cuotas</td>
+                                        <td>@personaJuridica.Votos </td>
 
                                         <td>
-                                            <button type="button" class="btn btn-danger" @onclick="() => deletePersonaJuridica(personaJuridica)">Eliminar</button>
+                                        <button type="button" class="btn btn-outline-danger" @onclick="() => deletePersonaJuridica(personaJuridica)"><i class="bi bi-trash3"></i></button>
                                         </td>
                                     </tr>
                                 </tbody>

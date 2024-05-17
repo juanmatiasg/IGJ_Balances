@@ -35,7 +35,46 @@ namespace Balances.Web.Services.FluentValidation
             RuleFor(_ => _.FechaInformeAuditorExt).Cascade(CascadeMode.Stop)
                         .NotEmpty().WithMessage("Debe ingresar la fecha de informe");
 
+            RuleFor(_ => _.Opinion).Cascade(CascadeMode.Stop)
+                        .NotEmpty().WithMessage("Debe ingresar la opinion del informe");
 
+
+            RuleFor(_ => _.TomoEstudio).Cascade(CascadeMode.Stop)
+                      .Must(ValidaTomoEstudio).WithMessage("Debe ingresar el tomo del estudio");
+
+
+            RuleFor(_ => _.FolioEstudio).Cascade(CascadeMode.Stop)
+                     .Must(ValidaFolioEstudio).WithMessage("Debe ingresar el folio del estudio");
+
+
+        }
+
+        private bool ValidaTomoEstudio(ContadorDto model, string TomoEstudio)
+        {
+
+            if (model.EsSocioEstudio && TomoEstudio is not null)
+            {
+
+                return true;
+
+            }
+
+
+            return false;
+        }
+
+        private bool ValidaFolioEstudio(ContadorDto model, string FolioEstudio)
+        {
+
+            if (model.EsSocioEstudio && FolioEstudio is not null)
+            {
+
+                return true;
+
+            }
+
+
+            return false;
         }
     }
 }

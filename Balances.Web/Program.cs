@@ -6,6 +6,7 @@ using Blazored.SessionStorage;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -47,6 +48,8 @@ builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
 // R A D Z E N
 builder.Services.AddRadzenComponents();
 
+// S W E E T  A L E RT
+builder.Services.AddSweetAlert2();
 
 // Ejemplo de configuración para ASP.NET Core
 builder.Services.Configure<CookiePolicyOptions>(options =>
