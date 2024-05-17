@@ -12,6 +12,7 @@
         public long Tamaño { get; set; }
         public string ContentType { get; set; }
 
+        public byte[] Binario { get; set; }
 
     }
 }

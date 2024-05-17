@@ -53,11 +53,13 @@
                     </RadzenStack>
 
                     <RadzenCard>
-                        
+                    
+                      
                         <RadzenUpload id="ddUpload" @ref="uploadDD" ChooseText="Arrastre y suelte aquí o haga clic para elegir archivos" Auto="false" Multiple="true" Url="Archivo/InsertArchivos" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
-                                      Progress=@(args => OnProgress(args)) class="w-100" />
-                        <RadzenButton Text="Upload" Click=@(args => uploadDD.Upload()) class="d-block mt-4" />
-                    </RadzenCard>
+                                      Progress=@(args => OnProgress(args)) class="w-100" Change="@(args =>OnChange(args))" />
+                        <RadzenButton  Icon="upload" Text="Adjuntar documento" Click=@(args => uploadDD.Upload()) class="d-block mt-4" />
+                       
+                   </RadzenCard>
 
 
                        
@@ -100,7 +102,5 @@
 
     @code{
 
-      
-        
   
     }

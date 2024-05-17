@@ -1,7 +1,9 @@
 ﻿using Balances.DTO;
 using Balances.Web.Services.Implementation;
 using Newtonsoft.Json;
+using OneOf.Types;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
 using System.Text;
 
 
@@ -23,7 +25,7 @@ namespace Balances.Web.Services.Contracts
         {
         
             try
-            {
+            { 
 
                 using var response = await _httpClient.PostAsJsonAsync("Archivo/InsertArchivos", files);
 
@@ -74,7 +76,7 @@ namespace Balances.Web.Services.Contracts
 
       
 
-        public async Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo)
+        public async Task<ResponseDTO<BalanceDto>> DeleteArchivo(ArchivoDTO archivo)
         {
             ResponseDTO<BalanceDto> rsp = new ResponseDTO<BalanceDto>();
             rsp.IsSuccess = false;
@@ -113,8 +115,13 @@ namespace Balances.Web.Services.Contracts
             return rsp;
         }
 
-
+        
+      
     }
+
+
+   
+
 
 
 

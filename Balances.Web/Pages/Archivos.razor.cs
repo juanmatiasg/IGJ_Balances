@@ -30,11 +30,15 @@ using System.Security.Cryptography;
 using Microsoft.Win32;
 using Blazorise.Extensions;
 using System.Net.Mime;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using System.Runtime.Intrinsics.Arm;
+using FileInfo = System.IO.FileInfo;
 
 namespace Balances.Web.Pages
 {
     public partial class Archivos
     {
+
 
         private string[] tipoDeArchivo =
         {
@@ -60,11 +64,10 @@ namespace Balances.Web.Pages
         [Parameter]
         public string sesionId { get; set; }
 
- 
+
         private string msgError = "";
         private string msgErrorTipoArchivo = "";
 
-    
         private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
         private ArchivoDTO archivo = new ArchivoDTO();
 
@@ -79,13 +82,13 @@ namespace Balances.Web.Pages
         {
             ResponseDTO<BalanceDto> rsp = new();
             sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
-            
+
             try
             {
                 if (sesionId == null)
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
-                    
+
                     sesionId = sesionRespuesta.Result!;
 
                     await sessionStorage.SetItemAsync("SessionId", sesionId);
@@ -158,21 +161,19 @@ namespace Balances.Web.Pages
             var response = new ResponseDTO<BalanceDto>();
             try
             {
-             
 
-                response = await archivoService.deleteArchivo(archivo);
-                
+                response = await archivoService.DeleteArchivo(archivo);
+
                 if (response.IsSuccess)
                 {
                     listArchivo.Remove(archivo);
 
                     await grid.Reload();
                     StateHasChanged();
-                    
-                   
                 }
 
-                else      {
+                else
+                {
                     response.Message = response.Message;
 
                 }
@@ -181,63 +182,79 @@ namespace Balances.Web.Pages
             {
                 response.Message = ex.Message;
             }
-           
+
 
             return response;
         }
 
         private async void OnProgress(UploadProgressArgs args)
         {
-            var response = new ResponseDTO<BalanceDto>();
-            try
+           
+            if (checkData())
             {
-                if (checkData())
+                if (args.Progress == 100)
                 {
-                    if (args.Progress == 100)
+
+               
+                    foreach (var file in args.Files)
                     {
-                        var archivo = new ArchivoDTO();
-                        foreach (var file in args.Files)
-                        {
-                            if (file.Size > 0)
-                            {
-                                //var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024)); // 20 MB
-                                archivo.SesionId = sesionId;
-                                archivo.Tamaño = file.Size;
-                                archivo.ContentType = "pdf";
-                                archivo.Categoria = categoria;
-                                archivo.NombreArchivo = file.Name;
-                                //archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
-                                // Calcular el progreso de la carga
+                   
+                        ArchivoDTO archivo = new ArchivoDTO();                                
+                        
 
+                        archivo.SesionId = sesionId;
+                        archivo.Tamaño = file.Size;
+                        archivo.ContentType = "pdf";
+                        archivo.Categoria = categoria;
+                        archivo.NombreArchivo = file.Name;                      
+                        
 
-                                listArchivo.Add(archivo);
-                                
-                                response = await archivoService.UploadArchivo(listArchivo);
-                               
-                                if (response.IsSuccess)
-                                {
-                                    await grid.Reload();
-                                    StateHasChanged();
-                                }
-                                else
-                                {
-                                    response.Message = $"Error uploading files";
-                                }
-                            }
-                            else
-                            {
-                                msgError = $"El archivo {file.Name} está vacío. Por favor, seleccione un archivo válido.";
-                            }
+                        listArchivo.Add(archivo);
 
-                        }
                     }
+                    await UploadFiles(listArchivo);
                 }
             }
-            catch (Exception ex)
+        }
+
+
+        private async Task<byte[]> ToByteArrayAsync(Stream stream)
+        {
+            using (var memoryStream = new MemoryStream())
             {
-                response.Message = $"An error occurred while uploading files: {ex.Message}";
+                await stream.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
             }
         }
+
+
+
+
+
+
+        private async Task<ResponseDTO<BalanceDto>> UploadFiles(List<ArchivoDTO> archivos)
+        {
+
+            ResponseDTO<BalanceDto> response = new ResponseDTO<BalanceDto>();
+
+            response = await archivoService.UploadArchivo(archivos);
+
+
+            if (response.IsSuccess)
+            {
+                await grid.Reload();
+                StateHasChanged();
+            }
+            else
+            {
+                response.Message = $"Error uploading files";
+            }
+
+
+            return response;
+
+        }
+
 
 
 
@@ -270,15 +287,18 @@ namespace Balances.Web.Pages
                 return $"{Math.Round(fileSizeInTB)} TB";
             }
         }
-        private async Task<byte[]> ToByteArrayAsync(Stream stream)
-        {
-            using (var memoryStream = new MemoryStream())
+
+        private void OnChange(UploadChangeEventArgs args) {
+            foreach (var file in args.Files)
             {
-                await stream.CopyToAsync(memoryStream);
-                return memoryStream.ToArray();
+                using var  stream = file.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
+                using var memoryStream = new MemoryStream();
+                stream.CopyTo(memoryStream);
+                byte[] fileBytes = memoryStream.ToArray();
+               
+              
             }
         }
-
-
+        
     }
 }

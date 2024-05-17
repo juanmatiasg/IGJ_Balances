@@ -26,62 +26,54 @@
 
 <body>
     <div class="page">
-        <main>
-            <header class=" d-flex justify-content-between text-white px-5  rounded-bottom-3" style="background-color:#1b2a4a; height:120px">
-                
-                    <div class="col">
-                        <img src="img/logo.png" class="img-fluid" style="height:11.8rem; width:11.8rem;" alt="Alternate Text" />
-                    </div>
+        <header class="d-flex justify-content-around align-content-center text-white z-1 m-0" style="background-color:#15153D; height:120px">
+
+            <div>
+                <img src="img/logo.png" class="img-fluid" style="height:100%; width:auto;" alt="Alternate Text" />
+            </div>
+
+            <div class="d-flex justify-content-center align-items-center">
+                <h4 >Presentación de Balances y Asamblea</h4>
+            </div>
+
+            <div>
+                <img src="img/modificado.png" class="img-fluid mt-1" style="height:100px; width:100px;" alt="Alternate Text" />
+            </div>
+
+        </header>
 
 
-                    <div class="col d-flex justify-content-center p-2">
-                        <img src="img/modificado.png" class="img-fluid" style="height:100px; width:100px;" alt="Alternate Text" />
-                    </div>
+        <RadzenStack style="width:100%">
+            <RadzenCard class="d-flex justify-content-center flex-row p-1" Style="background-color: #1b2a4a;">
+                <RadzenRow RowGap="4">
+                    <RadzenRow>                  
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0">Correlativo</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@NroCorrelativo</b></RadzenText>
+                    </RadzenRow>
+                    <RadzenRow>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light   rz-mb-0">Fecha de Cierre</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@FechaDeCierre?.ToString("dd/MM/yyyy")</b></RadzenText>
+                    </RadzenRow>
+                    <RadzenRow>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0">Denominación</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@RazonSocial &nbsp @TipoEntidad</b></RadzenText>
+                    </RadzenRow>
+                </RadzenRow>
+
+            </RadzenCard>
+        </RadzenStack>
 
 
-                    <div class="col-md-4 mt-4 p-4">
-                        <h4 class="d-flex justify-content-center">Presentación de Balances y Asamblea</h4>
-                    </div>
-                    
-                    <div class=" col-md-4 d-flex justify-content-end ">
+
+        <RadzenStack class="rz-background-color-base-200 p-4">
+            @Body
+        </RadzenStack>
 
 
-                    <RadzenCard class=" rz-border-radius-20" style="background-color:#15153D; max-height:120px">
-                        
-                        <RadzenRow RowGap="4">
-                            <RadzenColumn >
-                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex  rz-mb-0">Correlativo</RadzenText>
-                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-on-primary-light"><b>@NroCorrelativo</b></RadzenText>
-                            </RadzenColumn>
-                             <RadzenColumn >
-                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex  rz-mb-0">Fecha de Cierre</RadzenText>
-                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-on-primary-light"><b>@FechaDeCierre?.ToString("dd/MM/yyyy")</b></RadzenText>
-                             </RadzenColumn >
-                        </RadzenRow>
-                        <RadzenRow RowGap="4">
-                              <RadzenColumn >
-                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 ">Denominación</RadzenText>
-                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-on-primary-light"><b>@RazonSocial &nbsp @TipoEntidad</b></RadzenText>
-                            </RadzenColumn>
-                        </RadzenRow>
-                    </RadzenCard>
+        <footer style="background-color:#121B3A;" class="w-100  d-flex justify-content-center mt-1 p-4 rounded-top-3">
+            <img src="./img/logoFooter.png" style="width:300px; height:auto;" alt="Alternate Text" />
+        </footer>
 
-                    </div>
-               
-            </header>
-         
-            <RadzenStack class="rz-background-color-base-200 p-4" >
-                @Body
-            </RadzenStack>
-
-
-            <footer style="background-color:#121B3A;"  class="w-100  d-flex justify-content-center mt-1 p-4 rounded-top-3">
-                <img src="./img/logoFooter.png" style="width:300px; height:auto;" alt="Alternate Text" />
-            </footer>
-
-           
-        </main>
-            
     </div>
 </body>
 </html>
