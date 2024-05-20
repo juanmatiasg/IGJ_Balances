@@ -1,9 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿﻿@using System.Reflection;
+@inherits LayoutComponentBase
 
-@(new MarkupString($@"<script> _content/Radzen.Blazor/Radzen.Blazor.js""> </script>"))
-
-
-       
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,53 +12,77 @@
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap ICONS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <link href="~/css/bootstrap/background.css" rel="stylesheet">
+
 
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
-    <link href="~/css/bootstrap/background.css" rel="stylesheet">
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
-    <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js" defer></script>
-</head>
-<body>
-<div class="page">
-    <main>
-        <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom mb-3">
-                <div class="container-fluid d-flex justify-content-center">
-                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse bg-light d-flex justify-content-center" id="navbarNav">
-                            <ul class="navbar-nav ml-auto justify-content-center">
-                                <!-- Agregamos justify-content-center -->
-                                <li class="nav-item">
-                                    <a class="nav-link"><img src="img/LogoDJ.jpg" alt="Icono 1"></a>
-                                </li>
-                                <li class="nav-item navbar-separator">
-                                    <!-- Agregamos la clase navbar-separator -->
-                                    <a class="nav-link" ><img src="img/LogoIGJNuevo.jpg" alt="Icono 2"></a>
-                                </li>
-                                <li class="nav-item navbar-separator">
-                                    <!-- Agregamos la clase navbar-separator -->
-                                    <a class="nav-link"><img src="img/LogoMinJusIGJ.jpg" alt="Icono 3"></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
-            </nav>
-        </header>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
-     
+    <link href="~/css/bootstrap/background.css" rel="stylesheet">
 
+</head>
+
+<body>
+    <div class="page">
+        <header class="d-flex justify-content-around align-content-center text-white z-1 m-0" style="background-color:#15153D; height:120px">
+
+            <div>
+                <img src="img/logo.png" class="img-fluid" style="height:100%; width:auto;" alt="Alternate Text" />
+            </div>
+
+            <div class="d-flex justify-content-center align-items-center">
+                <h4>Presentación de Balances y Asamblea</h4>
+            </div>
+
+            <div>
+                <img src="img/modificado.png" class="img-fluid mt-1" style="height:100px; width:100px;" alt="Alternate Text" />
+            </div>
+
+        </header>
+
+
+        <RadzenStack style="width:100%">
+            <RadzenCard class="d-flex justify-content-center flex-row p-1" Style="background-color: #1b2a4a;">
+                <RadzenRow RowGap="4">
+                    <RadzenRow>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0">Correlativo</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@NroCorrelativo</b></RadzenText>
+                    </RadzenRow>
+                    <RadzenRow>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light   rz-mb-0">Fecha de Cierre</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@FechaDeCierre?.ToString("dd/MM/yyyy")</b></RadzenText>
+                    </RadzenRow>
+                    <RadzenRow>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0">Denominación</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@RazonSocial &nbsp @TipoEntidad</b></RadzenText>
+                    </RadzenRow>
+                </RadzenRow>
+
+            </RadzenCard>
+        </RadzenStack>
+
+
+
+        <RadzenStack class="rz-background-color-base-200 p-4">
+            @Body
+        </RadzenStack>
+
+
+        <footer style="background-color:#121B3A;" class="w-100  d-flex justify-content-center mt-1 p-4 rounded-top-3">
+            <img src="./img/logoFooter.png" style="width:300px; height:auto;" alt="Alternate Text" />
+        </footer>
+
+    </div>
 </body>
 </html>
+
+@code {
+
+
+    [Parameter] public static string? NroCorrelativo { get; set; }
+    [Parameter] public static string? TipoEntidad { get; set; }
+    [Parameter] public static string? RazonSocial { get; set; }
+    [Parameter] public static DateTime? FechaDeCierre { get; set; }
+}

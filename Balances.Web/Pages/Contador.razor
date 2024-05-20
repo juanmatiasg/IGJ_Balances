@@ -21,7 +21,7 @@
     <title>Datos del Contador Certificante</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    
+
 </head>
 
 <body>
@@ -29,138 +29,171 @@
 
     <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Contador" TramiteIniciado="true"></Navegacion>
 
+    <div class="container-fluid m-auto w-75">
+        <EditForm Model="modelo" class="d-flex gap-3 p-1 flex-column">
 
-    <div class="container-fluid">
-            <div class="col">
-                <div class="mt-4 mb-4 d-flex justify-content-center">
-                    <div class="card w-50">
-                        <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                            Datos del Contador Certificante
-                        </div>
-                        <div class="card-body">
-                        <EditForm Model="modelo">
-                            <FluentValidationValidator />
+            <!--socio presentante-->
 
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Nombre" Style="width:100%">
+            <div class="d-flex gap-3" style="color:#15153D">
+
+                <div class="border-2 p-2 rounded-2 gap-1 bg-opacity-50 d-flex flex-column" style=" width:70%;">
+
+                    <div class="card-header " style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
+                        Datos del contador presentante
+                    </div>
+
+                    <div class="d-flex ">
+
+                        <FluentValidationValidator />
+
+                        <div class="d-flex flex-column w-50">
+
+                            <div>
+                                <RadzenFormField Text="Nombre" class="mt-1">
                                     <RadzenTextBox @bind-Value="@modelo.Nombre" />
                                 </RadzenFormField>
 
                                 <ValidationMessage For="@(()=> modelo.Nombre)" />
-                            </div>
 
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Apellido" Style="width:100%">
+
+
+                                <RadzenFormField Text="Apellido" class="mt-1">
                                     <RadzenTextBox @bind-Value="@modelo.Apellido" />
                                 </RadzenFormField>
 
                                 <ValidationMessage For="@(()=> modelo.Apellido)" />
-                            </div>
-                            <div class="form-group">
-                                <label for="tipoDocumento">Tipo de Documento</label>
-                                <select class="form-select" @bind="modelo.TipoDocumento">
-                                    <option value="">--- Seleccionar un tipo de documento ---</option>
-                                    <option value="DNI">DNI</option>
-                                    <option value="Pasaporte">Pasaporte</option>
-                                    <option value="Cedula">Cédula</option>
-                                </select>
-                                <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
+
                             </div>
 
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Numero de Documento" Style="width:100%">
+                            <div>
+
+                                <RadzenFormField Text="Tipo Documento" class="mt-1">
+
+
+                                    <select class="form-select" @bind="modelo.TipoDocumento">
+                                        <option value="">--- Seleccionar un tipo de documento ---</option>
+                                        <option value="DNI">DNI</option>
+                                        <option value="Pasaporte">Pasaporte</option>
+                                        <option value="Cedula">Cédula</option>
+                                    </select>
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
+
+
+
+                                <RadzenFormField Text="Numero de Documento" class="mt-1">
                                     <RadzenTextBox @bind-Value="@modelo.NroDocumento" />
                                 </RadzenFormField>
 
                                 <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
-                            </div>
 
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Nro. de CUIL/CUIT" Style="width:100%">
+                                <RadzenFormField Text="Nro. de CUIL/CUIT" class="mt-1">
                                     <RadzenTextBox @bind-Value="@modelo.NroFiscal" />
                                 </RadzenFormField>
 
                                 <ValidationMessage For="@(()=> @modelo.NroFiscal)" />
+
                             </div>
+                        </div>
 
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Tomo" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="@modelo.Tomo" />
-                                </RadzenFormField>
+                        <div class="w-50">
 
-                                <ValidationMessage For="@(()=> @modelo.Tomo)" />
-                            </div>
-
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Folio" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="@modelo.Folio" />
-                                </RadzenFormField>
-
-                                <ValidationMessage For="@(()=> @modelo.Folio)" />
-                            </div>
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Fecha del informe del Auditor Externo" Style="width:100%">
-                                    <RadzenDatePicker @bind-Value="@modelo.FechaInformeAuditorExt" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType"  Placeholder="dd/mm/yyyy" />
-                                </RadzenFormField>
-
-                                <ValidationMessage For="@(()=> @modelo.FechaInformeAuditorExt)" />
-                            </div>
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Nro. de Legalización del Informe del Auditor Externo" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="@modelo.NroLegalInfoAudExt" />
-                                </RadzenFormField>
-
-                                <ValidationMessage For="@(()=> @modelo.NroLegalInfoAudExt)" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="Opinion">Opinion del informe</label>
-                                <select class="form-select" @bind="modelo.Opinion">
-                                    <option value="">--- Seleccionar una opinion ---</option>
-                                    <option value="Favorable">Favorable</option>
-                                    <option value="Desfavorable">Desfavorable</option>
-                                   
-                                </select>
-                                <ValidationMessage For="@(()=> modelo.Opinion)" />
-                            </div>
-                            
-                            <div class="form-group mt-2">
-                                <RadzenCheckBox @bind-Value="@modelo.EsSocioEstudio" Name="CheckBox3" />
-                                <RadzenLabel class="col-6" Text="Es Socio Estudio" Component="CheckBox3" />
-
-                                <ValidationMessage For="@(()=> modelo.EsSocioEstudio)" />
-                            </div>
-
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Tomo del Estudio" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="@modelo.TomoEstudio" />
-                                </RadzenFormField>
-
-                                <ValidationMessage For="@(()=> @modelo.TomoEstudio)" />
-                            </div>
-                            <div class="form-group mt-2">
-                                <RadzenFormField Text="Folio del Estudio" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="@modelo.FolioEstudio" />
-                                </RadzenFormField>
-
-                                <ValidationMessage For="@(()=> @modelo.FolioEstudio)" />
-                            </div>
-                            
-                            <RadzenFormField Text="Observaciones" Style="width:100%">
-                                <RadzenTextArea @bind-Value="@modelo.Observaciones" />
+                            <RadzenFormField Text="Tomo" class="mt-1">
+                                <RadzenTextBox @bind-Value="@modelo.Tomo" />
                             </RadzenFormField>
-                          
-                            <RadzenStack class="d-flex justify-content-center mt-2">
-                                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@postContador" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
-                            </RadzenStack>
-                        </EditForm>
+
+                            <ValidationMessage For="@(()=> @modelo.Tomo)" />
+
+                            <RadzenFormField Text="Folio" class="mt-1">
+                                <RadzenTextBox @bind-Value="@modelo.Folio" />
+                            </RadzenFormField>
+
+                            <ValidationMessage For="@(()=> @modelo.Folio)" />
+
+                        </div>
+
                     </div>
+
+                </div>
+
+
+                <!--SOCIO ESTUDIO-->
+
+                <div class="border-2 p-2 rounded-2 bg-opacity-50 gap-1" style="width:30%;">
+                    <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
+                        Datos del Estudio
+                    </div>
+
+                    <RadzenCheckBox @bind-Value="@modelo.EsSocioEstudio" Name="CheckBox3" />
+                    <RadzenLabel Style="font-size:x-large;" Text="Es Socio Estudio" Component="CheckBox3" />
+
+                    <ValidationMessage For="@(()=> modelo.EsSocioEstudio)" />
+
+                    <RadzenFormField Text="Tomo" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@modelo.TomoEstudio" />
+                    </RadzenFormField>
+
+                    <ValidationMessage For="@(()=> @modelo.TomoEstudio)" />
+
+                    <RadzenFormField Text="Folio" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@modelo.FolioEstudio" />
+                    </RadzenFormField>
+
+                    <ValidationMessage For="@(()=> @modelo.FolioEstudio)" />
+
                 </div>
 
             </div>
-        </div>
-    </div>
 
+
+            <!-- Informe-->
+
+            <div class="border-2 p-2 rounded-2 bg-opacity-50 gap-1">
+
+                <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
+                    Datos del informe
+                </div>
+
+                <div class="d-flex">
+                    <div class="w-50">
+
+                        <RadzenFormField Text="Fecha del informe del Auditor Externo" class="mt-1">
+                            <RadzenDatePicker @bind-Value="@modelo.FechaInformeAuditorExt" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" />
+                        </RadzenFormField>
+
+                        <ValidationMessage For="@(()=> @modelo.FechaInformeAuditorExt)" />
+
+                        <RadzenFormField Text="Nro. de Legalización del Informe del Auditor Externo" class="mt-1">
+                            <RadzenTextBox @bind-Value="@modelo.NroLegalInfoAudExt" />
+                        </RadzenFormField>
+
+                        <ValidationMessage For="@(()=> @modelo.NroLegalInfoAudExt)" />
+                    </div>
+
+                    <RadzenFormField Text="Opinion del informe" class="mt-1 w-50">
+
+                        <select class="form-select" @bind="modelo.Opinion">
+                            <option value="">--- Seleccionar una opinion ---</option>
+                            <option value="Favorable">Favorable</option>
+                            <option value="Desfavorable">Desfavorable</option>
+
+                        </select>
+                    </RadzenFormField>
+                    <ValidationMessage For="@(()=> modelo.Opinion)" />
+
+                </div>
+
+                <RadzenFormField Text="Observaciones" Style="width:100%">
+                    <RadzenTextArea @bind-Value="@modelo.Observaciones" />
+                </RadzenFormField>
+            </div>
+
+            <RadzenStack class="m-auto text-center">
+                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@postContador" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
+            </RadzenStack>
+
+        </EditForm>
+    </div>
 
 </body>
 
@@ -216,7 +249,7 @@
                 if (rst is not null)
                 {
                     balid = rst;
-                    rsp  = await balanceService.getBalance(balid);
+                    rsp = await balanceService.getBalance(balid);
 
                     if (rsp.IsSuccess)
                     {
@@ -276,9 +309,9 @@
             if (result.IsValid)
             {
                 respuesta = await contadorService.postContador(modelo);
-               
+
             }
-            
+
         }
 
         catch (Exception ex)
@@ -295,8 +328,8 @@
 
 
 
-  
 
-  
+
+
 
 }
