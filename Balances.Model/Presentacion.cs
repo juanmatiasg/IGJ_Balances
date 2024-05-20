@@ -2,7 +2,7 @@
 {
     public class Presentacion
     {
-     
+
         public DateTime Fecha { get; set; }
         public byte[] BinarioPdf { get; set; }
 
@@ -10,10 +10,6 @@
         {
             Fecha = DateTime.Now;
         }
-        /*public Presentacion(byte[] binariopdf)
-        {
-            this.binariopdf = binariopdf;
-            this.Fecha = DateTime.Now;
-        }*/
+
     }
 }

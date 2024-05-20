@@ -13,8 +13,14 @@ namespace Balances.Web.Services.FluentValidation
             RuleFor(_ => _.CantidadArchivos).Cascade(CascadeMode.Stop)
                            .GreaterThan(0).WithMessage("Debe adjuntar un archivo");
 
+            //RuleForEach(_ => _.Archivos).Cascade(CascadeMode.Stop)
+            //                           .Must(_ => _.Categoria.Equals("Informe Fiscalizacion"))
+            //                           .WithMessage("Falta adjuntar categorias");
+
             RuleFor(_ => _.ContentType).Cascade(CascadeMode.Stop)
                            .Must(ValidaFormato).WithMessage("solo se aceptan archivos pdf");
+
+
 
 
         }
@@ -31,5 +37,7 @@ namespace Balances.Web.Services.FluentValidation
 
             return false;
         }
+
+
     }
 }

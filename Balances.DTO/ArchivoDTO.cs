@@ -13,5 +13,9 @@
         public string ContentType { get; set; }
         public int CantidadArchivos { get; set; }
 
+
+
+
+
     }
 }

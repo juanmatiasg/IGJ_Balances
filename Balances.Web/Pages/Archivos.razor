@@ -49,16 +49,21 @@
                     </div>
                     <div class="card-body">
                        <EditForm Model="archivo">
+                       
                             <FluentValidationValidator />
+                            <Blazorise.ValidationSummary />
                             <RadzenStack class="mt-2 mb-2">
                                 <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
-                                    <RadzenDropDown @bind-Value=@archivo.Categoria Data=@categoria Name="DropDownBindValue" Style="width:100%" />
+                                    <RadzenDropDown @bind-Value=@archivo.Categoria Data=@categoria  Name="DropDownBindValue" Style="width:100%" />
                                 </RadzenFormField>
                                 <ValidationMessage For="@(()=> archivo.Categoria)" />
+                               
                             </RadzenStack>
+                       
                             <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
-                            <ValidationMessage For="@(()=> archivo.ContentType)" />
-                         
+                          
+                            <ValidationMessage For="@(()=> archivo.ContentType)" /> 
+                          
                             <div class="col d-flex justify-content-between">
                                 <InputFile OnChange="@HandleFileUpload" multiple />
                                   
@@ -132,7 +137,7 @@
     private ArchivoDTO archivo = new ArchivoDTO();
     private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
 
-  
+    
 
 
     protected override async void OnInitialized()
@@ -247,24 +252,25 @@
 
     private void HandleFileUpload(InputFileChangeEventArgs e)
     {
-      
-            foreach (var file in e.GetMultipleFiles())
-             {
-                
-            selectedFiles = e.GetMultipleFiles();
 
-         }
+        foreach (var file in e.GetMultipleFiles())
+        {
+
+            selectedFiles = e.GetMultipleFiles();
+          
+
+        }
     }
 
 
-        private async Task<ResponseDTO<BalanceDto>> UploadFile()
+    private async Task<ResponseDTO<BalanceDto>> UploadFile()
     {
 
         var response = new ResponseDTO<BalanceDto>();
 
         //verificar que adjunto un archivo
         archivo.CantidadArchivos = selectedFiles.Count();
-
+         // archivo.Archivos = listArchivo;
         try
         {
 
