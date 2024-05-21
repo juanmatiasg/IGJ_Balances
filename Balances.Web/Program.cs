@@ -6,6 +6,7 @@ using Blazored.SessionStorage;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -19,7 +20,8 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 
-
+// S W E E T  A L E RT
+builder.Services.AddSweetAlert2();
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://balanceapi.justicia.ar/") });
 

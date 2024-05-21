@@ -20,6 +20,8 @@ using Balances.DTO;
 using Balances.Utilities;
 using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
+using Balances.Web.Services.FluentValidation;
+using FluentValidation.Results;
 
 namespace Balances.Web.Pages
 {
@@ -28,16 +30,12 @@ namespace Balances.Web.Pages
         [Parameter]
         public string? TipoEntidad { get; set; }
 
+        RadzenGrid<PersonaHumanaDto> grid;
+
 
         private PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
         private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
-        private string msgErrorNombre = "";
-        private string msgErrorApellido = "";
-        private string msgErrorTipoDoc = "";
-        private string msgErrorNroDoc = "";
-        private string msgErrorCuit = "";
-        private string msgErrorCuotas = "";
-        private string msgErrorVotos = "";
+       
 
         private string[] tiposDocumentos =
        {
@@ -82,6 +80,7 @@ namespace Balances.Web.Pages
                         {
                             TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
                             resultPersonaHumana(rsp.Result.Socios.PersonasHumanas);
+                            await grid.Reload();
                             StateHasChanged();
                         }
                     }
@@ -95,31 +94,34 @@ namespace Balances.Web.Pages
 
         private async Task<ResponseDTO<BalanceDto>> addPersonaHumana()
         {
-            if (checkData())
+            ResponseDTO<BalanceDto> respuesta = new();
+            try
             {
-                ResponseDTO<BalanceDto> respuesta = new();
-                try
+                modelPersonaHumana.SesionId = sesionId;
+
+                PersonaHumanaValidator personaHumanaValidator = new();
+                ValidationResult result = personaHumanaValidator.Validate(modelPersonaHumana);
+
+                if (result.IsValid)
                 {
-                    modelPersonaHumana.SesionId = sesionId;
+                    listPersonaHumana.Add(modelPersonaHumana);
                     respuesta = await socioService.insertPersonaHumana(modelPersonaHumana);
-                   
+
                     if (respuesta.IsSuccess)
-                    {
-                        resultPersonaHumana(respuesta.Result!.Socios.PersonasHumanas);
+                    {                  
                         cleanInputsHumana();
+                        await grid.Reload();
+                        StateHasChanged();
                     }
                 }
-                catch (Exception ex)
-                {
-                    respuesta.Message = ex.Message;
-                }
-
-                return respuesta;
             }
-            else
+            catch (Exception ex)
             {
-                return null;
+                respuesta.Message = ex.Message;
             }
+
+          return respuesta;
+           
         }
 
         private void cleanInputsHumana()
@@ -143,7 +145,10 @@ namespace Balances.Web.Pages
                
                 if (respuesta.IsSuccess)
                 {
-                    listPersonaHumana = respuesta.Result!.Socios.PersonasHumanas;
+                  
+                    resultPersonaHumana(respuesta.Result!.Socios.PersonasHumanas);
+                    await grid.Reload();
+                    StateHasChanged();
                 }
             }
             catch (Exception ex)
@@ -154,142 +159,5 @@ namespace Balances.Web.Pages
             return respuesta;
         }
 
-        private bool checkData()
-        {
-            // Nombre
-            if (!string.IsNullOrEmpty(modelPersonaHumana.Nombre))
-            {
-                if (Validator.IsNumeric(modelPersonaHumana.Nombre))
-                {
-                    msgErrorNombre = "No puedes ingresar un valor numérico";
-                    return false;
-                }
-                else
-                {
-                    msgErrorNombre = "";
-                }
-            }
-            else
-            {
-                msgErrorNombre = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Apellido
-            if (!string.IsNullOrEmpty(modelPersonaHumana.Apellido))
-            {
-                if (Validator.IsNumeric(modelPersonaHumana.Apellido))
-                {
-                    msgErrorApellido = "No puedes ingresar un valor numérico";
-                    return false;
-                }
-                else
-                {
-                    msgErrorApellido = "";
-                }
-            }
-            else
-            {
-                msgErrorApellido = "El campo no puede estar vacio";
-                return false;
-            }
-
-            //Tipo Doc
-            if (!string.IsNullOrEmpty(modelPersonaHumana.TipoDocumento))
-            {
-                msgErrorTipoDoc = "";
-            }
-            else
-            {
-                msgErrorTipoDoc = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // NroDocumento
-            if (!string.IsNullOrEmpty(modelPersonaHumana.NroDocumento))
-            {
-                if (!Validator.IsNumeric(modelPersonaHumana.NroDocumento))
-                {
-                    msgErrorNroDoc = "No puedes ingresar caracteres";
-                    return false;
-                }
-                else
-                {
-                    msgErrorNroDoc = "";
-                }
-            }
-            else
-            {
-                msgErrorNroDoc = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // CUIT
-            if (!string.IsNullOrEmpty(modelPersonaHumana.NroFiscal))
-            {
-                if (!Validator.IsNumeric(modelPersonaHumana.NroFiscal))
-                {
-                    msgErrorCuit = "No puedes ingresar caracteres";
-                    return false;
-                }
-                else
-                {
-                    msgErrorCuit = "";
-                }
-            }
-            else
-            {
-                msgErrorCuit = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Cuotas
-            if (!string.IsNullOrEmpty(modelPersonaHumana.Cuotas))
-            {
-                if (!Validator.IsNumeric(modelPersonaHumana.Cuotas))
-                {
-                    msgErrorCuotas = "No puedes ingresar caracteres";
-                    return false;
-                }
-                else
-                {
-                    msgErrorCuotas = "";
-                }
-            }
-            else
-            {
-                msgErrorCuotas = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Votos
-            if (!string.IsNullOrEmpty(modelPersonaHumana.Votos))
-            {
-                if (!Validator.IsNumeric(modelPersonaHumana.Votos))
-                {
-                    msgErrorVotos = "No puedes ingresar caracteres";
-                    return false;
-                }
-                else
-                {
-                    msgErrorVotos = "";
-                }
-            }
-            else
-            {
-                msgErrorVotos = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Si todos los campos pasan la validación, devuelve true
-            msgErrorNombre = "";
-            msgErrorApellido = "";
-            msgErrorTipoDoc = "";
-            msgErrorNroDoc = "";
-            msgErrorCuit = "";
-            msgErrorCuotas = "";
-            msgErrorVotos = "";
-            return true;
-        }
     }
 }

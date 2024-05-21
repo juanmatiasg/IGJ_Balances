@@ -22,7 +22,8 @@ using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
 using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-
+using FluentValidation.Results;
+using Balances.Web.Services.FluentValidation;
 
 namespace Balances.Web.Pages
 {
@@ -44,12 +45,7 @@ namespace Balances.Web.Pages
         private AutoridadDto modelo = new AutoridadDto();
         private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
 
-        private string msgErrorNombre = "";
-        private string msgErrorApellido = "";
-        private string msgErrorNroIdFiscal = "";
-        private string msgErrorNroDoc = "";
-        private string msgErrorCargo = "";
-        private string msgErrorTipoDeDoc = "";
+      
         
 
         [Parameter]
@@ -58,17 +54,6 @@ namespace Balances.Web.Pages
         [Parameter]
         public string sesionId { get; set; }
 
-        // reference to the modal component
-        private Modal? modalRef;
-        private Task ShowModal()
-        {
-            return modalRef.Show();
-        }
-
-        private Task HideModal()
-        {
-            return modalRef.Hide();
-        }
 
         protected override async Task OnInitializedAsync()
         {
@@ -112,16 +97,17 @@ namespace Balances.Web.Pages
 
         private async Task<ResponseDTO<BalanceDto>> insertAutoridad()
         {
-            if (checkData())
+            ResponseDTO<BalanceDto> respuesta = new();
+            try
             {
-                ResponseDTO<BalanceDto> respuesta = new();
-                try
+                AutoridadValidator autoridadValidator = new();
+                ValidationResult result = autoridadValidator.Validate(modelo);
+
+                if (result.IsValid)
                 {
-                    // Check if the current autoridad is a firmante
                     if (modelo.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
                     {
                         await ShowDialogFirmantes();
-                        return null;
                     }
                     else
                     {
@@ -135,17 +121,14 @@ namespace Balances.Web.Pages
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    respuesta.Message = ex.Message;
-                }
-
-                return respuesta;
             }
-            else
+            catch (Exception ex)
             {
-                return null;
+                respuesta.Message = ex.Message;
             }
+
+          return respuesta;
+           
         }
 
         private void cleanInputs()
@@ -182,123 +165,7 @@ namespace Balances.Web.Pages
             return respuesta;
         }
 
-        private bool checkData()
-        {
-            // Nombre
-            if (!string.IsNullOrEmpty(modelo.Nombre))
-            {
-                if (Validator.IsNumeric(modelo.Nombre))
-                {
-                    msgErrorNombre = "No puedes ingresar un valor numérico";
-                    return false;
-                }
-                else
-                {
-                    msgErrorNombre = "";
-                }
-            }
-            else
-            {
-                msgErrorNombre = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Apellido
-            if (!string.IsNullOrEmpty(modelo.Apellido))
-            {
-                if (Validator.IsNumeric(modelo.Apellido))
-                {
-                    msgErrorApellido = "No puedes ingresar un valor numérico";
-                    return false;
-                }
-                else
-                {
-                    msgErrorApellido = "";
-                }
-            }
-            else
-            {
-                msgErrorApellido = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Apellido
-            if (!string.IsNullOrEmpty(modelo.TipoDocumento))
-            {
-                msgErrorTipoDeDoc = "";
-            }
-            else
-            {
-                msgErrorTipoDeDoc = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // NroDocumento
-            if (!string.IsNullOrEmpty(modelo.NroDocumento))
-            {
-                if (!Validator.IsNumeric(modelo.NroDocumento))
-                {
-                    msgErrorNroDoc = "No puedes ingresar caracteres";
-                    return false;
-                }
-                else
-                {
-                    msgErrorNroDoc = "";
-                }
-            }
-            else
-            {
-                msgErrorNroDoc = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // NroFiscal
-            if (!string.IsNullOrEmpty(modelo.NroFiscal))
-            {
-                if (!Validator.IsNumeric(modelo.NroFiscal))
-                {
-                    msgErrorNroIdFiscal = "No puedes ingresar caracteres";
-                    return false;
-                }
-                else
-                {
-                    msgErrorNroIdFiscal = "";
-                }
-            }
-            else
-            {
-                msgErrorNroIdFiscal = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Cargo
-            if (!string.IsNullOrEmpty(modelo.Cargo))
-            {
-                if (Validator.IsNumeric(modelo.Cargo))
-                {
-                    msgErrorCargo = "No puedes ingresar un valor numérico";
-                    return false;
-                }
-                else
-                {
-                    msgErrorCargo = "";
-                }
-            }
-            else
-            {
-                msgErrorCargo = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Si todos los campos pasan la validación, devuelve true
-            msgErrorTipoDeDoc = "";
-            msgErrorNombre = "";
-            msgErrorApellido = "";
-            msgErrorNroIdFiscal = "";
-            msgErrorNroDoc = "";
-            msgErrorCargo = "";
-            return true;
-        }
+       
     }
 
   

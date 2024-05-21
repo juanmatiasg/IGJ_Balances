@@ -20,12 +20,15 @@ using Balances.DTO;
 using Balances.Utilities;
 using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
+using Balances.Web.Services.FluentValidation;
+using FluentValidation.Results;
 
 namespace Balances.Web.Pages
 {
     public partial class IntegranteJuridico
     {
-      
+        RadzenGrid<PersonaJuridicaDto> grid;
+
 
         [Parameter]
         public string? TipoEntidad { get; set; }
@@ -39,10 +42,7 @@ namespace Balances.Web.Pages
         [Parameter]
         public string sesionId { get; set; }
 
-        private string msgErrorDenominacion = "";
-        private string msgErrorCuit = "";
-        private string msgErrorCuotas = "";
-        private string msgErrorVotos = "";
+      
         protected override async Task OnInitializedAsync()
         {
             await Load();
@@ -61,7 +61,7 @@ namespace Balances.Web.Pages
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
                     sesionId = sesionRespuesta.Result;
-                    sessionStorage.SetItemAsync("SessionId", sesionId);
+                    await sessionStorage.SetItemAsync("SessionId", sesionId);
                 }
                 else
                 {
@@ -74,6 +74,7 @@ namespace Balances.Web.Pages
                         {
                             TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
                             resultPersonaJuridica(rsp.Result.Socios.PersonasJuridicas);
+                            await grid.Reload();
                             StateHasChanged();
                         }
                     }
@@ -88,19 +89,27 @@ namespace Balances.Web.Pages
 
         private async Task<ResponseDTO<BalanceDto>> addPersonaJuridica()
         {
-            if (checkData())
-            {
+            
                 ResponseDTO<BalanceDto> respuesta = new();
                 try
                 {
                    
                     modelPersonaJuridica.SesionId = sesionId;
-                    respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
-                    
-                    if (respuesta.IsSuccess)
+                    PersonaJuridicaValidator personaJuridicaValidator = new();
+                    ValidationResult result = personaJuridicaValidator.Validate(modelPersonaJuridica);
+
+                    if (result.IsValid)
                     {
-                        resultPersonaJuridica(respuesta.Result!.Socios.PersonasJuridicas);
-                        cleanInputsJuridica();
+                        listPersonaJuridica.Add(modelPersonaJuridica);
+                        respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
+
+                        if (respuesta.IsSuccess)
+                        {
+                       
+                            cleanInputsJuridica();
+                            await grid.Reload();
+                            StateHasChanged();
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -109,11 +118,7 @@ namespace Balances.Web.Pages
                 }
 
                 return respuesta;
-            }
-            else
-            {
-                return null;
-            }
+           
         }
 
         private void cleanInputsJuridica()
@@ -137,7 +142,10 @@ namespace Balances.Web.Pages
                 
                 if (respuesta.IsSuccess)
                 {
-                    listPersonaJuridica = respuesta.Result!.Socios.PersonasJuridicas;
+                 
+                    resultPersonaJuridica(respuesta.Result!.Socios.PersonasJuridicas);
+                    await grid.Reload();
+                    StateHasChanged();
                 }
             }
             catch (Exception ex)
@@ -148,90 +156,6 @@ namespace Balances.Web.Pages
             return respuesta;
         }
 
-        private bool checkData()
-        {
-            // Apellido
-            if (!string.IsNullOrEmpty(modelPersonaJuridica.Denominacion))
-            {
-                if (Validator.IsNumeric(modelPersonaJuridica.Denominacion))
-                {
-                    msgErrorDenominacion = "No puedes ingresar un valor numérico";
-                    return false;
-                }
-                else
-                {
-                    msgErrorDenominacion = "";
-                }
-            }
-            else
-            {
-                msgErrorDenominacion = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Nro id Fiscal
-            if (!string.IsNullOrEmpty(modelPersonaJuridica.NroFiscal))
-            {
-                if (!Validator.IsNumeric(modelPersonaJuridica.NroFiscal))
-                {
-                    msgErrorCuit = "No puedes ingresar caracteres";
-                    return false;
-                }
-                else
-                {
-                    msgErrorCuit = "";
-                }
-            }
-            else
-            {
-                msgErrorCuit = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Cuotas
-            if (!string.IsNullOrEmpty(modelPersonaJuridica.Cuotas))
-            {
-                if (!Validator.IsNumeric(modelPersonaJuridica.Cuotas))
-                {
-                    msgErrorCuotas = "No puedes ingresar caracteres";
-                    return false;
-                }
-                else
-                {
-                    msgErrorCuotas = "";
-                }
-            }
-            else
-            {
-                msgErrorCuotas = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Votos
-            if (!string.IsNullOrEmpty(modelPersonaJuridica.Votos))
-            {
-                if (!Validator.IsNumeric(modelPersonaJuridica.Votos))
-                {
-                    msgErrorVotos = "No puedes ingresar caracteres";
-                    return false;
-                }
-                else
-                {
-                    msgErrorVotos = "";
-                }
-            }
-            else
-            {
-                msgErrorVotos = "El campo no puede estar vacio";
-                return false;
-            }
-
-            // Si todos los campos pasan la validación, devuelve true
-            msgErrorDenominacion = "";
-            msgErrorCuit = "";
-            msgErrorCuotas = "";
-            msgErrorVotos = "";
-            return true;
-        }
+      
     }
 }

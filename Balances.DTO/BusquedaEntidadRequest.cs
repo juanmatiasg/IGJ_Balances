@@ -8,7 +8,7 @@ namespace Balances.DTO
 {
     public class BusquedaEntidadRequest
     {
-        public string? NroCorrelativo { get; set; }
+        public string? NroCorrelativoNroCUIL { get; set; }
       
     }
 }

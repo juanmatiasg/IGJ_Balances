@@ -16,10 +16,12 @@
         public DateTime FechaInformeAuditorExt { get; set; }
         public string NroLegalInfoAudExt { get; set; }
 
-        //public static implicit operator Contador(Balances.DTO.ContadorDto v)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //public string Estado { get; internal set; }
+        public string Observaciones { get; set; }
+        public string Opinion { get; set; }
+        public bool EsSocioEstudio { get; set; }
+        public string TomoEstudio { get; set; }
+        public string FolioEstudio { get; set; }
+
+       
     }
 }

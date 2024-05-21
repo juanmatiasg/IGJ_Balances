@@ -15,12 +15,13 @@
 
     <link href="~/css/bootstrap/background.css" rel="stylesheet">
 
-
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
     <link href="~/css/bootstrap/background.css" rel="stylesheet">
+    <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
+
 
 </head>
 
@@ -55,15 +56,13 @@
                         <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@FechaDeCierre?.ToString("dd/MM/yyyy")</b></RadzenText>
                     </RadzenRow>
                     <RadzenRow>
-                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0">Denominación</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0"></RadzenText>
                         <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@RazonSocial &nbsp @TipoEntidad</b></RadzenText>
                     </RadzenRow>
                 </RadzenRow>
 
             </RadzenCard>
         </RadzenStack>
-
-
 
         <RadzenStack class="rz-background-color-base-200 p-4">
             @Body

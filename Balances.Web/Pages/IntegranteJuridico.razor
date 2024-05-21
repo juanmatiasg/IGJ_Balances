@@ -26,14 +26,15 @@
                     Datos del Integrante
                 </div>
                 <div class="card-body">
-
+                    <EditForm Model="modelPersonaJuridica" >
+                        <FluentValidationValidator/>
                     <RadzenStack class="mt-2 mb-2">
 
                         <RadzenFormField Text="Denominación" Style="width:100%">
                             <RadzenTextBox @bind-Value="@modelPersonaJuridica.Denominacion" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorDenominacion</small>
+                        <ValidationMessage For="@(()=> modelPersonaJuridica.Denominacion)" />
                     </RadzenStack>
                     <RadzenStack class="mt-2 mb-2">
 
@@ -41,7 +42,7 @@
                             <RadzenTextBox @bind-Value="@modelPersonaJuridica.NroFiscal" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorCuit</small>
+                        <ValidationMessage For="@(()=> @modelPersonaJuridica.NroFiscal)" />
                     </RadzenStack>
 
                   
@@ -52,7 +53,7 @@
                             <RadzenTextBox @bind-Value="@modelPersonaJuridica.Cuotas" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorCuotas</small>
+                        <ValidationMessage For="@(()=> @modelPersonaJuridica.Cuotas)" />
                     </RadzenStack>
 
                     <RadzenStack class="mt-2 mb-2">
@@ -61,14 +62,14 @@
                             <RadzenTextBox @bind-Value="@modelPersonaJuridica.Votos" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorVotos</small>
+                        <ValidationMessage For="@(()=> @modelPersonaJuridica.Votos)" />
                     </RadzenStack>
 
                 
                     <RadzenStack class="mt-2 mb-2">
                         <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@addPersonaJuridica">Agregar</RadzenButton>
                     </RadzenStack>
-
+                    </EditForm>
                 </div>
             </form>
         </div>
@@ -80,7 +81,7 @@
                         Integrantes
                     </div>
                     <div class="card-body">
-                        <RadzenGrid Data="listPersonaJuridica" TItem="PersonaJuridicaDto">
+                        <RadzenGrid @ref=grid Data="listPersonaJuridica" TItem="PersonaJuridicaDto">
                             <Columns>
                                 <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Denominacion" Title="Denominación" />
                                 <RadzenGridColumn TItem="PersonaJuridicaDto" Property="NroFiscal" Title="Nro. Fiscal" />
@@ -89,7 +90,7 @@
                             
                                 <RadzenGridColumn TItem="PersonaJuridicaDto" Title="Acción">
                                     <Template Context="personaJuridica">
-                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deletePersonaJuridica(personaJuridica))">Eliminar</RadzenButton>
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deletePersonaJuridica(personaJuridica))"></RadzenButton>
                                     </Template>
                                 </RadzenGridColumn>
                             </Columns>

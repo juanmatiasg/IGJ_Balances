@@ -28,14 +28,15 @@
                 </div>
                    
                     <div class="card-body">
-
+                        <EditForm Model="modelPersonaHumana" >
+                        <FluentValidationValidator/>
                     <RadzenStack class="mt-2 mb-2">
 
                         <RadzenFormField Text="Nombre" Style="width:100%">
                             <RadzenTextBox @bind-Value="@modelPersonaHumana.Nombre" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorNombre</small>
+                        <ValidationMessage For="@(()=> modelPersonaHumana.Nombre)" />
                     </RadzenStack>
                     <RadzenStack class="mt-2 mb-2">
 
@@ -43,14 +44,14 @@
                             <RadzenTextBox @bind-Value="@modelPersonaHumana.Apellido" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorApellido</small>
+                        <ValidationMessage For="@(()=> modelPersonaHumana.Apellido)" />
                     </RadzenStack>
                    
                     <RadzenStack class="mt-2 mb-2">
                         <RadzenFormField Text="Tipo de Documento">
                             <RadzenDropDown @bind-Value=@modelPersonaHumana.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" Style="width:100%" />
                         </RadzenFormField>
-                        <small id="msgError" class="text-danger">@msgErrorTipoDoc</small>
+                        <ValidationMessage For="@(()=> modelPersonaHumana.TipoDocumento)" />
                     </RadzenStack>
 
                     <RadzenStack class="mt-2 mb-2">
@@ -59,7 +60,7 @@
                             <RadzenTextBox @bind-Value="@modelPersonaHumana.NroDocumento" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorNroDoc</small>
+                        <ValidationMessage For="@(()=> @modelPersonaHumana.NroDocumento)" />
                     </RadzenStack>
 
                     <RadzenStack class="mt-2 mb-2">
@@ -68,7 +69,7 @@
                             <RadzenTextBox @bind-Value="@modelPersonaHumana.NroFiscal" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorCuit</small>
+                        <ValidationMessage For="@(()=> @modelPersonaHumana.NroFiscal)" />
                     </RadzenStack>
 
 
@@ -78,7 +79,7 @@
                             <RadzenTextBox @bind-Value="@modelPersonaHumana.Cuotas" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorCuotas</small>
+                        <ValidationMessage For="@(()=> @modelPersonaHumana.Cuotas)" />
                     </RadzenStack>
 
                     <RadzenStack class="mt-2 mb-2">
@@ -87,13 +88,13 @@
                             <RadzenTextBox @bind-Value="@modelPersonaHumana.Votos" Style="width:100%" />
                         </RadzenFormField>
 
-                        <small id="msgError" class="text-danger">@msgErrorVotos</small>
+                        <ValidationMessage For="@(()=> @modelPersonaHumana.Votos)" />
                     </RadzenStack>
 
                     <RadzenStack class="mt-2 mb-2">
                         <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@addPersonaHumana">Agregar</RadzenButton>
                     </RadzenStack>
-                       
+                       </EditForm>
                     </div>
                 </form>
             </div>
@@ -107,7 +108,7 @@
 
                  
                         <div class="card-body">
-                        <RadzenGrid Data="listPersonaHumana" TItem="PersonaHumanaDto">
+                        <RadzenGrid @ref="grid" Data="listPersonaHumana" TItem="PersonaHumanaDto">
                             <Columns>
                                 <RadzenGridColumn TItem="PersonaHumanaDto" Property="Apellido" Title="Apellido" />
                                 <RadzenGridColumn TItem="PersonaHumanaDto" Property="Nombre" Title="Nombre" />
