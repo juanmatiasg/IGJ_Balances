@@ -18,7 +18,7 @@
 @inject ISessionClientService sesionService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject SweetAlertService _swal
+@inject SweetAlertService swal
 
 <!DOCTYPE html>
 <html lang="en">
@@ -433,7 +433,7 @@
 
             if(estadoContableDto.patrimonioNeto != OtrosRubrosPatrimonioNeto)
             {
-                var alerta = await _swal.FireAsync(new SweetAlertOptions
+                var alerta = await swal.FireAsync(new SweetAlertOptions
                     {
                         Title = "Error en el balanceo",
                         Text = $"El total del patrimonio neto: ${estadoContableDto.patrimonioNeto} ARS no coincide con el total de Rubros del Patrimonio neto: ${OtrosRubrosPatrimonioNeto} ARS",

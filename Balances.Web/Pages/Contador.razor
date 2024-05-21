@@ -12,6 +12,7 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,8 +27,9 @@
 
 <body>
 
+    <Navegacion  PaginaActiva="Contador" TramiteIniciado="true" balid="@balid"></Navegacion>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Contador" TramiteIniciado="true"></Navegacion>
+   
 
     <div class="container-fluid m-auto w-75">
         <EditForm Model="modelo" class="d-flex gap-3 p-1 flex-column">
@@ -265,7 +267,11 @@
                         modelo.Folio = rsp.Result.Contador.Folio;
                         modelo.FechaInformeAuditorExt = rsp.Result.Contador.FechaInformeAuditorExt;
                         modelo.NroLegalInfoAudExt = rsp.Result.Contador.NroLegalInfoAudExt;
-
+                        modelo.EsSocioEstudio = rsp.Result.Contador.EsSocioEstudio;
+                        modelo.Observaciones = rsp.Result.Contador.Observaciones;
+                        modelo.Opinion = rsp.Result.Contador.Opinion;
+                        modelo.TomoEstudio = rsp.Result.Contador.TomoEstudio;
+                        modelo.FolioEstudio = rsp.Result.Contador.FolioEstudio;
 
                     }
 
