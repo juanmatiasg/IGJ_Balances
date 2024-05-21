@@ -304,7 +304,7 @@
                 {
                     try
                     {
-                         await ShowBusyDialog();
+                        await ShowBusyDialog();
 
 
                         var response = await busquedaSociedadService.findSociedad(modelbusqueda.NroCorrelativoNroCUIL);
@@ -314,7 +314,7 @@
                             modelo.Entidad.Correlativo = response.Result.NroCorrelativo  ;
                             modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
                             modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
-                            
+
                             TipoEntidad = response.Result.TipoEntidad;
                             //   RazonSocial = response.Result.RazonSocial;
 
@@ -326,7 +326,7 @@
                     {
                         Console.WriteLine($"Hubo un problema con la solicitud fetch: {ex.Message}");
                     }
-                        StateHasChanged();
+                    StateHasChanged();
 
                 }
 
@@ -336,8 +336,8 @@
                 modelo = new CaratulaDto();
             }
 
-            }
-           
+        }
+
 
     }
 
@@ -348,27 +348,51 @@
 
         try
         {
-           
-                sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
-                modelo.SesionId = sesionId;
 
-                CaratulaValidator caratulaValidator = new();
-                ValidationResult result = caratulaValidator.Validate(modelo);
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            modelo.SesionId = sesionId;
 
-                if (result.IsValid)
+            CaratulaValidator caratulaValidator = new();
+            ValidationResult result = caratulaValidator.Validate(modelo);
+
+            if (result.IsValid)
+            {
+                var alerta = await swal.FireAsync(new SweetAlertOptions
+                        {
+                            Title = "Inicio de tramite presentacion de balances y asambles",
+                            Text = $" Datos: {modelo.Entidad.RazonSocial}{modelo.Entidad.TipoEntidad}, Correlativo:{modelo.Entidad.Correlativo} Fecha cierre ejercicio: {modelo.FechaDeCierre} ",
+                            Icon = SweetAlertIcon.Warning,
+                            ShowCancelButton= true,
+                            CancelButtonText= "Cancelar",
+                            ConfirmButtonText = "Aceptar"
+
+                        });
+                if (alerta.IsConfirmed)
                 {
                     var rsp = await caratulaService.insertCaratula(modelo);
 
                     if (rsp.IsSuccess)
                     {
 
+                        await swal.FireAsync(new SweetAlertOptions
+                                {
+                                    Title = "Presentacion iniciada exitosamente",
+                                    Text = $" Te va a llegar un correo {modelo.Email} con un enlace para poder continuar la carga en cualquier instante y lugar.  ",
+                                    Icon = SweetAlertIcon.Success,
+                                    ShowCancelButton = true,
+                                    ConfirmButtonText = "Aceptar"
 
+                                });
+                            
+                        
                         isActive = true;
                         tramiteIniciado = true;
 
 
                         StateHasChanged();
                     }
+                }
+              
                 }
         }
         catch (Exception ex)

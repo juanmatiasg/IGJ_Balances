@@ -11,7 +11,8 @@ namespace Balances.Web.Services.FluentValidation
                           .NotEmpty().WithMessage("Debe ingresar la fecha de inicio");
 
             RuleFor(caratula => caratula.FechaDeCierre).Cascade(CascadeMode.Stop)
-                               .NotEmpty().WithMessage("Debe ingresar la fecha de cierre");
+                               .NotEmpty().WithMessage("Debe ingresar la fecha de cierre")
+                               .GreaterThan(_ => _.FechaInicio).WithMessage("la fecha de cierre de no puede ser menor que la fecha de inicio");
 
 
             RuleFor(caratula => caratula.Email).Cascade(CascadeMode.Stop)
