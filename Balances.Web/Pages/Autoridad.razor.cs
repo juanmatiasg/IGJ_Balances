@@ -38,6 +38,23 @@ namespace Balances.Web.Pages
             "Cédula"
         };
 
+        private string[] cargos = { 
+            "Presidente",
+            "Vicepresidente",
+            "Director Titular",
+            "Director Suplente",
+            "Administrador Titular",
+            "Administrador Suplente",
+            "Gerente Titular",
+            "Gerente Suplente",
+            "Consejo de Vigilancia - Titular",
+            "Consejo de Vigilancia - Suplente",
+            "Sindicatura - Titular",
+            "Sindicatura - Suplente",
+            "Comisión Fiscalizadora - Titular",
+            "Comisión Fiscalizadora - Suplente"
+        };
+
         [Parameter]
         public string? TipoEntidad { get; set; }
 

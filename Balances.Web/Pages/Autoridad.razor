@@ -98,7 +98,7 @@
 
                         <RadzenStack Style="width:50%">
                             <RadzenFormField Text="Cargo">
-                                <RadzenTextBox @bind-Value="@modelo.Cargo" />
+                                <RadzenDropDown @bind-Value=@modelo.Cargo Data=@cargos Name="DropDownBindValue" Style="width:100%" />
                             </RadzenFormField>
                             <ValidationMessage For="@(()=> @modelo.Cargo)" />
                         </RadzenStack>
