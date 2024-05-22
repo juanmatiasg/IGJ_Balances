@@ -33,7 +33,7 @@ namespace Balances.Web.Pages
         RadzenGrid<PersonaHumanaDto> grid;
 
 
-        private PersonaHumanaDto modelPersonaHumana = new PersonaHumanaDto();
+        private PersonaHumanaDto model = new PersonaHumanaDto();
         private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
        
 
@@ -66,7 +66,7 @@ namespace Balances.Web.Pages
                 if (sesionId == null)
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
-                    sesionId = sesionRespuesta.Result;
+                    sesionId = sesionRespuesta.Result!;
                     await sessionStorage.SetItemAsync("SessionId", sesionId);
                 }
                 else
@@ -78,7 +78,7 @@ namespace Balances.Web.Pages
                         rsp = await balanceService.getBalance(balid);
                         if (rsp.IsSuccess)
                         {
-                            TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+                            TipoEntidad = rsp.Result!.Caratula.Entidad.TipoEntidad;
                             resultPersonaHumana(rsp.Result.Socios.PersonasHumanas);
                             await grid.Reload();
                             StateHasChanged();
@@ -88,27 +88,29 @@ namespace Balances.Web.Pages
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+               rsp.Message = $"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}";
             }
         }
 
-        private async Task<ResponseDTO<BalanceDto>> addPersonaHumana()
+        private async Task<ResponseDTO<BalanceDto>> InsertPersonaHumana()
         {
             ResponseDTO<BalanceDto> respuesta = new();
             try
             {
-                modelPersonaHumana.SesionId = sesionId;
+                model.SesionId = sesionId;
 
                 PersonaHumanaValidator personaHumanaValidator = new();
-                ValidationResult result = personaHumanaValidator.Validate(modelPersonaHumana);
+                ValidationResult result = personaHumanaValidator.Validate(model);
 
                 if (result.IsValid)
                 {
-                    listPersonaHumana.Add(modelPersonaHumana);
-                    respuesta = await socioService.insertPersonaHumana(modelPersonaHumana);
+                    //listPersonaHumana.Add(modelPersonaHumana);
+                    respuesta = await socioService.insertPersonaHumana(model);
 
                     if (respuesta.IsSuccess)
-                    {                  
+                    {
+                        resultPersonaHumana(respuesta.Result!.Socios.PersonasHumanas);
+
                         cleanInputsHumana();
                         await grid.Reload();
                         StateHasChanged();
@@ -125,9 +127,8 @@ namespace Balances.Web.Pages
         }
 
         private void cleanInputsHumana()
-        {
-            // Restablecer los valores de los campos a su estado inicial o vacío
-            modelPersonaHumana = new PersonaHumanaDto();
+        { 
+            model = new PersonaHumanaDto();
         }
 
         private void resultPersonaHumana(List<PersonaHumanaDto> listPersonaHumana)
@@ -141,12 +142,13 @@ namespace Balances.Web.Pages
             try
             {
                 personaHumanaDto.SesionId = sesionId;
+               
                 respuesta = await socioService.deletePersonaHumana(personaHumanaDto);
                
                 if (respuesta.IsSuccess)
                 {
-                  
-                    resultPersonaHumana(respuesta.Result!.Socios.PersonasHumanas);
+                    listPersonaHumana.Remove(personaHumanaDto);
+
                     await grid.Reload();
                     StateHasChanged();
                 }

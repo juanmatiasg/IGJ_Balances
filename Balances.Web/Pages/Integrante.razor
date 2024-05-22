@@ -22,81 +22,81 @@
     <div class="container-fluid mt-4 mb-4">
         <div class="row">
             <div class="col-md-6">
-                <form class="card">
+                <div class="card">
                 <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
                     Datos del Integrante
                 </div>
                    
                     <div class="card-body">
-                        <EditForm Model="modelPersonaHumana" >
+                        <EditForm Model="@model">
                         <FluentValidationValidator/>
-                    <RadzenStack class="mt-2 mb-2">
+                            <RadzenStack class="mt-2 mb-2">
 
-                        <RadzenFormField Text="Nombre" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaHumana.Nombre" Style="width:100%" />
-                        </RadzenFormField>
+                                <RadzenFormField Text="Nombre" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@model.Nombre" Style="width:100%" />
+                                </RadzenFormField>
 
-                        <ValidationMessage For="@(()=> modelPersonaHumana.Nombre)" />
-                    </RadzenStack>
-                    <RadzenStack class="mt-2 mb-2">
+                                <ValidationMessage For="@(()=> model.Nombre)" />
+                            </RadzenStack>
+                            <RadzenStack class="mt-2 mb-2">
 
-                        <RadzenFormField Text="Apellido" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaHumana.Apellido" Style="width:100%" />
-                        </RadzenFormField>
+                                <RadzenFormField Text="Apellido" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@model.Apellido" Style="width:100%" />
+                                </RadzenFormField>
 
-                        <ValidationMessage For="@(()=> modelPersonaHumana.Apellido)" />
-                    </RadzenStack>
+                                <ValidationMessage For="@(()=> model.Apellido)" />
+                            </RadzenStack>
                    
-                    <RadzenStack class="mt-2 mb-2">
-                        <RadzenFormField Text="Tipo de Documento">
-                            <RadzenDropDown @bind-Value=@modelPersonaHumana.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" Style="width:100%" />
-                        </RadzenFormField>
-                        <ValidationMessage For="@(()=> modelPersonaHumana.TipoDocumento)" />
-                    </RadzenStack>
+                            <RadzenStack class="mt-2 mb-2">
+                                <RadzenFormField Text="Tipo de Documento">
+                                    <RadzenDropDown @bind-Value=@model.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" Style="width:100%" />
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> model.TipoDocumento)" />
+                            </RadzenStack>
 
-                    <RadzenStack class="mt-2 mb-2">
+                            <RadzenStack class="mt-2 mb-2">
 
-                        <RadzenFormField Text="Número de Documento" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaHumana.NroDocumento" Style="width:100%" />
-                        </RadzenFormField>
+                                <RadzenFormField Text="Número de Documento" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@model.NroDocumento" Style="width:100%" />
+                                </RadzenFormField>
 
-                        <ValidationMessage For="@(()=> @modelPersonaHumana.NroDocumento)" />
-                    </RadzenStack>
+                                <ValidationMessage For="@(()=> model.NroDocumento)" />
+                            </RadzenStack>
 
-                    <RadzenStack class="mt-2 mb-2">
+                            <RadzenStack class="mt-2 mb-2">
 
-                        <RadzenFormField Text="Número de Identificación Fiscal" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaHumana.NroFiscal" Style="width:100%" />
-                        </RadzenFormField>
+                                <RadzenFormField Text="Número de Identificación Fiscal" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@model.NroFiscal" Style="width:100%" />
+                                </RadzenFormField>
 
-                        <ValidationMessage For="@(()=> @modelPersonaHumana.NroFiscal)" />
-                    </RadzenStack>
+                                <ValidationMessage For="@(()=> model.NroFiscal)" />
+                            </RadzenStack>
 
 
-                    <RadzenStack class="mt-2 mb-2">
+                            <RadzenStack class="mt-2 mb-2">
 
-                        <RadzenFormField Text="Cuotas" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaHumana.Cuotas" Style="width:100%" />
-                        </RadzenFormField>
+                                <RadzenFormField Text="Cuotas" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@model.Cuotas" Style="width:100%" />
+                                </RadzenFormField>
 
-                        <ValidationMessage For="@(()=> @modelPersonaHumana.Cuotas)" />
-                    </RadzenStack>
+                                <ValidationMessage For="@(()=> model.Cuotas)" />
+                            </RadzenStack>
 
-                    <RadzenStack class="mt-2 mb-2">
+                            <RadzenStack class="mt-2 mb-2">
 
-                        <RadzenFormField Text="Votos" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaHumana.Votos" Style="width:100%" />
-                        </RadzenFormField>
+                                <RadzenFormField Text="Votos" Style="width:100%">
+                                    <RadzenTextBox @bind-Value="@model.Votos" Style="width:100%" />
+                                </RadzenFormField>
 
-                        <ValidationMessage For="@(()=> @modelPersonaHumana.Votos)" />
-                    </RadzenStack>
+                                <ValidationMessage For="@(()=> model.Votos)" />
+                            </RadzenStack>
 
-                    <RadzenStack class="mt-2 mb-2">
-                        <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@addPersonaHumana">Agregar</RadzenButton>
-                    </RadzenStack>
+                            <RadzenStack class="mt-2 mb-2">
+                                <RadzenButton ButtonType="Radzen.ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Click="@InsertPersonaHumana">Agregar</RadzenButton>
+                            </RadzenStack>
                        </EditForm>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="col-md-6">
                 <!-- Lista de Integrantes -->
@@ -108,21 +108,21 @@
 
                  
                         <div class="card-body">
-                        <RadzenGrid @ref="grid" Data="listPersonaHumana" TItem="PersonaHumanaDto">
-                            <Columns>
-                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="Apellido" Title="Apellido" />
-                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="Nombre" Title="Nombre" />
-                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="NroDocumento" Title="Nro. Documento" />
-                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="NroFiscal" Title="Nro. Fiscal" />
-                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="Cuotas" Title="Cuotas" />
-                                <RadzenGridColumn TItem="PersonaHumanaDto" Property="Votos" Title="Votos" />
-                                <RadzenGridColumn TItem="PersonaHumanaDto" Title="Acción">
-                                    <Template Context="personaHumana">
-                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deletePersonaHumana(personaHumana))">Eliminar</RadzenButton>
-                                    </Template>
-                                </RadzenGridColumn>
-                            </Columns>
-                        </RadzenGrid>                     
+                            <RadzenGrid @ref="grid" Data="listPersonaHumana" TItem="PersonaHumanaDto">
+                                <Columns>
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="Apellido" Title="Apellido" />
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="Nombre" Title="Nombre" />
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="NroDocumento" Title="Nro. Documento" />
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="NroFiscal" Title="Nro. Fiscal" />
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="Cuotas" Title="Cuotas" />
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="Votos" Title="Votos" />
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Title="Acción">
+                                        <Template Context="personaHumana">
+                                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deletePersonaHumana(personaHumana))"></RadzenButton>
+                                        </Template>
+                                    </RadzenGridColumn>
+                                </Columns>
+                            </RadzenGrid>                     
                             
                         </div>
                     </div>

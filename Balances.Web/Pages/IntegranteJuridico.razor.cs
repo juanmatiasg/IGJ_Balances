@@ -33,7 +33,7 @@ namespace Balances.Web.Pages
         [Parameter]
         public string? TipoEntidad { get; set; }
 
-        private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
+        private PersonaJuridicaDto model = new PersonaJuridicaDto();
         private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
         
         [Parameter]
@@ -87,25 +87,25 @@ namespace Balances.Web.Pages
         }
      
 
-        private async Task<ResponseDTO<BalanceDto>> addPersonaJuridica()
+        private async Task<ResponseDTO<BalanceDto>> InsertPersonaJuridica()
         {
             
                 ResponseDTO<BalanceDto> respuesta = new();
                 try
                 {
                    
-                    modelPersonaJuridica.SesionId = sesionId;
+                    model.SesionId = sesionId;
                     PersonaJuridicaValidator personaJuridicaValidator = new();
-                    ValidationResult result = personaJuridicaValidator.Validate(modelPersonaJuridica);
+                    ValidationResult result = personaJuridicaValidator.Validate(model);
 
                     if (result.IsValid)
                     {
-                        listPersonaJuridica.Add(modelPersonaJuridica);
-                        respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
+                       
+                        respuesta = await socioService.insertPersonaJuridica(model);
 
                         if (respuesta.IsSuccess)
                         {
-                       
+                            resultPersonaJuridica(respuesta.Result!.Socios.PersonasJuridicas);
                             cleanInputsJuridica();
                             await grid.Reload();
                             StateHasChanged();
@@ -124,7 +124,7 @@ namespace Balances.Web.Pages
         private void cleanInputsJuridica()
         {
             // Restablecer los valores de los campos a su estado inicial o vacío
-            modelPersonaJuridica = new PersonaJuridicaDto();
+            model = new PersonaJuridicaDto();
         }
 
         private void resultPersonaJuridica(List<PersonaJuridicaDto> listPersonaJuridica)
@@ -143,7 +143,7 @@ namespace Balances.Web.Pages
                 if (respuesta.IsSuccess)
                 {
                  
-                    resultPersonaJuridica(respuesta.Result!.Socios.PersonasJuridicas);
+                    listPersonaJuridica.Remove(personaJuridicaDto);
                     await grid.Reload();
                     StateHasChanged();
                 }

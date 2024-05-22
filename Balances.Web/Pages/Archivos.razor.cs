@@ -33,6 +33,8 @@ using System.Net.Mime;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using System.Runtime.Intrinsics.Arm;
 using FileInfo = System.IO.FileInfo;
+using Balances.Web.Services.FluentValidation;
+using FluentValidation.Results;
 
 namespace Balances.Web.Pages
 {
@@ -49,9 +51,6 @@ namespace Balances.Web.Pages
             "Otro"
         };
 
-        private string? categoria;
-
-        RadzenUpload uploadDD;
 
         RadzenGrid<ArchivoDTO> grid;
 
@@ -65,11 +64,11 @@ namespace Balances.Web.Pages
         public string sesionId { get; set; }
 
 
-        private string msgError = "";
-        private string msgErrorTipoArchivo = "";
-
+     
         private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
         private ArchivoDTO archivo = new ArchivoDTO();
+        private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
+
 
 
         protected override async void OnInitialized()
@@ -102,7 +101,7 @@ namespace Balances.Web.Pages
                         rsp = await balanceService.getBalance(balid);
                         if (rsp.IsSuccess)
                         {
-                            TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+                            TipoEntidad = rsp.Result!.Caratula.Entidad.TipoEntidad;
                             var rspArchivos = rsp.Result.Archivos;
                             setListArchivos(rspArchivos);
                             await grid.Reload();
@@ -140,21 +139,6 @@ namespace Balances.Web.Pages
 
 
 
-        private bool checkData()
-        {
-            if (archivo.Categoria.IsNullOrEmpty())
-            {
-                msgErrorTipoArchivo = "";
-            }
-            else
-            {
-                msgErrorTipoArchivo = "El campo no puede estar vacio";
-                return false;
-            }
-
-            msgErrorTipoArchivo = "";
-            return true;
-        }
 
         private async Task<ResponseDTO<BalanceDto>> DeleteArchivo(ArchivoDTO archivo)
         {
@@ -187,35 +171,7 @@ namespace Balances.Web.Pages
             return response;
         }
 
-        private async void OnProgress(UploadProgressArgs args)
-        {
-           
-            if (checkData())
-            {
-                if (args.Progress == 100)
-                {
 
-               
-                    foreach (var file in args.Files)
-                    {
-                   
-                        ArchivoDTO archivo = new ArchivoDTO();                                
-                        
-
-                        archivo.SesionId = sesionId;
-                        archivo.Tamaño = file.Size;
-                        archivo.ContentType = "pdf";
-                        archivo.Categoria = categoria;
-                        archivo.NombreArchivo = file.Name;                      
-                        
-
-                        listArchivo.Add(archivo);
-
-                    }
-                    await UploadFiles(listArchivo);
-                }
-            }
-        }
 
 
         private async Task<byte[]> ToByteArrayAsync(Stream stream)
@@ -230,75 +186,79 @@ namespace Balances.Web.Pages
 
 
 
-
-
-        private async Task<ResponseDTO<BalanceDto>> UploadFiles(List<ArchivoDTO> archivos)
+        private void HandleFileUpload(InputFileChangeEventArgs e)
         {
 
-            ResponseDTO<BalanceDto> response = new ResponseDTO<BalanceDto>();
-
-            response = await archivoService.UploadArchivo(archivos);
-
-
-            if (response.IsSuccess)
+            foreach (var file in e.GetMultipleFiles())
             {
-                await grid.Reload();
-                StateHasChanged();
+
+                selectedFiles = e.GetMultipleFiles();
+
             }
-            else
+        }
+
+        private async Task<ResponseDTO<BalanceDto>> UploadFile()
+        {
+
+            var response = new ResponseDTO<BalanceDto>();
+
+            //verificar que adjunto un archivo
+            archivo.CantidadArchivos = selectedFiles.Count();
+
+            try
             {
-                response.Message = $"Error uploading files";
+                // var archivo = new ArchivoDTO();
+                foreach (var file in selectedFiles)
+                {
+
+                    if (file.Size > 0)
+                    {
+
+                        var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
+
+                        archivo.SesionId = sesionId;
+                        archivo.Tamaño = binario.Length;
+                        archivo.ContentType = file.ContentType;
+                        archivo.NombreArchivo = file.Name;
+                        archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
+
+                        ArchivosValidator archivoValidator = new();
+                        ValidationResult result = archivoValidator.Validate(archivo);
+
+
+                        if (result.IsValid)
+
+                        {
+                            listArchivo.Add(archivo);
+
+                            response = await archivoService.UploadArchivo(listArchivo);
+
+                            if (response.IsSuccess)
+                            {
+                                await grid.Reload();                
+                                StateHasChanged();
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+            catch (Exception ex)
+            {
+                response.Message = $"An error occurred while uploading files: {ex.Message}";
             }
 
 
             return response;
-
         }
 
 
 
 
-        private string conversionesDeArchivos(long file)
-        {
-            // Tamaño del archivo en bytes (esto podría provenir de tu archivo subido)
-            long fileSizeInBytes = file;
-            if (fileSizeInBytes < 1024)
-            {
-                return $"{Math.Round((double)fileSizeInBytes)} Bytes";
-            }
-            else if (fileSizeInBytes < 1024 * 1024)
-            {
-                double fileSizeInKB = (double)fileSizeInBytes / 1024;
-                return $"{Math.Round(fileSizeInKB)} KB";
-            }
-            else if (fileSizeInBytes < 1024L * 1024 * 1024)
-            {
-                double fileSizeInMB = (double)fileSizeInBytes / (1024 * 1024);
-                return $"{Math.Round(fileSizeInMB)} MB";
-            }
-            else if (fileSizeInBytes < 1024L * 1024 * 1024 * 1024)
-            {
-                double fileSizeInGB = (double)fileSizeInBytes / (1024 * 1024 * 1024);
-                return $"{Math.Round(fileSizeInGB)} GB";
-            }
-            else
-            {
-                double fileSizeInTB = (double)fileSizeInBytes / (1024L * 1024 * 1024 * 1024);
-                return $"{Math.Round(fileSizeInTB)} TB";
-            }
-        }
 
-        private void OnChange(UploadChangeEventArgs args) {
-            foreach (var file in args.Files)
-            {
-                using var  stream = file.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
-                using var memoryStream = new MemoryStream();
-                stream.CopyTo(memoryStream);
-                byte[] fileBytes = memoryStream.ToArray();
-               
-              
-            }
-        }
+        
         
     }
 }

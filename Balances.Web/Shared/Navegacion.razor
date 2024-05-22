@@ -32,7 +32,7 @@
             <RadzenTabsItem Text="Integrantes" Class="@((PaginaActiva == "Integrantes") )" Disabled="@(TramiteIniciado ? false : true)">
        
             </RadzenTabsItem>
-            <RadzenTabsItem Text="Archivos" Class="@((PaginaActiva == "Archivos"))" Disabled="@(TramiteIniciado ? false : true)">
+            <RadzenTabsItem Text="Documentación" Class="@((PaginaActiva == "Documentacion"))" Disabled="@(TramiteIniciado ? false : true)">
                
             </RadzenTabsItem>
             <RadzenTabsItem Text="Confirmación" Class="@((PaginaActiva == "Confirmacion") )" Disabled="@(TramiteIniciado ? false : true)">
@@ -82,7 +82,7 @@
                 PaginaActiva = "Integrante";
                 break;
             case 6:
-                PaginaActiva = "Archivos";
+                PaginaActiva = "Documentacion";
                 break;
             case 7:
                 PaginaActiva = "Confirmacion";
@@ -113,7 +113,7 @@
                 return 4;
             case "Integrante":
                 return 5;
-            case "Archivos":
+            case "Documentacion":
                 return 6;
             case "Confirmacion":
                 return 7;// Agrega más casos según sea necesario para las demás pestañas
