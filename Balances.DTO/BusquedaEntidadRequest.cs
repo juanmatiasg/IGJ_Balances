@@ -3,6 +3,6 @@
     public class BusquedaEntidadRequest
     {
         public string? NroCorrelativoNroCUIL { get; set; }
-
+      
     }
 }

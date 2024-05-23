@@ -1,7 +1,9 @@
 ﻿using Balances.DTO;
 using Balances.Web.Services.Implementation;
 using Newtonsoft.Json;
+using OneOf.Types;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
 using System.Text;
 
 
@@ -19,57 +21,70 @@ namespace Balances.Web.Services.Contracts
 
 
 
-
-
-        public async Task<ResponseDTO<BalanceDto>> uploadArchivo(List<ArchivoDTO> files)
+        public async Task<ResponseDTO<BalanceDto>> UploadArchivo(List<ArchivoDTO> files)
         {
+        
             try
-            {
+            { 
 
-                var response = await _httpClient.PostAsJsonAsync("Archivo/InsertArchivos", files);
+                using var response = await _httpClient.PostAsJsonAsync("Archivo/InsertArchivos", files);
 
-                // Check if the request was successful (status code 2xx)
-                // response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode(); // Lanzará una excepción si la solicitud no tiene éxito (código de estado diferente de 2xx)
 
-                // Deserialize the response
                 var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
 
-                return new ResponseDTO<BalanceDto>
+                if (result!.IsSuccess)
                 {
-                    Result = result.Result,
-                    IsSuccess = result.IsSuccess,
-                    Message = result.Message
-                };
+                    return new ResponseDTO<BalanceDto>
+                    {
+                        Result = result.Result,
+                        IsSuccess = true,
+                        Message = "Upload successful"
+                    };
+                }
+                else
+                {
+                    return new ResponseDTO<BalanceDto>
+                    {
+                        Result = null,
+                        IsSuccess = false,
+                        Message = result.Message ?? "Error: Response message is empty"
+                    };
+                }
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
+                // Si hay un error de comunicación (por ejemplo, problemas de red), capturamos la excepción y devolvemos un mensaje de error
                 return new ResponseDTO<BalanceDto>
                 {
                     Result = null,
                     IsSuccess = false,
                     Message = $"Error: {ex.Message}"
                 };
-            };
-        }
-
-        private async Task<byte[]> ToByteArrayAsync(Stream stream)
-        {
-            using (var memoryStream = new MemoryStream())
+            }
+            catch (Exception ex)
             {
-                await stream.CopyToAsync(memoryStream);
-                return memoryStream.ToArray();
+                // Capturamos cualquier otra excepción y devolvemos un mensaje de error
+                return new ResponseDTO<BalanceDto>
+                {
+                    Result = null,
+                    IsSuccess = false,
+                    Message = $"Error: {ex.Message}"
+                };
             }
         }
 
+      
 
-
-        public async Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo)
+        public async Task<ResponseDTO<BalanceDto>> DeleteArchivo(ArchivoDTO archivo)
         {
             ResponseDTO<BalanceDto> rsp = new ResponseDTO<BalanceDto>();
             rsp.IsSuccess = false;
 
             try
             {
+            
+
                 // Crear una solicitud DELETE y adjuntar el objeto autoridad en el cuerpo (si es necesario)
                 var request = new HttpRequestMessage(HttpMethod.Delete, $"Archivo/DeleteArchivo");
                 request.Content = new StringContent(JsonConvert.SerializeObject(archivo), Encoding.UTF8, "application/json");
@@ -100,8 +115,15 @@ namespace Balances.Web.Services.Contracts
             return rsp;
         }
 
-
+        
+      
     }
+
+
+   
+
+
+
 
 
 }

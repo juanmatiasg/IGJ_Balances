@@ -113,15 +113,13 @@ namespace Balances.Bussiness.Implementacion
             var respuesta = new ResponseDTO<BalanceDto>();
             var pjSerializada = JsonConvert.SerializeObject(modelo);
             respuesta.IsSuccess = false;
+
             try
             {
                 var id = _sessionService.GetBalanceId(modelo.SesionId);
                 var bal = _balanceBusiness.GetById(id);
 
-
-
-
-                var humano = bal.Result.Socios.PersonasHumanas.FirstOrDefault(x => x.Id == modelo.Id);
+                var humano = bal.Result!.Socios.PersonasHumanas.FirstOrDefault(x => x.Id == modelo.Id);
 
                 if (humano != null) bal.Result.Socios.PersonasHumanas.Remove(humano);
 
@@ -142,34 +140,36 @@ namespace Balances.Bussiness.Implementacion
 
         }
 
-        public ResponseDTO<BalanceDto> DeletePersonaJuriridica(PersonaJuridicaDto modelo)
+        public ResponseDTO<BalanceDto> DeletePersonaJuridica(PersonaJuridicaDto modelo)
         {
             var respuesta = new ResponseDTO<BalanceDto>();
-            respuesta.IsSuccess = false;
             var pjSerializada = JsonConvert.SerializeObject(modelo);
+            respuesta.IsSuccess = false;
+
             try
             {
                 var id = _sessionService.GetBalanceId(modelo.SesionId);
                 var bal = _balanceBusiness.GetById(id);
 
-                var juridica = bal.Result.Socios.PersonasJuridicas.FirstOrDefault(x => x.Id == modelo.Id);
+                var humano = bal.Result!.Socios.PersonasJuridicas.FirstOrDefault(x => x.Id == modelo.Id);
 
-                if (juridica != null) bal.Result.Socios.PersonasJuridicas.Remove(juridica);
+                if (humano != null) bal.Result.Socios.PersonasJuridicas.Remove(humano);
 
                 _balanceBusiness.Update(bal.Result);
                 respuesta.Result = bal.Result;
                 respuesta.IsSuccess = true;
                 respuesta.Message = "persona juridica borrada correctamente";
-                _logger.LogInformation($"SociosBusiness.DeletePersonaJuriridica : ---> {pjSerializada}");
+                _logger.LogInformation($"SociosBusiness.DeletePersonaJuridica :  ---> {pjSerializada}");
             }
             catch (Exception ex)
             {
 
                 respuesta.Message = ex.Message;
-                _logger.LogError($"SociosBusiness.DeletePersonaJuriridica: \n {ex}");
+                _logger.LogError($"SociosBusiness.DeletePersonaJuridica: \n {ex}");
             }
 
             return respuesta;
+
         }
     }
 }

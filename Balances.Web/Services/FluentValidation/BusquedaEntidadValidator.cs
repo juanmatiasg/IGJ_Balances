@@ -8,7 +8,8 @@ namespace Balances.Web.Services.FluentValidation
         public BusquedaEntidadValidator()
         {
             RuleFor(_ => _.NroCorrelativoNroCUIL).Cascade(CascadeMode.Stop)
-                               .NotEmpty().WithMessage("Debe ingresar el correlativo");
+                               .NotEmpty().WithMessage("Debe ingresar el correlativo").
+                                Matches(@"^\d+$").WithMessage("El correlativo solo puede contener números"); ;
 
         }
     }

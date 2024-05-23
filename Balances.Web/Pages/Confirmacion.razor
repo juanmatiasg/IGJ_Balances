@@ -1,4 +1,4 @@
-﻿@page "/Confirmacion"
+﻿@page "/Confirmacion/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -23,6 +23,7 @@
 
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
 
     <style>
         body {
@@ -73,7 +74,7 @@
             font-family: 'Encode Sans', sans-serif;
             opacity: 0.7;
             font-size: x-large;
-            font-weight: oblique;
+            font-weight: bold;
             margin-top: 5px;
         }
 
@@ -119,8 +120,8 @@
 </head>
 
 <body>
-    
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Confirmacion" TramiteIniciado="true"></Navegacion>
+    <Navegacion PaginaActiva="Confirmacion" TramiteIniciado="true" balid="@balid"></Navegacion>
+
 
     <!--Loading-->
 
@@ -1212,3 +1213,4 @@
 
     
 }
+ 

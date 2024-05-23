@@ -27,14 +27,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Balances.Bussiness\Balances.Bussiness.csproj" />
     <ProjectReference Include="..\Balances.Repository\Balances.Repository.csproj" />
     <ProjectReference Include="..\Balances.Services\Balances.Services.csproj" />
     <ProjectReference Include="..\Balances.Utilities\Balances.Utilities.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Logs\" />
   </ItemGroup>
 
 </Project>

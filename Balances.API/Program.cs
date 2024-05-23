@@ -96,11 +96,12 @@ try
     {
         options.AddPolicy("NuevaPolitica", app =>
         {
-            app.AllowAnyOrigin().
-            AllowAnyHeader()
-             .SetIsOriginAllowedToAllowWildcardSubdomains()
-             .WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")
-             .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
+            app.WithOrigins("https://localhost:7052") // Hay que cambiaR
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .SetIsOriginAllowedToAllowWildcardSubdomains()
+            .WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")
+            .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
 
         });
     });
@@ -137,8 +138,7 @@ try
     app.UseRouting();
     app.UseCors("NuevaPolitica");
     app.UseAuthorization();
-    //Cors
-    //app.UseCors("NuevaPolitica");
+
 
     app.UseAuthentication();
 

@@ -15,7 +15,7 @@ namespace Balances.Services.Implementation
             _logger = logger;
         }
 
-        public byte[] HtmlToPDF(string html, BalanceDtoPresentacion balance)
+        public byte[] HtmlToPDF(string html, BalanceDto balance)
         {
 
             try

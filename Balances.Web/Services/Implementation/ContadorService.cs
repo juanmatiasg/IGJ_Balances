@@ -22,7 +22,6 @@ namespace Balances.Web.Services.Contracts
 
         public async Task<ResponseDTO<BalanceDto>> getContador(string id)
         {
-
             return await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Contador/{id}");
 
         }

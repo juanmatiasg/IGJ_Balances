@@ -16,8 +16,6 @@ namespace Balances.Web.Services.Contracts
         }
 
 
-
-
         public async Task<ResponseDTO<BalanceDto>> insertPersonaHumana(PersonaHumanaDto personaHumana)
         {
             ResponseDTO<BalanceDto> rsp = new();
@@ -32,7 +30,7 @@ namespace Balances.Web.Services.Contracts
                 var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
 
 
-                rsp = result;
+                rsp = result!;
                 rsp.IsSuccess = true;
 
 
@@ -65,7 +63,7 @@ namespace Balances.Web.Services.Contracts
                 {
                     // Leer la respuesta JSON y deserializarla a ResponseDTO<BalanceDto>
                     var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
-                    if (result.IsSuccess)
+                    if (result!.IsSuccess)
                     {
                         rsp = result;
 
@@ -139,6 +137,7 @@ namespace Balances.Web.Services.Contracts
                 {
                     // Leer la respuesta JSON y deserializarla a ResponseDTO<BalanceDto>
                     var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
+                    
                     if (result.IsSuccess)
                     {
                         rsp = result;
@@ -146,7 +145,7 @@ namespace Balances.Web.Services.Contracts
                     }
                     else
                     {
-                        rsp.Message = $"SocioService.deletePersonaHumana. {result.Message}";
+                        rsp.Message = $"SocioService.deletePersonaJuridica. {result.Message}";
                     }
                 }
                 else

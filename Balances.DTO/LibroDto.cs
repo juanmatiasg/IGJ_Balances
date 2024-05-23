@@ -3,7 +3,7 @@
     public class LibroDto
     {
 
-        //public string SesionId { get; set; }
+  
         public string Tipo { get; set; }
         public string Nombre { get; set; }
 

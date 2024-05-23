@@ -20,7 +20,8 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 
-
+// S W E E T  A L E RT
+builder.Services.AddSweetAlert2();
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://balanceapi.justicia.ar/") });
 
@@ -44,12 +45,8 @@ builder.Services.AddScoped<ISessionClientService, SessionClientService>();
 builder.Services.AddScoped<IBusquedaDeSociedadesClientService, BusquedaDesociedadesClientService>();
 builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
 
-
-// R A D Z E N
+builder.Services.AddScoped<DialogService>();
 builder.Services.AddRadzenComponents();
-
-// S W E E T  A L E RT
-builder.Services.AddSweetAlert2();
 
 // Ejemplo de configuración para ASP.NET Core
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -69,14 +66,6 @@ builder.Services
     .AddFontAwesomeIcons();
 
 
-/*builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 6000000; // Set the limit to a larger value (e.g., 6 MB)
-});*/
-
-
-
-//builder.Services.AddBlazoredLocalStorageAsSingleton();
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredLocalStorage();
 await builder.Build().RunAsync();

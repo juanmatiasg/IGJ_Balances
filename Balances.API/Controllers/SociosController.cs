@@ -15,15 +15,6 @@ namespace Balances.API.Controllers
             _sociosBusiness = sociosBusiness;
         }
 
-        [HttpPost]
-        [Route("InsertPersonaJuridica")]
-        public ResponseDTO<BalanceDto> InsertPersonaJuridica(PersonaJuridicaDto personaJuridicaDto)
-        {
-
-            var rsp = _sociosBusiness.InsertPersonaJuriridica(personaJuridicaDto);
-            return rsp;
-
-        }
 
         [HttpPost]
         [Route("InsertPersonaHumana")]
@@ -31,15 +22,6 @@ namespace Balances.API.Controllers
         {
 
             var rsp = _sociosBusiness.InsertPersonaHumana(personaHumanaDto);
-            return rsp;
-
-        }
-        [HttpDelete]
-        [Route("DeletePersonaJuridica")]
-        public ResponseDTO<BalanceDto> DeletePersonaJuridica(PersonaJuridicaDto personaJuridicaDto)
-        {
-
-            var rsp = _sociosBusiness.DeletePersonaJuriridica(personaJuridicaDto);
             return rsp;
 
         }
@@ -53,5 +35,29 @@ namespace Balances.API.Controllers
             return rsp;
 
         }
+
+
+        [HttpPost]
+        [Route("InsertPersonaJuridica")]
+        public ResponseDTO<BalanceDto> InsertPersonaJuridica(PersonaJuridicaDto personaJuridicaDto)
+        {
+
+            var rsp = _sociosBusiness.InsertPersonaJuriridica(personaJuridicaDto);
+            return rsp;
+
+        }
+
+        [HttpDelete]
+        [Route("DeletePersonaJuridica")]
+        public ResponseDTO<BalanceDto> DeletePersonaJuridica(PersonaJuridicaDto personaJuridicaDto)
+        {
+
+            var rsp = _sociosBusiness.DeletePersonaJuridica(personaJuridicaDto);
+            return rsp;
+
+        }
+
+
+        
     }
 }

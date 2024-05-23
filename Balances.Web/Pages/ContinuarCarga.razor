@@ -28,7 +28,7 @@
         sesionId = sesionRespuesta.Result;
        
 
-        sessionStorage.SetItemAsync("SessionId", sesionId);
+        await sessionStorage.SetItemAsync("SessionId", sesionId);
 
         //insertamos el balance en una sesion
         

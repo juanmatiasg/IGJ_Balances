@@ -13,264 +13,100 @@
 
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estado Contable</title>
-    <!-- Agrega los enlaces a los estilos de Bootstrap y otros recursos aquí -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
+<Navegacion PaginaActiva="Integrante" TramiteIniciado=true balid="@balid"></Navegacion>
 
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Integrante" TramiteIniciado="true"></Navegacion>
+<div class="container-fluid mt-4">
+    <NavegacionIntegrantes PaginaActiva="IntegranteJuridico" TramiteIniciado=true balid ="@balid"></NavegacionIntegrantes>
+</div>
 
-    <!---------------------------------------------------------------->
-    <!-- Tabs -->
-    <div class="container-fluid mt-4">
-        <ul class="nav nav-tabs" style="width: 1200px;">
-            <li class="nav-item">
-                <a class="nav-link" href="/Integrante">Integrante Humano</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="/IntegranteJuridico">Integrante Jurídico</a>
-            </li>
-        </ul>
-      
-    </div>
+<div class="container-fluid mt-4 mb-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header" style="background-color: #15153D; color:#FFF; font-weight: bold; text-align: center;">
+                    Datos del Integrante
+                </div>
+                <div class="card-body">
+                    <EditForm Model="model" >
+                        <FluentValidationValidator/>
+                        <RadzenStack class="mt-2 mb-2">
 
-
-    <!-- Formulario de Datos del Integrante -->
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <div class="col-md-6">
-                <EditForm Model="modelPersonaJuridica" class="card">
-                    <FluentValidationValidator />
-                    <div class="form-group mt-2">
-                        <RadzenFormField Text="Denominacion" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.Denominacion" />
-                        </RadzenFormField>
-
-                        <ValidationMessage For="@(()=> modelPersonaJuridica.Denominacion)" />
-                    </div>
-                    
-                        <div class="form-group mt-2">
-                            <RadzenFormField Text="Nro. de CUIL/CUIT" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.NroFiscal" />
+                            <RadzenFormField Text="Denominación" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@model.Denominacion" Style="width:100%" />
                             </RadzenFormField>
 
-                        <ValidationMessage For="@(()=> @modelPersonaJuridica.NroFiscal)" />
-                        </div>
-
-                        <div class="form-group mt-2">
-                            <RadzenFormField Text="Cuotas" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.Cuotas" />
-                            </RadzenFormField>
-
-                        <ValidationMessage For="@(()=> @modelPersonaJuridica.Cuotas)" />
-                        </div>
-                        <div class="form-group mt-2">
-                            <RadzenFormField Text="Votos" Style="width:100%">
-                            <RadzenTextBox @bind-Value="@modelPersonaJuridica.Votos" />
-                            </RadzenFormField>
-
-                        <ValidationMessage For="@(()=> @modelPersonaJuridica.Votos)" />
-                        </div>
-
-                        <RadzenStack class="d-flex justify-content-center mt-2">
-                        <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@addPersonaJuridica" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
+                            <ValidationMessage For="@(()=> model.Denominacion)" />
                         </RadzenStack>
-                </EditForm>
-                    </div>
+                        <RadzenStack class="mt-2 mb-2">
+
+                            <RadzenFormField Text="Nro. Fiscal" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@model.NroFiscal" Style="width:100%" />
+                            </RadzenFormField>
+
+                            <ValidationMessage For="@(()=> model.NroFiscal)" />
+                        </RadzenStack>
+
+                  
+
+                        <RadzenStack class="mt-2 mb-2">
+
+                            <RadzenFormField Text="Cuotas" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@model.Cuotas" Style="width:100%" />
+                            </RadzenFormField>
+
+                            <ValidationMessage For="@(()=> model.Cuotas)" />
+                        </RadzenStack>
+
+                        <RadzenStack class="mt-2 mb-2">
+
+                            <RadzenFormField Text="Votos" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@model.Votos" Style="width:100%" />
+                            </RadzenFormField>
+
+                            <ValidationMessage For="@(()=> model.Votos)" />
+                        </RadzenStack>
+
+                
+                        <RadzenStack class="mt-2 mb-2">
+                            <RadzenButton ButtonType=Radzen.ButtonType.Submit ButtonStyle="ButtonStyle.Primary" Click="@InsertPersonaJuridica">Agregar</RadzenButton>
+                        </RadzenStack>
+                    </EditForm>
+                </div>
             </div>
-            <div class="col-md-6">
-                <!-- Lista de Integrantes -->
+        </div>
+        <div class="col-md-6">
+            <!-- Lista de Integrantes -->
+            <div class="container">
                 <div class="card">
-                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
+                    <div class="card-header" style="background-color: #15153D; color:#FFF; font-weight: bold; text-align: center;">
                         Integrantes
                     </div>
                     <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                   
-                                    <th scope="col">Denominación</th>
-                                    <th scope="col"> CUIT</th>
-                                    <th scope="col">Cuotas</th>
-                                    <th scope="col">Cantidad</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            @foreach (var personaJuridica in listPersonaJuridica)
-                            {
-                                <tbody>
-                                    <tr>
-                                       
-                                        <td>@personaJuridica.Denominacion</td>
-                                        <td>@personaJuridica.NroFiscal</td>
-                                        <td>@personaJuridica.Cuotas</td>
-                                        <td>@personaJuridica.Votos </td>
-
-                                        <td>
-                                        <button type="button" class="btn btn-outline-danger" @onclick="() => deletePersonaJuridica(personaJuridica)"><i class="bi bi-trash3"></i></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-
-                            }
-                        </table>
+                        <RadzenGrid @ref=grid Data="listPersonaJuridica" TItem="PersonaJuridicaDto">
+                            <Columns>
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Denominacion" Title="Denominación" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="NroFiscal" Title="Nro. Fiscal" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Cuotas" Title="Cuotas" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Votos" Title="Votos" />
+                            
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Title="Acción">
+                                    <Template Context="personaJuridica">
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deletePersonaJuridica(personaJuridica))"></RadzenButton>
+                                    </Template>
+                                </RadzenGridColumn>
+                            </Columns>
+                        </RadzenGrid>
                     </div>
                 </div>
             </div>
-
         </div>
-    
+    </div>
+
+</div>
+
+   
 
 
 
-</body>
 
-</html>
-
-
-@code {
-    [Parameter] public string? TipoEntidad { get; set; }
-    private string idSession = "";
-    private PersonaJuridicaDto modelPersonaJuridica = new PersonaJuridicaDto();
-    private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
-
-    [Parameter]
-    public string? balid { get; set; }
-    [Parameter]
-    public string sesionId { get; set; }
-
-    private string msgErrorDenominacion = "";
-    private string msgErrorCuit = "";
-    private string msgErrorCuotas = "";
-    private string msgErrorVotos = "";
-
-    protected override async Task OnInitializedAsync()
-    {
-        await Load();
-
-        await base.OnInitializedAsync();
-    }
-
-    private async Task Load()
-
-    {
-        ResponseDTO<BalanceDto> rsp = new();
-        sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
-
-        try
-        {
-            if (sesionId == null)
-            {
-                var sesionRespuesta = await sesionService.getNewSession();
-
-                sesionId = sesionRespuesta.Result;
-                sessionStorage.SetItemAsync("SessionId", sesionId);
-            }
-            else
-            {
-                var rst = await sesionService.getBalanceId(sesionId);
-
-                if (rst is not null)
-                {
-                    balid = rst;
-                    rsp = await balanceService.getBalance(balid);
-
-                    if (rsp.IsSuccess)
-                    {
-                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
-
-                        resultPersonaJuridica(rsp.Result.Socios.PersonasJuridicas);
-
-                        StateHasChanged();
-
-                    }
-                }
-            }
-        }
-
-        catch (Exception ex)
-        {
-            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
-
-        }
-        
-
-    }
-
-
-    private async Task<ResponseDTO<BalanceDto>> addPersonaJuridica()
-    {
-        
-            ResponseDTO<BalanceDto> respuesta = new();
-
-            try
-            {
-
-            modelPersonaJuridica.SesionId = sesionId;
-
-            PersonaJuridicaValidator personaJuridicaValidator = new();
-            ValidationResult result = personaJuridicaValidator.Validate(modelPersonaJuridica);
-
-            if (result.IsValid)
-            {
-                respuesta = await socioService.insertPersonaJuridica(modelPersonaJuridica);
-                if (respuesta.IsSuccess)
-                {
-                    resultPersonaJuridica(respuesta.Result.Socios.PersonasJuridicas);
-                    // Limpiar los campos después de una inserción exitosa
-                    cleanInputsJuridica();
-                }
-            }
-
-            }
-            catch (Exception ex)
-            {
-                respuesta.Message = ex.Message;
-            }
-            return respuesta;
-       
-    }
-
-    private void cleanInputsJuridica()
-    {
-        // Restablecer los valores de los campos a su estado inicial o vacío
-        modelPersonaJuridica = new PersonaJuridicaDto();
-    }
-
-    private void resultPersonaJuridica(List<PersonaJuridicaDto> listPersonaJuridica)
-    {
-        this.listPersonaJuridica = listPersonaJuridica;
-
-    }
-
-    private async Task<ResponseDTO<BalanceDto>> deletePersonaJuridica(PersonaJuridicaDto personaJuridicaDto)
-    {
-        var respuesta = new ResponseDTO<BalanceDto>();
-        try
-        {
-            respuesta = await socioService.deletePersonaJuridica(personaJuridicaDto);
-
-            if (respuesta.IsSuccess)
-            {
-
-                listPersonaJuridica = respuesta.Result.Socios.PersonasJuridicas;
-
-            }
-
-
-        }
-        catch (Exception ex)
-        {
-            respuesta.Message = ex.Message;
-        }
-        return respuesta;
-    }
-
-}
 

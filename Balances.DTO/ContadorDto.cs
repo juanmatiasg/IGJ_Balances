@@ -20,7 +20,7 @@
         public string TomoEstudio { get; set; }
         public string FolioEstudio { get; set; }
 
-        //public BalanceDto Balance { get; set; }
+
 
     }
 }

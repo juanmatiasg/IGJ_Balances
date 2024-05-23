@@ -112,7 +112,6 @@
         <p>     <b>Denominación         :</b> {{RazonSocial}}</p>
         <p>     <b>Tipo Societario         :</b> {{TipoEntidad}}</p>
         <p>     <b>Nro Correlativo      :</b> {{NroCorrelativo}}</p>
-        <p>     <b>CUIT                 :</b> {{Cuit}}</p>
         <p>     <b>Domicilio            :</b> {{Domicilio}}</p>
         <p>     <b>Estados contables al :</b> {{FechaEstado}}</p>
     </div>
@@ -126,7 +125,7 @@
         <p><span class="error">Debe utilizar el id del representante que tenga EsFirmante = True</span></p>
         <p>   Lugar y Fecha     : </p>
         <p>   Apellido y Nombre : {{RepresentanteLegal.RepresentanteApellido}} {{RepresentanteLegal.RepresentanteNombre}}              </p>
-        <p>   CUIT              : {{representanteLegal.RepresentanteNroFiscal}}   </p>
+        <p>   CUIT              : {{RepresentanteLegal.RepresentanteNroFiscal}}   </p>
         <p>   Firma             : </p>
     </div>
     <br />
@@ -234,7 +233,7 @@
                 <td>{{LibrosDigitales[14].Folio}}</td>
             </tr>
             <tr>
-                <td colspan="4">Informe de Auditoria: Opinión <span class="error">FALTAN CAMPOS</span></td>
+                <td colspan="4">Informe de Auditoria: {{Contador.Opinion}} </td>
             </tr>
             <tr>
                 <td colspan="4">Fecha del Informe del Auditor Externo {{Contador.FechaInformeAuditorExt}}</td>
@@ -243,7 +242,7 @@
                 <td colspan="4">Nro de Legalización del Auditor Externo {{Contador.NroLegalInfoAudExt}}</td>
             </tr>
             <tr>
-                <td colspan="4">Observaciones <span class="error">FALTAN CAMPOS</span></td>
+                <td colspan="4"> Observaciones {{Contador.Observaciones}}</td>
             </tr>
         </table>
     </div>
@@ -260,7 +259,7 @@
         <p>   Lugar y Fecha     : </p>
         <p>   Apellido y Nombre : {{Contador.ContadorApellido}} {{Contador.ContadorNombre}}              </p>
         <p>   CUIT              : {{Contador.ContadorNroFiscal}} - T° {{Contador.Tomo}} F° {{Contador.Folio}}  </p>
-        <p>En carácter de Socio de la Soc Tº <span class="error">FALTAN CAMPOS</span> Fº <span class="error">FALTAN CAMPOS   (ésta línea solo debe aparecer si "Actúa en carácter de Socio de Estudio Contable" = True)</span></p>
+        <p> {{Contador.EsSocioEstudio}}  {{Contador.TomoEstudio}}  {{Contador.FolioEstudio}}  </p>
         <p>   Firma             : </p>
     </div>
 

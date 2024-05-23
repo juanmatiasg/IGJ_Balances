@@ -68,14 +68,16 @@ namespace Balances.Bussiness.Implementacion
             //genero QR (PNG en Base 64) con el id  como enlace oculto
             var qr = _qRService.QRGenerator(bal.Result.Id);
 
-            //filtro busqueda autoridad y socio condicion firmante para llenar la plantilla
-            var balPresentacion = _presentacionService.GetBalanceAutoridadySocioFirmante(bal.Result);
-            // lleno la plantilla con los datos del balance
-            var plantillapdf = _presentacionService.CrearPlantillaPresentacionPdf(balPresentacion, qr);
+
+
+            // lleno las plantillas con los datos del balance
+            var plantillapdf = _presentacionService.CrearPlantillaPresentacionPdf(bal.Result, qr);
+            var plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(bal.Result, qr);
 
             //pdf
 
-            var binariopdf = _pdfService.HtmlToPDF(plantillapdf, balPresentacion);
+            var binariopdf = _pdfService.HtmlToPDF(plantillapdf, bal.Result);
+
 
             //agrego la presentacion al balance
             if (bal.Result.Presentacion == null)
@@ -86,13 +88,13 @@ namespace Balances.Bussiness.Implementacion
             bal.Result.Presentacion.Fecha = DateTime.Now;
             bal.Result.Presentacion.BinarioPdf = binariopdf;
 
-            var plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(balPresentacion, qr);
+
 
             //File.WriteAllBytes("c:/prueba.pdf", pdf);
             // paso como parametro el balance y la plantilla para armar el emailRequest 
             var EmailRequest = CrearEmailPresentacion(bal.Result, plantillahtml, binariopdf, qr);
 
-            var presentacionSerializada = JsonConvert.SerializeObject(balPresentacion);
+            var presentacionSerializada = JsonConvert.SerializeObject(bal);
             try
             {
                 //Envio el email con los datos del EmailRequest
@@ -126,8 +128,8 @@ namespace Balances.Bussiness.Implementacion
             //genero QR
             var qr = _qRService.QRGenerator(bal.Id);
             // lleno la plantilla con los datos del balance
-            var balPresentacionfiltro = _presentacionService.GetBalanceAutoridadySocioFirmante(bal);
-            var Plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(balPresentacionfiltro, qr);
+            //var balPresentacionfiltro = _presentacionService.GetBalanceAutoridadySocioFirmante(bal);
+            var Plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(bal, qr);
 
             return Plantillahtml;
         }
@@ -139,7 +141,7 @@ namespace Balances.Bussiness.Implementacion
             var mime = new MimeMessage()
             {
                 //    To = balance.Caratula.Email,
-                Subject = $"Presentacion Generada - {balance.Caratula.Entidad.RazonSocial} ",
+                Subject = $"Manifiesto - {balance.Caratula.Entidad.RazonSocial} ",
                 //  Body = html,
 
             };

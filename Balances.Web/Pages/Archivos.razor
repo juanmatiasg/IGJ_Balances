@@ -1,4 +1,4 @@
-﻿@page "/Archivos/{balid?}"
+﻿@page "/Documentacion/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -18,22 +18,9 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archivos</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 
-</head>
-
-<body>
-
-    <Navegacion Entidad="@($"{TipoEntidad}")" PaginaActiva="Archivos" TramiteIniciado="true"></Navegacion>
+    <Navegacion PaginaActiva="Documentacion" TramiteIniciado="true" balid="@balid"></Navegacion>
 
     <!---------------------------------------------------------------->
     <div class="container-fluid mt-5">
@@ -41,43 +28,43 @@
             Archivos
         </h2>
         <div class="row">
-            <!-- Tarjeta: Enviar Archivos -->
             <div class="col mt-4">
                 <div class="card">
-                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                        Enviar Archivos
+                    <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
+                        Documentación digital
                     </div>
+                 
                     <div class="card-body">
-                       <EditForm Model="archivo">
-                            <FluentValidationValidator />
-                            <RadzenStack class="mt-2 mb-2">
-                                <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
-                                    <RadzenDropDown @bind-Value=@archivo.Categoria Data=@categoria Name="DropDownBindValue" Style="width:100%" />
-                                </RadzenFormField>
-                                <ValidationMessage For="@(()=> archivo.Categoria)" />
-                            </RadzenStack>
-                            <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
-                            <ValidationMessage For="@(()=> archivo.ContentType)" />
-                         
-                            <div class="col d-flex justify-content-between">
-                                <InputFile OnChange="@HandleFileUpload" multiple />
-                                  
-                                    <RadzenButton Text="Upload" ButtonType="Radzen.ButtonType.Submit" Click=@UploadFile class="d-block mt-4" />
-                                
-                            </div>
-                        </EditForm>
+                            <EditForm Model="@archivo">
+                                    <FluentValidationValidator />
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
+                                            <RadzenDropDown @bind-Value=@archivo.Categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> archivo.Categoria)" />
+                                    </RadzenStack>
+                                    <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
+                                    <ValidationMessage For="@(()=> archivo.ContentType)" />
+
+                                    <div class="col d-flex justify-content-between">
+                                        <InputFile OnChange="@HandleFileUpload" multiple />
+                                        <RadzenButton Icon="upload" Text="Adjuntar" ButtonType="Radzen.ButtonType.Submit" Click=@UploadFile class="d-block mt-4" />
+                                    </div>
+                            </EditForm>                
                     </div>
                 </div>
             </div>
-
+          
             <!-- Tarjeta: Archivo Recibido -->
             <div class="col mt-4">
                 <div class="card">
-                    <div class="card-header" style="color: #0375bc; font-weight: bold; text-align: center;">
-                        Archivo Recibido
-                    </div>
+                <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
+                    Documentación presentada
+                </div>
                     <div class="card-body">
-                        <RadzenGrid Data="listArchivo" TItem="ArchivoDTO">
+                      
+                        <RadzenGrid @ref=grid Data="listArchivo" TItem="ArchivoDTO" >
+                  
                             <Columns>
                                 <RadzenGridColumn TItem="ArchivoDTO" Property="NombreArchivo" Title="Nombre de Archivo" />
                                 <RadzenGridColumn TItem="ArchivoDTO" Property="Categoria" Title="Categoría" />
@@ -86,12 +73,11 @@
                                 <RadzenGridColumn TItem="ArchivoDTO" Property="Tamaño" Title="Tamaño" />
                                 <RadzenGridColumn TItem="ArchivoDTO" Title="Acción">
                                     <Template Context="archivo">
-                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteArchivo(archivo))">Eliminar</RadzenButton>
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => DeleteArchivo(archivo))"></RadzenButton>
                                     </Template>
                                 </RadzenGridColumn>
                             </Columns>
-                        </RadzenGrid>
-                     
+                        </RadzenGrid>   
 
                     </div>
                 </div>
@@ -99,255 +85,4 @@
         </div>
     </div>
 
-</body>
-
-</html>
-
-
-@code {
-
-    private string[] categoria =
-      {
-            "Estado Contable",
-            "Acta reunión organo",
-            "Acta reunión administradores",
-            "Informe Fiscalizacion",
-            "Otro"
-    };
-
-    [Parameter] public string? TipoEntidad { get; set; }
-
-    [Parameter]
-    public string? balid { get; set; }
-    [Parameter]
-    public string sesionId { get; set; }
-    private bool isLoading = false;
-    private double progressPercentage = 0.0;
-
-    // private string categoria = "";
-    private string msgError = "";
-    private string msgErrorTipoArchivo = "";
-
-    private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
-    private ArchivoDTO archivo = new ArchivoDTO();
-    private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
-
-  
-
-
-    protected override async void OnInitialized()
-    {
-        await Load();
-        base.OnInitialized();
-    }
-
-    private async Task Load()
-    {
-        ResponseDTO<BalanceDto> rsp = new();
-        sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
-
-        try
-        {
-            if (sesionId == null)
-            {
-                var sesionRespuesta = await sesionService.getNewSession();
-
-                sesionId = sesionRespuesta.Result;
-                sessionStorage.SetItemAsync("SessionId", sesionId);
-            }
-            else
-            {
-                var rst = await sesionService.getBalanceId(sesionId);
-
-                if (rst is not null)
-                {
-                    balid = rst;
-                    rsp = await balanceService.getBalance(balid);
-
-                    if (rsp.IsSuccess)
-                    {
-                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
-
-                        var rspArchivos = rsp.Result.Archivos;
-
-                        setListArchivos(rspArchivos);
-
-                        StateHasChanged();
-
-                    }
-                }
-            }
-        }
-
-        catch (Exception ex)
-        {
-            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
-
-        }
-
-
-    }
-
-
-    private void setListArchivos(List<ArchivoDTO> list)
-    {
-        if (list != null)
-        {
-            foreach (var x in list)
-            {
-                var archivo = new ArchivoDTO
-                    {
-
-                        Id = x.Id,
-                        SesionId = sesionId,
-                        NombreArchivo = x.NombreArchivo,
-                        Categoria = x.Categoria,
-                        Hash = x.Hash,
-                        Tamaño = x.Tamaño,
-                        FechaCreacion = x.FechaCreacion
-                    };
-
-                this.listArchivo.Add(archivo);
-            }
-        }
-
-    }
-
-    private string conversionesDeArchivos(long file)
-    {
-        // Tamaño del archivo en bytes (esto podría provenir de tu archivo subido)
-        long fileSizeInBytes = file;
-
-        if (fileSizeInBytes < 1024)
-        {
-            return $"{Math.Round((double)fileSizeInBytes)} Bytes";
-        }
-        else if (fileSizeInBytes < 1024 * 1024)
-        {
-            double fileSizeInKB = (double)fileSizeInBytes / 1024;
-            return $"{Math.Round(fileSizeInKB)} KB";
-        }
-        else if (fileSizeInBytes < 1024L * 1024 * 1024)
-        {
-            double fileSizeInMB = (double)fileSizeInBytes / (1024 * 1024);
-            return $"{Math.Round(fileSizeInMB)} MB";
-        }
-        else if (fileSizeInBytes < 1024L * 1024 * 1024 * 1024)
-        {
-            double fileSizeInGB = (double)fileSizeInBytes / (1024 * 1024 * 1024);
-            return $"{Math.Round(fileSizeInGB)} GB";
-        }
-        else
-        {
-            double fileSizeInTB = (double)fileSizeInBytes / (1024L * 1024 * 1024 * 1024);
-            return $"{Math.Round(fileSizeInTB)} TB";
-        }
-    }
-
-
-    private void HandleFileUpload(InputFileChangeEventArgs e)
-    {
-      
-            foreach (var file in e.GetMultipleFiles())
-             {
-                
-            selectedFiles = e.GetMultipleFiles();
-
-         }
-    }
-
-
-        private async Task<ResponseDTO<BalanceDto>> UploadFile()
-    {
-
-        var response = new ResponseDTO<BalanceDto>();
-
-        //verificar que adjunto un archivo
-        archivo.CantidadArchivos = selectedFiles.Count();
-
-        try
-        {
-
-            // var archivo = new ArchivoDTO();
-            foreach (var file in selectedFiles)
-            {
-
-                if (file.Size > 0)
-                {
-
-                    var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
-
-                    archivo.SesionId = sesionId;
-                    archivo.Tamaño = binario.Length;
-                    archivo.ContentType = file.ContentType;
-                    archivo.NombreArchivo = file.Name;
-                    archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
-
-                    ArchivosValidator archivoValidator = new();
-                    ValidationResult result = archivoValidator.Validate(archivo);
-                
-                   
-                    if (result.IsValid)
-
-                    {
-                  
-                        listArchivo.Add(archivo);
-
-                        response = await archivoService.uploadArchivo(listArchivo);
-
-                        if (response.IsSuccess)
-                        {
-                            StateHasChanged();
-                        }
-                    }
-
-                    }
-                }
-
-            }
-
-            catch (Exception ex)
-            {
-                response.Message = $"An error occurred while uploading files: {ex.Message}";
-            }
-           
-       
-        return response;
-    }
-
-
-
-    private async Task<ResponseDTO<BalanceDto>> deleteArchivo(ArchivoDTO archivo)
-    {
-        var response = new ResponseDTO<BalanceDto>();
-        try
-        {
-            response = await archivoService.deleteArchivo(archivo);
-
-            if (response.IsSuccess)
-            {
-                listArchivo.Remove(archivo);
-
-            }
-        }
-        catch (Exception ex)
-        {
-            response.Message = ex.Message;
-        }
-        return response;
-    }
-
-    private async Task<byte[]> ToByteArrayAsync(Stream stream)
-    {
-        using (var memoryStream = new MemoryStream())
-        {
-            await stream.CopyToAsync(memoryStream);
-            return memoryStream.ToArray();
-        }
-    }
-
-
-
-
-}
-
+ 

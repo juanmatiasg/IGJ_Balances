@@ -101,7 +101,7 @@ namespace Balances.Bussiness.Implementacion
 
             //RECUPERO SESION EN EL ARCHIVO
             var archivo = ufDto.FirstOrDefault();
-            var sesionid = archivo.SesionId;
+            var sesionid = archivo!.SesionId;
 
             //busqueda del balance
             var id = _sessionService.GetBalanceId(sesionid);

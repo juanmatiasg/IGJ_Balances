@@ -1,0 +1,68 @@
+﻿@using Balances.DTO;
+@using Balances.Web.Pages;
+@inject NavigationManager NavigationManager
+
+
+<RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center" Gap="0.5rem" Class="rz-pt-4">
+
+    <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()" RenderMode="TabRenderMode.Client">
+        <Tabs>
+            <RadzenTabsItem Text="Integrante Humano" Class="@((PaginaActiva == "Integrante"))"></RadzenTabsItem>
+
+            <RadzenTabsItem Text="Integrante Jurídico" Class="@((PaginaActiva == "IntegranteJuridico"))">  </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenStack>
+
+
+
+
+@code {
+    [Parameter] public string? Entidad { get; set; }
+    [Parameter] public string? PaginaActiva { get; set; } = "Integrante";
+    [Parameter] public bool TramiteIniciado { get; set; }
+    [Parameter] public string? balid { get; set; } = null;
+
+    Radzen.TabPosition tabPosition = Radzen.TabPosition.Top;
+
+
+    void OnChange(int index)
+    {
+    
+
+
+        switch (index)
+        {
+            case 0:
+                PaginaActiva = "Integrante";
+                break;
+            case 1:
+                PaginaActiva = "IntegranteJuridico";
+                break;
+
+            default:
+                // Por defecto, no hacer nada
+                break;
+        }
+
+        // Después de actualizar PaginaActiva, puedes construir la URL y navegar a ella
+        var url = PaginaActiva + "/" + balid;
+        Console.WriteLine("Navegando a: " + url);
+        NavigationManager.NavigateTo(url);
+    }
+
+    int GetSelectedIndex()
+    {
+        switch (PaginaActiva)
+        {
+            case "Integrante":
+                return 0;
+            case "IntegranteJuridico":
+                return 1;
+
+            default:
+                return 0;
+        }
+    }
+
+}

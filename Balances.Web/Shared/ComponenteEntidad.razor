@@ -1,0 +1,15 @@
+﻿<RadzenCard Class=" rz-mx-auto" Style="max-width: 200px;">
+    <RadzenStack>
+        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-2 rz-my-0">Entidad</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1"><b>@Entidad</b></RadzenText>
+        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Razón Social</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1"><b>@RazonSocial</b></RadzenText>
+    </RadzenStack>
+</RadzenCard>
+
+@code {
+    [Parameter] public string? Entidad { get; set; }
+    [Parameter] public string? RazonSocial { get; set; }
+
+ 
+}

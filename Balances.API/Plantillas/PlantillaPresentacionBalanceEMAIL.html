@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Manifiesto de Presentación de Estados Contables Digitales IGJ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+   
+    <style>
+        body {
+            margin-left: 40px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .box {
+            border: 1px solid;
+            padding: 8px;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 2px solid #37bbed;
+        }
+
+        .logo {
+            max-height: 100px;
+            width: auto;
+        }
+
+        .membrete {
+            text-align: right;
+            font-size: small;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .seccion {
+            font-family: 'Encode Sans', sans-serif;
+            font-size: large;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .titulo {
+            font-family: 'Encode Sans', sans-serif;
+            font-size: xx-large;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subtitulo {
+            font-family: 'Encode Sans', sans-serif;
+            opacity: 0.7;
+            font-size: x-large;
+            font-weight: oblique;
+            margin-top: 5px;
+        }
+
+        .mono {
+            font-family: 'Roboto Mono';
+        }
+
+        .error {
+            color: red;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #333333;
+        }
+
+        th {
+            border: 1px solid #333333;
+            padding: 8px;
+            text-align: left;
+            background-color: #f2f2f2;
+            font-size: small;
+        }
+
+        td {
+            border: 1px solid #333333;
+            padding: 8px;
+            text-align: left;
+            font-size: small;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="encabezado">
+        <img class="logo" src="cid:{{igjImage}}" alt="Logo IGJ">
+        <img class="logo" src="cid:{{MinImage}}" alt="Logo MJDH">
+        <!--<img class="logo" src="{{igjImage}}" alt="Logo IGJ">
+        <img class="logo" src="{{MinImage}}" alt="Logo MJDH">-->
+    </div>
+    <div class="membrete">
+        <p><b><i>2024 – AÑO DE LA DEFENSA DE LA VIDA, LA LIBERTAD Y LA PROPIEDAD</i></b></p>
+    </div>
+    <div>
+        <p class="titulo">Regimen de Presentación de Estados Contables</p>
+        <p class="subtitulo">Anexo I - Resolución General IGJ Nº <span class="error">A DEFINIR</span></p>
+    </div>
+
+    <br />
+    <div>
+        <p>     <b>Denominación         :</b> {{RazonSocial}}</p>
+        <p>     <b>Tipo Societario         :</b> {{TipoEntidad}}</p>
+        <p>     <b>Nro Correlativo      :</b> {{NroCorrelativo}}</p>
+        <p>     <b>Domicilio            :</b> {{Domicilio}}</p>
+        <p>     <b>Estados contables al :</b> {{FechaEstado}}</p>
+    </div>
+    <br />
+    <div>
+        <p class="seccion">Manifestación del Representante Legal </p>
+        <p>  En mi carácter de representante legal de la sociedad {{RazonSocial}} {{TipoEntidad}}, manifiesto que los datos contenidos en los archivos de hash {{Hash}}, se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al {{FechaEstado}} obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
+    </div>
+    <br />
+    <div class="box">
+        <p><span class="error"> <!– Debe utilizar el id del representante que tenga EsFirmante = True –></span></p>
+        <p>   Lugar y Fecha     : </p>
+        <p>   Apellido y Nombre : {{RepresentanteLegal.RepresentanteApellido}} {{RepresentanteLegal.RepresentanteNombre}}              </p>
+        <p>   CUIT              : {{RepresentanteLegal.RepresentanteNroFiscal}}   </p>
+        <p>   Firma             : </p>
+    </div>
+    <br />
+    <div>
+        <p class="seccion">Certificación del Auditor Externo sobre Información Requerida por la Resolución General IGJ <span class="error">A DEFINIR</span></p>
+        <p>En mi carácter de contador público independiente y auditor externo de {{RazonSocial}} {{TipoEntidad}}, certifico la información detallada en el apartado siguiente.</p>
+    </div>
+    <div>
+        <p><b>1) Información Objeto de la Certificación</b></p>
+        <table>
+            <tr>
+                <th>Asiento</th>
+                <th>Denominación</th>
+                <th>Numero de Rúbrica</th>
+                <th>Folio en el que obra la transcripción</th>
+                <th>Fecha Registracion</th>
+                <th>Folio de la última registración</th>
+            </tr>
+            <tr>
+                <td>Memoria</td>
+                <td>{{Memoria.Nombre}}</td>
+                <td>{{Memoria.NumeroRubrica}}</td>
+                <td>{{Memoria.FolioObraTranscripcion}}</td>
+                <td>{{Memoria.FechaUltimaRegistracion}}</td>
+                <td>{{Memoria.FolioUltimaRegistracion}}</td>
+            </tr>
+
+            <tr>
+                <td>Patrimonio Neto</td>
+                <td>{{PatrimonioNeto.Nombre}}</td>
+                <td>{{PatrimonioNeto.NumeroRubrica}}</td>
+                <td>{{PatrimonioNeto.FolioObraTranscripcion}}</td>
+                <td>{{PatrimonioNeto.FechaUltimaRegistracion}}</td>
+                <td>{{PatrimonioNeto.FolioUltimaRegistracion}}</td>
+            </tr>
+
+
+            <tr>
+                <td>Asamblea</td>
+                <td>{{Asamblea.Nombre}}</td>
+                <td>{{Asamblea.NumeroRubrica}}</td>
+                <td>{{Asamblea.FolioObraTranscripcion}}</td>
+                <td>{{Asamblea.FechaUltimaRegistracion}}</td>
+                <td>{{Asamblea.FolioUltimaRegistracion}}</td>
+            </tr>
+
+
+            <tr>
+                <td>Acta del Órgano de Administración</td>
+                <td>{{Administracion.Nombre}}</td>
+                <td>{{Administracion.NumeroRubrica}}</td>
+                <td>{{Administracion.FolioObraTranscripcion}}</td>
+                <td>{{Administracion.FechaUltimaRegistracion}}</td>
+                <td>{{Administracion.FolioUltimaRegistracion}}</td>
+            </tr>
+
+            <tr>
+                <td>Estado de Situación Patrimonial</td>
+                <td>{{SituacionPatrimonial.Nombre}}</td>
+                <td>{{SituacionPatrimonial.NumeroRubrica}}</td>
+                <td>{{SituacionPatrimonial.FolioObraTranscripcion}}</td>
+                <td>{{SituacionPatrimonial.FechaUltimaRegistracion}}</td>
+                <td>{{SituacionPatrimonial.FolioUltimaRegistracion}}</td>
+            </tr>
+            <tr>
+                <td>Estado de Resultados</td>
+                <td>{{Resultados.Nombre}}</td>
+                <td>{{Resultados.NumeroRubrica}}</td>
+                <td>{{Resultados.FolioObraTranscripcion}}</td>
+                <td>{{Resultados.FechaUltimaRegistracion}}</td>
+                <td>{{Resultados.FolioUltimaRegistracion}}</td>
+            </tr>
+            <tr>
+                <td>Estado de Evolución del Patrimonio Neto</td>
+                <td>{{PatrimonioNeto.Nombre}}</td>
+                <td>{{PatrimonioNeto.NumeroRubrica}}</td>
+                <td>{{PatrimonioNeto.FolioObraTranscripcion}}</td>
+                <td>{{PatrimonioNeto.FechaUltimaRegistracion}}</td>
+                <td>{{PatrimonioNeto.FolioUltimaRegistracion}}</td>
+            </tr>
+            <tr>
+                <td>Estado de Flujo de Efectivo</td>
+                <td>{{Efectivo.Nombre}}</td>
+                <td>{{Efectivo.NumeroRubrica}}</td>
+                <td>{{Efectivo.FolioObraTranscripcion}}</td>
+                <td>{{Efectivo.FechaUltimaRegistracion}}</td>
+                <td>{{Efectivo.FolioUltimaRegistracion}}</td>
+            </tr>
+            <tr>
+                <td>Información Complementaria</td>
+                <td>{{Informacion.Nombre}}</td>
+                <td>{{Informacion.NumeroRubrica}}</td>
+                <td>{{Informacion.FolioObraTranscripcion}}</td>
+                <td>{{Informacion.FechaUltimaRegistracion}}</td>
+                <td>{{Informacion.FolioUltimaRegistracion}}</td>
+            </tr>
+            <tr>
+                <td>Estado Contable Consolidado</td>
+                <td>{{EstadosContablesConsolidados.Nombre}}</td>
+                <td>{{EstadosContablesConsolidados.NumeroRubrica}}</td>
+                <td>{{EstadosContablesConsolidados.FolioObraTranscripcion}}</td>
+                <td>{{EstadosContablesConsolidados.FechaUltimaRegistracion}}</td>
+                <td>{{EstadosContablesConsolidados.FolioUltimaRegistracion}}</td>
+            </tr>
+            <tr>
+                <td>Informe de Órgano de Fiscalización</td>
+                <td>{{Fiscalizacion.Nombre}}</td>
+                <td>{{Fiscalizacion.NumeroRubrica}}</td>
+                <td>{{Fiscalizacion.FolioObraTranscripcion}}</td>
+                <td>{{Fiscalizacion.FechaUltimaRegistracion}}</td>
+                <td>{{Fiscalizacion.FolioUltimaRegistracion}}</td>
+            </tr>
+            <tr>
+                <td>Informe del Auditor Externo</td>
+                <td>{{Auditor.Nombre}}</td>
+                <td>{{Auditor.NumeroRubrica}}</td>
+                <td>{{Auditor.FolioObraTranscripcion}}</td>
+                <td>{{Auditor.FechaUltimaRegistracion}}</td>
+                <td>{{Auditor.FolioUltimaRegistracion}}</td>
+            </tr>
+            <tr>
+                <td>Registro de asistencia</td>
+                <td>{{AsistenciaAsamblea.Nombre}}</td>
+                <td>{{AsistenciaAsamblea.NumeroRubrica}}</td>
+                <td>{{AsistenciaAsamblea.FolioObraTranscripcion}}</td>
+                <td>{{AsistenciaAsamblea.FechaUltimaRegistracion}}</td>
+                <td>{{AsistenciaAsamblea.FolioUltimaRegistracion}}</td>
+            </tr>
+
+            <tr>
+
+                <td>IVA Compras</td>
+                <td>{{IVACompras.Nombre}}</td>
+                <td>{{IVACompras.NumeroRubrica}}</td>
+                <td>{{IVACompras.FolioObraTranscripcion}}</td>
+                <td>{{IVACompras.FechaUltimaRegistracion}}</td>
+                <td>{{IVACompras.FolioUltimaRegistracion}}</td>
+
+            </tr>
+            <tr>
+                <td>IVA Ventas</td>
+                <td>{{IVAVentas.Nombre}}</td>
+                <td>{{IVAVentas.NumeroRubrica}}</td>
+                <td>{{IVAVentas.FolioObraTranscripcion}}</td>
+                <td>{{IVAVentas.FechaUltimaRegistracion}}</td>
+                <td>{{IVAVentas.FolioUltimaRegistracion}}</td>
+
+            </tr>
+            <tr>
+                <td colspan="4">Informe de Auditoria: Opinión {{Contador.Opinion}}</td>
+            </tr>
+            <tr>
+                <td colspan="4">Fecha del Informe del Auditor Externo {{Contador.FechaInformeAuditorExt}}</td>
+            </tr>
+            <tr>
+                <td colspan="4">Nro de Legalización del Auditor Externo {{Contador.NroLegalInfoAudExt}}</td>
+            </tr>
+            <tr>
+                <td colspan="4">Observaciones  {{Contador.Observaciones}} </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <p><b>2) Tarea Profesional Realizada</b></p>
+        <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el {{FechaEstado}} e Informe de Auditor Externo de fecha {{Contador.FechaInformeAuditorExt}} con los datos incluidos en <span class="error">FALTAN CAMPOS</span>.</p>
+    </div>
+    <div>
+        <p><b>3) Certificación</b></p>
+        <p>  Sobre la base delas tareas descriptas CERTIFICO que la información contenida en los documentos detallados en 1. concuerda en un todo con lo declarado en el hash y surge de registros rubricados/medios ópticos/mecánicos/digitales  llevados en legal forma.-</p>
+    </div>
+    <br />
+    <div class="box">
+        <p>   Lugar y Fecha     : </p>
+        <p>   Apellido y Nombre : {{Contador.ContadorApellido}} {{Contador.ContadorNombre}}              </p>
+        <p>   CUIT              : {{Contador.ContadorNroFiscal}} - T° {{Contador.Tomo}} F° {{Contador.Folio}}  </p>
+        <p> {{Contador.EsSocioEstudio}}  {{Contador.TomoEstudio}}  {{Contador.FolioEstudio}}  </p>
+        <p>   Firma             : </p>
+    </div>
+
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <img alt="Embedded QR code" class="img-responsive" src="cid:{{QR}}" /></p>
+        <!--<p class="membrete"><b>Código de Presentación :</b>  <img alt="Embedded QR code" class="img-responsive" src="{{QR}}" /></p>-->
+
+    </div>
+</body>
+</html>
