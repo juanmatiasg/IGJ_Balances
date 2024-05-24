@@ -27,12 +27,12 @@
 
 
     <!--Formulario autoridades-->
-    <div class="card w-50 p-1">
+    <div class="card w-50 ">
 
         <EditForm Model="modelo" class="d-flex gap-1  flex-column">
 
             <FluentValidationValidator />
-            <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
+            <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;font-size:larger;">
                 Datos de la Autoridad
             </div>
 
@@ -46,15 +46,15 @@
                     <RadzenStack Style="width:50%">
                         <RadzenFormField Text="Nombre">
                             <RadzenTextBox MaxLength="24" type="text" @bind-Value="@modelo.Nombre" />
+                            <ValidationMessage For="@(()=> modelo.Nombre)" />
                         </RadzenFormField>
-                        <ValidationMessage For="@(()=> modelo.Nombre)" />
                     </RadzenStack>
 
                     <RadzenStack Style="width:50%">
                         <RadzenFormField Text="Apellido">
                             <RadzenTextBox MaxLength="24" type="text" @bind-Value="@modelo.Apellido" />
+                            <ValidationMessage For="@(()=> modelo.Apellido)" />
                         </RadzenFormField>
-                        <ValidationMessage For="@(()=> modelo.Apellido)" />
 
                     </RadzenStack>
 
@@ -62,33 +62,28 @@
                 </div>
 
                 <!--DNI-->
-                <div class="d-flex flex-column gap-1">
+                <div class="d-flex justify-content-between w-100 gap-1">
 
-
-                    <RadzenStack class="w-50">
+                    <RadzenStack Style="width:30%;">
                         <RadzenFormField Text="Tipo de Documento">
                             <RadzenDropDown @bind-Value=@modelo.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" />
+                            <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
                         </RadzenFormField>
-                        <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
                     </RadzenStack>
 
-                    <div class="d-flex w-100 gap-1">
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Style="width:100%" Text="Nro. de CUIL/CUIT">
+                            <RadzenTextBox @bind-Value="@modelo.NroFiscal" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @modelo.NroFiscal)" />
+                    </RadzenStack>
 
-                        <RadzenStack class="w-50">
-                            <RadzenFormField Text="Numero de Documento">
-                                <RadzenTextBox MaxLength="24" type="number" @bind-Value="@modelo.NroDocumento" />
-                            </RadzenFormField>
-                            <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
-                        </RadzenStack>
-
-                        <RadzenStack class="w-50">
-                            <RadzenFormField Text="Nro. de CUIL/CUIT">
-                                <RadzenTextBox MaxLength="13" type="number" @bind-Value="@modelo.NroFiscal" />
-                            </RadzenFormField>
-                            <ValidationMessage For="@(()=> @modelo.NroFiscal)" />
-                        </RadzenStack>
-                    </div>
-
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Style="width:100%" Text="Numero de Documento">
+                            <RadzenTextBox @bind-Value="@modelo.NroDocumento" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
+                    </RadzenStack>
 
                 </div>
 
@@ -99,24 +94,24 @@
                     <RadzenStack Style="width:50%">
                         <RadzenFormField Text="Cargo">
                             <RadzenDropDown @bind-Value=@modelo.Cargo Data=@cargos Name="DropDownBindValue" Style="width:100%" />
+                            <ValidationMessage For="@(()=> @modelo.Cargo)" />
                         </RadzenFormField>
-                        <ValidationMessage For="@(()=> @modelo.Cargo)" />
                     </RadzenStack>
 
-                    <div class="w-50">
+                    <div class="w-50 text-end gap-1">
 
                         <div class="d-flex w-100 gap-1">
 
-                            <RadzenCheckBox @bind-Value="@modelo.EsFirmante" Name="CheckBox3" />
                             <RadzenLabel class="w-100" Text="Es Firmante del Manifiesto" Component="CheckBox3" />
+                            <RadzenCheckBox @bind-Value="@modelo.EsFirmante" Name="CheckBox3" />
                             <ValidationMessage For="@(()=> modelo.EsFirmante)" />
 
                         </div>
 
                         <div class="d-flex w-100 gap-1">
 
-                            <RadzenCheckBox @bind-Value="@modelo.EstaVigente" Name="CheckBox3" />
                             <RadzenLabel class="w-100" Text="Esta Vigente" Component="CheckBox3" />
+                            <RadzenCheckBox @bind-Value="@modelo.EstaVigente" Name="CheckBox3" />
                             <ValidationMessage For="@(()=> modelo.EstaVigente)" />
 
                         </div>
@@ -132,13 +127,13 @@
     </div>
 
     <!--Autoridades cargadas-->
-    <div class="card w-50 p-1">
-        <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
+    <div class="card w-50">
+        <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;font-size:larger;">
             Autoridades
         </div>
         <div class="card-body">
 
-            <RadzenGrid Data="listAutoridades" TItem="AutoridadDto">
+            <RadzenGrid AllowColumnResize="true" Data="listAutoridades" TItem="AutoridadDto">
                 <Columns>
                     <RadzenGridColumn TItem="AutoridadDto" Width="9,5rem" Title="Nombre y Apellido">
                         <Template Context="data">

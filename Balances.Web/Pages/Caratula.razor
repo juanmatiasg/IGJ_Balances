@@ -45,19 +45,19 @@
             </div>
 
             <div class="card-body">
-                <EditForm Model="modelbusqueda">
+                <EditForm Model="modelbusqueda" >
                     <FluentValidationValidator />
                     <div class="row d-flex justify-content-center align-items-end">
                
                         <div class="col">
-                            <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />                          
-                            </RadzenFormField>
+                            <RadzenFormField  Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
+                            <RadzenTextBox Disabled="@(tramiteIniciado || entidadEncontrada ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
+                        </RadzenFormField>
                             <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
                         </div>
 
                         <div class="col d-block">
-                           <RadzenButton ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                        <RadzenButton Disabled="@(tramiteIniciado || entidadEncontrada ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
                         </div>
                     </div>
                 </EditForm>
