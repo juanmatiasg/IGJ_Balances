@@ -20,69 +20,63 @@
 
 
 
-    <Navegacion PaginaActiva="Documentacion" TramiteIniciado="true" balid="@balid"></Navegacion>
+<Navegacion PaginaActiva="Documentacion" TramiteIniciado="true" balid="@balid"></Navegacion>
 
-    <!---------------------------------------------------------------->
-    <div class="container-fluid mt-5">
-        <h2 class="text-center" style="margin-bottom: 20px; color: #0375bc; font-weight: bold;">
-            Archivos
-        </h2>
-        <div class="row">
-            <div class="col mt-4">
-                <div class="card">
-                    <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
-                        Documentación digital
-                    </div>
-                 
-                    <div class="card-body">
-                            <EditForm Model="@archivo">
-                                    <FluentValidationValidator />
-                                    <RadzenStack class="mt-2 mb-2">
-                                        <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
-                                            <RadzenDropDown @bind-Value=@archivo.Categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
-                                        </RadzenFormField>
-                                        <ValidationMessage For="@(()=> archivo.Categoria)" />
-                                    </RadzenStack>
-                                    <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
-                                    <ValidationMessage For="@(()=> archivo.ContentType)" />
+<!---------------------------------------------------------------->
+<div class="container d-flex">
+    <div class="card w-50">
+        <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
+            Documentación digital
+        </div>
 
-                                    <div class="col d-flex justify-content-between">
-                                        <InputFile OnChange="@HandleFileUpload" multiple />
-                                        <RadzenButton Icon="upload" Text="Adjuntar" ButtonType="Radzen.ButtonType.Submit" Click=@UploadFile class="d-block mt-4" />
-                                    </div>
-                            </EditForm>                
-                    </div>
-                </div>
-            </div>
-          
-            <!-- Tarjeta: Archivo Recibido -->
-            <div class="col mt-4">
-                <div class="card">
-                <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
-                    Documentación presentada
-                </div>
-                    <div class="card-body">
-                      
-                        <RadzenGrid @ref=grid Data="listArchivo" TItem="ArchivoDTO" >
-                  
-                            <Columns>
-                                <RadzenGridColumn TItem="ArchivoDTO" Property="NombreArchivo" Title="Nombre de Archivo" />
-                                <RadzenGridColumn TItem="ArchivoDTO" Property="Categoria" Title="Categoría" />
-                                <RadzenGridColumn TItem="ArchivoDTO" Property="Hash" Title="Hash" />
-                                <RadzenGridColumn TItem="ArchivoDTO" Property="FechaCreacion" Title="Fecha Creación" />
-                                <RadzenGridColumn TItem="ArchivoDTO" Property="Tamaño" Title="Tamaño" />
-                                <RadzenGridColumn TItem="ArchivoDTO" Title="Acción">
-                                    <Template Context="archivo">
-                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => DeleteArchivo(archivo))"></RadzenButton>
-                                    </Template>
-                                </RadzenGridColumn>
-                            </Columns>
-                        </RadzenGrid>   
+        <div class="card-body">
+            <EditForm Model="@archivo">
+                <FluentValidationValidator />
+                <RadzenStack class="mt-2 mb-2">
+                    <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
+                        <RadzenDropDown @bind-Value=@archivo.Categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
+                    </RadzenFormField>
+                    <ValidationMessage For="@(()=> archivo.Categoria)" />
+                </RadzenStack>
+                <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
+                <ValidationMessage For="@(()=> archivo.ContentType)" />
 
-                    </div>
+                <div class="col d-flex justify-content-between">
+                    <InputFile OnChange="@HandleFileUpload" multiple />
+                    <RadzenButton Icon="upload" Text="Adjuntar" ButtonType="Radzen.ButtonType.Submit" Click=@UploadFile class="d-block mt-4" />
                 </div>
-            </div>
+            </EditForm>
         </div>
     </div>
 
- 
+    <!-- Tarjeta: Archivo Recibido -->
+    <div class="card w-50">
+        <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
+            Documentación presentada
+        </div>
+        <div class="card-body">
+
+            <RadzenGrid class="p-1" @ref=grid Data="listArchivo" TItem="ArchivoDTO">
+
+                <Columns >
+                    <RadzenGridColumn Width="40%" TItem="ArchivoDTO" Title="Documento">
+                        <Template Context="data">
+                            @($"{data.NombreArchivo}") <br /> @($"{data.FechaCreacion}")
+                            <br />
+                            @($"{data.Tamaño} Kb")
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn Width="25%" TItem="ArchivoDTO" Property="Categoria" Title="Tipo" />
+                    <RadzenGridColumn Width="25%" TItem="ArchivoDTO" Property="Hash" Title="Hash" />
+                    <RadzenGridColumn Width="10%" TItem="ArchivoDTO" Title="Acción">
+                        <Template Context="archivo">
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => DeleteArchivo(archivo))"></RadzenButton>
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+
+        </div>
+    </div>
+</div>
+
