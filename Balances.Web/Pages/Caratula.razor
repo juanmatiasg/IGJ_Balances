@@ -51,13 +51,13 @@
                
                         <div class="col">
                             <RadzenFormField  Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
-                            <RadzenTextBox Disabled="@(tramiteIniciado || entidadEncontrada ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
+                            <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
                         </RadzenFormField>
                             <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
                         </div>
 
                         <div class="col d-block">
-                        <RadzenButton Disabled="@(tramiteIniciado || entidadEncontrada ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                        <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
                         </div>
                     </div>
                 </EditForm>

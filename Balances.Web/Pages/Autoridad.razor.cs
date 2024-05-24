@@ -24,6 +24,8 @@ using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using FluentValidation.Results;
 using Balances.Web.Services.FluentValidation;
+using CurrieTechnologies.Razor.SweetAlert2;
+
 
 namespace Balances.Web.Pages
 {
@@ -55,6 +57,7 @@ namespace Balances.Web.Pages
             "Comisión Fiscalizadora - Suplente"
         };
 
+        ResponseDTO<BalanceDto> rsp = new();
         [Parameter]
         public string? TipoEntidad { get; set; }
 
@@ -80,7 +83,7 @@ namespace Balances.Web.Pages
 
         private async Task Load()
         {
-            ResponseDTO<BalanceDto> rsp = new();
+            //ResponseDTO<BalanceDto> rsp = new();
             try
             {
                 sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
@@ -124,7 +127,7 @@ namespace Balances.Web.Pages
                 {
                     if (modelo.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
                     {
-                        await ShowDialogFirmantes();
+                        ShowDialogFirmantes();
                     }
                     else
                     {

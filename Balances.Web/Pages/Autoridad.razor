@@ -13,6 +13,7 @@
 
 @inject NavigationManager NavigationManager
 @inject DialogService dialogService;
+@inject SweetAlertService swal;
 
 
 
@@ -173,14 +174,15 @@
 @code {
     async Task ShowDialogFirmantes()
     {
-        await dialogService.OpenAsync("Autoridades", ds =>
-    @<div>
-        No puede haber más de 1 firmante.
-    </div>, new DialogOptions()
-          {
-              CssClass = "custom-dialog-class",
-              WrapperCssClass = "custom-dialog-wrapper-class"
-          });
+        swal.FireAsync(new SweetAlertOptions
+            {
+                Icon = "warning",
+                Title = "Error",
+                Text = "No puede haber más de 1 firmante. ",
+                ConfirmButtonText = "Aceptar"
+
+
+            });
     }
 }
 
