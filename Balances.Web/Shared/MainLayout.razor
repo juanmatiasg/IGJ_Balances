@@ -42,30 +42,30 @@
             </div>
 
         </header>
-
-            @if (NroCorrelativo != null)
-            {
             <RadzenStack style="width:100%">
-                <RadzenCard class="d-flex justify-content-center flex-row p-1" Style="background-color: #1b2a4a;">
-                    <RadzenRow RowGap="4">
-                        <RadzenRow>                  
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0">Correlativo</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@NroCorrelativo</b></RadzenText>
-                        </RadzenRow>
-                        <RadzenRow>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light   rz-mb-0">Fecha de Cierre</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@FechaDeCierre?.ToString("dd/MM/yyyy")</b></RadzenText>
-                        </RadzenRow>
-                        <RadzenRow>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0"></RadzenText>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@RazonSocial &nbsp @TipoEntidad</b></RadzenText>
-                        </RadzenRow>
-                    </RadzenRow>
-
+                <RadzenCard class="d-flex justify-content-center flex-row pt-1 pb-1" Style="background-color: #1b2a4a;">
+                    @if (NroCorrelativo != null)
+                    {       
+                            <RadzenRow RowGap="4">
+                                <RadzenRow>                  
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0">Correlativo</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@NroCorrelativo</b></RadzenText>
+                                </RadzenRow>
+                                <RadzenRow>
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light   rz-mb-0">Fecha de Cierre</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@FechaDeCierre?.ToString("dd/MM/yyyy")</b></RadzenText>
+                                </RadzenRow>
+                                <RadzenRow>
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light  rz-mb-0"></RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light"><b>@RazonSocial &nbsp @TipoEntidad</b></RadzenText>
+                                </RadzenRow>
+                            </RadzenRow>
+                }
+               
                 </RadzenCard>
             </RadzenStack>
-            }
-            <RadzenStack class="rz-background-color-base-200 p-4">
+
+            <RadzenStack class="rz-background-color-base-200">
                 @Body
             </RadzenStack>
 
@@ -75,6 +75,7 @@
         
 
     </div>
+
 </body>
 </html>
 

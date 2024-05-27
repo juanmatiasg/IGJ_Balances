@@ -1,4 +1,4 @@
-﻿@page "/Documentacion/{balid?}"
+﻿@page "/Archivos/{balid?}"
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -16,7 +16,6 @@
 @inject ISessionClientService sesionService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-
 
 
     <Navegacion PaginaActiva="Documentacion" TramiteIniciado="true" balid="@balid"></Navegacion>

@@ -99,7 +99,7 @@
                                             <RadzenFormField Text="Domicilio" Style="width:100%">
                                                 <RadzenTextBox @bind-Value="@(modelo.Entidad.Domicilio)" Disabled="@tramiteIniciado" id="txtAddress" />
                                             </RadzenFormField>
-                                            <ValidationMessage For="@(()=> modelo.Entidad.Domicilio)" />
+                                            <ValidationMessage For="@(()=> @modelo.Entidad.Domicilio)" />
                                      </div>
                        
 
@@ -210,6 +210,16 @@
 
 
 @code{
+
+
+    private ElementReference addressBox;
+    private RadzenTextBox? addressBoxRadzenTextBox;
+    private Autocomplete? autocomplete;
+    private string? placeData;
+    private string? formattedAddress;
+
+
+    
 
     [Parameter] public string? TipoEntidad { get; set; }
     [Parameter] public string? RazonSocial { get; set; }
