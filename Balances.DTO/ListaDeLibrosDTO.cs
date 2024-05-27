@@ -52,5 +52,10 @@ namespace Balances.DTO
         {
             return libros;
         }
+
+        public void Limpiar()
+        {
+            libros.Clear();
+        }
     }
 }

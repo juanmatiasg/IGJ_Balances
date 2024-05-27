@@ -1,4 +1,5 @@
 ﻿using Balances.DTO;
+using Newtonsoft.Json.Linq;
 
 namespace Balances.Web.Services.Implementation
 {
@@ -8,6 +9,9 @@ namespace Balances.Web.Services.Implementation
 
         Task<ResponseDTO<BalanceDto>> insertPersonaJuridica(PersonaJuridicaDto personaJuridica);
 
+        Task<List<JObject>> GetAllCountries();
+
+        Task<List<string>> GetAllProvince();
 
         Task<ResponseDTO<BalanceDto>> deletePersonaHumana(PersonaHumanaDto personaHumana);
 

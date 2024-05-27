@@ -1,5 +1,17 @@
-﻿@using Balances.DTO;
-@page "/Books/{balid?}"
+﻿@page "/Books/{balid?}"
+@using Balances.DTO;
+@using Balances.Model;
+@using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
+@using Balances.Web.Services.Implementation;
+@using System.Text;
+@using System.Reflection;
+@inject ILibrosClientService serviceLibro;
+@inject IBalanceClientService balanceService
+@inject ISessionClientService sesionService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
 
 <Navegacion PaginaActiva="Libros" TramiteIniciado="true" balid="@balid"></Navegacion>
 
@@ -10,18 +22,18 @@
         <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
             Datos de Libros
         </div>
-        <div class="col p-4">
+        <div class="col p-4 d-flex justify-content-center flex-column">
           
             @foreach(var libro in libros.ObtenerLibros()){
-                <RadzenCard class="row d-flex justify-content-center">
-
+                
+                <RadzenRow>
                         <RadzenStack class="col-md-2 mt-1 pt-1 pb-1">
                             <RadzenLabel>@libro.Tipo</RadzenLabel>
                         </RadzenStack>
                         
-                        <RadzenStack class="col-md-2  mt-1">
+                        <RadzenStack class="col-md-1  mt-1">
                             <RadzenFormField Text="Nombre del Libro" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@libro.Nombre"/>
+                                <RadzenTextBox @bind-Value="@libro.Nombre" Change="OnBlurHandler"/>
                             </RadzenFormField>
                             <small id="msgError" class="text-danger">@msgErrorNombre</small>
 
@@ -29,21 +41,21 @@
 
                         <RadzenStack class="col-md-1  mt-1">
                             <RadzenFormField Text="Nro.Rúbrica" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@libro.NumeroRubrica" />
+                            <RadzenTextBox @bind-Value="@libro.NumeroRubrica" Change="OnBlurHandler" />
                             </RadzenFormField>
                             <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
                         </RadzenStack>
 
                         <RadzenStack class="col-md-1  mt-1">
                             <RadzenFormField Text="Fecha Rúbrica" Style="width:100%">
-                                <RadzenDatePicker @bind-Value="@libro.FechaRubrica" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType"  Placeholder="dd/mm/yyyy" />
+                            <RadzenDatePicker @bind-Value="@libro.FechaRubrica" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" Change="OnBlurHandler" />
                             </RadzenFormField>
                             <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
                          </RadzenStack>
 
                         <RadzenStack class="col-md-1  mt-1">
                             <RadzenFormField Text="Folio" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@libro.FolioObraTranscripcion" />
+                            <RadzenTextBox @bind-Value="@libro.FolioObraTranscripcion" Change="OnBlurHandler" />
                             </RadzenFormField>
                         <small id="msgError" class="text-danger">@msgErrorFolio</small>
 
@@ -52,14 +64,14 @@
 
                         <RadzenStack class="col-md-1  mt-1">
                             <RadzenFormField Text="Fecha Última Registración" Style="width:100%">
-                                    <RadzenDatePicker @bind-Value="@libro.FechaUltimaRegistracion" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" />
+                            <RadzenDatePicker @bind-Value="@libro.FechaUltimaRegistracion" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" Change="OnBlurHandler" />
                             </RadzenFormField>
                              <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
                         </RadzenStack>
 
-                        <RadzenStack class="col-md-2  mt-1">
+                        <RadzenStack class="col-md-1  mt-1">
                             <RadzenFormField Text="Folio de la Últ Reg" Style="width:100%">
-                                <RadzenTextBox @bind-Value="@libro.FolioUltimaRegistracion"/>
+                            <RadzenTextBox @bind-Value="@libro.FolioUltimaRegistracion" Change="OnBlurHandler" />
                             </RadzenFormField>
                             <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
                         </RadzenStack>
@@ -68,14 +80,14 @@
                                 @if (libro.Tipo.Equals(ESTADO_CONTABLE) || libro.Tipo.Equals(INFORME_ORGANO))
                                 {                              
                                         <div class="form-check">
-                                            <RadzenCheckBox   @bind-Value="libro.NoSabeNoContesta" />
+                                            <RadzenCheckBox @bind-Value="libro.NoSabeNoContesta" onchange="OnBlurHandler" />
                                             <label>N/C</label>
                                         </div>                               
                           
                                 }
                         </RadzenStack>
-
-                 </RadzenCard>
+                </RadzenRow>
+             
              }
           
         </div>
@@ -88,7 +100,7 @@
 @code {
     ListaDeLibrosDTO libros = new ListaDeLibrosDTO();
     LibrosDto libroDto = new LibrosDto();
-   
+
     [Parameter]
     public string? TipoEntidad { get; set; }
 
@@ -110,12 +122,69 @@
 
     protected override void OnInitialized()
     {
-        libros.AgregarLibrosDeLibrosDto(libroDto);
+        libros.AgregarLibrosDeLibrosDto(libroDto);       
+        Load();
         base.OnInitialized();
     }
-    private async Task OnBlurHandler()
+    private async Task Load()
     {
-       
+        ResponseDTO<BalanceDto> rsp = new();
+        try
+        {
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            if (sesionId == null)
+            {
+                var sesionRespuesta = await sesionService.getNewSession();
+                sesionId = sesionRespuesta.Result;
+                sessionStorage.SetItemAsync("SessionId", sesionId);
+            }
+            else
+            {
+                var rst = await sesionService.getBalanceId(sesionId);
+                if (rst is not null)
+                {
+                    balid = rst;
+                    rsp = await balanceService.getBalance(balid);
+                    if (rsp.IsSuccess)
+                    {
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+                        setLibros(rsp.Result.Libros);
+                        StateHasChanged();
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}");
+        }
+    }
+
+    private void setLibros(LibrosDto libros)
+    {
+        if (libros != null)
+        {
+            this.libros.Limpiar();
+            this.libros.AgregarLibrosDeLibrosDto(libros);
+        }
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> OnBlurHandler()
+    {
+        ResponseDTO<BalanceDto> respuesta = new();
+        try
+        {
+          
+           // librosDto.SessionId = sesionId;
+           // respuesta = await serviceLibro.insertLibros(libros);
+           
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+        }
+
+        return respuesta;
     }
 
 

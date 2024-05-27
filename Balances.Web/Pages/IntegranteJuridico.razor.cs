@@ -22,6 +22,11 @@ using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
 using Balances.Web.Services.FluentValidation;
 using FluentValidation.Results;
+using static System.Net.WebRequestMethods;
+using System.Diagnostics.Metrics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace Balances.Web.Pages
 {
@@ -35,21 +40,87 @@ namespace Balances.Web.Pages
 
         private PersonaJuridicaDto model = new PersonaJuridicaDto();
         private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
-        
+
+      
         [Parameter]
         public string? balid { get; set; }
 
         [Parameter]
         public string sesionId { get; set; }
 
-      
+        public List<string> Paises { get; set; } = new List<string>();
+
+        private List<string> Juridisccion { get; set; } = new List<string>();
+
+        private bool isJurisdiccionDisabled = true;
+
         protected override async Task OnInitializedAsync()
         {
+            await LoadJsonCountry();
+            await LoadJsonProvince();
             await Load();
             await base.OnInitializedAsync();
         }
 
+        private async Task LoadJsonProvince()
+        {
+            try
+            {
+                var provincias = await socioService.GetAllProvince();
 
+
+                Juridisccion.AddRange(provincias);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        public async Task LoadJsonCountry()
+        {
+            try
+            {
+                var countries = await socioService.GetAllCountries();
+                List<string> countryNames = new List<string>();
+
+                foreach (var country in countries)
+                {
+                    string commonName = country["name"]["common"].ToString();
+                    countryNames.Add(commonName);
+                }
+
+                // Ordenar los nombres de los países en orden ascendente
+                countryNames.Sort();
+
+                foreach (var name in countryNames)
+                {
+                    Paises.Add(name);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+        }
+
+        private void OnCountryChanged(object value)
+        {
+            string selectedCountry = value.ToString()!;
+            if (selectedCountry == "Argentina")
+            {
+                isJurisdiccionDisabled = false;
+                model.Jurisdiccion = "";
+            }
+            else
+            {
+                isJurisdiccionDisabled = true;
+                model.Jurisdiccion = "Extranjero";
+
+            }
+        }
         private async Task Load()
         {
             ResponseDTO<BalanceDto> rsp = new();
@@ -60,7 +131,7 @@ namespace Balances.Web.Pages
                 if (sesionId == null)
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
-                    sesionId = sesionRespuesta.Result;
+                    sesionId = sesionRespuesta.Result!;
                     await sessionStorage.SetItemAsync("SessionId", sesionId);
                 }
                 else
@@ -95,6 +166,8 @@ namespace Balances.Web.Pages
                 {
                    
                     model.SesionId = sesionId;
+              
+
                     PersonaJuridicaValidator personaJuridicaValidator = new();
                     ValidationResult result = personaJuridicaValidator.Validate(model);
 
@@ -156,6 +229,7 @@ namespace Balances.Web.Pages
             return respuesta;
         }
 
-      
+       
+
     }
 }

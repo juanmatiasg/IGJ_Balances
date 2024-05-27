@@ -1,8 +1,13 @@
 ﻿using Balances.DTO;
 using Balances.Web.Services.Implementation;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections;
+using System.Diagnostics.Metrics;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json.Nodes;
+using static System.Net.WebRequestMethods;
 
 namespace Balances.Web.Services.Contracts
 {
@@ -137,7 +142,7 @@ namespace Balances.Web.Services.Contracts
                 {
                     // Leer la respuesta JSON y deserializarla a ResponseDTO<BalanceDto>
                     var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
-                    
+
                     if (result.IsSuccess)
                     {
                         rsp = result;
@@ -162,7 +167,58 @@ namespace Balances.Web.Services.Contracts
             return rsp;
         }
 
+        public  async Task<List<JObject>> GetAllCountries()
+        {
+
+            string url = "https://restcountries.com/v3.1/all";
+            HttpResponseMessage response = await _httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                JArray jsonArray = JArray.Parse(json);
+                List<JObject> countries = new List<JObject>();
+
+                foreach (JObject item in jsonArray)
+                {
+                    countries.Add(item);
+                }
+
+                return countries;
+            }
+            else
+            {
+                throw new Exception($"Failed to retrieve countries. Status code: {response.StatusCode}");
+            }
+
+        }
 
 
+        public async Task<List<string>> GetAllProvince()
+        {
+            List<string> provinceNames = new List<string>();
+
+            string url = "https://apis.datos.gob.ar/georef/api/provincias";
+            HttpResponseMessage response = await _httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                JObject jsonObject = JObject.Parse(json);
+                JArray provinciasArray = (JArray)jsonObject["provincias"];
+
+                foreach (JObject provincia in provinciasArray)
+                {
+                    string nombre = provincia["nombre"].ToString();
+                    provinceNames.Add(nombre);
+                }
+
+                return provinceNames;
+            }
+            else
+            {
+                throw new Exception($"Failed to retrieve provinces. Status code: {response.StatusCode}");
+            }
+        }
     }
 }
