@@ -15,13 +15,18 @@
 <Navegacion PaginaActiva="Libros" TramiteIniciado="true" balid="@balid"></Navegacion>
 
 
-<div class="container-fluid mt-2 mb-4">
+<div class="container">
     <div class="card">
 
-        <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
+        <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
             Datos de Libros
         </div>
-        <div class="col p-4">
+        <div class="d-flex">
+            <h5 class="card-header" style="width:33%">Asiento</h5>
+            <h5 class="card-header" style="width:33%">Rubrica</h5>
+            <h5 class="card-header" style="width:33%">Ultima registracion</h5>
+        </div>
+        <div class="card-body">
             <Libro libroP="modelo.Memoria" OnBlur="() => HandleChange(modelo.Memoria)"></Libro>
             <Libro libroP="modelo.Administracion" OnBlur="() => HandleChange(modelo.Administracion)"></Libro>
             <Libro libroP="modelo.Asamblea" OnBlur="() => HandleChange(modelo.Asamblea)"></Libro>

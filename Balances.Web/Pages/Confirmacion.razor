@@ -11,9 +11,9 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<!DOCTYPE html>
+@* <!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+< lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
     <title>Manifiesto de Presentación de Estados Contables Digitales IGJ</title>
@@ -115,13 +115,15 @@
             margin-bottom: 10px;
         }
     </style>
-   
+
 
 </head>
+ *@
 
-<body>
-    <Navegacion PaginaActiva="Confirmacion" TramiteIniciado="true" balid="@balid"></Navegacion>
 
+<Navegacion PaginaActiva="Confirmacion" TramiteIniciado="true" balid="@balid"></Navegacion>
+
+<div class="container">
 
     <!--Loading-->
 
@@ -130,8 +132,8 @@
             <ModalBody>
                 <div class="d-flex justify-content-center align-items-center">
                     <div class="text-center">
-                       
-                       <div class="spinner-grow text-primary" role="status">
+
+                        <div class="spinner-grow text-primary" role="status">
                             <span class="sr-only"></span>
                         </div>
                         <div class="spinner-grow text-secondary" role="status">
@@ -179,7 +181,7 @@
         </ModalContent>
     </Modal>
 
-    
+
     @if (mensajesError.Any())
     {
         <div class="error-container">
@@ -205,53 +207,54 @@
                     }
 
                 </tbody>
-        </table>
-    </div>
+            </table>
+        </div>
     }
-    else{
-
-    <div class="d-flex justify-content-center mt-4 mb-4">
-        <button type ="button" @onclick="generarPresentacion" class="btn btn-primary">Generar manifiesto</button>
-    </div>
-
-    <div class="encabezado">
-        <img class="logo" src="img/LogoIGJNuevo.jpg" alt="Logo IGJ">
-        <img class="logo" src="img/LogoMinJusIGJ.jpg" alt="Logo MJDH">
-    </div>
-    <div class="membrete">
-        <p><b><i>1983/2023 - 40 Años de Democracia</i></b></p>
-    </div>
-    <div>
-        <p class="titulo">Regimen de Presentación de Estados Contables</p>
-        <p class="subtitulo">Anexo I - Resolución General IGJ Nº <span class="error">A DEFINIR</span></p>
-    </div>
-    <div>
-        <p class="membrete"><b>Código de Presentación :</b>  <img alt="Embedded QR code" class="img-responsive" src="cid:{{QR}}" /></p>
-    </div>
-    <br />
-
-    @if (this.caratula != null && this.caratula.Entidad != null)
+    else
     {
+
+        <div class="d-flex justify-content-center mt-4 mb-4">
+            <button type="button" @onclick="generarPresentacion" class="btn btn-primary">Generar manifiesto</button>
+        </div>
+
+        <div class="encabezado">
+            <img class="logo" src="img/modificado.png" style="height:50px; width:auto" alt="Logo IGJ">
+            <img class="logo" src="img/logo.png" style="height:50px; width:auto" alt="Logo MJDH">
+        </div>
+        <div class="membrete">
+            <p><b><i>1983/2023 - 40 Años de Democracia</i></b></p>
+        </div>
         <div>
-            <p>     <b>Denominación         :</b>  @this.caratula.Entidad.RazonSocial</p>
+            <p class="titulo">Regimen de Presentación de Estados Contables</p>
+            <p class="subtitulo">Anexo I - Resolución General IGJ Nº <span class="error">A DEFINIR</span></p>
+        </div>
+        <div>
+            <p class="membrete"><b>Código de Presentación :</b>  <img alt="Embedded QR code" class="img-responsive" src="cid:{{QR}}" /></p>
+        </div>
+        <br />
+
+        @if (this.caratula != null && this.caratula.Entidad != null)
+        {
+            <div>
+                <p>     <b>Denominación         :</b>  @this.caratula.Entidad.RazonSocial</p>
                 <p>     <b>Tipo Societario      :</b>  @this.caratula.Entidad.TipoEntidad</p>
                 <p>     <b>Nro Correlativo      :</b>  @this.caratula.Entidad.Correlativo</p>
                 <p>     <b>CUIT                 :</b>  @this.caratula.Entidad.RazonSocial</p>
                 <p>     <b>Domicilio            :</b>  @this.caratula.Entidad.Domicilio</p>
                 <p>     <b>Estados contables al :</b>  @this.caratula.FechaInicio?.ToString("dd/MM/yyyy")</p>
-        </div>
-    }
-    else
-    {
-        <div>
-            <p>     <b>Denominación         :</b>   <span class="error">Falta Campos</span></p>
-            <p>     <b>Tipo Societario      :</b>  <span class="error">Falta Campos</span></p>
-            <p>     <b>Nro Correlativo      :</b>  <span class="error">Falta Campos</span></p>
-            <p>     <b>CUIT                 :</b>    <span class="error">Falta Campos</span></p>
-            <p>     <b>Domicilio            :</b>  <span class="error">Falta Campos</span></p>
-            <p>     <b>Estados contables al :</b>    <span class="error">Fecha de inicio no disponible</span></p>
-        </div>
-    }
+            </div>
+        }
+        else
+        {
+            <div>
+                <p>     <b>Denominación         :</b>   <span class="error">Falta Campos</span></p>
+                <p>     <b>Tipo Societario      :</b>  <span class="error">Falta Campos</span></p>
+                <p>     <b>Nro Correlativo      :</b>  <span class="error">Falta Campos</span></p>
+                <p>     <b>CUIT                 :</b>    <span class="error">Falta Campos</span></p>
+                <p>     <b>Domicilio            :</b>  <span class="error">Falta Campos</span></p>
+                <p>     <b>Estados contables al :</b>    <span class="error">Fecha de inicio no disponible</span></p>
+            </div>
+        }
         <br />
         <div>
 
@@ -260,58 +263,60 @@
 
             @if (this.caratula != null && this.caratula.Entidad != null)
             {
-                @foreach (var file in this.listArchivo) { 
+                @foreach (var file in this.listArchivo)
+                {
                     <p>  En mi carácter de representante legal de la sociedad  @this.caratula.Entidad.RazonSocial  @this.caratula.Entidad.TipoEntidad, manifiesto que los datos contenidos en los archivos de hash @file.Hash , se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al @this.caratula.FechaDeCierre?.ToString("dd/MM/yyyy") obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
                 }
-        }
-        else
-        {
-            <p>  En mi carácter de representante legal de la sociedad  <span class="error">Falta Campos</span> , manifiesto que los datos contenidos en los archivos de hash <span class="error">Falta Campos</span> , se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al <span class="error">Falta Campos</span> obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
-
-        }
-
-    </div>
-    <br />
-    <div class="box">
-
-        @foreach(var autoridad in listAutoridades){
-            if (autoridad.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
+            }
+            else
             {
-                <p><span class="error"> </span></p>
-                <p>   Lugar y Fecha     : @this.caratula.Entidad.Domicilio @this.caratula.FechaInicio?.ToString("dd/MM/yyyy") </p>
-                <p>   Apellido y Nombre : @autoridad.Apellido @autoridad.Nombre </p>
-                <p>   CUIT              : @autoridad.NroFiscal   </p>
-                <p>   Firma             : </p>
-            }          
-        }
-    </div>
-    <br />
-    <div>
-        <p class="seccion">Certificación del Auditor Externo sobre Información Requerida por la Resolución General IGJ <span class="error">A DEFINIR</span></p>
+                <p>  En mi carácter de representante legal de la sociedad  <span class="error">Falta Campos</span> , manifiesto que los datos contenidos en los archivos de hash <span class="error">Falta Campos</span> , se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al <span class="error">Falta Campos</span> obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
 
-        @if (this.caratula != null && this.caratula.Entidad != null)
-        {
+            }
+
+        </div>
+        <br />
+        <div class="box">
+
+            @foreach (var autoridad in listAutoridades)
+            {
+                if (autoridad.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
+                {
+                    <p><span class="error"> </span></p>
+                    <p>   Lugar y Fecha     : @this.caratula.Entidad.Domicilio @this.caratula.FechaInicio?.ToString("dd/MM/yyyy") </p>
+                    <p>   Apellido y Nombre : @autoridad.Apellido @autoridad.Nombre </p>
+                    <p>   CUIT              : @autoridad.NroFiscal   </p>
+                    <p>   Firma             : </p>
+                }
+            }
+        </div>
+        <br />
+        <div>
+            <p class="seccion">Certificación del Auditor Externo sobre Información Requerida por la Resolución General IGJ <span class="error">A DEFINIR</span></p>
+
+            @if (this.caratula != null && this.caratula.Entidad != null)
+            {
                 <p>En mi carácter de contador público independiente y auditor externo de @this.caratula.Entidad.RazonSocial  @this.caratula.Entidad.TipoEntidad, certifico la información detallada en el apartado siguiente.</p>
-        }
-        else
-        {
-            <p>En mi carácter de contador público independiente y auditor externo de  <span class="error">Falta Campos</span> , certifico la información detallada en el apartado siguiente.</p>
-        }
-    </div>
-    <div>
-        <p><b>1) Información Objeto de la Certificación</b></p>
-        @if (@libros != null)
-        {
-            <table>
-                <tr>
-                    <th>Asiento</th>
-                    <th>Denominación</th>
-                    <th>Numero de Rúbrica</th>
-                    <th>Folio en el que obra la transcripción</th>
-                    <th>Fecha Registracion</th>
-                    <th>Folio de la última registración</th>
-                </tr>
-               
+            }
+            else
+            {
+                <p>En mi carácter de contador público independiente y auditor externo de  <span class="error">Falta Campos</span> , certifico la información detallada en el apartado siguiente.</p>
+            }
+        </div>
+        <div>
+            <p><b>1) Información Objeto de la Certificación</b></p>
+            @if (@libros != null)
+            {
+                <table>
+                    <tr>
+                        <th>Asiento</th>
+                        <th>Denominación</th>
+                        <th>Numero de Rúbrica</th>
+                        <th>Folio en el que obra la transcripción</th>
+                        <th>Fecha Registracion</th>
+                        <th>Folio de la última registración</th>
+                    </tr>
+
                     <tr>
                         <td>Memoria</td>
                         <td>@libros.Memoria.Nombre</td>
@@ -434,7 +439,7 @@
                         <td>@libros.IVACompras.FechaUltimaRegistracion?.ToString("dd/MM/yyyy")</td>
                         <td>@libros.IVACompras.FolioUltimaRegistracion</td>
                     </tr>
-                    
+
                     <tr>
                         <td>IVA Ventas</td>
                         <td>@libros.IVAVentas.Nombre</td>
@@ -446,7 +451,7 @@
                     <tr>
                         <td colspan="4">Informe de Auditoria: Opinión <span class="error">FALTAN CAMPOS</span></td>
                     </tr>
-                    
+
                     @if (this.contador != null)
                     {
                         <tr>
@@ -470,45 +475,44 @@
                     <tr>
                         <td colspan="4">Observaciones <span class="error">FALTAN CAMPOS</span></td>
                     </tr>
-                
-            </table>
-        }
-        else
-        {
-            <p>Memoria is null</p>
-        }
-    </div>
-    <div>
-        <p><b>2) Tarea Profesional Realizada</b></p>
-        
-        @if (this.caratula != null && this.contador != null)
-        {
+
+                </table>
+            }
+            else
+            {
+                <p>Memoria is null</p>
+            }
+        </div>
+        <div>
+            <p><b>2) Tarea Profesional Realizada</b></p>
+
+            @if (this.caratula != null && this.contador != null)
+            {
                 <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el @this.caratula.FechaDeCierre?.ToString("dd/MM/yyyy") e Informe de Auditor Externo de fecha @this.contador.FechaInformeAuditorExt?.ToString("dd/MM/yyyy") con los datos incluidos en <span class="error">FALTAN CAMPOS</span>.</p>
-        }
-    </div>
-    <div>
-        <p><b>3) Certificación</b></p>
-        <p>  Sobre la base delas tareas descriptas CERTIFICO que la información contenida en los documentos detallados en 1. concuerda en un todo con lo declarado en el hash y surge de registros rubricados/medios ópticos/mecánicos/digitales  llevados en legal forma.-</p>
-    </div>
-    <br />
-    <div class="box">
-        @if (this.contador != null)
-        {
-            <p>   Lugar y Fecha     : </p>
-            <p>   Apellido y Nombre : @contador.Apellido @contador.Nombre </p>
-            <p>   CUIT              : @contador.NroFiscal - T° @contador.Tomo F° @contador.Folio  </p>
-            <p>   En carácter de Socio de la Soc Tº <span class="error">FALTAN CAMPOS</span> Fº <span class="error">FALTAN CAMPOS   (ésta línea solo debe aparecer si "Actúa en carácter de Socio de Estudio Contable" = True)</span></p>
-            
-            <p>   Firma             : </p>
-        }
-    </div>
+            }
+        </div>
+        <div>
+            <p><b>3) Certificación</b></p>
+            <p>  Sobre la base delas tareas descriptas CERTIFICO que la información contenida en los documentos detallados en 1. concuerda en un todo con lo declarado en el hash y surge de registros rubricados/medios ópticos/mecánicos/digitales  llevados en legal forma.-</p>
+        </div>
+        <br />
+        <div class="box">
+            @if (this.contador != null)
+            {
+                <p>   Lugar y Fecha     : </p>
+                <p>   Apellido y Nombre : @contador.Apellido @contador.Nombre </p>
+                <p>   CUIT              : @contador.NroFiscal - T° @contador.Tomo F° @contador.Folio  </p>
+                <p>   En carácter de Socio de la Soc Tº <span class="error">FALTAN CAMPOS</span> Fº <span class="error">FALTAN CAMPOS   (ésta línea solo debe aparecer si "Actúa en carácter de Socio de Estudio Contable" = True)</span></p>
+
+                <p>   Firma             : </p>
+            }
+        </div>
 
 
 
     }
-</body>
 
-</html>
+</div>
 
 
 
@@ -631,7 +635,7 @@
                         this.listPersonaJuridica = rsp.Result.Socios.PersonasJuridicas;
 
                         //Archivos
-                       setArchivos(rsp.Result.Archivos);
+                        setArchivos(rsp.Result.Archivos);
                     }
                 }
             }
@@ -827,10 +831,10 @@
 
 
     private void setBalance(BalanceDto balance)
-    {     
+    {
         this.balance = balance;
-        this.balance.Libros =  new LibrosDto();
-        this.balance.Libros.Asamblea = new LibroDto(); 
+        this.balance.Libros = new LibrosDto();
+        this.balance.Libros.Asamblea = new LibroDto();
 
     }
 
@@ -848,7 +852,7 @@
     }
 
 
-    private void setArchivos(List<ArchivoDTO>archivos)
+    private void setArchivos(List<ArchivoDTO> archivos)
     {
 
         this.listArchivo = archivos;
@@ -892,70 +896,70 @@
     {
         try
         {
-            
-                mensajesError.Clear();
 
-                // Validar propiedades de Entidad
-                ValidarPropiedades(this.caratula.Entidad, "Entidad");
+            mensajesError.Clear();
 
-                //Validar propiedades de EstadoContable
-                ValidarPropiedades(this.estadoContable, "Estado Contable");
+            // Validar propiedades de Entidad
+            ValidarPropiedades(this.caratula.Entidad, "Entidad");
 
-                //Validar propiedades Libros
-                ValidarPropiedades(this.libros.Memoria, "Libros - Memoria");
-                ValidarPropiedades(this.libros.Administracion, "Libros - Acta del Organo de Administracion");
-                ValidarPropiedades(this.libros.Asamblea, "Libros - Asamblea de Reunion Socios");
-                ValidarPropiedades(this.libros.SituacionPatrimonial, "Libros - Estado de Situacion Patrimonial");
-                ValidarPropiedades(this.libros.Resultados, "Libros - Estado de Resultados");
-                ValidarPropiedades(this.libros.PatrimonioNeto, "Libros - Estado de Evolucion del Patrimonio Neto");
-                ValidarPropiedades(this.libros.Efectivo, "Libros - Estado de Flujo Efectivo");
-                ValidarPropiedades(this.libros.Informacion, "Libros - Informacion Complementaria");
-                ValidarPropiedades(this.libros.EstadosContablesConsolidados, "Libros - Estado Contable Consolidados");
-                ValidarPropiedades(this.libros.Fiscalizacion, "Libros - Informe Organo Fiscalizacion");
-                ValidarPropiedades(this.libros.Auditor, "Libros - Informe Auditor Auditor");
-                ValidarPropiedades(this.libros.AsistenciaAsamblea, "Libros - Registro de Asistencia");
-                ValidarPropiedades(this.libros.IVA, "Libros - IVA");
-                ValidarPropiedades(this.libros.IVACompras, "Libros - IVA Compras");
-                ValidarPropiedades(this.libros.IVAVentas, "Libros - IVA Ventas");
+            //Validar propiedades de EstadoContable
+            ValidarPropiedades(this.estadoContable, "Estado Contable");
 
-
-
-                //Validar propiedades de Contador
-                ValidarPropiedades(this.contador, "Contador");
+            //Validar propiedades Libros
+            ValidarPropiedades(this.libros.Memoria, "Libros - Memoria");
+            ValidarPropiedades(this.libros.Administracion, "Libros - Acta del Organo de Administracion");
+            ValidarPropiedades(this.libros.Asamblea, "Libros - Asamblea de Reunion Socios");
+            ValidarPropiedades(this.libros.SituacionPatrimonial, "Libros - Estado de Situacion Patrimonial");
+            ValidarPropiedades(this.libros.Resultados, "Libros - Estado de Resultados");
+            ValidarPropiedades(this.libros.PatrimonioNeto, "Libros - Estado de Evolucion del Patrimonio Neto");
+            ValidarPropiedades(this.libros.Efectivo, "Libros - Estado de Flujo Efectivo");
+            ValidarPropiedades(this.libros.Informacion, "Libros - Informacion Complementaria");
+            ValidarPropiedades(this.libros.EstadosContablesConsolidados, "Libros - Estado Contable Consolidados");
+            ValidarPropiedades(this.libros.Fiscalizacion, "Libros - Informe Organo Fiscalizacion");
+            ValidarPropiedades(this.libros.Auditor, "Libros - Informe Auditor Auditor");
+            ValidarPropiedades(this.libros.AsistenciaAsamblea, "Libros - Registro de Asistencia");
+            ValidarPropiedades(this.libros.IVA, "Libros - IVA");
+            ValidarPropiedades(this.libros.IVACompras, "Libros - IVA Compras");
+            ValidarPropiedades(this.libros.IVAVentas, "Libros - IVA Ventas");
 
 
-                // Validar propiedades de Autoridades
-                ValidarPropiedades(this.listAutoridades, "Autoridades");
+
+            //Validar propiedades de Contador
+            ValidarPropiedades(this.contador, "Contador");
 
 
-                var listaSocios = new List<object>();
-                listaSocios.AddRange(this.listPersonaJuridica);
-                listaSocios.AddRange(this.listPersonaHumana);
-
-                //Validar propiedades de Socios
-                if (!(listaSocios.Count > 0))
-                {
-                    ValidarPropiedades(listaSocios, "Integrante");
-                }
+            // Validar propiedades de Autoridades
+            ValidarPropiedades(this.listAutoridades, "Autoridades");
 
 
-                // Validar propiedades de Archivos
-                ValidarPropiedades(this.listArchivo, "Archivos");
+            var listaSocios = new List<object>();
+            listaSocios.AddRange(this.listPersonaJuridica);
+            listaSocios.AddRange(this.listPersonaHumana);
+
+            //Validar propiedades de Socios
+            if (!(listaSocios.Count > 0))
+            {
+                ValidarPropiedades(listaSocios, "Integrante");
+            }
 
 
-                // Verificar si hay mensajes de error y mostrarlos
-                if (mensajesError.Any())
-                {   // Limpiar la lista de mensajes de error antes de cada validación
+            // Validar propiedades de Archivos
+            ValidarPropiedades(this.listArchivo, "Archivos");
 
-                    StateHasChanged();
-                    return false;
-               }
-            
+
+            // Verificar si hay mensajes de error y mostrarlos
+            if (mensajesError.Any())
+            {   // Limpiar la lista de mensajes de error antes de cada validación
+
+                StateHasChanged();
+                return false;
+            }
+
 
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Validar Campos: " + ex.Message); 
+            Console.WriteLine("Validar Campos: " + ex.Message);
         }
         return true;
     }
@@ -1076,59 +1080,60 @@
         }
     }
 
-    private void ValidarPropiedades(object entidad, string nombreEntidad){
-    
+    private void ValidarPropiedades(object entidad, string nombreEntidad)
+    {
+
         try
         {
-              
-                // Bandera para verificar si ya se ha agregado un mensaje para la entidad
-                bool mensajeAgregado = false;
 
-                foreach (var propiedad in entidad.GetType().GetProperties())
+            // Bandera para verificar si ya se ha agregado un mensaje para la entidad
+            bool mensajeAgregado = false;
+
+            foreach (var propiedad in entidad.GetType().GetProperties())
+            {
+                var valor = propiedad.GetValue(entidad);
+
+                if (propiedad.Name == "id" || propiedad.Name == "Id" || propiedad.Name == "Balance")
                 {
-                    var valor = propiedad.GetValue(entidad);
 
-                    if (propiedad.Name == "id" || propiedad.Name == "Id" || propiedad.Name == "Balance")
-                    {
-                        
-                        continue;
-                    }
-
-                    if (propiedad.Name == "FechaUltimaRegistracion" || propiedad.Name == "FechaRubrica")
-                    {
-                        continue;
-                    }
-
-
-                    if (valor == null)
-                    {
-                        mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
-
-
-                    }
-                    else if (valor is string && string.IsNullOrEmpty((string)valor))
-                    {
-                        mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
-
-
-                    }
-                    else if (valor is int && (int)valor == 0 && propiedad.Name != "Count" && propiedad.Name != "Capacity")
-                    {
-                        mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser un valor numérico");
-
-
-                    }
-                  
-                    // Si la propiedad es Count o Capacity y el valor es cero, y no se ha agregado mensaje
-                    else if ((propiedad.Name == "Count" || propiedad.Name == "Capacity") && valor is int && (int)valor == 0 && !mensajeAgregado)
-                    {
-                        mensajesError.Add($"{nombreEntidad} está vacía");
-                        // Establecer la bandera para indicar que se ha agregado el mensaje
-                        mensajeAgregado = true;
-                    }
+                    continue;
                 }
 
-               
+                if (propiedad.Name == "FechaUltimaRegistracion" || propiedad.Name == "FechaRubrica")
+                {
+                    continue;
+                }
+
+
+                if (valor == null)
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
+
+
+                }
+                else if (valor is string && string.IsNullOrEmpty((string)valor))
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} está vacía");
+
+
+                }
+                else if (valor is int && (int)valor == 0 && propiedad.Name != "Count" && propiedad.Name != "Capacity")
+                {
+                    mensajesError.Add($"La propiedad {propiedad.Name} en {nombreEntidad} debe ser un valor numérico");
+
+
+                }
+
+                // Si la propiedad es Count o Capacity y el valor es cero, y no se ha agregado mensaje
+                else if ((propiedad.Name == "Count" || propiedad.Name == "Capacity") && valor is int && (int)valor == 0 && !mensajeAgregado)
+                {
+                    mensajesError.Add($"{nombreEntidad} está vacía");
+                    // Establecer la bandera para indicar que se ha agregado el mensaje
+                    mensajeAgregado = true;
+                }
+            }
+
+
         }
         catch (Exception ex)
         {
@@ -1166,7 +1171,7 @@
 
             if (resultadoPatrimonioNeto().Equals(sumatoriaDetallePatNeto))
             {
-                return  false;
+                return false;
 
             }
             else
@@ -1186,7 +1191,7 @@
             }
             else
             {
-                return  true;
+                return true;
 
             }
         }
@@ -1204,13 +1209,12 @@
     {
         return modalRef.Hide();
     }
-    
+
 
     private Task ShowSuccessModal()
     {
         return modalSuccess.Show();
     }
 
-    
+
 }
- 
