@@ -1,28 +1,7 @@
-using global::System;
-using global::System.Collections.Generic;
-using global::System.Linq;
-using global::System.Threading.Tasks;
-using global::Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using Microsoft.JSInterop;
-using Balances.Web;
-using Balances.Web.Shared;
-using Blazorise;
-using Radzen;
-using Radzen.Blazor;
 using Balances.DTO;
-using Balances.Utilities;
-using Balances.Web.Services.Contracts;
-using Balances.Web.Services.Implementation;
-using System.Globalization;
 using Balances.Web.Services.FluentValidation;
 using FluentValidation.Results;
+using global::Microsoft.AspNetCore.Components;
 
 namespace Balances.Web.Pages
 {
@@ -44,7 +23,7 @@ namespace Balances.Web.Pages
         public string sesionId { get; set; }
 
         private ContadorDto modelo = new ContadorDto();
-     
+
         protected override async Task OnInitializedAsync()
         {
             await Load();
@@ -75,7 +54,6 @@ namespace Balances.Web.Pages
                         if (rsp.IsSuccess)
                         {
                             TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
-                            modelo.id = rsp.Result.Id;
                             modelo.Nombre = rsp.Result.Contador.Nombre;
                             modelo.Apellido = rsp.Result.Contador.Apellido;
                             modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
@@ -124,7 +102,7 @@ namespace Balances.Web.Pages
 
                 if (result.IsValid)
                 {
-                
+
                     respuesta = await contadorService.postContador(modelo);
 
                 }
@@ -140,5 +118,5 @@ namespace Balances.Web.Pages
 
         }
     }
-        
+
 }

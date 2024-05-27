@@ -2,6 +2,7 @@
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
+@using Balances.Web.Services
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
 @using System.Globalization;
@@ -9,6 +10,7 @@
 @using System.Reflection;
 @using Blazorise.Extensions;
 @using Microsoft.AspNetCore.Http;
+@using CurrieTechnologies.Razor.SweetAlert2;
 
 @inject IEstadoContableClientService estadoContableService;
 @inject NavigationManager NavigationManager
@@ -183,6 +185,12 @@
                                          <ValidationMessage For="@(()=> estadoContableDto.totalPasivo)" />
                                      </RadzenStack>
 
+                                <RadzenStack class="mt-2 mb-2">
+                                    <RadzenFormField Text="Activo No Corriente Restante" Style="width:100%">
+                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"  Style="width:100%" />
+                                    </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.activoNoCorrienteRestante)" />
+                                </RadzenStack>
 
                                  <RadzenStack class="mt-2 mb-2">
                                      <RadzenFormField Text="Patrimonio Neto" Style="width:100%">
@@ -271,8 +279,11 @@
             
                 <!--Otros Rubros PN -->
                 <div class="card mb-4">
+                       
+                         
                     <div class="card-body">
                         <Form Model="rubroDto">
+                          
                             <div class="form-group">
                                 <h5 class="card-title d-flex justify-content-center">
                                     Otros Rubros del Patrimonio Neto
@@ -328,7 +339,7 @@
    
 
 
-
+          
 
 
 

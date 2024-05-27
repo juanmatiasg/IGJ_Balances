@@ -112,6 +112,7 @@ namespace Balances.Bussiness.Implementacion
                 FolioEstudio = modelo.FolioEstudio,
                 EsSocioEstudio = modelo.EsSocioEstudio
 
+
             };
 
             return contadordto;

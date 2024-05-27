@@ -4,6 +4,6 @@ namespace Balances.Services.Contract
 {
     public interface IPDFService
     {
-        byte[] HtmlToPDF(string html, BalanceDtoPresentacion balance);
+        byte[] HtmlToPDF(string html, BalanceDto balance);
     }
 }

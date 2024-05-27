@@ -1,35 +1,12 @@
-using global::System;
-using global::System.Collections.Generic;
-using global::System.Linq;
-using global::System.Threading.Tasks;
-using global::Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using Microsoft.JSInterop;
-using Balances.Web;
-using Balances.Web.Shared;
-using Blazorise;
-using Radzen;
-using Radzen.Blazor;
 using Balances.DTO;
 using Balances.Model;
-using Balances.Utilities;
-using Balances.Web.Services.Contracts;
-using Balances.Web.Services.Implementation;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Reflection;
-using Blazorise.Extensions;
-using Microsoft.AspNetCore.Http;
 using Balances.Web.Services;
-using CurrieTechnologies.Razor.SweetAlert2;
 using Balances.Web.Services.FluentValidation;
+using CurrieTechnologies.Razor.SweetAlert2;
 using FluentValidation.Results;
+using global::Microsoft.AspNetCore.Components;
+using Radzen.Blazor;
+using System.Globalization;
 
 namespace Balances.Web.Pages
 {
@@ -44,10 +21,10 @@ namespace Balances.Web.Pages
 
         private string denominacionDto = "";
         private decimal importeDto = 0;
-        
+
         private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
         private EstadoContableDto estadoContableDto = new EstadoContableDto();
-  
+
         [Parameter]
         public string? balid { get; set; }
 
@@ -82,7 +59,7 @@ namespace Balances.Web.Pages
                         if (rsp.IsSuccess)
                         {
                             TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
-                    
+
                             estadoContableDto.fechaInicio = rsp.Result.Caratula.FechaInicio;
                             estadoContableDto.fechaEstado = rsp.Result.Caratula.FechaDeCierre;
                             estadoContableDto = new EstadoContableDto(rsp.Result.EstadoContable);
@@ -108,7 +85,7 @@ namespace Balances.Web.Pages
             estadoContableDto.patrimonioNeto = SumaEECC.PatrimonioNeto(estadoContableDto);
             decimal OtrosRubrosPatrimonioNeto = SumaEECC.OtrosRubrosPatrimonioNeto(estadoContableDto);
 
-            ResponseDTO <BalanceDto> rsp = new();
+            ResponseDTO<BalanceDto> rsp = new();
             try
             {
                 if (estadoContableDto.patrimonioNeto != OtrosRubrosPatrimonioNeto)
@@ -124,21 +101,21 @@ namespace Balances.Web.Pages
 
                 }
                 StateHasChanged();
-                
-                
+
+
                 estadoContableDto.SesionId = sesionId;
                 rsp = await estadoContableService.insertEECC(estadoContableDto);
                 if (rsp.IsSuccess)
                 {
                     rsp.Message = "Se inserto el Estado Contable sastifactoriamente";
-                  
+
                 }
                 else
                 {
                     rsp.Message = "No se inserto el Estado Contable";
                 }
 
-               
+
             }
             catch (Exception ex)
             {
@@ -148,22 +125,22 @@ namespace Balances.Web.Pages
             return rsp;
         }
 
-        
+
         private async Task<ResponseDTO<BalanceDto>> insertRubro()
         {
             var rsp = new ResponseDTO<BalanceDto>();
             try
             {
+                rubroDto.codigo = Guid.NewGuid().ToString();
+                rubroDto.denominacion = denominacionDto;
+                rubroDto.importe = importeDto;
+                rubroDto.SesionId = sesionId;
                 RubroDtoValidator rubrodtovalidator = new();
                 ValidationResult resultadoValidacion = rubrodtovalidator.Validate(rubroDto);
 
 
                 if (resultadoValidacion.IsValid)
                 {
-                    rubroDto.codigo = Guid.NewGuid().ToString();
-                    rubroDto.denominacion = denominacionDto;
-                    rubroDto.importe = importeDto;
-                    rubroDto.SesionId = sesionId;
 
                     rsp = await estadoContableService.insertRubro(rubroDto);
                     if (rsp.IsSuccess)
@@ -203,7 +180,7 @@ namespace Balances.Web.Pages
                 {
                     estadoContableDto.otrosRubros.Remove(rubroDto);
                     respuesta.Message = "Se eliminó el rubro sastifactoriamente";
-                    
+
                     await grid.Reload();
                     StateHasChanged();
                 }
@@ -220,7 +197,7 @@ namespace Balances.Web.Pages
             return respuesta;
         }
 
-       
+
         public void setListOtrosRubros(List<RubroPatrimonioNeto> rubros)
         {
             if (rubros != null)
@@ -233,8 +210,8 @@ namespace Balances.Web.Pages
             }
         }
 
-      
 
-        
+
+
     }
 }

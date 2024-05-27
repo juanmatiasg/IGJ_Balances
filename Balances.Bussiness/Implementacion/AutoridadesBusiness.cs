@@ -16,8 +16,6 @@ namespace Balances.Bussiness.Implementacion
 
         public AutoridadesBusiness(ISessionService sessionService,
                                    IBalanceBusiness balanceBusiness,
-
-
                                    ILogger<AutoridadesBusiness> logger)
         {
             _sessionService = sessionService;

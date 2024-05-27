@@ -3,6 +3,7 @@
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
 
 @inject IAutoridadClientService autoridadService
 @inject ISessionClientService sesionService
@@ -12,6 +13,7 @@
 
 @inject NavigationManager NavigationManager
 @inject DialogService dialogService;
+@inject SweetAlertService swal;
 
 
 
@@ -22,152 +24,165 @@
 <Navegacion PaginaActiva="Autoridad" TramiteIniciado="true" balid="@balid"></Navegacion>
 
 
-<div class="container-fluid m-auto w-75 ">
-
-     <div class="d-flex justify-content-between p-1 gap-1">
-
-         <!--Formulario autoridades-->
-         <div class="card w-50 p-1">
-
-             <EditForm Model="modelo" class="d-flex gap-1  flex-column">
-
-                 <FluentValidationValidator />
-                 <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
-                     Datos de la Autoridad
-                 </div>
+<div class="container d-flex justify-content-between p-1 gap-1 ">
 
 
-                 <div class="card-body d-flex flex-column gap-2 justify-content-between">
+    <!--Formulario autoridades-->
+    <div class="card w-50 ">
+
+        <EditForm Model="modelo" class="d-flex gap-1  flex-column">
+
+            <FluentValidationValidator />
+            <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;font-size:larger;">
+                Datos de la Autoridad
+            </div>
 
 
-                     <!--Nombre y apellido-->
-                     <div class="d-flex gap-1">
+            <div class="card-body d-flex flex-column gap-2 justify-content-between">
 
-                        <RadzenStack Style="width:50%">
-                            <RadzenFormField Text="Nombre" >
-                                 <RadzenTextBox @bind-Value="@modelo.Nombre" />                         
-                             </RadzenFormField>
+
+                <!--Nombre y apellido-->
+                <div class="d-flex gap-1">
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Nombre">
+                            <RadzenTextBox MaxLength="24" type="text" @bind-Value="@modelo.Nombre" />
                             <ValidationMessage For="@(()=> modelo.Nombre)" />
-                        </RadzenStack>
+                        </RadzenFormField>
+                    </RadzenStack>
 
-                        <RadzenStack Style="width:50%">
-                            <RadzenFormField Text="Apellido">
-                                <RadzenTextBox @bind-Value="@modelo.Apellido" />
-                            </RadzenFormField>
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Apellido">
+                            <RadzenTextBox MaxLength="24" type="text" @bind-Value="@modelo.Apellido" />
                             <ValidationMessage For="@(()=> modelo.Apellido)" />
+                        </RadzenFormField>
 
-                        </RadzenStack>
-
-                   
-                     </div>
-
-                     <!--DNI-->
-                     <div class="d-flex gap-1">
-
-                         <div class="w-50 gap-2">
-                            
-                             <RadzenStack>
-                                <RadzenFormField Text="Tipo de Documento">
-                                    <RadzenDropDown @bind-Value=@modelo.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" Style="width:100%" />
-                                </RadzenFormField>
-                                <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
-                            </RadzenStack>
-
-                                            
-                             <RadzenStack>
-                                 <RadzenFormField Text="Numero de Documento" Style="width:100%">
-                                     <RadzenTextBox @bind-Value="@modelo.NroDocumento" />
-                                 </RadzenFormField>
-                                <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
-                             </RadzenStack>
-
-                         </div>
-                            <RadzenStack Style="width:50%">
-                                  <RadzenFormField Text="Nro. de CUIL/CUIT" >
-                                     <RadzenTextBox @bind-Value="@modelo.NroFiscal" />
-                                 </RadzenFormField>
-                                <ValidationMessage For="@(()=> @modelo.NroFiscal)" />
-                            </RadzenStack>
-                      
-
-                     </div>
+                    </RadzenStack>
 
 
-                     <!--Cargo y firma-->
-                     <div class="d-flex gap-1 justify-content-between align-items-center">
+                </div>
 
-                        <RadzenStack Style="width:50%">
-                            <RadzenFormField Text="Cargo">
-                                <RadzenDropDown @bind-Value=@modelo.Cargo Data=@cargos Name="DropDownBindValue" Style="width:100%" />
-                            </RadzenFormField>
+                <!--DNI-->
+                <div class="d-flex justify-content-between w-100 gap-1">
+
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Text="Tipo de Documento">
+                            <RadzenDropDown @bind-Value=@modelo.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" />
+                            <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
+                        </RadzenFormField>
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Style="width:100%" Text="Nro. de CUIL/CUIT">
+                            <RadzenTextBox @bind-Value="@modelo.NroFiscal" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @modelo.NroFiscal)" />
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Style="width:100%" Text="Numero de Documento">
+                            <RadzenTextBox @bind-Value="@modelo.NroDocumento" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
+                    </RadzenStack>
+
+                </div>
+
+
+                <!--Cargo y firma-->
+                <div class="d-flex gap-1 justify-content-between align-items-center">
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Cargo">
+                            <RadzenDropDown @bind-Value=@modelo.Cargo Data=@cargos Name="DropDownBindValue" Style="width:100%" />
                             <ValidationMessage For="@(()=> @modelo.Cargo)" />
-                        </RadzenStack>
+                        </RadzenFormField>
+                    </RadzenStack>
 
+                    <div class="w-50 text-end gap-1">
 
-                         <div class="w-50">
-                           
-                                <RadzenCheckBox @bind-Value="@modelo.EsFirmante" Name="CheckBox3" />
-                                <RadzenLabel class="col-6" Text="Es Firmante" Component="CheckBox3" />
-                                <ValidationMessage For="@(()=> modelo.EsFirmante)" />
-                          
-                         </div>
+                        <div class="d-flex w-100 gap-1">
 
-                     </div>
+                            <RadzenLabel class="w-100" Text="Es Firmante del Manifiesto" Component="CheckBox3" />
+                            <RadzenCheckBox @bind-Value="@modelo.EsFirmante" Name="CheckBox3" />
+                            <ValidationMessage For="@(()=> modelo.EsFirmante)" />
 
-                     <RadzenStack class="text-center m-auto mt-2">
-                         <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@insertAutoridad" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
-                     </RadzenStack>
-                 </div>
-             </EditForm>
-         </div>
+                        </div>
 
-         <!--Autoridades cargadas-->
-         <div class="card w-50 p-1">
-             <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
-                 Autoridades
-             </div>
-             <div class="card-body mb-4">
+                        <div class="d-flex w-100 gap-1">
 
-                 <RadzenGrid Data="listAutoridades" TItem="AutoridadDto">
-                     <Columns>
-                         <RadzenGridColumn TItem="AutoridadDto" Property="Apellido" Title="Apellido" />
-                         <RadzenGridColumn TItem="AutoridadDto" Property="Nombre" Title="Nombre" />
-                         <RadzenGridColumn TItem="AutoridadDto" Property="NroDocumento" Title="Nro. Documento" />
-                         <RadzenGridColumn TItem="AutoridadDto" Property="Cargo" Title="Cargo" />
-                         <RadzenGridColumn TItem="AutoridadDto" Property="EsFirmante" Title="Firmante">
-                             <Template Context="data">
-                                 @((data.EsFirmante) ? "Si" : "No")
-                             </Template>
-                         </RadzenGridColumn>
+                            <RadzenLabel class="w-100" Text="Esta Vigente" Component="CheckBox3" />
+                            <RadzenCheckBox @bind-Value="@modelo.EstaVigente" Name="CheckBox3" />
+                            <ValidationMessage For="@(()=> modelo.EstaVigente)" />
 
-                         <RadzenGridColumn TItem="AutoridadDto" Title="Acción">
-                             <Template Context="autoridad">
-                                 <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteAutoridad(autoridad))"></RadzenButton>
-                             </Template>
-                         </RadzenGridColumn>
-                     </Columns>
+                        </div>
+                    </div>
 
-                 </RadzenGrid>
+                </div>
 
-             </div>
-         </div>
-
+                <RadzenStack class="text-center m-auto mt-2">
+                    <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@insertAutoridad" ButtonStyle="ButtonStyle.Primary">Agregar</RadzenButton>
+                </RadzenStack>
+            </div>
+        </EditForm>
     </div>
 
- </div>
+    <!--Autoridades cargadas-->
+    <div class="card w-50">
+        <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;font-size:larger;">
+            Autoridades
+        </div>
+        <div class="card-body">
+
+            <RadzenGrid AllowColumnResize="true" Data="listAutoridades" TItem="AutoridadDto">
+                <Columns>
+                    <RadzenGridColumn TItem="AutoridadDto" Width="9,5rem" Title="Nombre y Apellido">
+                        <Template Context="data">
+                            @($"{data.Nombre} {data.Apellido}")
+                        </Template>
+                    </RadzenGridColumn>
+
+                    <RadzenGridColumn TItem="AutoridadDto" Width="8rem" Property="NroDocumento" Title="Nro. Documento" />
+                    <RadzenGridColumn TItem="AutoridadDto" Width="8rem" Property="Cargo" Title="Cargo" />
+                    <RadzenGridColumn TItem="AutoridadDto" Width="4rem" Property="EstaVigente" Title="Vigente">
+                        <Template Context="data">
+                            @((data.EstaVigente) ? "si" : "no")
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="AutoridadDto" Width="4rem" Property="EsFirmante" Title="Firmante">
+                        <Template Context="data">
+                            @((data.EsFirmante) ? "Si" : "No")
+                        </Template>
+                    </RadzenGridColumn>
+
+                    <RadzenGridColumn TItem="AutoridadDto" Width="4rem" Title="Acción">
+                        <Template Context="autoridad">
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteAutoridad(autoridad))"></RadzenButton>
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+
+            </RadzenGrid>
+
+        </div>
+    </div>
+
+</div>
 
 
-@code{
+
+@code {
     async Task ShowDialogFirmantes()
     {
-        await dialogService.OpenAsync("Autoridades", ds =>
-        @<div>
-            No puede haber más dos firmantes.
-        </div>, new DialogOptions()
-          {
-              CssClass = "custom-dialog-class",
-              WrapperCssClass = "custom-dialog-wrapper-class"
-          });
+        swal.FireAsync(new SweetAlertOptions
+            {
+                Icon = "warning",
+                Title = "Error",
+                Text = "No puede haber más de 1 firmante. ",
+                ConfirmButtonText = "Aceptar"
+
+
+            });
     }
 }
 

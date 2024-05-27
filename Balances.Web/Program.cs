@@ -57,7 +57,6 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 
 
-
 builder.Services
     .AddBlazorise(options =>
     {

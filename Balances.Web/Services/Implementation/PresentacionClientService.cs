@@ -12,12 +12,12 @@ namespace Balances.Web.Services.Contracts
             _httpClient = httpClient;
         }
 
-        public async Task<ResponseDTO<BalanceDto>> generarPresentacion()
+        public async Task<ResponseDTO<BalanceDto>> generarPresentacion(string sesionId)
         {
 
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Presentacion/GenerarPresentacion");
+                var result = await _httpClient.GetFromJsonAsync<ResponseDTO<BalanceDto>>($"Presentacion/GenerarPresentacion/{sesionId}");
 
                 return new ResponseDTO<BalanceDto>
                 {
@@ -37,10 +37,4 @@ namespace Balances.Web.Services.Contracts
             }
         }
     }
-
-
-
-
-
-
 }

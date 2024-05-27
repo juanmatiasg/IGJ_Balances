@@ -1,4 +1,5 @@
 ﻿using Balances.DTO;
+using Balances.Web.Services.FluentValidation;
 using Balances.Web.Services.Implementation;
 using System.Net.Http.Json;
 
@@ -31,6 +32,7 @@ namespace Balances.Web.Services.Contracts
         {
             ResponseDTO<BalanceDto> rsp = new();
             rsp.IsSuccess = false;
+            ContadorValidator contadorValidator = new();
             try
             {
 

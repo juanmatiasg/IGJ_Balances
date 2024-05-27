@@ -15,21 +15,19 @@ namespace Balances.API.Controllers
             _presentacionBusiness = presentacionBusiness;
         }
 
-        [HttpGet("GenerarPresentacion")]
-        public ResponseDTO<BalanceDto> GenerarPresentacion()
+        [HttpGet("GenerarPresentacion/{sesionId}")]
+        public ResponseDTO<BalanceDto> GenerarPresentacion(string sesionId)
 
         {
 
-            var rsp = _presentacionBusiness.PresentarTramite();
+            var rsp = _presentacionBusiness.PresentarTramite(sesionId);
             return rsp;
         }
 
 
         [HttpGet("GenerarPresentacionEnHtml")]
         public string GenerarPresentacionEnHtml()
-
         {
-
             var rsp = _presentacionBusiness.FormatPresentacionHTML();
             return rsp;
         }

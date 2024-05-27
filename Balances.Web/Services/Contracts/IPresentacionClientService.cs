@@ -4,6 +4,6 @@ namespace Balances.Web.Services.Implementation
 {
     public interface IPresentacionClientService
     {
-        Task<ResponseDTO<BalanceDto>> generarPresentacion();
+        Task<ResponseDTO<BalanceDto>> generarPresentacion(string sesionId);
     }
 }

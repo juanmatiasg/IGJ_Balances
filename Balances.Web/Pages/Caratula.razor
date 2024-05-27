@@ -1,9 +1,11 @@
 @page "/Caratula/{balid?}"
 @using Balances.DTO;
+@using Balances.Model
 @using Balances.Utilities;
 @using Balances.Web.Services.Contracts;
 @using Balances.Web.Services.FluentValidation;
 @using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
 @using Microsoft.AspNetCore.Http;
 @using Microsoft.JSInterop
 @using Balances.Web.Services
@@ -43,19 +45,19 @@
             </div>
 
             <div class="card-body">
-                <EditForm Model="modelbusqueda">
+                <EditForm Model="modelbusqueda" >
                     <FluentValidationValidator />
                     <div class="row d-flex justify-content-center align-items-end">
                
                         <div class="col">
-                            <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />                          
-                            </RadzenFormField>
+                            <RadzenFormField  Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
+                            <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
+                        </RadzenFormField>
                             <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
                         </div>
 
                         <div class="col d-block">
-                           <RadzenButton ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                        <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
                         </div>
                     </div>
                 </EditForm>
@@ -139,7 +141,7 @@
                                 </div>
 
                                 <div class="col mt-4 mb-4 d-flex justify-content-center">
-                                    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=IniciarTramites Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
+                                    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@IniciarTramite Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
                                 </div>
                             </EditForm>
                     </RadzenStack>
@@ -196,7 +198,7 @@
                             </div>
 
                             <div class="col mt-4 mb-4 d-flex justify-content-center">
-                                <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=IniciarTramites Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
+                                <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=IniciarTramite Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
                             </div>
                         </EditForm>
                     </RadzenStack>
@@ -401,7 +403,7 @@
         }
     }
 
-    private async Task IniciarTramites()
+    private async Task IniciarTramite()
     {
         await ShowBusyDialog();
 
@@ -470,6 +472,7 @@
         StateHasChanged();
 
 
+            StateHasChanged();
 
     }
 
