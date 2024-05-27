@@ -119,17 +119,19 @@ namespace Balances.Bussiness.Implementacion
             return respuesta;
         }
 
-        public string FormatPresentacionHTML()
+        public string FormatPresentacionHTML(string sesionId)
         {
 
             //busco balance
-            var bal = _balanceBusiness.BalanceActual;
+            var id = _sessionService.GetBalanceId(sesionId);
+
+            var bal = _balanceBusiness.GetById(id);
 
             //genero QR
-            var qr = _qRService.QRGenerator(bal.Id);
+            var qr = _qRService.QRGenerator(bal.Result.Id);
             // lleno la plantilla con los datos del balance
             //var balPresentacionfiltro = _presentacionService.GetBalanceAutoridadySocioFirmante(bal);
-            var Plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(bal, qr);
+            var Plantillahtml = _presentacionService.CrearPlantillaPresentacionPdf(bal.Result, qr);
 
             return Plantillahtml;
         }

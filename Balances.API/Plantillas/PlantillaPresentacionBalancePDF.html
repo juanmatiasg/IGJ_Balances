@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5 CSS -->
+     Bootstrap 5 CSS 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -107,6 +107,10 @@
         <p class="subtitulo">Anexo I - Resolución General IGJ Nº <span class="error">A DEFINIR</span></p>
     </div>
 
+    <div>
+        <img alt="Embedded QR code" src="data:image/jpg;base64,{{QR}}" />
+      
+    </div>
     <br />
     <div>
         <p>     <b>Denominación         :</b> {{RazonSocial}}</p>
@@ -118,11 +122,11 @@
     <br />
     <div>
         <p class="seccion">Manifestación del Representante Legal </p>
-        <p>  En mi carácter de representante legal de la sociedad {{RazonSocial}} {{TipoEntidad}}, manifiesto que los datos contenidos en los archivos de hash {{Hash}}, se corresponden en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al {{FechaEstado}} obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
+        <p>  En mi carácter de representante legal de la sociedad {{RazonSocial}} {{TipoEntidad}}, manifiesto que los datos contenidos en los archivos corresponden con el ID presentacion N° {{Id}}, en carácter de Declaración Jurada con los de los estados contables de la citada sociedad cerrados al {{FechaEstado}} obrantes en sus registros contables y también con la demás documentación relativa a su tratamiento, ello en la forma prescripta por la resolución citada.</p>
     </div>
     <br />
     <div class="box">
-        <p><span class="error"> <!– Debe utilizar el id del representante que tenga EsFirmante = True –></span></p>
+        
         <p>   Lugar y Fecha     : </p>
         <p>   Apellido y Nombre : {{RepresentanteLegal.RepresentanteApellido}} {{RepresentanteLegal.RepresentanteNombre}}              </p>
         <p>   CUIT              : {{RepresentanteLegal.RepresentanteNroFiscal}}   </p>
@@ -290,11 +294,11 @@
     </div>
     <div>
         <p><b>2) Tarea Profesional Realizada</b></p>
-        <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el {{FechaEstado}} e Informe de Auditor Externo de fecha {{Contador.FechaInformeAuditorExt}} con los datos incluidos en <span class="error">FALTAN CAMPOS</span>.</p>
+        <p>  Por disposición de las Normas Profesionales de Auditoria vigentes, la emisión de una certificación consiste únicamente en constatar determinados hechos y circunstancias con registros contables y/o documentación de respaldo. Por lo expuesto, mi tarea profesional consistió en cotejar  la información incluida en 1., Correspondientes al ejercicio cerrado el {{FechaEstado}} e Informe de Auditor Externo de fecha {{Contador.FechaInformeAuditorExt}} con los datos incluidos en la presentacion {{Id}}.</p>
     </div>
     <div>
         <p><b>3) Certificación</b></p>
-        <p>  Sobre la base delas tareas descriptas CERTIFICO que la información contenida en los documentos detallados en 1. concuerda en un todo con lo declarado en el hash y surge de registros rubricados/medios ópticos/mecánicos/digitales  llevados en legal forma.-</p>
+        <p>  Sobre la base delas tareas descriptas CERTIFICO que la información contenida en los documentos detallados en 1. concuerda en un todo con lo declarado en la presentacion N° {{Id}} y surge de registros rubricados/medios ópticos/mecánicos/digitales  llevados en legal forma.-</p>
     </div>
     <br />
     <div class="box">
@@ -305,9 +309,10 @@
         <p>   Firma             : </p>
     </div>
 
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-        <img alt="Embedded QR code" class="justify-content:center" src="data:image/jpg;base64,{{QR}}" /></p>
-        <!--<p class="membrete"><b>Código de Presentación :</b>  <img alt="Embedded QR code" class="img-responsive" src="{{QR}}" /></p>-->
+
+    <div>
+
+        <img alt="Embedded QR code" src="data:image/jpg;base64,{{QR}}" />
 
     </div>
 </body>
