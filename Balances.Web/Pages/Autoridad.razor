@@ -80,7 +80,7 @@
                     </RadzenStack>
 
                     <RadzenStack Style="width:30%;">
-                        <RadzenFormField Style="width:100%" Text="Numero de Documento">
+                        <RadzenFormField Style="width:100%" Text="Nro. de Documento">
                             <RadzenTextBox @bind-Value="@modelo.NroDocumento" />
                         </RadzenFormField>
                         <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
@@ -136,17 +136,21 @@
 
             <RadzenGrid AllowColumnResize="true" Data="listAutoridades" TItem="AutoridadDto">
                 <Columns>
-                    <RadzenGridColumn TItem="AutoridadDto" Width="9,5rem" Title="Nombre y Apellido">
+                    <RadzenGridColumn TItem="AutoridadDto" Width="8,5rem" Title="Nombre y Apellido">
                         <Template Context="data">
                             @($"{data.Nombre} {data.Apellido}")
                         </Template>
                     </RadzenGridColumn>
 
-                    <RadzenGridColumn TItem="AutoridadDto" Width="8rem" Property="NroDocumento" Title="Nro. Documento" />
+                    <RadzenGridColumn TItem="AutoridadDto" Width="9rem" Property="NroDocumento" Title="Nro. Documento">
+                        <Template Context="data">
+                            @($"{data.TipoDocumento} {data.NroDocumento}")<br /> @($"Cuit {data.NroFiscal}")
+                        </Template>
+                    </RadzenGridColumn>
                     <RadzenGridColumn TItem="AutoridadDto" Width="8rem" Property="Cargo" Title="Cargo" />
                     <RadzenGridColumn TItem="AutoridadDto" Width="4rem" Property="EstaVigente" Title="Vigente">
                         <Template Context="data">
-                            @((data.EstaVigente) ? "si" : "no")
+                            @((data.EstaVigente) ? "Si" : "No")
                         </Template>
                     </RadzenGridColumn>
                     <RadzenGridColumn TItem="AutoridadDto" Width="4rem" Property="EsFirmante" Title="Firmante">
@@ -155,7 +159,7 @@
                         </Template>
                     </RadzenGridColumn>
 
-                    <RadzenGridColumn TItem="AutoridadDto" Width="4rem" Title="Acción">
+                    <RadzenGridColumn TItem="AutoridadDto" Width="4rem">
                         <Template Context="autoridad">
                             <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteAutoridad(autoridad))"></RadzenButton>
                         </Template>
