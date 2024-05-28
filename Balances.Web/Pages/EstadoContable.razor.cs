@@ -121,12 +121,9 @@ namespace Balances.Web.Pages
 
                     notificationService.Notify(new NotificationMessage
                     {
-
                         Severity = NotificationSeverity.Success,
                         Duration = 3000,
                         Summary = "Datos guardados correctamente"
-
-
                     });
 
                 }

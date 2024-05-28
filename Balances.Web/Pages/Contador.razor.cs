@@ -2,6 +2,7 @@ using Balances.DTO;
 using Balances.Web.Services.FluentValidation;
 using FluentValidation.Results;
 using global::Microsoft.AspNetCore.Components;
+using Radzen;
 
 namespace Balances.Web.Pages
 {
@@ -104,6 +105,16 @@ namespace Balances.Web.Pages
                 {
 
                     respuesta = await contadorService.postContador(modelo);
+                    if (respuesta.IsSuccess)
+                    {
+
+                        notificationService.Notify(new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Success,
+                            Duration = 3000,
+                            Summary = "Datos guardados correctamente"
+                        });
+                    }
 
                 }
 
@@ -112,6 +123,12 @@ namespace Balances.Web.Pages
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
+                notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Duration = 3000,
+                    Summary = "No se pudieron guardar los datos"
+                });
 
             }
             return respuesta;
