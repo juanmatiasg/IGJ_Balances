@@ -5,8 +5,10 @@ using Balances.Web.Services.FluentValidation;
 using CurrieTechnologies.Razor.SweetAlert2;
 using FluentValidation.Results;
 using global::Microsoft.AspNetCore.Components;
+using Radzen;
 using Radzen.Blazor;
 using System.Globalization;
+
 
 namespace Balances.Web.Pages
 {
@@ -117,10 +119,29 @@ namespace Balances.Web.Pages
                 {
                     rsp.Message = "Se inserto el Estado Contable sastifactoriamente";
 
+                    notificationService.Notify(new NotificationMessage
+                    {
+
+                        Severity = NotificationSeverity.Success,
+                        Duration = 3000,
+                        Summary = "Datos guardados correctamente"
+
+
+                    });
+
                 }
                 else
                 {
                     rsp.Message = "No se inserto el Estado Contable";
+                    notificationService.Notify(new NotificationMessage
+                    {
+
+                        Severity = NotificationSeverity.Error,
+                        Duration = 3000,
+                        Summary = "No se pudieron guardar los datos"
+
+
+                    });
                 }
 
 

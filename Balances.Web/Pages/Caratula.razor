@@ -423,7 +423,7 @@
                 var alerta = await swal.FireAsync(new SweetAlertOptions
                         {
                             Title = "Inicio de tramite presentacion de balances y asambles",
-                            Text = $" Datos: {modelo.Entidad.RazonSocial}{modelo.Entidad.TipoEntidad}, Correlativo:{modelo.Entidad.Correlativo} Fecha cierre ejercicio: {modelo.FechaDeCierre} ",
+                            Text = $"Datos: {modelo.Entidad.RazonSocial} {modelo.Entidad.TipoEntidad}, Correlativo: {modelo.Entidad.Correlativo} Fecha cierre ejercicio: {modelo.FechaDeCierre?.ToString("dd/MM/yyyy")}",
                             Icon = SweetAlertIcon.Warning,
                             ShowCancelButton = true,
                             CancelButtonText = "Cancelar",

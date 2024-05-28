@@ -23,6 +23,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // S W E E T  A L E RT
 builder.Services.AddSweetAlert2();
 
+// R A D Z E N  N O T I F I C A C I O N E S
+builder.Services.AddScoped<NotificationService>();
+
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://balanceapi.justicia.ar/") });
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7172/") });
