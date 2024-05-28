@@ -31,6 +31,14 @@ namespace Balances.Web.Pages
         [Parameter]
         public string sesionId { get; set; }
 
+        private string[] tipoDeBalance =
+      {
+            "Anual",
+            "Irregular",
+            "De liquidación",
+            "Otro"
+        };
+
         protected override async Task OnInitializedAsync()
         {
             await Load();

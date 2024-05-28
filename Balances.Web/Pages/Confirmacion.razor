@@ -16,8 +16,8 @@
 
 
 
-<body>
-    <Navegacion PaginaActiva="Confirmacion" TramiteIniciado="true" balid="@balid"></Navegacion>
+
+<Navegacion PaginaActiva="Confirmacion" TramiteIniciado="true" balid="@balid"></Navegacion>
 
 
     <!--Loading-->
@@ -27,8 +27,8 @@
             <ModalBody>
                 <div class="d-flex justify-content-center align-items-center">
                     <div class="text-center">
-                       
-                       <div class="spinner-grow text-primary" role="status">
+
+                        <div class="spinner-grow text-primary" role="status">
                             <span class="sr-only"></span>
                         </div>
                         <div class="spinner-grow text-secondary" role="status">
@@ -62,19 +62,7 @@
     </Modal>
 
 
-    <Modal @ref="modalSuccess">
-        <ModalContent>
-            <ModalBody>
-                <div class="d-flex justify-content-center align-items-center">
-                    <div class="text-center">
-                        <div>
-                            Presentación generada con éxito.
-                        </div>
-                    </div>
-                </div>
-            </ModalBody>
-        </ModalContent>
-    </Modal>
+   
 
     
   
@@ -82,14 +70,14 @@
     
 
     <div class="d-flex justify-content-center mt-4 mb-4">
-        <button type ="button" @onclick="generarPresentacion" class="btn btn-primary">Generar manifiesto</button>
+    <RadzenButton Icon="class" Text="Generar manifiesto de presentación" ButtonType="Radzen.ButtonType.Submit" Click=@generarPresentacion class="d-block mt-4" />
+      @*   <button type ="button" @onclick="generarPresentacion" class="btn btn-primary">Generar manifiesto</button> *@
     </div>
 
  
-</body>
 
 
-@*  @htmlFormatPresentacion *@
+
 
 
 
@@ -183,7 +171,7 @@
 
             var estadocontable = rsp.Result.EstadoContable;
             var otrosRubros = SumaEECC.OtrosRubrosPatrimonioNeto(estadocontable);
-            var patrimonioNeto =SumaEECC.PatrimonioNeto(estadocontable);
+            var patrimonioNeto = SumaEECC.PatrimonioNeto(estadocontable);
             var LibroFiscalizacionSinDatos = rsp.Result.Libros.Fiscalizacion.FolioUltimaRegistracion.Contains("N/C");
 
             var documentacion = rsp.Result.Archivos;
@@ -224,7 +212,7 @@
 
                     });
 
-            } 
+            }
 
             else if (!LibroFiscalizacionSinDatos)
             {
@@ -241,7 +229,33 @@
 
                         });
                 }
+                else
+                {
+
+                    var response = await presentacionService.generarPresentacion(sesionId);
+
+                    if (response.IsSuccess)
+                    {
+
+
+                        responseDto.IsSuccess = response.IsSuccess;
+                        responseDto.Message = response.Message;
+                        responseDto.Result = response.Result;
+
+                        // await ShowSuccessModal();
+
+                        var alerta = await swal.FireAsync(new SweetAlertOptions
+                            {
+                                Title = "Presentacion Generada con Exito",
+                                Text = $"Recibira la presentacion del balance para su descarga en su email {rsp.Result.Caratula.Email}",
+                                Icon = SweetAlertIcon.Success,
+                                ConfirmButtonText = "Cerrar"
+
+                            });
+                    }
+                }
             }
+
             else if (LibroFiscalizacionSinDatos)
             {
                 if (!DocumentacionActaReuniOrgano || !DocumentacionEstadoContable
@@ -256,62 +270,50 @@
 
                         });
                 }
-
-            }
-            else
-            {
-                var response = await presentacionService.generarPresentacion(sesionId);
-
-                if (response.IsSuccess)
-                {
-
-
-                    responseDto.IsSuccess = response.IsSuccess;
-                    responseDto.Message = response.Message;
-                    responseDto.Result = response.Result;
-
-                    // await ShowSuccessModal();
-
-                    var alerta = await swal.FireAsync(new SweetAlertOptions
-                        {
-                            Title = "Presentacion Generada con Exito",
-                            Text = $"Recibira la presentacion del balance para su descarga en su email {rsp.Result.Caratula.Email}",
-                            Icon = SweetAlertIcon.Success,
-                            ConfirmButtonText = "Cerrar"
-
-                        });
-
-                  
-                }
                 else
                 {
-                    responseDto.IsSuccess = response.IsSuccess;
-                    responseDto.Message = response.Message;
-                    responseDto.Result = response.Result;
 
-                   
+                    var response = await presentacionService.generarPresentacion(sesionId);
+
+                    if (response.IsSuccess)
+                    {
+
+
+                        responseDto.IsSuccess = response.IsSuccess;
+                        responseDto.Message = response.Message;
+                        responseDto.Result = response.Result;
+
+                      
+                        var alerta = await swal.FireAsync(new SweetAlertOptions
+                            {
+                                Title = "Presentacion Generada con Exito",
+                                Text = $"Recibira la presentacion del balance para su descarga en su email {rsp.Result.Caratula.Email}",
+                                Icon = SweetAlertIcon.Success,
+                                ConfirmButtonText = "Cerrar"
+
+                            });
+                    }
+
                 }
 
-               
             }
-
-
         }
+
         catch (Exception ex)
         {
             return new ResponseDTO<BalanceDto>
                 {
-                    IsSuccess = false,
+
                     Message = $"{ex.Message}",
-                    Result = null
+
                 };
         }
-       
+
         finally
         {
             await HideLoadingModal();
         }
-        
+
         return responseDto;
     }
 
@@ -327,13 +329,12 @@
     {
         return modalRef.Hide();
     }
-    
+
 
     private Task ShowSuccessModal()
     {
         return modalSuccess.Show();
     }
 
-    
+
 }
- 

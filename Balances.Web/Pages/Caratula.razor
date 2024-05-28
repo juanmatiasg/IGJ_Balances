@@ -38,26 +38,26 @@
 <!--Entidad-->
 
 
-    <div class="container mt-2">
+    <div class="container ">
         <div class="card mx-auto  bg-light">
             <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
                 Entidad
             </div>
 
             <div class="card-body">
-                <EditForm Model="modelbusqueda">
+                <EditForm Model="modelbusqueda" >
                     <FluentValidationValidator />
                     <div class="row d-flex justify-content-center align-items-end">
                
                         <div class="col">
-                            <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
-                                    <RadzenTextBox @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />                          
-                            </RadzenFormField>
+                            <RadzenFormField  Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
+                            <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
+                        </RadzenFormField>
                             <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
                         </div>
 
                         <div class="col d-block">
-                           <RadzenButton ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                        <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
                         </div>
                     </div>
                 </EditForm>
@@ -101,7 +101,7 @@
                                             <RadzenFormField Text="Domicilio" Style="width:100%">
                                                 <RadzenTextBox @bind-Value="@(modelo.Entidad.Domicilio)" Disabled="@tramiteIniciado" id="txtAddress" />
                                             </RadzenFormField>
-                                            <ValidationMessage For="@(()=> modelo.Entidad.Domicilio)" />
+                                            <ValidationMessage For="@(()=> @modelo.Entidad.Domicilio)" />
                                      </div>
                        
 
@@ -212,6 +212,16 @@
 
 
 @code{
+
+
+    private ElementReference addressBox;
+    private RadzenTextBox? addressBoxRadzenTextBox;
+    private Autocomplete? autocomplete;
+    private string? placeData;
+    private string? formattedAddress;
+
+
+    
 
     [Parameter] public string? TipoEntidad { get; set; }
     [Parameter] public string? RazonSocial { get; set; }

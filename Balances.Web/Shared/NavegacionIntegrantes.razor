@@ -3,7 +3,14 @@
 @inject NavigationManager NavigationManager
 
 
-<RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center" Gap="0.5rem" Class="rz-pt-4">
+<style>
+
+    .rz-tabview-panel {
+        padding:0!important;
+    }
+</style>
+
+<RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center" Gap="0.5rem" class="rz-tabview-panel">
 
     <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()" RenderMode="TabRenderMode.Client">
         <Tabs>

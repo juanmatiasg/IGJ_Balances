@@ -16,23 +16,22 @@
     <Navegacion TramiteIniciado=true PaginaActiva="Integrante" balid="@balid"></Navegacion>
 
 
-    <div class="container-fluid mt-4">
-        <NavegacionIntegrantes PaginaActiva="Integrante" TramiteIniciado=true  balid="@balid"></NavegacionIntegrantes>
-    </div>
+   <NavegacionIntegrantes PaginaActiva="Integrante" TramiteIniciado=true  balid="@balid"></NavegacionIntegrantes>
+   
 
     <!-- Formulario de Datos del Integrante -->
-    <div class="container-fluid mt-4 mb-4">
+    <div class="container mb-4">
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
                 <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
-                    Datos del Integrante
+                    Datos de Persona Humana
                 </div>
                    
                     <div class="card-body">
                         <EditForm Model="@model">
                         <FluentValidationValidator/>
-                            <RadzenStack class="mt-2 mb-2">
+                        <RadzenStack class="mt-2 mb-2">
 
                                 <RadzenFormField Text="Nombre" Style="width:100%">
                                     <RadzenTextBox @bind-Value="@model.Nombre" Style="width:100%" />
@@ -58,7 +57,7 @@
 
                             <RadzenStack class="mt-2 mb-2">
 
-                                <RadzenFormField Text="Número de Documento" Style="width:100%">
+                                <RadzenFormField Text="Nro. Documento" Style="width:100%">
                                     <RadzenTextBox @bind-Value="@model.NroDocumento" Style="width:100%" />
                                 </RadzenFormField>
 
@@ -67,7 +66,7 @@
 
                             <RadzenStack class="mt-2 mb-2">
 
-                                <RadzenFormField Text="Número de Identificación Fiscal" Style="width:100%">
+                                <RadzenFormField Text="CUIT" Style="width:100%">
                                     <RadzenTextBox @bind-Value="@model.NroFiscal" Style="width:100%" />
                                 </RadzenFormField>
 
@@ -77,7 +76,7 @@
 
                             <RadzenStack class="mt-2 mb-2">
 
-                                <RadzenFormField Text="Cuotas" Style="width:100%">
+                                <RadzenFormField Text="Cantidad de Acciones" Style="width:100%">
                                     <RadzenTextBox @bind-Value="@model.Cuotas" Style="width:100%" />
                                 </RadzenFormField>
 
@@ -86,14 +85,14 @@
 
                             <RadzenStack class="mt-2 mb-2">
 
-                                <RadzenFormField Text="Votos" Style="width:100%">
+                                <RadzenFormField Text="Cantidad de Votos" Style="width:100%">
                                     <RadzenTextBox @bind-Value="@model.Votos" Style="width:100%" />
                                 </RadzenFormField>
 
                                 <ValidationMessage For="@(()=> model.Votos)" />
                             </RadzenStack>
 
-                            <RadzenStack class="mt-2 mb-2">
+                            <RadzenStack class="mt-4 mb-2">
                                 <RadzenButton ButtonType="Radzen.ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Click="@InsertPersonaHumana">Agregar</RadzenButton>
                             </RadzenStack>
                        </EditForm>
@@ -105,18 +104,18 @@
                 <div class="container">
                     <div class="card">
                     <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
-                        Integrantes
+                        Listado de Persona Humana
                     </div>
 
                  
                         <div class="card-body">
                             <RadzenGrid @ref="grid" Data="listPersonaHumana" TItem="PersonaHumanaDto">
                                 <Columns>
-                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="Apellido" Title="Apellido" />
                                     <RadzenGridColumn TItem="PersonaHumanaDto" Property="Nombre" Title="Nombre" />
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="Apellido" Title="Apellido" />
                                     <RadzenGridColumn TItem="PersonaHumanaDto" Property="NroDocumento" Title="Nro. Documento" />
-                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="NroFiscal" Title="Nro. Fiscal" />
-                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="Cuotas" Title="Cuotas" />
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="NroFiscal" Title="CUIT" />
+                                    <RadzenGridColumn TItem="PersonaHumanaDto" Property="Cuotas" Title="Acciones/Cuotas"   />
                                     <RadzenGridColumn TItem="PersonaHumanaDto" Property="Votos" Title="Votos" />
                                     <RadzenGridColumn TItem="PersonaHumanaDto" Title="Acción">
                                         <Template Context="personaHumana">

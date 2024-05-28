@@ -1,27 +1,8 @@
-using global::System;
-using global::System.Collections.Generic;
-using global::System.Linq;
-using global::System.Threading.Tasks;
-using global::Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using Microsoft.JSInterop;
-using Balances.Web;
-using Balances.Web.Shared;
-using Blazorise;
-using Radzen;
-using Radzen.Blazor;
 using Balances.DTO;
-using Balances.Utilities;
-using Balances.Web.Services.Contracts;
-using Balances.Web.Services.Implementation;
 using Balances.Web.Services.FluentValidation;
 using FluentValidation.Results;
+using global::Microsoft.AspNetCore.Components;
+using Radzen.Blazor;
 
 namespace Balances.Web.Pages
 {
@@ -35,21 +16,87 @@ namespace Balances.Web.Pages
 
         private PersonaJuridicaDto model = new PersonaJuridicaDto();
         private List<PersonaJuridicaDto> listPersonaJuridica = new List<PersonaJuridicaDto>();
-        
+
+
         [Parameter]
         public string? balid { get; set; }
 
         [Parameter]
         public string sesionId { get; set; }
 
-      
+        public List<string> Paises { get; set; } = new List<string>();
+
+        private List<string> Juridisccion { get; set; } = new List<string>();
+
+        private bool isJurisdiccionDisabled = true;
+
         protected override async Task OnInitializedAsync()
         {
+            await LoadJsonCountry();
+            await LoadJsonProvince();
             await Load();
             await base.OnInitializedAsync();
         }
 
+        private async Task LoadJsonProvince()
+        {
+            try
+            {
+                var provincias = await socioService.GetAllProvince();
 
+
+                Juridisccion.AddRange(provincias);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        public async Task LoadJsonCountry()
+        {
+            try
+            {
+                var countries = await socioService.GetAllCountries();
+                List<string> countryNames = new List<string>();
+
+                foreach (var country in countries)
+                {
+                    string commonName = country["name"]["common"].ToString();
+                    countryNames.Add(commonName);
+                }
+
+                // Ordenar los nombres de los países en orden ascendente
+                countryNames.Sort();
+
+                foreach (var name in countryNames)
+                {
+                    Paises.Add(name);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+        }
+
+        private void OnCountryChanged(object value)
+        {
+            string selectedCountry = value.ToString()!;
+            if (selectedCountry == "Argentina")
+            {
+                isJurisdiccionDisabled = false;
+                model.Jurisdiccion = "";
+            }
+            else
+            {
+                isJurisdiccionDisabled = true;
+                model.Jurisdiccion = "Extranjero";
+
+            }
+        }
         private async Task Load()
         {
             ResponseDTO<BalanceDto> rsp = new();
@@ -60,7 +107,7 @@ namespace Balances.Web.Pages
                 if (sesionId == null)
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
-                    sesionId = sesionRespuesta.Result;
+                    sesionId = sesionRespuesta.Result!;
                     await sessionStorage.SetItemAsync("SessionId", sesionId);
                 }
                 else
@@ -85,40 +132,42 @@ namespace Balances.Web.Pages
                 rsp.Message = $"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}";
             }
         }
-     
+
 
         private async Task<ResponseDTO<BalanceDto>> InsertPersonaJuridica()
         {
-            
-                ResponseDTO<BalanceDto> respuesta = new();
-                try
+
+            ResponseDTO<BalanceDto> respuesta = new();
+            try
+            {
+
+                model.SesionId = sesionId;
+
+
+                PersonaJuridicaValidator personaJuridicaValidator = new();
+                ValidationResult result = personaJuridicaValidator.Validate(model);
+
+                if (result.IsValid)
                 {
-                   
-                    model.SesionId = sesionId;
-                    PersonaJuridicaValidator personaJuridicaValidator = new();
-                    ValidationResult result = personaJuridicaValidator.Validate(model);
 
-                    if (result.IsValid)
+                    respuesta = await socioService.insertPersonaJuridica(model);
+
+                    if (respuesta.IsSuccess)
                     {
-                       
-                        respuesta = await socioService.insertPersonaJuridica(model);
-
-                        if (respuesta.IsSuccess)
-                        {
-                            resultPersonaJuridica(respuesta.Result!.Socios.PersonasJuridicas);
-                            cleanInputsJuridica();
-                            await grid.Reload();
-                            StateHasChanged();
-                        }
+                        resultPersonaJuridica(respuesta.Result!.Socios.PersonasJuridicas);
+                        cleanInputsJuridica();
+                        await grid.Reload();
+                        StateHasChanged();
                     }
                 }
-                catch (Exception ex)
-                {
-                    respuesta.Message = ex.Message;
-                }
+            }
+            catch (Exception ex)
+            {
+                respuesta.Message = ex.Message;
+            }
 
-                return respuesta;
-           
+            return respuesta;
+
         }
 
         private void cleanInputsJuridica()
@@ -139,10 +188,10 @@ namespace Balances.Web.Pages
             {
                 personaJuridicaDto.SesionId = sesionId;
                 respuesta = await socioService.deletePersonaJuridica(personaJuridicaDto);
-                
+
                 if (respuesta.IsSuccess)
                 {
-                 
+
                     listPersonaJuridica.Remove(personaJuridicaDto);
                     await grid.Reload();
                     StateHasChanged();
@@ -156,6 +205,7 @@ namespace Balances.Web.Pages
             return respuesta;
         }
 
-      
+
+
     }
 }

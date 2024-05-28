@@ -1,7 +1,8 @@
 using Balances.DTO;
 using Balances.Web.Services.FluentValidation;
 using FluentValidation.Results;
-using global::Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
+
 
 namespace Balances.Web.Pages
 {
@@ -33,6 +34,7 @@ namespace Balances.Web.Pages
             "Comisión Fiscalizadora - Suplente"
         };
 
+        ResponseDTO<BalanceDto> rsp = new();
         [Parameter]
         public string? TipoEntidad { get; set; }
 
@@ -58,7 +60,7 @@ namespace Balances.Web.Pages
 
         private async Task Load()
         {
-            ResponseDTO<BalanceDto> rsp = new();
+            //ResponseDTO<BalanceDto> rsp = new();
             try
             {
                 sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
@@ -102,7 +104,7 @@ namespace Balances.Web.Pages
                 {
                     if (modelo.EsFirmante && listAutoridades.Count(a => a.EsFirmante) >= 1)
                     {
-                        await ShowDialogFirmantes();
+                        ShowDialogFirmantes();
                     }
                     else
                     {

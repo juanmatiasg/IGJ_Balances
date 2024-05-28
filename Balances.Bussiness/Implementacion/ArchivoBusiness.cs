@@ -97,7 +97,7 @@ namespace Balances.Bussiness.Implementacion
         public ResponseDTO<BalanceDto> UploadFilesDTO(List<ArchivoDTO> ufDto)
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
-
+            ArchivoDTO newFile;
 
             //RECUPERO SESION EN EL ARCHIVO
             var archivo = ufDto.FirstOrDefault();
@@ -114,7 +114,7 @@ namespace Balances.Bussiness.Implementacion
             {
                 foreach (var file in ufDto)
                 {
-                    var newFile = new ArchivoDTO
+                    newFile = new ArchivoDTO
                     {
 
                         Id = Guid.NewGuid().ToString(),
@@ -137,11 +137,12 @@ namespace Balances.Bussiness.Implementacion
                         newFile.Hash = file.Hash;
 
                         listaArchivos.Add(newFile);
+
                     }
                 }
 
                 // Update the business object outside the loop
-                bDto.Result.Archivos = listaArchivos;
+                bDto.Result.Archivos = ufDto;
 
                 _balanceBusiness.Update(bDto.Result);
 

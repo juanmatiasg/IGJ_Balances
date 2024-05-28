@@ -1,40 +1,10 @@
-using global::System;
-using global::System.Collections.Generic;
-using global::System.Linq;
-using global::System.Threading.Tasks;
-using global::Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using Microsoft.JSInterop;
-using Balances.Web;
-using Balances.Web.Shared;
-using Blazorise;
-using Radzen;
-using Radzen.Blazor;
 using Balances.DTO;
-using Balances.Model;
-using Balances.Utilities;
-using Balances.Web.Services.Contracts;
-using Balances.Web.Services.Implementation;
-using Microsoft.AspNetCore.Http;
-using BlazorInputFileExtended;
-using Microsoft.AspNetCore.Http.Internal;
-using System.Net.Http.Headers;
-using Microsoft.Extensions.Primitives;
-using System.Security.Cryptography;
-using Microsoft.Win32;
-using Blazorise.Extensions;
-using System.Net.Mime;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
-using System.Runtime.Intrinsics.Arm;
-using FileInfo = System.IO.FileInfo;
 using Balances.Web.Services.FluentValidation;
 using FluentValidation.Results;
+using global::Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Radzen.Blazor;
+using System.Security.Cryptography;
 
 namespace Balances.Web.Pages
 {
@@ -63,8 +33,10 @@ namespace Balances.Web.Pages
         [Parameter]
         public string sesionId { get; set; }
 
+        public string categoria;
 
-     
+
+
         private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
         private ArchivoDTO archivo = new ArchivoDTO();
         private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
@@ -218,6 +190,7 @@ namespace Balances.Web.Pages
 
                         archivo.SesionId = sesionId;
                         archivo.Tamaño = binario.Length;
+                        archivo.Categoria = categoria;
                         archivo.ContentType = file.ContentType;
                         archivo.NombreArchivo = file.Name;
                         archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
@@ -235,7 +208,8 @@ namespace Balances.Web.Pages
 
                             if (response.IsSuccess)
                             {
-                                await grid.Reload();                
+
+                                await grid.Reload();
                                 StateHasChanged();
                             }
                         }
@@ -258,7 +232,7 @@ namespace Balances.Web.Pages
 
 
 
-        
-        
+
+
     }
 }

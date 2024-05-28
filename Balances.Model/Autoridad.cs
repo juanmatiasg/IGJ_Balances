@@ -13,6 +13,7 @@
         public string Cargo { get; set; }
 
         public bool EsFirmante { get; set; }
+        public bool EstaVigente { get; set; }
         //public string Estado { get; internal set; }
     }
 }

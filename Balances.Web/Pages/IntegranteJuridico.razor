@@ -5,6 +5,7 @@
 @using Balances.Web.Services.Implementation;
 @using FluentValidation.Results
 
+
 @inject ISociosClientService socioService;
 @inject IBalanceClientService balanceService
 @inject ISessionClientService sesionService
@@ -12,45 +13,58 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
-
 <Navegacion PaginaActiva="Integrante" TramiteIniciado=true balid="@balid"></Navegacion>
 
-<div class="container-fluid mt-4">
-    <NavegacionIntegrantes PaginaActiva="IntegranteJuridico" TramiteIniciado=true balid ="@balid"></NavegacionIntegrantes>
-</div>
 
-<div class="container-fluid mt-4 mb-4">
+<NavegacionIntegrantes PaginaActiva="IntegranteJuridico" TramiteIniciado=true balid ="@balid"></NavegacionIntegrantes>
+
+
+<div class="container mb-4">
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header" style="background-color: #15153D; color:#FFF; font-weight: bold; text-align: center;">
-                    Datos del Integrante
+                    Datos de Persona Jurídica
                 </div>
                 <div class="card-body">
-                    <EditForm Model="model" >
+                    <EditForm Model="@model">
                         <FluentValidationValidator/>
                         <RadzenStack class="mt-2 mb-2">
-
-                            <RadzenFormField Text="Denominación" Style="width:100%">
+                            <RadzenFormField Text="Razón Social" Style="width:100%">
                                 <RadzenTextBox @bind-Value="@model.Denominacion" Style="width:100%" />
                             </RadzenFormField>
 
                             <ValidationMessage For="@(()=> model.Denominacion)" />
                         </RadzenStack>
+
+                            <RadzenStack class="mt-2 mb-2">
+                                <RadzenFormField Text="Pais">
+                                <RadzenDropDown @bind-Value="@model.Pais" Data=@Paises Name="DropDownBindValue" Style="width:100%" Change="OnCountryChanged"/>
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> model.Pais)" />
+                            </RadzenStack>
+                 
+
+                        <RadzenStack class="mt-2 mb-2">
+                            <RadzenFormField Text="Jurisdicción">
+                                <RadzenDropDown @bind-Value=@model.Jurisdiccion Data=@Juridisccion Name="DropDownBindValue" Style="width:100%" Disabled=@isJurisdiccionDisabled />
+                            </RadzenFormField>
+                            <ValidationMessage For="@(()=> model.Jurisdiccion)" />
+                        </RadzenStack>
+
                         <RadzenStack class="mt-2 mb-2">
 
-                            <RadzenFormField Text="Nro. Fiscal" Style="width:100%">
+                            <RadzenFormField Text="CUIT" Style="width:100%">
                                 <RadzenTextBox @bind-Value="@model.NroFiscal" Style="width:100%" />
                             </RadzenFormField>
 
                             <ValidationMessage For="@(()=> model.NroFiscal)" />
                         </RadzenStack>
 
-                  
 
                         <RadzenStack class="mt-2 mb-2">
 
-                            <RadzenFormField Text="Cuotas" Style="width:100%">
+                            <RadzenFormField Text="Cantidad de Acciones" Style="width:100%">
                                 <RadzenTextBox @bind-Value="@model.Cuotas" Style="width:100%" />
                             </RadzenFormField>
 
@@ -59,7 +73,7 @@
 
                         <RadzenStack class="mt-2 mb-2">
 
-                            <RadzenFormField Text="Votos" Style="width:100%">
+                            <RadzenFormField Text="Cantidad de Votos" Style="width:100%">
                                 <RadzenTextBox @bind-Value="@model.Votos" Style="width:100%" />
                             </RadzenFormField>
 
@@ -67,7 +81,7 @@
                         </RadzenStack>
 
                 
-                        <RadzenStack class="mt-2 mb-2">
+                        <RadzenStack class="mt-4 mb-2">
                             <RadzenButton ButtonType=Radzen.ButtonType.Submit ButtonStyle="ButtonStyle.Primary" Click="@InsertPersonaJuridica">Agregar</RadzenButton>
                         </RadzenStack>
                     </EditForm>
@@ -79,14 +93,16 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header" style="background-color: #15153D; color:#FFF; font-weight: bold; text-align: center;">
-                        Integrantes
+                        Listado de Persona Jurídica
                     </div>
                     <div class="card-body">
                         <RadzenGrid @ref=grid Data="listPersonaJuridica" TItem="PersonaJuridicaDto">
                             <Columns>
-                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Denominacion" Title="Denominación" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Denominacion" Title="Razón Social" />
                                 <RadzenGridColumn TItem="PersonaJuridicaDto" Property="NroFiscal" Title="Nro. Fiscal" />
-                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Cuotas" Title="Cuotas" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Pais" Title="Pais" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Jurisdiccion" Title="Jurisdicción" />
+                                <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Cuotas" Title="Acciones" />
                                 <RadzenGridColumn TItem="PersonaJuridicaDto" Property="Votos" Title="Votos" />
                             
                                 <RadzenGridColumn TItem="PersonaJuridicaDto" Title="Acción">
