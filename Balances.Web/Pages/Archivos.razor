@@ -58,16 +58,24 @@
 
             <RadzenGrid class="p-1" @ref=grid Data="listArchivo" TItem="ArchivoDTO">
 
-                <Columns >
-                    <RadzenGridColumn Width="40%" TItem="ArchivoDTO" Title="Documento">
+                <Columns>
+                    <RadzenGridColumn Width="40%" TItem="ArchivoDTO" Title="Tipo" >
+                        <Template  Context="data">
+                            <span class="fw-bold" style="color:#15153D">@data.Categoria</span>
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn Width="35%" TItem="ArchivoDTO" Title="Documento">
                         <Template Context="data">
                             @($"{data.NombreArchivo}") <br /> @($"{data.FechaCreacion}")
                             <br />
                             @($"{data.Tamaño} Kb")
                         </Template>
                     </RadzenGridColumn>
-                    <RadzenGridColumn Width="25%" TItem="ArchivoDTO" Property="Categoria" Title="Tipo" />
-                    <RadzenGridColumn Width="25%" TItem="ArchivoDTO" Property="Hash" Title="Hash" />
+                    <RadzenGridColumn Width="15%" TItem="ArchivoDTO" Title="Hash">
+                        <Template Context="data">
+                            <abbr title="@data.Hash" class="fw-bolder text-decoration-none" style="cursor:pointer;">Ver</abbr>
+                        </Template>
+                    </RadzenGridColumn>
                     <RadzenGridColumn Width="10%" TItem="ArchivoDTO" Title="Acción">
                         <Template Context="archivo">
                             <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => DeleteArchivo(archivo))"></RadzenButton>
