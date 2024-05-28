@@ -1,37 +1,14 @@
-using global::System;
-using global::System.Collections.Generic;
-using global::System.Linq;
-using global::System.Threading.Tasks;
-using global::Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using Microsoft.JSInterop;
-using Balances.Web;
-using Balances.Web.Shared;
-using Blazorise;
-using Radzen;
-using Radzen.Blazor;
 using Balances.DTO;
-using Balances.Utilities;
-using Balances.Web.Services.Contracts;
-using Balances.Web.Services.Implementation;
-using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using FluentValidation.Results;
 using Balances.Web.Services.FluentValidation;
-using CurrieTechnologies.Razor.SweetAlert2;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Components;
 
 
 namespace Balances.Web.Pages
 {
     public partial class Autoridad
     {
-       
+
 
         private string[] tiposDocumentos =
        {
@@ -40,7 +17,7 @@ namespace Balances.Web.Pages
             "Cédula"
         };
 
-        private string[] cargos = { 
+        private string[] cargos = {
             "Presidente",
             "Vicepresidente",
             "Director Titular",
@@ -65,8 +42,8 @@ namespace Balances.Web.Pages
         private AutoridadDto modelo = new AutoridadDto();
         private List<AutoridadDto> listAutoridades = new List<AutoridadDto>();
 
-      
-        
+
+
 
         [Parameter]
         public string? balid { get; set; }
@@ -147,8 +124,8 @@ namespace Balances.Web.Pages
                 respuesta.Message = ex.Message;
             }
 
-          return respuesta;
-           
+            return respuesta;
+
         }
 
         private void cleanInputs()
@@ -185,10 +162,10 @@ namespace Balances.Web.Pages
             return respuesta;
         }
 
-       
+
     }
 
-  
+
 
 
 }

@@ -1,4 +1,5 @@
 ﻿using Balances.DTO;
+using Balances.Model;
 
 namespace Balances.Web.Services
 {
@@ -53,6 +54,20 @@ namespace Balances.Web.Services
             }
         }
 
+        public static decimal PatrimonioNeto(EstadoContable estadoContable)
+        {
+            if (estadoContable.TotalActivo != 0 && estadoContable.TotalPasivo != 0)
+            {
+
+                decimal rst = (decimal)(estadoContable.TotalActivo - estadoContable.TotalPasivo);
+                return rst;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         public static decimal OtrosRubrosPatrimonioNeto(EstadoContableDto estadoContableDto)
         {
             decimal SumaOtrosRubros = estadoContableDto.otrosRubros.Sum(_ => _.importe);
@@ -65,6 +80,21 @@ namespace Balances.Web.Services
                 + SumaOtrosRubros;
 
             return Total;
+
+        }
+
+        public static decimal OtrosRubrosPatrimonioNeto(EstadoContable estadoContable)
+        {
+            decimal SumaOtrosRubros = estadoContable.OtrosRubros.Sum(_ => _.Importe);
+
+            var Total =
+                estadoContable.AjusteCapital + estadoContable.CapitalSuscripto
+                + estadoContable.AportesIrrevocables + estadoContable.PrimaEmision +
+                estadoContable.GananciasReservadas + estadoContable.PerdidasAcumuladas +
+                estadoContable.GananciasPerdidasEjercicio + estadoContable.ReservaLegal
+                + SumaOtrosRubros;
+
+            return (decimal)Total;
 
         }
     }

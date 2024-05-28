@@ -36,5 +36,12 @@ namespace Balances.Web.Services.Contracts
                 };
             }
         }
+
+        public async Task<string> GenerarPresentacionEnHtml(string sesionId)
+        {
+            string html = await _httpClient.GetStringAsync($"Presentacion/GenerarPresentacionEnHtml/{sesionId}");
+            return html;
+
+        }
     }
 }

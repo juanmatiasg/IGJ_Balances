@@ -22,7 +22,7 @@ namespace Balances.Services.Implementation
 
             //CAMBIA LA PLANTILLA POR LA VISUALIZACION DE LAS IMAGENES EN EL EMAIL
             this.PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalanceEMAIL.html");
-
+            SetTag("{{Id}}", balance.Id);
             SetTag("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
             SetTag("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
             SetTag("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
@@ -117,6 +117,7 @@ namespace Balances.Services.Implementation
             //CAMBIA LA PLANTILLA POR LA VISUALIZACION DE LAS IMAGENES EN EL PDF
             this.PlantillaHTML = GetPlantillaHtml("PlantillaPresentacionBalancePDF.html");
 
+            PlantillaHTML = PlantillaHTML.Replace("{{Id}}", balance.Id);
             PlantillaHTML = PlantillaHTML.Replace("{{RazonSocial}}", balance.Caratula.Entidad.RazonSocial);
             PlantillaHTML = PlantillaHTML.Replace("{{TipoEntidad}}", balance.Caratula.Entidad.TipoEntidad);
             PlantillaHTML = PlantillaHTML.Replace("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);

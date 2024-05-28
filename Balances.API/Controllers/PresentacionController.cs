@@ -2,6 +2,7 @@
 using Balances.DTO;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace Balances.API.Controllers
 {
     [Route("[controller]")]
@@ -25,10 +26,10 @@ namespace Balances.API.Controllers
         }
 
 
-        [HttpGet("GenerarPresentacionEnHtml")]
-        public string GenerarPresentacionEnHtml()
+        [HttpGet("GenerarPresentacionEnHtml/{sesionId}")]
+        public string GenerarPresentacionEnHtml(string sesionId)
         {
-            var rsp = _presentacionBusiness.FormatPresentacionHTML();
+            var rsp = _presentacionBusiness.FormatPresentacionHTML(sesionId);
             return rsp;
         }
     }

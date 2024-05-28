@@ -33,10 +33,10 @@
             <EditForm Model="@archivo">
                 <FluentValidationValidator />
                 <RadzenStack class="mt-2 mb-2">
-                    <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
-                        <RadzenDropDown @bind-Value=@archivo.Categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
+                    <RadzenFormField Text="---- Seleccionar un tipo de documentación ----">
+                        <RadzenDropDown @bind-Value=@categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
                     </RadzenFormField>
-                    <ValidationMessage For="@(()=> archivo.Categoria)" />
+                    <ValidationMessage For="@(()=> categoria)" />
                 </RadzenStack>
                 <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
                 <ValidationMessage For="@(()=> archivo.ContentType)" />

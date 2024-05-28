@@ -1,6 +1,5 @@
 ﻿using Balances.Bussiness.Contrato;
 using Balances.DTO;
-using Balances.Services.Contract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Balances.API.Controllers
@@ -15,7 +14,7 @@ namespace Balances.API.Controllers
         public EstadoContableController(IEstadoContableBusiness estadocontableBusiness)
         {
             _estadocontableBusiness = estadocontableBusiness;
-    
+
         }
 
         [HttpPost]

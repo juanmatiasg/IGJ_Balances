@@ -8,6 +8,7 @@ namespace Balances.Bussiness.Contrato
         ResponseDTO<BalanceDto> PresentarTramite(string sesionId);
 
         MailRequest CrearEmailPresentacion(BalanceDto balance, string html, byte[] pdfPresentacion, string qr);
-        String FormatPresentacionHTML();
+
+        String FormatPresentacionHTML(string sesionId);
     }
 }
