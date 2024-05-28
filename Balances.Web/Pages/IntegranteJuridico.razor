@@ -62,19 +62,16 @@
 
                         <RadzenStack Style="width:50%">
                             <RadzenFormField Text="Pais">
-                                <RadzenTextBox @bind-Value="@model.Pais" />
+                                <RadzenDropDown @bind-Value="@model.Pais" Data=@Paises Name="DropDownBindValue" Style="width:100%" Change="OnCountryChanged" />
                             </RadzenFormField>
                             <ValidationMessage For="@(()=> model.Pais)" />
-
                         </RadzenStack>
-
 
                         <RadzenStack Style="width:50%">
                             <RadzenFormField Text="Jurisdicción">
-                                <RadzenTextBox @bind-Value="@model.Jurisdiccion" />
+                                <RadzenDropDown @bind-Value=@model.Jurisdiccion Data=@Juridisccion Name="DropDownBindValue" Style="width:100%" Disabled=@isJurisdiccionDisabled />
                             </RadzenFormField>
                             <ValidationMessage For="@(()=> model.Jurisdiccion)" />
-
                         </RadzenStack>
                     </div>
 
