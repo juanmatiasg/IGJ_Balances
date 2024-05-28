@@ -222,13 +222,13 @@ namespace Balances.Web.Pages
                         archivo.NombreArchivo = file.Name;
                         archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
 
-                        //ArchivosValidator archivoValidator = new();
-                        //ValidationResult result = archivoValidator.Validate(archivo);
+                        ArchivosValidator archivoValidator = new();
+                        ValidationResult result = archivoValidator.Validate(archivo);
 
 
-                        //if (result.IsValid)
+                        if (result.IsValid)
 
-                        //{
+                        {
                             listArchivo.Add(archivo);
 
                             response = await archivoService.UploadArchivo(listArchivo);
@@ -238,7 +238,7 @@ namespace Balances.Web.Pages
                                 await grid.Reload();                
                                 StateHasChanged();
                             }
-                        //}
+                        }
 
                     }
                 }

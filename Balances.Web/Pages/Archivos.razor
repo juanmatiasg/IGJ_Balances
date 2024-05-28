@@ -31,22 +31,22 @@
 
         <div class="card-body">
             <EditForm Model="@archivo">
+                <FluentValidationValidator />
                 <RadzenStack class="mt-2 mb-2">
-                    @foreach (string tipo in tipoDeArchivo)
-                    {
-                        <div class="d-flex justify-content-between">
-                            <label>@tipo</label>
-                            <InputFile OnChange="@HandleFileUpload" multiple />
-                        </div>
-                    }
+                    <RadzenFormField Text="---- Seleccionar un tipo de Archivo ----">
+                        <RadzenDropDown @bind-Value=@archivo.Categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
+                    </RadzenFormField>
+                    <ValidationMessage For="@(()=> archivo.Categoria)" />
                 </RadzenStack>
-                
+                <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
+                <ValidationMessage For="@(()=> archivo.ContentType)" />
+
                 <div class="col d-flex justify-content-between">
-                    <RadzenButton Icon="upload" Text="Adjuntar" ButtonType="Radzen.ButtonType.Submit" Click="@UploadFile" class="d-block mt-4" />
+                    <InputFile OnChange="@HandleFileUpload" multiple />
+                    <RadzenButton Icon="upload" Text="Adjuntar" ButtonType="Radzen.ButtonType.Submit" Click=@UploadFile class="d-block mt-4" />
                 </div>
             </EditForm>
         </div>
-
     </div>
 
     <!-- Tarjeta: Archivo Recibido -->
@@ -58,7 +58,7 @@
 
             <RadzenGrid class="p-1" @ref=grid Data="listArchivo" TItem="ArchivoDTO">
 
-                <Columns>
+                <Columns >
                     <RadzenGridColumn Width="40%" TItem="ArchivoDTO" Title="Documento">
                         <Template Context="data">
                             @($"{data.NombreArchivo}") <br /> @($"{data.FechaCreacion}")
@@ -66,12 +66,8 @@
                             @($"{data.Tamaño} Kb")
                         </Template>
                     </RadzenGridColumn>
-                    <RadzenGridColumn Width="35%" TItem="ArchivoDTO" Property="Categoria" Title="Tipo" />
-                    <RadzenGridColumn Width="15%" TItem="ArchivoDTO" Title="Hash">
-                        <Template Context="data">
-                            <abbr id="hash" class="fw-bold text-decoration-none" style="cursor:pointer;" title="@data.Hash">Ver</abbr>
-                        </Template>
-                    </RadzenGridColumn>
+                    <RadzenGridColumn Width="25%" TItem="ArchivoDTO" Property="Categoria" Title="Tipo" />
+                    <RadzenGridColumn Width="25%" TItem="ArchivoDTO" Property="Hash" Title="Hash" />
                     <RadzenGridColumn Width="10%" TItem="ArchivoDTO" Title="Acción">
                         <Template Context="archivo">
                             <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => DeleteArchivo(archivo))"></RadzenButton>
@@ -83,5 +79,4 @@
         </div>
     </div>
 </div>
-
 
