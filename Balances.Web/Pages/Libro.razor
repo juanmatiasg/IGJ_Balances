@@ -6,9 +6,9 @@
 {
     if (!libext.Original.NoSabeNoContesta)
     {
-        <div class="row w-100">
+        <div class="row w-100 ">
 
-            <div class="d-flex col-4">
+            <div class="d-flex col-4 mt-1">
                 @*    <EditForm Model="libext"> *@
                 @*    <FluentValidationValidator/> *@
                 <label class="w-50">@libext.Tipo</label>
@@ -19,7 +19,7 @@
 
 
             <!--  -->
-            <div class="d-flex col-4">
+            <div class="d-flex col-4 mt-1">
                 <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
                 <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
                 @*  <ValidationMessage For="@(()=> libext.NumeroRubrica)" /> *@
@@ -35,7 +35,7 @@
 
 
             <!--  -->
-            <div class=" d-flex col-3">
+            <div class=" d-flex col-3 mt-1">
                 <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
                 @*     <ValidationMessage For="@(()=> libext.FechaUltimaRegistracion)" /> *@
                 <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
@@ -46,7 +46,7 @@
             </div>
 
 
-            <div class="d-flex col-1">
+            <div class="d-flex col-1 mt-1">
                 <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" @onblur="OnBlurHandler" />
                 <label class="form-check-label">N/C</label>
             </div>
@@ -63,13 +63,13 @@
         <div class="row w-100">
             @*  <EditForm Model="libext"> *@
 
-            <div class="d-flex col-4">
+            <div class="d-flex col-4 mt-1">
                 <label class="w-50">@libext.Tipo</label>
                 <input placeholder="N/C" @bind="libext.Nombre" class="form-control w-50" disabled @onblur="OnBlurHandler" />
             </div>
 
 
-            <div class=" d-flex col-4">
+            <div class=" d-flex col-4 mt-1">
                 <input placeholder="N/C" @bind=libext.NumeroRubrica class="form-control" disabled @onblur="OnBlurHandler" />
                 <input type="date" placeholder="N/C" @bind=libext.FechaRubrica class="form-control" disabled @onblur="OnBlurHandler" />
                 <input placeholder="N/C" @bind=libext.FolioObraTranscripcion class="form-control"  disabled @onblur="OnBlurHandler" />
@@ -77,13 +77,13 @@
 
 
 
-            <div class=" d-flex col-3">
+            <div class=" d-flex col-3 mt-1">
                 <input type="date" @bind=libext.FechaUltimaRegistracion placeholder="N/C" class="form-control" disabled @onblur="OnBlurHandler" />
                 <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" disabled />
 
             </div>
 
-            <div class="d-flex col-1">
+            <div class="d-flex col-1 mt-1">
                 <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" @onblur="OnBlurHandler" />
                 <label class="form-check-label">N/C</label>
             </div>
@@ -99,7 +99,7 @@ else
         @*     <EditForm Model="libext"> *@
         @*    <FluentValidationValidator/> *@
 
-        <div class="d-flex col-4">
+        <div class="d-flex col-4 mt-1">
             <label class="w-50">@libext.Tipo</label>
             <input placeholder="Nombre del Libro" class="form-control w-50" @bind="libext.Nombre" @onblur="OnBlurHandler" />
             @*    <ValidationMessage For="@(()=> libext.Nombre)" /> *@
@@ -107,7 +107,7 @@ else
         </div>
 
 
-        <div class="d-flex col-4">
+        <div class="d-flex col-4 mt-1">
             <input placeholder="Nro.Rúbrica" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
             @*  <ValidationMessage For="@(()=> libext.NumeroRubrica)" /> *@
             <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
@@ -121,7 +121,7 @@ else
 
 
 
-        <div class="d-flex col-3">
+        <div class="d-flex col-3 mt-1">
             <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
             <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
             <input placeholder="Folio de la ult Reg." class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
