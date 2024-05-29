@@ -1,7 +1,9 @@
 using Balances.DTO;
 using Balances.Web.Services.FluentValidation;
+using CurrieTechnologies.Razor.SweetAlert2;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 
 
 namespace Balances.Web.Pages
@@ -112,6 +114,13 @@ namespace Balances.Web.Pages
                         respuesta = await autoridadService.insertAutoridad(modelo);
                         if (respuesta.IsSuccess)
                         {
+
+                            notificationService.Notify(new NotificationMessage
+                            {
+                                Severity = NotificationSeverity.Success,
+                                Duration = 3000,
+                                Summary = "Datos guardados correctamente"
+                            });
                             resultAutoridades(respuesta.Result.Autoridades);
                             // Limpiar los campos después de una inserción exitosa
                             cleanInputs();
@@ -122,6 +131,12 @@ namespace Balances.Web.Pages
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
+                notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Duration = 3000,
+                    Summary = "No se ha podido guardar los datos"
+                });
             }
 
             return respuesta;
@@ -146,26 +161,53 @@ namespace Balances.Web.Pages
         {
             var respuesta = new ResponseDTO<BalanceDto>();
             autoridad.SesionId = sesionId;
-            try
-            {
-                respuesta = await autoridadService.deleteAutoridad(autoridad);
-                if (respuesta.IsSuccess)
-                {
-                    listAutoridades = respuesta.Result.Autoridades;
-                }
-            }
-            catch (Exception ex)
-            {
-                respuesta.Message = ex.Message;
-            }
 
+            var alerta = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Esta a punto de borrar a la autoridad",
+                Text = $"¿Desea eliminarlo de la lista?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                CancelButtonText = "Cancelar",
+                ConfirmButtonText = "Aceptar"
+
+            });
+            if (alerta.IsConfirmed)
+            {
+                try
+                {
+                    respuesta = await autoridadService.deleteAutoridad(autoridad);
+                    if (respuesta.IsSuccess)
+                    {
+                        notificationService.Notify(new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Success,
+                            Duration = 3000,
+                            Summary = "Se ha eliminado correctamente"
+                        });
+                        listAutoridades = respuesta.Result.Autoridades;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Duration = 3000,
+                        Summary = "No se ha podido eliminar la autoridad"
+                    });
+                    respuesta.Message = ex.Message;
+
+                }
+
+            }
             return respuesta;
         }
-
-
     }
 
 
-
-
 }
+
+
+
+

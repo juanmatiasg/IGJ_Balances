@@ -1,27 +1,10 @@
-using global::System;
-using global::System.Collections.Generic;
-using global::System.Linq;
-using global::System.Threading.Tasks;
+using Balances.DTO;
+using Balances.Web.Services.FluentValidation;
+using CurrieTechnologies.Razor.SweetAlert2;
+using FluentValidation.Results;
 using global::Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using Microsoft.JSInterop;
-using Balances.Web;
-using Balances.Web.Shared;
-using Blazorise;
 using Radzen;
 using Radzen.Blazor;
-using Balances.DTO;
-using Balances.Utilities;
-using Balances.Web.Services.Contracts;
-using Balances.Web.Services.Implementation;
-using Balances.Web.Services.FluentValidation;
-using FluentValidation.Results;
 
 namespace Balances.Web.Pages
 {
@@ -35,7 +18,7 @@ namespace Balances.Web.Pages
 
         private PersonaHumanaDto model = new PersonaHumanaDto();
         private List<PersonaHumanaDto> listPersonaHumana = new List<PersonaHumanaDto>();
-       
+
 
         private string[] tiposDocumentos =
        {
@@ -62,7 +45,7 @@ namespace Balances.Web.Pages
             try
             {
                 sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
-                
+
                 if (sesionId == null)
                 {
                     var sesionRespuesta = await sesionService.getNewSession();
@@ -88,7 +71,7 @@ namespace Balances.Web.Pages
             }
             catch (Exception ex)
             {
-               rsp.Message = $"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}";
+                rsp.Message = $"SessionId: Hubo un problema con la solicitud fetch: {ex.Message}";
             }
         }
 
@@ -109,6 +92,13 @@ namespace Balances.Web.Pages
 
                     if (respuesta.IsSuccess)
                     {
+
+                        notificationService.Notify(new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Success,
+                            Duration = 3000,
+                            Summary = "Datos guardados correctamente"
+                        });
                         resultPersonaHumana(respuesta.Result!.Socios.PersonasHumanas);
 
                         cleanInputsHumana();
@@ -120,14 +110,20 @@ namespace Balances.Web.Pages
             catch (Exception ex)
             {
                 respuesta.Message = ex.Message;
+                notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Duration = 3000,
+                    Summary = "No se ha podido guardar los datos"
+                });
             }
 
-          return respuesta;
-           
+            return respuesta;
+
         }
 
         private void cleanInputsHumana()
-        { 
+        {
             model = new PersonaHumanaDto();
         }
 
@@ -139,24 +135,53 @@ namespace Balances.Web.Pages
         private async Task<ResponseDTO<BalanceDto>> deletePersonaHumana(PersonaHumanaDto personaHumanaDto)
         {
             var respuesta = new ResponseDTO<BalanceDto>();
-            try
-            {
-                personaHumanaDto.SesionId = sesionId;
-               
-                respuesta = await socioService.deletePersonaHumana(personaHumanaDto);
-               
-                if (respuesta.IsSuccess)
-                {
-                    listPersonaHumana.Remove(personaHumanaDto);
 
-                    await grid.Reload();
-                    StateHasChanged();
-                }
-            }
-            catch (Exception ex)
+            var alerta = await swal.FireAsync(new SweetAlertOptions
             {
-                respuesta.Message = ex.Message;
+                Title = "Esta a punto de borrar al integrante",
+                Text = $"¿Desea eliminarlo de la lista?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                CancelButtonText = "Cancelar",
+                ConfirmButtonText = "Aceptar"
+
+            });
+            if (alerta.IsConfirmed)
+            {
+                try
+                {
+                    personaHumanaDto.SesionId = sesionId;
+
+                    respuesta = await socioService.deletePersonaHumana(personaHumanaDto);
+
+                    if (respuesta.IsSuccess)
+                    {
+
+                        notificationService.Notify(new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Success,
+                            Duration = 3000,
+                            Summary = "Se ha eliminado correctamente"
+                        });
+                        listPersonaHumana.Remove(personaHumanaDto);
+
+                        await grid.Reload();
+                        StateHasChanged();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    respuesta.Message = ex.Message;
+                    notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Duration = 3000,
+                        Summary = "No se ha podido eliminar"
+                    });
+                }
+
             }
+
 
             return respuesta;
         }

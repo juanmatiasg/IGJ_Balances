@@ -1,8 +1,10 @@
 using Balances.DTO;
 using Balances.Web.Services.FluentValidation;
+using CurrieTechnologies.Razor.SweetAlert2;
 using FluentValidation.Results;
 using global::Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Radzen;
 using Radzen.Blazor;
 using System.Security.Cryptography;
 
@@ -115,29 +117,56 @@ namespace Balances.Web.Pages
         private async Task<ResponseDTO<BalanceDto>> DeleteArchivo(ArchivoDTO archivo)
         {
             var response = new ResponseDTO<BalanceDto>();
-            try
+
+            var alerta = await swal.FireAsync(new SweetAlertOptions
             {
+                Title = "Esta a punto de borrar la documentación",
+                Text = $"¿Desea eliminarlo de la lista?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                CancelButtonText = "Cancelar",
+                ConfirmButtonText = "Aceptar"
 
-                response = await archivoService.DeleteArchivo(archivo);
-
-                if (response.IsSuccess)
+            });
+            if (alerta.IsConfirmed)
+            {
+                try
                 {
-                    listArchivo.Remove(archivo);
 
-                    await grid.Reload();
-                    StateHasChanged();
+                    response = await archivoService.DeleteArchivo(archivo);
+
+                    if (response.IsSuccess)
+                    {
+                        if (response.IsSuccess)
+                        {
+                            notificationService.Notify(new NotificationMessage
+                            {
+                                Severity = NotificationSeverity.Success,
+                                Duration = 3000,
+                                Summary = "Documentación eliminada correctamente"
+                            });
+                            listArchivo.Remove(archivo);
+
+                            await grid.Reload();
+                            StateHasChanged();
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    response.Message = ex.Message;
+                    notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Duration = 3000,
+                        Summary = "No se ha podido eliminar la documentación"
+                    });
                 }
 
-                else
-                {
-                    response.Message = response.Message;
+            }
 
-                }
-            }
-            catch (Exception ex)
-            {
-                response.Message = ex.Message;
-            }
+
 
 
             return response;
@@ -195,23 +224,43 @@ namespace Balances.Web.Pages
                         archivo.NombreArchivo = file.Name;
                         archivo.Hash = Convert.ToHexString(SHA256.HashData(binario));
 
-                        ArchivosValidator archivoValidator = new();
-                        ValidationResult result = archivoValidator.Validate(archivo);
 
-
-                        if (result.IsValid)
-
+                        if (archivo.ContentType.Contains("pdf"))
                         {
-                            listArchivo.Add(archivo);
+                            ArchivosValidator archivoValidator = new();
+                            ValidationResult result = archivoValidator.Validate(archivo);
 
-                            response = await archivoService.UploadArchivo(listArchivo);
+                            if (result.IsValid)
 
-                            if (response.IsSuccess)
                             {
+                                listArchivo.Add(archivo);
 
-                                await grid.Reload();
-                                StateHasChanged();
+                                response = await archivoService.UploadArchivo(listArchivo);
+
+                                if (response.IsSuccess)
+                                {
+                                    notificationService.Notify(new NotificationMessage
+                                    {
+                                        Severity = NotificationSeverity.Success,
+                                        Duration = 3000,
+                                        Summary = "Documentación guardada correctamente"
+                                    });
+                                    await grid.Reload();
+                                    StateHasChanged();
+                                }
                             }
+
+                        }
+                        else
+                        {
+                            var alerta = await swal.FireAsync(new SweetAlertOptions
+                            {
+                                Title = "Error en la documentación",
+                                Text = $"Solo se aceptan archivos en formato PDF",
+                                Icon = SweetAlertIcon.Warning,
+                                ConfirmButtonText = "Aceptar"
+
+                            });
                         }
 
                     }
@@ -222,6 +271,12 @@ namespace Balances.Web.Pages
             catch (Exception ex)
             {
                 response.Message = $"An error occurred while uploading files: {ex.Message}";
+                notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Duration = 3000,
+                    Summary = "No se ha podido guardar la documentacion"
+                });
             }
 
 

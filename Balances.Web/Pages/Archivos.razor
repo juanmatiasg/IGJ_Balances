@@ -17,7 +17,8 @@
 @inject ISessionClientService sesionService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-
+@inject SweetAlertService swal
+@inject NotificationService notificationService
 
 
 <Navegacion PaginaActiva="Documentacion" TramiteIniciado="true" balid="@balid"></Navegacion>
@@ -39,7 +40,7 @@
                     <ValidationMessage For="@(()=> categoria)" />
                 </RadzenStack>
                 <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
-                <ValidationMessage For="@(()=> archivo.ContentType)" />
+      @*           <ValidationMessage For="@(()=> archivo.ContentType)" /> *@
 
                 <div class="col d-flex justify-content-between">
                     <InputFile OnChange="@HandleFileUpload" multiple />

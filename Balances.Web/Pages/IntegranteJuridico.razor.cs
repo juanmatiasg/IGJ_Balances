@@ -1,7 +1,9 @@
 using Balances.DTO;
 using Balances.Web.Services.FluentValidation;
+using CurrieTechnologies.Razor.SweetAlert2;
 using FluentValidation.Results;
 using global::Microsoft.AspNetCore.Components;
+using Radzen;
 using Radzen.Blazor;
 
 namespace Balances.Web.Pages
@@ -154,6 +156,12 @@ namespace Balances.Web.Pages
 
                     if (respuesta.IsSuccess)
                     {
+                        notificationService.Notify(new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Success,
+                            Duration = 3000,
+                            Summary = "Datos guardados correctamente"
+                        });
                         resultPersonaJuridica(respuesta.Result!.Socios.PersonasJuridicas);
                         cleanInputsJuridica();
                         await grid.Reload();
@@ -163,6 +171,12 @@ namespace Balances.Web.Pages
             }
             catch (Exception ex)
             {
+                notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Duration = 3000,
+                    Summary = "No se ha podido guardar los datos"
+                });
                 respuesta.Message = ex.Message;
             }
 
@@ -184,23 +198,51 @@ namespace Balances.Web.Pages
         private async Task<ResponseDTO<BalanceDto>> deletePersonaJuridica(PersonaJuridicaDto personaJuridicaDto)
         {
             var respuesta = new ResponseDTO<BalanceDto>();
-            try
-            {
-                personaJuridicaDto.SesionId = sesionId;
-                respuesta = await socioService.deletePersonaJuridica(personaJuridicaDto);
 
-                if (respuesta.IsSuccess)
+            var alerta = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Esta a punto de borrar al integrante Juridico",
+                Text = $"¿Desea eliminarlo de la lista?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                CancelButtonText = "Cancelar",
+                ConfirmButtonText = "Aceptar"
+
+            });
+            if (alerta.IsConfirmed)
+            {
+                try
                 {
+                    personaJuridicaDto.SesionId = sesionId;
+                    respuesta = await socioService.deletePersonaJuridica(personaJuridicaDto);
 
-                    listPersonaJuridica.Remove(personaJuridicaDto);
-                    await grid.Reload();
-                    StateHasChanged();
+                    if (respuesta.IsSuccess)
+                    {
+                        notificationService.Notify(new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Success,
+                            Duration = 3000,
+                            Summary = "Se ha eliminado correctamente"
+                        });
+
+                        listPersonaJuridica.Remove(personaJuridicaDto);
+                        await grid.Reload();
+                        StateHasChanged();
+                    }
                 }
+                catch (Exception ex)
+                {
+                    notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Duration = 3000,
+                        Summary = "No se ha podido eliminar"
+                    });
+                    respuesta.Message = ex.Message;
+                }
+
             }
-            catch (Exception ex)
-            {
-                respuesta.Message = ex.Message;
-            }
+
 
             return respuesta;
         }
