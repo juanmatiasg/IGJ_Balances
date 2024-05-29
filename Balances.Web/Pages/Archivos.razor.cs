@@ -200,6 +200,7 @@ namespace Balances.Web.Pages
 
         private async Task<ResponseDTO<BalanceDto>> UploadFile()
         {
+            var archivo = new ArchivoDTO();
 
             var response = new ResponseDTO<BalanceDto>();
 
@@ -214,7 +215,7 @@ namespace Balances.Web.Pages
 
                     if (file.Size > 0)
                     {
-
+                    
                         var binario = await ToByteArrayAsync(file.OpenReadStream(20 * 1024 * 1024));  // 20 MB
 
                         archivo.SesionId = sesionId;
