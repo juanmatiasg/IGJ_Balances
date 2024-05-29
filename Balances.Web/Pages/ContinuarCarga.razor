@@ -11,7 +11,10 @@
 @inject ISessionClientService sesionService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-<h3>Cargando....</h3>
+<RadzenStack AlignItems="AlignItems.Center" Gap="2rem" Class="rz-p-12  d-flex justify-content-center">
+    <RadzenImage Path="img/community.svg" Style="width: 200px;" AlternateText="community" />
+    <RadzenText TextStyle="TextStyle.H6">Cargando...</RadzenText>
+</RadzenStack>
 
 @code {
     [Parameter]
