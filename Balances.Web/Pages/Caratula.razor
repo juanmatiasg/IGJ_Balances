@@ -367,7 +367,7 @@
                 {
                     try
                     {
-                        await ShowBusyDialog();
+                 
 
 
                         var response = await busquedaSociedadService.findSociedad(modelbusqueda.NroCorrelativoNroCUIL);
@@ -377,9 +377,6 @@
                             modelo.Entidad.Correlativo = response.Result.NroCorrelativo;
                             modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
                             modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
-
-                            //TipoEntidad = response.Result.TipoEntidad;
-                            //RazonSocial = response.Result.RazonSocial;
 
                             entidadEncontrada = true;
                             StateHasChanged();
@@ -405,7 +402,7 @@
 
     private async Task IniciarTramite()
     {
-        await ShowBusyDialog();
+        
 
         try
         {
@@ -422,12 +419,12 @@
             {
                 var alerta = await swal.FireAsync(new SweetAlertOptions
                         {
-                            Title = "Inicio de tramite presentacion de balances y asambles",
-                            Text = $"Datos: {modelo.Entidad.RazonSocial} {modelo.Entidad.TipoEntidad}, Correlativo: {modelo.Entidad.Correlativo} Fecha cierre ejercicio: {modelo.FechaDeCierre?.ToString("dd/MM/yyyy")}",
+                            Title = "Inicio de tramite presentacion de balances y asamblea",
+                            Text = $" Verique Datos: {modelo.Entidad.RazonSocial} {modelo.Entidad.TipoEntidad}, Correlativo: {modelo.Entidad.Correlativo} Fecha cierre ejercicio: {modelo.FechaDeCierre?.ToString("dd/MM/yyyy")}",
                             Icon = SweetAlertIcon.Warning,
                             ShowCancelButton = true,
                             CancelButtonText = "Cancelar",
-                            ConfirmButtonText = "Aceptar"
+                            ConfirmButtonText = "Confirmar"
 
                         });
                 if (alerta.IsConfirmed)
@@ -466,6 +463,15 @@
         catch (Exception ex)
         {
             Console.WriteLine($"Error: IniciarTramites {ex.Message}");
+            await swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Error",
+                    Text = $"No se ha podido iniciar el tramite de presentación",
+                    Icon = SweetAlertIcon.Error,
+                    ShowCancelButton = true,
+                    ConfirmButtonText = "Aceptar"
+
+                });
         }
 
 
@@ -475,39 +481,6 @@
             StateHasChanged();
 
     }
-
-
-    private async Task ShowBusyDialog()
-    {
-         InvokeAsync(async () =>
-        {
-
-            await Task.Delay(2000);
-
-            dialogService.Close();
-        });
-
-        
-        
-       await BusyDialog();
-        
-    }
-
-    // Busy dialog from markup
-    private async Task BusyDialog()
-    {
-        await dialogService.OpenAsync("", ds =>
-    @<RadzenStack AlignItems="AlignItems.Center" Gap="2rem" Class="rz-p-12">
-        <RadzenImage Path="img/community.svg" Style="width: 200px;" AlternateText="community" />
-        <RadzenText TextStyle="TextStyle.H6">Cargando...</RadzenText>
-    </RadzenStack>, new DialogOptions() { ShowTitle = false, Style = "min-height:auto;min-width:auto;width:auto", CloseDialogOnEsc = false });
-    }
-
-
-  
-
-   
-
 
 }
 

@@ -20,65 +20,51 @@
 <Navegacion PaginaActiva="Confirmacion" TramiteIniciado="true" balid="@balid"></Navegacion>
 
 
-    <!--Loading-->
-
-    <Modal @ref="modalRef">
-        <ModalContent>
-            <ModalBody>
-                <div class="d-flex justify-content-center align-items-center">
-                    <div class="text-center">
-
-                        <div class="spinner-grow text-primary" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                        <div class="spinner-grow text-secondary" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                        <div class="spinner-grow text-success" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                        <div class="spinner-grow text-danger" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                        <div class="spinner-grow text-warning" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                        <div class="spinner-grow text-info" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                        <div class="spinner-grow text-light" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                        <div class="spinner-grow text-dark" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                        <div>
-                            Loading...
-                        </div>
-                    </div>
-                </div>
-            </ModalBody>
-        </ModalContent>
-    </Modal>
-
-
-   
-
-    
-  
-
-    
-
     <div class="d-flex justify-content-center mt-4 mb-4">
     <RadzenButton Icon="class" Text="Generar manifiesto de presentación" ButtonType="Radzen.ButtonType.Submit" Click=@generarPresentacion class="d-block mt-4" />
       @*   <button type ="button" @onclick="generarPresentacion" class="btn btn-primary">Generar manifiesto</button> *@
     </div>
 
- 
+<!--Loading-->
 
+<Modal @ref="modalRef">
+    <ModalContent>
+        <ModalBody>
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="text-center">
 
-
-
+                    <div class="spinner-grow text-primary" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div class="spinner-grow text-secondary" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div class="spinner-grow text-success" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div class="spinner-grow text-danger" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div class="spinner-grow text-warning" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div class="spinner-grow text-info" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div class="spinner-grow text-light" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div class="spinner-grow text-dark" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div>
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </ModalBody>
+    </ModalContent>
+</Modal>
 
 
 @code {
@@ -86,10 +72,10 @@
     List<string> mensajesError = new List<string>();
 
     // reference to the modal component
+    private RadzenProgressBarCircular barraProgreso = new RadzenProgressBarCircular();
+
+
     private Modal modalRef;
-
-
-    private Modal modalSuccess;
 
     [Parameter]
     public string? balid { get; set; }
@@ -161,8 +147,6 @@
         try
         {
 
-            await ShowLoadingModal();
-
 
             responseDto.IsSuccess = false;
 
@@ -191,10 +175,12 @@
             if (!autoridadfirmante)
             {
 
+
                 swal.FireAsync(new SweetAlertOptions
                     {
                         Icon = "warning",
                         Title = "No se pudo generar el manifiesto de presentación",
+
                         Text = "Es obligatorio que haya una Autoridad firmante. Regresar a la ventana Autoridades y realizar la modificación ",
                         ConfirmButtonText = "Aceptar"
 
@@ -272,7 +258,7 @@
                 }
                 else
                 {
-
+                    await ShowLoadingModal();
                     var response = await presentacionService.generarPresentacion(sesionId);
 
                     if (response.IsSuccess)
@@ -283,7 +269,7 @@
                         responseDto.Message = response.Message;
                         responseDto.Result = response.Result;
 
-                      
+
                         var alerta = await swal.FireAsync(new SweetAlertOptions
                             {
                                 Title = "Presentacion Generada con Exito",
@@ -309,10 +295,7 @@
                 };
         }
 
-        finally
-        {
-            await HideLoadingModal();
-        }
+        await HideLoadingModal();
 
         return responseDto;
     }
@@ -331,10 +314,7 @@
     }
 
 
-    private Task ShowSuccessModal()
-    {
-        return modalSuccess.Show();
-    }
+
 
 
 }

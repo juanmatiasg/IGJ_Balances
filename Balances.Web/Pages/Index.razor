@@ -29,5 +29,31 @@
 </div>
 
 
+@code{
+    private string msgError = "";
+    private bool isChecked = false;
+    public void handleAccept()
+    {
+        if (checkData())
+        {
+            NavigationManager.NavigateTo($"Caratula");
+        }
+    }
 
+    private bool checkData()
+    {
+        if (!isChecked)
+        {
+            msgError = "Por favor acepta que has leído el marco legal";
+            return false;
+        }
+        else
+        {
+            msgError = "";
+        }
+
+        msgError = "";
+        return true;
+    }
+}
 
