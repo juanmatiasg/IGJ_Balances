@@ -11,5 +11,6 @@
         public string NroFiscal { get; set; }
         public string Cuotas { get; set; }
         public string Votos { get; set; }
+        public string ValorNominal { get; set; }
     }
 }

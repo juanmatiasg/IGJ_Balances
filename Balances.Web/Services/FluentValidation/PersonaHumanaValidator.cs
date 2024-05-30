@@ -43,7 +43,12 @@ namespace Balances.Web.Services.FluentValidation
 
             RuleFor(_ => _.Votos).Cascade(CascadeMode.Stop)
                            .NotEmpty().WithMessage("Debe ingresar la cantidad de votos")
-                            .Matches(@"^\d+$").WithMessage("La cantidad de votos no debe contener letras"); ;
+                            .Matches(@"^\d+$").WithMessage("La cantidad de votos no debe contener letras");
+
+            RuleFor(_ => _.ValorNominal).Cascade(CascadeMode.Stop)
+                               .NotEmpty().WithMessage("Debe ingresar el Valor nominal")
+                               .Matches(@"^\d+$").WithMessage("El valor nominal no puede contener letras");
+
 
         }
 

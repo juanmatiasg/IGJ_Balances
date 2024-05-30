@@ -10,6 +10,7 @@
         public string NroFiscal { get; set; }
         public int Cuotas { get; set; }
         public string Votos { get; set; }
+        public string ValorNominal { get; set; }
 
     }
 }
