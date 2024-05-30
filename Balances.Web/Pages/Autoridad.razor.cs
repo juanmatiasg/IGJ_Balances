@@ -15,8 +15,7 @@ namespace Balances.Web.Pages
         private string[] tiposDocumentos =
        {
             "DNI",
-            "Pasaporte",
-            "Cédula"
+            "Pasaporte"
         };
 
         private string[] cargos = {

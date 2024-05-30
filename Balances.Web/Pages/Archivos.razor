@@ -35,15 +35,15 @@
                 <FluentValidationValidator />
                 <RadzenStack class="mt-2 mb-2">
                     <RadzenFormField Text="---- Seleccionar un tipo de documentación ----">
-                        <RadzenDropDown @bind-Value=@categoria Data=@tipoDeArchivo Name="DropDownBindValue" Style="width:100%" />
+                        <RadzenDropDown @bind-Value=@categoria Data=@tipoDeArchivo  Style="width:100%" />
                     </RadzenFormField>
                     <ValidationMessage For="@(()=> categoria)" />
                 </RadzenStack>
-                <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
-      @*           <ValidationMessage For="@(()=> archivo.ContentType)" /> *@
+                @*           <ValidationMessage For="@(()=> archivo.ContentType)" /> *@
 
                 <div class="col d-flex justify-content-between">
                     <InputFile OnChange="@HandleFileUpload" multiple />
+                    <ValidationMessage For="@(()=> archivo.CantidadArchivos)" />
                     <RadzenButton Icon="upload" Text="Adjuntar" ButtonType="Radzen.ButtonType.Submit" Click=@UploadFile class="d-block mt-4" />
                 </div>
             </EditForm>
@@ -60,8 +60,8 @@
             <RadzenGrid class="p-1" @ref=grid Data="listArchivo" TItem="ArchivoDTO">
 
                 <Columns>
-                    <RadzenGridColumn Width="40%" TItem="ArchivoDTO" Title="Tipo" >
-                        <Template  Context="data">
+                    <RadzenGridColumn Width="40%" TItem="ArchivoDTO" Title="Tipo">
+                        <Template Context="data">
                             <span class="fw-bold" style="color:#15153D">@data.Categoria</span>
                         </Template>
                     </RadzenGridColumn>

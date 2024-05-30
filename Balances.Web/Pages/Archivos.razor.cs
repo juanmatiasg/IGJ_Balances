@@ -14,7 +14,7 @@ namespace Balances.Web.Pages
     {
 
 
-        private string[] tipoDeArchivo =
+        private List<string> tipoDeArchivo = new List<string>()
         {
             "Estado Contable",
             "Acta reunión organo",
@@ -107,6 +107,10 @@ namespace Balances.Web.Pages
                         FechaCreacion = x.FechaCreacion
                     };
                     this.listArchivo.Add(archivo);
+                    if (archivo.Categoria != "Otro")
+                    {
+                        tipoDeArchivo.Remove(archivo.Categoria);
+                    }
                 }
             }
         }
@@ -146,6 +150,10 @@ namespace Balances.Web.Pages
                                 Summary = "Documentación eliminada correctamente"
                             });
                             listArchivo.Remove(archivo);
+                            if(archivo.Categoria != "Otro")
+                            {
+                            tipoDeArchivo.Add(archivo.Categoria);
+                            }
 
                             await grid.Reload();
                             StateHasChanged();
@@ -235,6 +243,10 @@ namespace Balances.Web.Pages
 
                             {
                                 listArchivo.Add(archivo);
+                                if (archivo.Categoria != "Otro")
+                                {
+                                    tipoDeArchivo.Remove(archivo.Categoria);
+                                }
 
                                 response = await archivoService.UploadArchivo(listArchivo);
 

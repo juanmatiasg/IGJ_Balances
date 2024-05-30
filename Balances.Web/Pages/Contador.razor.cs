@@ -14,8 +14,7 @@ namespace Balances.Web.Pages
         private string[] tiposDocumentos =
         {
             "DNI",
-            "Pasaporte",
-            "Cédula"
+            "Pasaporte"
         };
         [Parameter]
         public string? balid { get; set; }
