@@ -14,5 +14,6 @@
         public string Votos { get; set; }
 
         public bool EsFirmante { get; set; }
+        public string ValorNominal { get; set; }
     }
 }

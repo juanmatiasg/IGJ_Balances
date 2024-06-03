@@ -26,11 +26,15 @@ namespace Balances.Web.Services.FluentValidation
                 .WithMessage("La cantidad de cuotas no debe contener letras")
                 .NotEmpty().WithMessage("Debe ingresar la cantidad de cuotas");
 
-                             
+
 
             RuleFor(_ => _.Votos).Cascade(CascadeMode.Stop).Matches(@"^\d+$")
                 .WithMessage("La cantidad de votos no debe contener letras")
                 .NotEmpty().WithMessage("Debe ingresar la cantidad de votos");
+
+            RuleFor(_ => _.ValorNominal).Cascade(CascadeMode.Stop)
+                             .NotEmpty().WithMessage("Debe ingresar el Valor nominal")
+                             .Matches(@"^\d+$").WithMessage("El valor nominal no puede contener letras");
         }
 
         public bool EsCuitValido(string cuit)
