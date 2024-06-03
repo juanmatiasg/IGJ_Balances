@@ -5,17 +5,13 @@
     justify-content:space-between;
 }
 
-
-
-main {
-    flex: 1;
-}
-
 .sidebar {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
 }
 
-
+.logo{
+    height:9rem;
+}
 
 .top-row {
     background-color: #f7f7f7;
@@ -82,5 +78,11 @@ main {
     .top-row, article {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
+    }
+}
+
+@media (max-width: 1200px){
+    .logo{
+        height:6rem;
     }
 }

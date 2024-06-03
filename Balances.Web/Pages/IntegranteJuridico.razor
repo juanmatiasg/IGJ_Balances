@@ -79,14 +79,14 @@
                     <div class="d-flex justify-content-between w-100 gap-1">
 
                         <RadzenStack Style="width:30%">
-                            <RadzenFormField Text="Cantidad de Acciones/Cuotas">
+                            <RadzenFormField Text="Acciones/Cuotas">
                                 <RadzenTextBox @bind-Value="@model.Cuotas" />
                             </RadzenFormField>
                             <ValidationMessage For="@(()=> model.Cuotas)" />
                         </RadzenStack>
 
                         <RadzenStack Style="width:30%">
-                            <RadzenFormField Text="Cantidad de Votos">
+                            <RadzenFormField Text="Votos">
                                 <RadzenTextBox @bind-Value="@model.Votos" />
                             </RadzenFormField>
                             <ValidationMessage For="@(()=> model.Votos)" />

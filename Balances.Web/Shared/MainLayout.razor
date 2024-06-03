@@ -7,77 +7,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Búsqueda de Entidad</title>
+    <link href="~/css/app.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-
-
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link href="~/css/bootstrap/background.css" rel="stylesheet">
-
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
-    <link href="~/css/bootstrap/background.css" rel="stylesheet">
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
     <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
 
 
 </head>
 
-<body>
+<body style="font-family:Montserrat">
     <RadzenNotification />
     <div class="d-flex flex-column " style="min-height:100vh;">
-        <header class="d-flex  justify-content-around align-items-center text-white py-1 " style="background-color:#15153D; height:120px">
 
-            <div class="h-100">
-                <a href="https://www.argentina.gob.ar/justicia" target="_blank"><img src="img/logo.png" class="img-fluid h-100 w-auto" alt="Logo ministerio" /></a>
+
+        <div class=" d-flex align-items-start position-absolute mx-4 ">
+            <a href="https://www.argentina.gob.ar/justicia" target="_blank"><img src="img/_Sellos-Ministerio-(2).png" class="logoMin mt-2 " alt="Logo ministerio" /></a>
+
+            <img src="img/IGJ2024.png" class=" logoIgj" alt="Logo igj" />
             </div>
 
-            <div class="d-flex justify-content-center align-items-center">
-                <h3>Presentación de Balances y Asamblea</h3>
-            </div>
+            <header class="d-flex w-100 text-white justify-content-end" style="background-color:#15153D; height:6.2rem;">
 
-            <div class="h-100 ">
-                <a href="https://www.argentina.gob.ar/justicia/igj" target="_blank"><img src="img/modificado.png" class="img-fluid h-100 w-auto" alt="Logo IGJ" /></a>
-            </div>
 
-        </header>
-      
-        @if (NroCorrelativo != null)
-        {
-            <RadzenStack>
-                <RadzenCard class="d-flex justify-content-center flex-row p-1 rounded-0" style="width:100%; background-color: #1b2a4a;">
-                    <RadzenRow RowGap="4">
-                        <RadzenRow>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light fs-6 rz-mb-0"></RadzenText>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light fs-6"><b>@RazonSocial &nbsp @TipoEntidad</b></RadzenText>
-                        </RadzenRow>
-                        <RadzenRow>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light fs-6 rz-mb-0">Correlativo</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light fs-6"><b>@NroCorrelativo</b></RadzenText>
-                        </RadzenRow>
-                        <RadzenRow>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light fs-6   rz-mb-0">Fecha de Cierre</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light fs-6"><b>@FechaDeCierre?.ToString("dd/MM/yyyy")</b></RadzenText>
-                        </RadzenRow>
-                      
-                    </RadzenRow>
+                <div>
+                    <div class="mx-5 mt-2">
+                    <Span>Tramite:</Span>
+                    <h3 class="fw-bold ">921 - Presentación de Balances Y Asambleas</h3>
+                    </div>
 
-                </RadzenCard>
-            </RadzenStack>
-        }
-        <RadzenStack class="flex-grow-1 rz-background-color-base-200 p-1">
+                    <Span Class="position-absolute mx-2" Style="right:0;"><a href="https://www.argentina.gob.ar/justicia" class="text-decoration-none text-white" target="_blank" style="cursor:pointer">Ayuda</a> | <a href="https://www.argentina.gob.ar/justicia" class="text-decoration-none text-white" target="_blank" style="cursor:pointer">Marco Legal</a></Span>
+                </div>
+
+
+            </header>
+            @if (NroCorrelativo != null)
+            {
+                    <Div class="d-flex gap-3 justify-content-xl-center justify-content-md-start align-items-center w-100 p-1 rounded-0" style="background-color:dimgray; border-top: 2mm ridge rgba(237, 169, 63, .6);">
+                                <Span Class="text-white fw-bolder" >@RazonSocial @TipoEntidad</Span>
+                        <Span Class="text-white fw-bolder">-@NroCorrelativo-</Span>
+                                <img src="icon/balance2.png" style="height:1.5rem; width:auto;" />
+                        <Span Class="text-white fw-bolder">Cierre @FechaDeCierre?.ToString("yyyy") - </Span>
+                        <Span Class="text-white fw-bolder">@FechaDeCierre?.ToString("dd/MM/yyyy")</Span>
+                    <Span Class="text-white fw-bolder position-absolute mx-2" Style="right:0;" >Id: @IdBalance</Span>
+                    </Div>
+            }
+
+        <RadzenStack class="flex-grow-1 rz-background-color-base-200">
             @Body
         </RadzenStack>
 
-        <footer style="background-color:#121B3A;" class="w-100  d-flex justify-content-center mt-1 p-4 rounded-top-3">
-            <img src="./img/logoFooter.png" style="width:300px; height:auto;" alt="Alternate Text" />
+        <footer style="background-color:#121B3A;border-top: 2mm ridge rgba(237, 169, 63, .6);" class="w-100 gap-2 p-2 text-white d-flex justify-content-center mt-1 rounded-top-3">
+
+            @* <img src="./img/logoFooter.png" class="position- mb-2 mx-2" style="width:300px; height:auto;left:0;bottom:0; " alt="Alternate Text" /> *@
+
+            <Span>Av. Paseo Colon 285, CABA -</Span>
+            <Span>Tel: 5300-4000 -</Span>
+            <Span>Email: infoigj@jus.gov.ar</Span>
+
+            <a href="https://www.argentina.gob.ar/justicia" target="_blank"><img src="img/modificado.png" class=" position-fixed mx-xxl-3 logoFooter mb-" style="bottom:0; right:0;" alt="Logo ministerio" /></a>
         </footer>
 
 
     </div>
-   
+
 </body>
 </html>
 
@@ -88,4 +86,5 @@
     [Parameter] public static string? TipoEntidad { get; set; }
     [Parameter] public static string? RazonSocial { get; set; }
     [Parameter] public static DateTime? FechaDeCierre { get; set; }
+    [Parameter] public static string? IdBalance { get; set; }
 }

@@ -1,8 +1,44 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+/*@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');*/
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "Onest", sans-serif;
 }
+
+.logoMin {
+    height: 9rem;
+}
+
+.logoFooter {
+    height: 7rem;
+    width: auto;
+}
+
+@media (max-width: 1500px) {
+    .logoMin {
+        height: 7.5rem;
+
+    }
+
+    .logoIgj {
+        height: 5rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .logoMin {
+        height: 6rem;
+    }
+    .logoIgj{
+        height:4rem;
+    }
+    .logoFooter {
+        height: 4rem;
+        width: auto;
+    }
+    
+}
+
 
 h1:focus {
     outline: none;
@@ -99,3 +135,4 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+

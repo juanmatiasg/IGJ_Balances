@@ -221,7 +221,7 @@
     private string? formattedAddress;
 
 
-    
+
 
     [Parameter] public string? TipoEntidad { get; set; }
     [Parameter] public string? RazonSocial { get; set; }
@@ -298,6 +298,7 @@
                             MainLayout.RazonSocial = resultCaratula.Entidad.RazonSocial;
                             MainLayout.NroCorrelativo = resultCaratula.Entidad.Correlativo;
                             MainLayout.FechaDeCierre = resultCaratula.FechaDeCierre;
+                            MainLayout.IdBalance = response.Result.Id;
 
                             setPropertiesCaratula(resultCaratula);
 

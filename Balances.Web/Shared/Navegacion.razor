@@ -3,57 +3,62 @@
 @inject NavigationManager NavigationManager
 
 <div class="container-fluid">
-<RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center">
-    
-    <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()"  RenderMode="TabRenderMode.Client">
-        <Tabs>
-            <div class="container d-flex flex-wrap">
-               
-            <RadzenTabsItem Text="Carátula" Class="@((PaginaActiva == "Caratula"))"></RadzenTabsItem>
-            
-            
-            <RadzenTabsItem Text="Estado Contable" Class="@((PaginaActiva == "EstadoContable"))" Disabled="@(TramiteIniciado ? false : true)">
-          
-            </RadzenTabsItem>
-            <RadzenTabsItem Text="Libros" Class="@((PaginaActiva == "Libros") )" Disabled="@(TramiteIniciado ? false : true)">
-           
-            </RadzenTabsItem>
-            <RadzenTabsItem Text="Contador" Class="@((PaginaActiva == "Contador"))" Disabled="@(TramiteIniciado ? false : true)">
-           
-            </RadzenTabsItem>
-            <RadzenTabsItem Text="Autoridades" Class="@((PaginaActiva == "Autoridades"))" Disabled="@(TramiteIniciado ? false : true)">
-            
-            </RadzenTabsItem>
-            <RadzenTabsItem Text="Integrantes" Class="@((PaginaActiva == "Integrantes") )" Disabled="@(TramiteIniciado ? false : true)">
-       
-            </RadzenTabsItem>
-            <RadzenTabsItem Text="Documentación" Class="@((PaginaActiva == "Archivos"))" Disabled="@(TramiteIniciado ? false : true)">
-               
-            </RadzenTabsItem>
-            <RadzenTabsItem Text="Confirmación" Class="@((PaginaActiva == "Confirmacion") )" Disabled="@(TramiteIniciado ? false : true)">
-           
-            </RadzenTabsItem>
+    <RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center">
+
+        <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()" RenderMode="TabRenderMode.Client">
+            <Tabs>
+                <div class="container d-flex flex-wrap navbar navbar-expand-xl">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class=" collapse navbar-collapse" id="navbarNavAltMarkup">
+
+                        <RadzenTabsItem Text="Carátula" Class="@((PaginaActiva == "Caratula"))"></RadzenTabsItem>
+
+
+                        <RadzenTabsItem Text="Estado Contable" Class="@((PaginaActiva == "EstadoContable"))" Disabled="@(TramiteIniciado ? false : true)">
+
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Libros" Class="@((PaginaActiva == "Libros") )" Disabled="@(TramiteIniciado ? false : true)">
+
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Contador" Class="@((PaginaActiva == "Contador"))" Disabled="@(TramiteIniciado ? false : true)">
+
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Autoridades" Class="@((PaginaActiva == "Autoridades"))" Disabled="@(TramiteIniciado ? false : true)">
+
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Integrantes" Class="@((PaginaActiva == "Integrantes") )" Disabled="@(TramiteIniciado ? false : true)">
+
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Documentación" Class="@((PaginaActiva == "Archivos"))" Disabled="@(TramiteIniciado ? false : true)">
+
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Confirmación" Class="@((PaginaActiva == "Confirmacion") )" Disabled="@(TramiteIniciado ? false : true)">
+
+                        </RadzenTabsItem>
+                    </div>
                 </div>
-        </Tabs>
-    </RadzenTabs>
-</RadzenStack>
+            </Tabs>
+        </RadzenTabs>
+    </RadzenStack>
 </div>
 
 
 
 @code {
-   
+
     [Parameter] public string? PaginaActiva { get; set; } = "Caratula";
     [Parameter] public bool TramiteIniciado { get; set; }
     [Parameter] public string? balid { get; set; } = null;
-  
+
     Radzen.TabPosition tabPosition = Radzen.TabPosition.Top;
-        
-   
+
+
     void OnChange(int index)
     {
         Console.WriteLine($"Tab with index {index} was selected.");
-        
+
 
         switch (index)
         {
