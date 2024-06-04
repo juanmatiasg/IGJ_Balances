@@ -294,13 +294,14 @@
                         {
                             var resultCaratula = result.Caratula;
 
-                            MainLayout.TipoEntidad = resultCaratula.Entidad.TipoEntidad;
-                            MainLayout.RazonSocial = resultCaratula.Entidad.RazonSocial;
-                            MainLayout.NroCorrelativo = resultCaratula.Entidad.Correlativo;
-                            MainLayout.FechaDeCierre = resultCaratula.FechaDeCierre;
-                            MainLayout.IdBalance = response.Result.Id;
-
                             setPropertiesCaratula(resultCaratula);
+
+                            Navegacion.TipoEntidad = resultCaratula.Entidad.TipoEntidad;
+                            Navegacion.RazonSocial = resultCaratula.Entidad.RazonSocial;
+                            Navegacion.NroCorrelativo = resultCaratula.Entidad.Correlativo;
+                            Navegacion.FechaDeCierre = resultCaratula.FechaDeCierre;
+                            Navegacion.IdBalance = response.Result.Id;
+
 
                             entidadEncontrada = true;
                             tramiteIniciado = true;
@@ -446,10 +447,10 @@
 
                         var resultCaratula = rsp.Result.Caratula;
 
-                        MainLayout.TipoEntidad = resultCaratula.Entidad.TipoEntidad;
-                        MainLayout.RazonSocial = resultCaratula.Entidad.RazonSocial;
-                        MainLayout.NroCorrelativo = resultCaratula.Entidad.Correlativo;
-                        MainLayout.FechaDeCierre = resultCaratula.FechaDeCierre;
+                        Navegacion.TipoEntidad = resultCaratula.Entidad.TipoEntidad;
+                        Navegacion.RazonSocial = resultCaratula.Entidad.RazonSocial;
+                        Navegacion.NroCorrelativo = resultCaratula.Entidad.Correlativo;
+                        Navegacion.FechaDeCierre = resultCaratula.FechaDeCierre;
 
                         isActive = true;
                         tramiteIniciado = true;

@@ -10,9 +10,10 @@ html, body {
 }
 
 .logoFooter {
-    height: 7rem;
+    height: 3rem;
     width: auto;
 }
+
 
 @media (max-width: 1500px) {
     .logoMin {
@@ -33,12 +34,10 @@ html, body {
         height:4rem;
     }
     .logoFooter {
-        height: 4rem;
+        height: 2rem;
         width: auto;
     }
-    
 }
-
 
 h1:focus {
     outline: none;

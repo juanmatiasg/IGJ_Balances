@@ -1,6 +1,9 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
 
+<Div class="d-flex gap-3 justify-content-xl-center justify-content-md-start align-items-center w-100 p-1 rounded-0" style="background-color:dimgray; border-top: 2mm ridge rgba(237, 169, 63, .6);">
+    <img src="icon/balance2.png" style="height:1.5rem; width:auto;" class=" opacity-0" />
+</Div>
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Marco Legal</h2>
@@ -29,7 +32,7 @@
 </div>
 
 
-@code{
+@code {
     private string msgError = "";
     private bool isChecked = false;
     public void handleAccept()

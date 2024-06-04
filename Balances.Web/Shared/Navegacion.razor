@@ -2,6 +2,32 @@
 @using Balances.Web.Pages;
 @inject NavigationManager NavigationManager
 
+
+<!--Barra de informacion balance-->
+@if (NroCorrelativo != null)
+{
+    <Div class="d-flex gap-3 justify-content-xl-center justify-content-md-start align-items-center w-100 p-1 rounded-0" style="background-color:dimgray; border-top: 2mm ridge rgba(237, 169, 63, .6);">
+        <Span Class="text-white fw-bolder">@RazonSocial @TipoEntidad</Span>
+        <Span Class="text-white fw-bolder">-@NroCorrelativo-</Span>
+        <img src="icon/balance2.png" style="height:1.5rem; width:auto;" />
+        <Span Class="text-white fw-bolder">Cierre @FechaDeCierre?.ToString("yyyy") - </Span>
+        <Span Class="text-white fw-bolder">@FechaDeCierre?.ToString("dd/MM/yyyy")</Span>
+        <Span Class="text-white fw-bolder position-absolute mx-2" Style="right:0;">Id: @IdBalance</Span>
+    </Div>
+}
+else
+{
+    <Div class="d-flex gap-3 justify-content-xl-center justify-content-md-start align-items-center w-100 p-1 rounded-0" style="background-color:dimgray; border-top: 2mm ridge rgba(237, 169, 63, .6);">
+        <Span Class="text-white fw-bolder">@RazonSocial @TipoEntidad</Span>
+        <Span Class="text-white fw-bolder visually-hidden">-@NroCorrelativo-</Span>
+        <img src="icon/balance2.png" style="height:1.5rem; width:auto;" class=" opacity-0" />
+        <Span Class="text-white visually-hidden fw-bolder">Cierre @FechaDeCierre?.ToString("yyyy") - </Span>
+        <Span Class="text-white visually-hidden fw-bolder">@FechaDeCierre?.ToString("dd/MM/yyyy")</Span>
+        <Span Class="text-white fw-bolder position-absolute visually-hidden mx-2" Style="right:0;">Id: @IdBalance</Span>
+    </Div>
+}
+
+<!--Barra de navegación-->
 <div class="container-fluid">
     <RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center">
 
@@ -47,6 +73,12 @@
 
 
 @code {
+    [Parameter] public static string? NroCorrelativo { get; set; }
+    [Parameter] public static string? TipoEntidad { get; set; }
+    [Parameter] public static string? RazonSocial { get; set; }
+    [Parameter] public static DateTime? FechaDeCierre { get; set; }
+    [Parameter] public static string? IdBalance { get; set; }
+
 
     [Parameter] public string? PaginaActiva { get; set; } = "Caratula";
     [Parameter] public bool TramiteIniciado { get; set; }

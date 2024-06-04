@@ -23,11 +23,10 @@
 <!-- Formulario de Datos del Integrante -->
 <div class="container">
 
-    <!--FORMULARIO PERSONA-->
+    <div class="d-flex gap-1 " style="color:#15153D">
 
-    <div class="d-flex gap-1" style="color:#15153D">
-
-        <div class="card d-flex justify-content-between w-50">
+        <!--Formulario persona-->
+        <div class="card d-flex justify-content-between w-50 ">
             <EditForm Model="@model">
 
                 <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
@@ -109,21 +108,21 @@
                         </RadzenStack>
                         <RadzenStack Style="width:30%">
                             <RadzenFormField Text="Valor Nominal">
-                                <RadzenTextBox  @bind-Value="@model.ValorNominal" />
+                                <RadzenTextBox @bind-Value="@model.ValorNominal" />
                             </RadzenFormField>
                             <ValidationMessage For="@(()=> model.ValorNominal)" />
                         </RadzenStack>
                     </div>
 
+                    <RadzenStack class="mt-4 mb-2">
+                        <RadzenButton ButtonType="Radzen.ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Click="@InsertPersonaHumana">Agregar</RadzenButton>
+                    </RadzenStack>
                 </div>
-                <RadzenStack class="mt-4 mb-2">
-                    <RadzenButton ButtonType="Radzen.ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Click="@InsertPersonaHumana">Agregar</RadzenButton>
-                </RadzenStack>
             </EditForm>
         </div>
 
-
-        <div class="card d-flex justify-content-between w-50">
+        <!--Listado de personas-->
+        <div class="card d-flex justify-content-between w-50 ">
 
 
             <!-- Lista de Integrantes -->
@@ -165,7 +164,7 @@
 </div>
 
 
-@code{
+@code {
 
     [Parameter]
     public string? TipoEntidad { get; set; }

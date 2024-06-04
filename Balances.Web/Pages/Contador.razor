@@ -19,10 +19,9 @@
 <div class="container m-auto ">
     <EditForm Model="modelo" class="d-flex gap-3 p-1 flex-column">
 
-        <!--socio presentante-->
-
         <div class="d-flex gap-1" style="color:#15153D">
 
+            <!--socio presentante-->
             <div class="card d-flex justify-content-between w-50">
 
 
@@ -30,7 +29,7 @@
                     Datos del Contador Presentante
                 </div>
 
-                <div class="card-body d-flex flex-column gap-1 w-100 ">
+                <div class="card-body d-flex flex-column gap-2 w-100 ">
 
                     <FluentValidationValidator />
 
@@ -40,7 +39,7 @@
                             <RadzenFormField Text="Nombre">
                                 <RadzenTextBox @bind-Value="@modelo.Nombre" />
                             </RadzenFormField>
-                                <ValidationMessage For="@(()=> modelo.Nombre)" />
+                            <ValidationMessage For="@(()=> modelo.Nombre)" />
 
                         </RadzenStack>
 
@@ -49,7 +48,7 @@
                             <RadzenFormField Text="Apellido">
                                 <RadzenTextBox @bind-Value="@modelo.Apellido" />
                             </RadzenFormField>
-                                <ValidationMessage For="@(()=> modelo.Apellido)" />
+                            <ValidationMessage For="@(()=> modelo.Apellido)" />
 
                         </RadzenStack>
                     </div>
@@ -61,43 +60,43 @@
                             <RadzenFormField Text="Tipo de Documento">
                                 <RadzenDropDown @bind-Value=@modelo.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" />
                             </RadzenFormField>
-                                <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
+                            <ValidationMessage For="@(()=> modelo.TipoDocumento)" />
                         </RadzenStack>
 
                         <RadzenStack Style="width:30%;">
-                            <RadzenFormField Style="width:100%"  Text="CUIL/CUIT">
+                            <RadzenFormField Style="width:100%" Text="CUIL/CUIT">
                                 <RadzenTextBox @bind-Value="@modelo.NroFiscal" />
                             </RadzenFormField>
-                                <ValidationMessage For="@(()=> @modelo.NroFiscal)" />
+                            <ValidationMessage For="@(()=> @modelo.NroFiscal)" />
                         </RadzenStack>
 
                         <RadzenStack Style="width:30%;">
                             <RadzenFormField Style="width:100%" Text="Documento">
                                 <RadzenTextBox @bind-Value="@modelo.NroDocumento" />
                             </RadzenFormField>
-                                <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
+                            <ValidationMessage For="@(()=> @modelo.NroDocumento)" />
                         </RadzenStack>
 
                     </div>
 
 
-                    <div class="card">
+                    <div class="card w-100">
 
                         <div class="card-header " style="font-weight: 400;">
                             Datos de la Matricula
                         </div>
 
-                        <div class="card-body d-flex gap-1">
-                            <RadzenFormField Text="Tomo">
+                        <div class="card-body d-flex gap-1 w-100">
+                            <RadzenFormField class="w-25" Text="Tomo">
                                 <RadzenTextBox @bind-Value="@modelo.Tomo" />
                             </RadzenFormField>
-                                <ValidationMessage For="@(()=> @modelo.Tomo)" />
+                            <ValidationMessage For="@(()=> @modelo.Tomo)" />
 
 
-                            <RadzenFormField Text="Folio">
+                            <RadzenFormField class="w-25" Text="Folio">
                                 <RadzenTextBox @bind-Value="@modelo.Folio" />
                             </RadzenFormField>
-                                <ValidationMessage For="@(()=> @modelo.Folio)" />
+                            <ValidationMessage For="@(()=> @modelo.Folio)" />
 
                         </div>
                     </div>
@@ -109,7 +108,6 @@
             </div>
 
             <!--SOCIO ESTUDIO-->
-
             <div class="card d-flex justify-content-between w-50">
 
 
@@ -124,27 +122,27 @@
                             <RadzenCheckBox @bind-Value="@modelo.EsSocioEstudio" Name="CheckBox3" />
                             Actúa en carácter de Socio de Estudio Contable
                         </RadzenLabel>
-                            <ValidationMessage For="@(()=> modelo.EsSocioEstudio)" />
+                        <ValidationMessage For="@(()=> modelo.EsSocioEstudio)" />
 
 
                     </RadzenStack>
 
 
-                    <div class="d-flex gap-1 ">
+                    <div class="d-flex gap-1 w-100 ">
 
-                        <RadzenStack>
-                            <RadzenFormField class="w-50" Text="Tomo">
+                        <RadzenStack class="w-25">
+                            <RadzenFormField Text="Tomo">
                                 <RadzenTextBox @bind-Value="@modelo.TomoEstudio" Disabled="@(modelo.EsSocioEstudio ? false : true)" />
                             </RadzenFormField>
                             <ValidationMessage For="@(()=> @modelo.TomoEstudio)" />
                         </RadzenStack>
 
 
-                        <RadzenStack>
-                            <RadzenFormField class="w-50" Text="Folio">
+                        <RadzenStack class="w-25">
+                            <RadzenFormField Text="Folio">
                                 <RadzenTextBox @bind-Value="@modelo.FolioEstudio" Disabled="@(modelo.EsSocioEstudio ? false : true)" />
                             </RadzenFormField>
-                                <ValidationMessage For="@(()=> @modelo.FolioEstudio)" />
+                            <ValidationMessage For="@(()=> @modelo.FolioEstudio)" />
                         </RadzenStack>
                     </div>
                 </div>
@@ -153,9 +151,7 @@
 
         </div>
 
-
         <!-- Informe-->
-
         <div class="card">
 
             <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
@@ -207,131 +203,130 @@
 </div>
 
 
-@code{
- [Parameter]
-        public string? TipoEntidad { get; set; }
+@code {
+    [Parameter]
+    public string? TipoEntidad { get; set; }
 
-        private string[] tiposDocumentos =
-        {
+    private string[] tiposDocumentos =
+    {
             "DNI",
             "Pasaporte"
-        };
-        [Parameter]
-        public string? balid { get; set; }
+    };
+    [Parameter]
+    public string? balid { get; set; }
 
-        [Parameter]
-        public string sesionId { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
 
-        private ContadorDto modelo = new ContadorDto();
+    private ContadorDto modelo = new ContadorDto();
 
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+        await base.OnInitializedAsync();
+    }
+
+
+
+    private async Task<ResponseDTO<BalanceDto>> Load()
+    {
+        ResponseDTO<BalanceDto> rsp = new();
+        try
         {
-            await Load();
-            await base.OnInitializedAsync();
-        }
-
-
-
-        private async Task<ResponseDTO<BalanceDto>> Load()
-        {
-            ResponseDTO<BalanceDto> rsp = new();
-            try
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            if (sesionId == null)
             {
-                sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
-                if (sesionId == null)
+                var sesionRespuesta = await sesionService.getNewSession();
+                sesionId = sesionRespuesta.Result;
+                await sessionStorage.SetItemAsync("SessionId", sesionId);
+            }
+            else
+            {
+                var rst = await sesionService.getBalanceId(sesionId);
+                if (rst is not null)
                 {
-                    var sesionRespuesta = await sesionService.getNewSession();
-                    sesionId = sesionRespuesta.Result;
-                    await sessionStorage.SetItemAsync("SessionId", sesionId);
-                }
-                else
-                {
-                    var rst = await sesionService.getBalanceId(sesionId);
-                    if (rst is not null)
+                    balid = rst;
+                    rsp = await balanceService.getBalance(balid);
+                    if (rsp.IsSuccess)
                     {
-                        balid = rst;
-                        rsp = await balanceService.getBalance(balid);
-                        if (rsp.IsSuccess)
-                        {
-                            TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
-                            modelo.Nombre = rsp.Result.Contador.Nombre;
-                            modelo.Apellido = rsp.Result.Contador.Apellido;
-                            modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
-                            modelo.NroDocumento = rsp.Result.Contador.NroDocumento;
-                            modelo.NroFiscal = rsp.Result.Contador.NroFiscal;
-                            modelo.Tomo = rsp.Result.Contador.Tomo;
-                            modelo.Folio = rsp.Result.Contador.Folio;
-                            modelo.FechaInformeAuditorExt = rsp.Result.Contador.FechaInformeAuditorExt;
-                            modelo.NroLegalInfoAudExt = rsp.Result.Contador.NroLegalInfoAudExt;
-                            modelo.EsSocioEstudio = rsp.Result.Contador.EsSocioEstudio;
-                            modelo.Observaciones = rsp.Result.Contador.Observaciones;
-                            modelo.Opinion = rsp.Result.Contador.Opinion;
-                            modelo.TomoEstudio = rsp.Result.Contador.TomoEstudio;
-                            modelo.FolioEstudio = rsp.Result.Contador.FolioEstudio;
-                        }
-                        else
-                        {
-                            rsp.Message = $"error al obtener el contador {rsp.Message}";
-                        }
+                        TipoEntidad = rsp.Result.Caratula.Entidad.TipoEntidad;
+                        modelo.Nombre = rsp.Result.Contador.Nombre;
+                        modelo.Apellido = rsp.Result.Contador.Apellido;
+                        modelo.TipoDocumento = rsp.Result.Contador.TipoDocumento;
+                        modelo.NroDocumento = rsp.Result.Contador.NroDocumento;
+                        modelo.NroFiscal = rsp.Result.Contador.NroFiscal;
+                        modelo.Tomo = rsp.Result.Contador.Tomo;
+                        modelo.Folio = rsp.Result.Contador.Folio;
+                        modelo.FechaInformeAuditorExt = rsp.Result.Contador.FechaInformeAuditorExt;
+                        modelo.NroLegalInfoAudExt = rsp.Result.Contador.NroLegalInfoAudExt;
+                        modelo.EsSocioEstudio = rsp.Result.Contador.EsSocioEstudio;
+                        modelo.Observaciones = rsp.Result.Contador.Observaciones;
+                        modelo.Opinion = rsp.Result.Contador.Opinion;
+                        modelo.TomoEstudio = rsp.Result.Contador.TomoEstudio;
+                        modelo.FolioEstudio = rsp.Result.Contador.FolioEstudio;
                     }
-
-                    StateHasChanged();
+                    else
+                    {
+                        rsp.Message = $"error al obtener el contador {rsp.Message}";
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                rsp.Message = $"error al obtener el contador {ex.Message}";
-            }
 
-            return rsp;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            rsp.Message = $"error al obtener el contador {ex.Message}";
         }
 
-        private async Task<ResponseDTO<BalanceDto>> postContador()
+        return rsp;
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> postContador()
+    {
+        ResponseDTO<BalanceDto> respuesta = new();
+        respuesta.IsSuccess = false;
+        try
         {
-            ResponseDTO<BalanceDto> respuesta = new();
-            respuesta.IsSuccess = false;
-            try
+
+            ContadorValidator contadorValidator = new();
+
+            modelo.SesionId = sesionId;
+
+
+            ValidationResult result = contadorValidator.Validate(modelo);
+
+            if (result.IsValid)
             {
 
-                ContadorValidator contadorValidator = new();
-
-                modelo.SesionId = sesionId;
-
-
-                ValidationResult result = contadorValidator.Validate(modelo);
-
-                if (result.IsValid)
+                respuesta = await contadorService.postContador(modelo);
+                if (respuesta.IsSuccess)
                 {
 
-                    respuesta = await contadorService.postContador(modelo);
-                    if (respuesta.IsSuccess)
-                    {
-
-                        notificationService.Notify(new NotificationMessage
+                    notificationService.Notify(new NotificationMessage
                         {
                             Severity = NotificationSeverity.Success,
                             Duration = 3000,
                             Summary = "Datos guardados correctamente"
                         });
-                    }
-
                 }
 
             }
 
-            catch (Exception ex)
-            {
-                respuesta.Message = ex.Message;
-                notificationService.Notify(new NotificationMessage
+        }
+
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+            notificationService.Notify(new NotificationMessage
                 {
                     Severity = NotificationSeverity.Error,
                     Duration = 3000,
                     Summary = "No se pudieron guardar los datos"
                 });
 
-            }
-            return respuesta;
-
         }
+        return respuesta;
+
     }
-  
+}
