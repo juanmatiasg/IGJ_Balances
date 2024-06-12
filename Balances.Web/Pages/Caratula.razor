@@ -67,7 +67,7 @@
                 <RadzenCard class="rz-border-radius-20 rz-pt-8 rz-ps-8 rz-pe-8" style="margin-top:20px; background-color:#15153D;">
                         <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><strong>Detalles de Identidad</strong></RadzenText>
                         <RadzenRow RowGap="0">
-                            <RadzenColumn SizeSM="4">
+                            <RadzenColumn >
                                 <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Correlativo</RadzenText>
                                 <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@(modelo.Entidad.Correlativo ?? "")</b></RadzenText>
                                 <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Razón Social</RadzenText>
@@ -88,7 +88,7 @@
         <div class="card mx-auto mt-4 mb-4  bg-light">
            
                 <div class="card-header" style="color: #FFF; background-color:#15153D; font-weight: bold; text-align: center;">
-                    Datos Personales
+            Datos de la sociedad
                 </div>
                 @if (@entidadEncontrada)
                 {

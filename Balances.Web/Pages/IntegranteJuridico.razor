@@ -198,18 +198,11 @@
         try
         {
             var countries = await socioService.GetAllCountries();
-            List<string> countryNames = new List<string>();
-
-            foreach (var country in countries)
-            {
-                string commonName = country["name"]["common"].ToString();
-                countryNames.Add(commonName);
-            }
-
+           
             // Ordenar los nombres de los países en orden ascendente
-            countryNames.Sort();
+            countries.Sort();
 
-            foreach (var name in countryNames)
+            foreach (var name in countries)
             {
                 Paises.Add(name);
             }

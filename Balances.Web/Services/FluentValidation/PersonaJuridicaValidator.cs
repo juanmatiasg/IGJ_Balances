@@ -16,7 +16,7 @@ namespace Balances.Web.Services.FluentValidation
 
 
             RuleFor(_ => _.NroFiscal).Cascade(CascadeMode.Stop)
-                .Matches(@"^\d+$").WithMessage("El Cuit no debe contener letras")
+                .Matches(@"^[\d-]+$").WithMessage("El Cuit no debe contener letras")
                 .NotEmpty().WithMessage("Debe ingresar el CUIL O CUIT").
                 Must(EsCuitValido).WithMessage("El CUIT no es válido");
 
@@ -39,6 +39,11 @@ namespace Balances.Web.Services.FluentValidation
 
         public bool EsCuitValido(string cuit)
         {
+            if (cuit.Contains("-"))
+            {
+                cuit = cuit.Replace("-", "");
+            };
+
             if (string.IsNullOrEmpty(cuit) || cuit.Length != 11)
             {
                 return false;

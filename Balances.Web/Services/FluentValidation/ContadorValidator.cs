@@ -23,7 +23,7 @@ namespace Balances.Web.Services.FluentValidation
 
             RuleFor(_ => _.NroFiscal).Cascade(CascadeMode.Stop)
                               .NotEmpty().WithMessage("Debe ingresar el CUIL O CUIT")
-                              .Matches(@"^\d+$").WithMessage("El CUIT o CUIT no debe contener letras")
+                              .Matches(@"^[\d-]+$").WithMessage("El CUIT o CUIT no debe contener letras")
                                     .Must(EsCuitValido).WithMessage("El CUIL o CUIT no es válido");
 
             RuleFor(_ => _.NroLegalInfoAudExt).Cascade(CascadeMode.Stop)
@@ -97,6 +97,11 @@ namespace Balances.Web.Services.FluentValidation
 
         public bool EsCuitValido(string cuit)
         {
+            if (cuit.Contains("-"))
+            {
+                cuit = cuit.Replace("-", "");
+            };
+
             if (string.IsNullOrEmpty(cuit) || cuit.Length != 11)
             {
                 return false;
@@ -121,6 +126,10 @@ namespace Balances.Web.Services.FluentValidation
 
         private bool NroDocumentoCoincideConCuit(ContadorDto contador, string cuit)
         {
+            if (contador.NroFiscal.Contains("-"))
+            {
+                contador.NroFiscal = contador.NroFiscal.Replace("-", "");
+            };
 
             // Asegúrate de que el número de documento esté contenido dentro del CUIL/CUIT
             if (string.IsNullOrEmpty(contador.NroDocumento) || string.IsNullOrEmpty(contador.NroFiscal) || contador.NroFiscal.Length != 11)
@@ -128,8 +137,9 @@ namespace Balances.Web.Services.FluentValidation
                 return false;
             }
 
-            string nroDocumentoEnCuit = contador.NroFiscal.Substring(2, 8); // Los 8 dígitos del documento empiezan en la posición 2 del CUIT
-            return contador.NroDocumento == nroDocumentoEnCuit;
+                string nroDocumentoEnCuit = contador.NroFiscal.Substring(2, 8); // Los 8 dígitos del documento empiezan en la posición 2 del CUIT
+                return contador.NroDocumento == nroDocumentoEnCuit;
+            
         }
     }
 }

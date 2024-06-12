@@ -1,4 +1,3 @@
-/*@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');*/
 @import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap');
 
 html, body {
@@ -10,7 +9,7 @@ html, body {
 }
 
 .logoFooter {
-    height: 3rem;
+    height:5rem;
     width: auto;
 }
 
@@ -33,8 +32,8 @@ html, body {
     .logoIgj{
         height:4rem;
     }
-    .logoFooter {
-        height: 2rem;
+    .nuevoBalance {
+        height: 3rem;
         width: auto;
     }
 }

@@ -9,7 +9,7 @@ namespace Balances.Web.Services.Implementation
 
         Task<ResponseDTO<BalanceDto>> insertPersonaJuridica(PersonaJuridicaDto personaJuridica);
 
-        Task<List<JObject>> GetAllCountries();
+        Task<List<string>> GetAllCountries();
 
         Task<List<string>> GetAllProvince();
 

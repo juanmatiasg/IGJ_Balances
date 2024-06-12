@@ -55,6 +55,11 @@ namespace Balances.Web.Services.FluentValidation
 
         public bool EsCuitValido(string cuit)
         {
+            if (cuit.Contains("-"))
+            {
+                cuit = cuit.Replace("-", "");
+            };
+
             if (string.IsNullOrEmpty(cuit) || cuit.Length != 11)
             {
                 return false;
@@ -79,11 +84,21 @@ namespace Balances.Web.Services.FluentValidation
 
         private bool NroDocumentoCoincideConCuit(PersonaHumanaDto persona , string arg)
         {
-           
+            if (persona.NroFiscal.Contains("-"))
+            {
+                persona.NroFiscal = persona.NroFiscal.Replace("-", "");
+            };
+
             // Asegúrate de que el número de documento esté contenido dentro del CUIL/CUIT
             if (string.IsNullOrEmpty(persona.NroDocumento) || string.IsNullOrEmpty(persona.NroFiscal) || persona.NroFiscal.Length != 11)
             {
                 return false;
+            }
+
+            if (persona.NroFiscal.Contains("-"))
+            {
+                persona.NroFiscal = persona.NroFiscal.Replace("-", "");
+
             }
 
             string nroDocumentoEnCuit = persona.NroFiscal.Substring(2, 8); // Los 8 dígitos del documento empiezan en la posición 2 del CUIT

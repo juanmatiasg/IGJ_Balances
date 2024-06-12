@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Balances.Web.Services.FluentValidation
 {
-    public class LibroValidator : AbstractValidator<LibroDto>
+    public class LibroValidator : AbstractValidator<LibroDtoExtended>
     {
         public LibroValidator()
         {
