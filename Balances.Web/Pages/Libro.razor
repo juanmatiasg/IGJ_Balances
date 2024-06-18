@@ -20,7 +20,7 @@
 
                 <!--  -->
                 <div class="d-flex col-4">
-                    <input placeholder="Nro.Rúbrica" type="number" class="form-control" @bind=libext.NumeroRubrica />
+                    <input placeholder="Nro.Rúbrica" type="text" class="form-control" @bind=libext.NumeroRubrica />
                     <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
                     <ValidationMessage For="@(()=> libext.NumeroRubrica)" />
 
@@ -70,7 +70,7 @@
 
 
                 <div class=" d-flex col-4">
-                    <input placeholder="N/C" type="number" @bind=libext.NumeroRubrica class="form-control" disabled />
+                    <input placeholder="N/C" type="text" @bind=libext.NumeroRubrica class="form-control" disabled />
                     <input type="date" placeholder="N/C" @bind=libext.FechaRubrica class="form-control" disabled />
                     <input placeholder="N/C" type="number" @bind=libext.FolioObraTranscripcion class="form-control" disabled />
                 </div>
@@ -109,7 +109,7 @@ else
 
             <div class="d-flex col-4">
 
-                <input placeholder="Nro.Rúbrica" type="number" class="form-control" @bind=libext.NumeroRubrica />
+                <input placeholder="Nro.Rúbrica" type="text" class="form-control" @bind=libext.NumeroRubrica />
                 <ValidationMessage For="@(()=> libext.NumeroRubrica)" />
                 <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
 

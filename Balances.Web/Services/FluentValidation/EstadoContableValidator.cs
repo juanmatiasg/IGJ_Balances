@@ -74,7 +74,7 @@ namespace Balances.Web.Services.FluentValidation
             //RUBROBALANCE
 
             RuleFor(_ => _.capitalSuscripto).Cascade(CascadeMode.Stop)
-           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el capital suscripto");
+           .GreaterThan(0).WithMessage("Debe ingresar el capital suscripto");
 
 
             RuleFor(_ => _.ajusteCapital).Cascade(CascadeMode.Stop)
@@ -90,10 +90,10 @@ namespace Balances.Web.Services.FluentValidation
           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar las ganancias reservadas");
 
             RuleFor(_ => _.perdidasAcumuladas).Cascade(CascadeMode.Stop)
-           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar las perdidas acumuladas");
+           .LessThanOrEqualTo(0).WithMessage("Debe ingresar las perdidas acumuladas");
 
-            RuleFor(_ => _.gananciasPerdidasEjercicio).Cascade(CascadeMode.Stop)
-           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar las ganancias/perdidas del ejercicio");
+           // RuleFor(_ => _.gananciasPerdidasEjercicio).Cascade(CascadeMode.Stop)
+           //.GreaterThanOrEqualTo(0).WithMessage("Debe ingresar las ganancias/perdidas del ejercicio");
 
             RuleFor(_ => _.reservaLegal).Cascade(CascadeMode.Stop)
            .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar la reserva legal");

@@ -18,7 +18,7 @@ namespace Balances.Web.Services
 
             var total = estadoContable.bienesDeCambio + estadoContable.propiedadesDeInversion +
                   estadoContable.inversionesActivoNoCorriente +
-                  estadoContable.inversionesActivoNoCorriente;
+                  estadoContable.inversionesActivoCorriente;
 
 
             return total;

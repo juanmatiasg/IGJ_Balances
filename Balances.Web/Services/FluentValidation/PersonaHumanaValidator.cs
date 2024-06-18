@@ -29,7 +29,7 @@ namespace Balances.Web.Services.FluentValidation
             RuleFor(_ => _.NroFiscal)
                                     .Cascade(CascadeMode.Stop)
                                     .NotEmpty().WithMessage("Debe ingresar el CUIL o CUIT")
-                                    .Matches(@"^\d+$").WithMessage("El CUIT o CUIT no debe contener letras")
+                                    .Matches(@"^[\d-]+$").WithMessage("El CUIT o CUIT no debe contener letras")
                                     .Must(EsCuitValido).WithMessage("El CUIL o CUIT no es válido");
 
 

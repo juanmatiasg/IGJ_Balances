@@ -27,305 +27,353 @@
 
 <!---------------------------------------------------------------->
 <div class="container ">
-    <div Class="card" >
+    <div Class="card">
 
         <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
             Estado Contable
         </div>
         <EditForm Model="estadoContableDto">
 
-            <RadzenCard class="card-body d-flex flex-column align-items-center rz-border-radius-6">
-
-                <div class="d-flex justify-content-between gap-1">
-
-                    <div class="d-flex flex-column gap-1 w-50" >
-
-                        <FluentValidationValidator />
-
-                        <!-- Período -->
-                        <div class="card">
-                            <h5 class="card-header" style="font-weight: 400;color:#15153D">Período</h5>
-                            <div class="card-body">
-
-                                <RadzenStack class="mb-2">
-                                    <RadzenFormField Text="Tipo de balance" Style="width:100%">
-                                        <RadzenDropDown @bind-Value=@estadoContableDto.tipoBalance Data=@tipoDeBalance Name="DropDownBindValue" Style="width:100%"/>
-                                    </RadzenFormField>
-
-                                    <ValidationMessage For="@(()=> estadoContableDto.tipoBalance)" />
-                                </RadzenStack>
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Fecha de Inicio" Style="width:100%" Component="DatePickerTimeOnlyType">
-                                        <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaInicio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" Disabled></RadzenDatePicker>
-                                    </RadzenFormField>
-
-                                    <ValidationMessage For="@(()=> estadoContableDto.fechaInicio)" />
-                                </RadzenStack>
-
-                                <RadzenStack>
-                                    <RadzenFormField Text="Fecha de Cierre" Style="width:100%" Component="DatePickerTimeOnlyType">
-                                        <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaEstado)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" Disabled></RadzenDatePicker>
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.fechaEstado)" />
-                                </RadzenStack>
-                            </div>
-                        </div>
-
-                        <!-- Aprobado por -->
-                        <div class="card">
-                            <h5 class="card-header" style="font-weight: 400;color:#15153D">Aprobado por</h5>
-                            <div class="card-body">
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Fecha de Acta de Reunión de Autoridades" Component="DatePickerTimeOnlyType" Style="width:100%">
-                                        <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaReunionDirectorio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/MM/yyyy"></RadzenDatePicker>
-                                    </RadzenFormField>
-                                </RadzenStack>
-                                <ValidationMessage For="@(()=> estadoContableDto.fechaReunionDirectorio)" />
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Fecha de Acta de Reunión de Socios" Component="DatePickerTimeOnlyType" Style="width:100%">
-                                        <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaAsamblea)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/MM/yyyy"></RadzenDatePicker>
-                                    </RadzenFormField>
-                                </RadzenStack>
-                                <ValidationMessage For="@(()=> estadoContableDto.fechaAsamblea)" />
-
-                            </div>
-                        </div>
-
-                        <!-- Rubros del Balance -->
-                        <div class="card ">
-                            <h5 class="card-header" style="font-weight: 400;color:#15153D">Rubros del Balance</h5>
-                            <div class="card-body">
-
-                                <!--Columna 1-->
-                                <RadzenStack class="mb-2">
-                                    <RadzenFormField Text="Caja Y Bancos" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.cajaYBancos InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.cajaYBancos)" />
-                                </RadzenStack>
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Inversiones" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.inversionesActivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.inversionesActivoCorriente)" />
-                                </RadzenStack>
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Bienes de Cambios" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeCambio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.bienesDeCambio)" />
-                                </RadzenStack>
+            <RadzenCard class="card-body d-flex flex-column gap-2 align-items-center rz-border-radius-6">
 
 
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Activo Corriente Restante" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.activoCorrienteRestante)" />
-                                </RadzenStack>
+                <div class="d-flex gap-1 w-100">
+                    <FluentValidationValidator />
+                    <!-- Período -->
+                    <div class="card w-50">
+                        <h5 class="card-header" style="font-weight: 400;color:#15153D">Período</h5>
+                        <div class="card-body">
 
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Bienes de Uso" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeUso InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.bienesDeUso)" />
-                                </RadzenStack>
+                            <RadzenStack class="mb-2">
+                                <RadzenFormField Text="Tipo de balance" Style="width:100%">
+                                    <RadzenDropDown @bind-Value=@estadoContableDto.tipoBalance Data=@tipoDeBalance Name="DropDownBindValue" Style="width:100%" />
+                                </RadzenFormField>
 
+                                <ValidationMessage For="@(()=> estadoContableDto.tipoBalance)" />
+                            </RadzenStack>
 
-                                <RadzenStack class="mb-2">
-                                    <RadzenFormField Text="Propiedades de Inversión" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.propiedadesDeInversion InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.propiedadesDeInversion)" />
-                                </RadzenStack>
+                            <RadzenStack class=" mb-2">
+                                <RadzenFormField Text="Fecha de Inicio" Style="width:100%" Component="DatePickerTimeOnlyType">
+                                    <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaInicio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" Disabled></RadzenDatePicker>
+                                </RadzenFormField>
 
+                                <ValidationMessage For="@(()=> estadoContableDto.fechaInicio)" />
+                            </RadzenStack>
 
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Activo No Corriente Restante" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.activoNoCorrienteRestante)" />
-                                </RadzenStack>
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Total Activo No Corriente" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" Disabled />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.activoNoCorriente)" />
-                                </RadzenStack>
-
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Total Activo" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalActivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" Disabled />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.totalActivo)" />
-                                </RadzenStack>
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Deudas del Pasivo Corriente" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.deudorPasivoCorriente)" />
-                                </RadzenStack>
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Deudas del Pasivo No Corriente" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.deudorPasivoNoCorriente)" />
-                                </RadzenStack>
-
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Total Pasivo" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalPasivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" Disabled />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.totalPasivo)" />
-                                </RadzenStack>
-
-                                <RadzenStack class="mb-2">
-                                    <RadzenFormField Text="Activo No Corriente Restante" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.activoNoCorrienteRestante)" />
-                                </RadzenStack>
-
-                                <RadzenStack class=" mb-2">
-                                    <RadzenFormField Text="Patrimonio Neto" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.patrimonioNeto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" Disabled />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.patrimonioNeto)" />
-                                </RadzenStack>
-                            </div>
+                            <RadzenStack>
+                                <RadzenFormField Text="Fecha de Cierre" Style="width:100%" Component="DatePickerTimeOnlyType">
+                                    <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaEstado)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" Disabled></RadzenDatePicker>
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> estadoContableDto.fechaEstado)" />
+                            </RadzenStack>
                         </div>
                     </div>
-                    <div class="d-flex flex-column gap-1 w-50">
 
+                    <!-- Aprobado por -->
+                    <div class="card w-50">
+                        <h5 class="card-header" style="font-weight: 400;color:#15153D">Aprobado por</h5>
+                        <div class="card-body">
 
-                        <!-- Rubros del Patrimonio Neto -->
-                        <div class="card ">
-                            <h5 class="card-header " style="font-weight: 400;color:#15153D">Rubros del Patrimonio Neto</h5>
+                            <RadzenStack class=" mb-2">
+                                <RadzenFormField Text="Fecha de Acta de Reunión de Autoridades" Component="DatePickerTimeOnlyType" Style="width:100%">
+                                    <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaReunionDirectorio)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/MM/yyyy"></RadzenDatePicker>
+                                </RadzenFormField>
+                            </RadzenStack>
+                            <ValidationMessage For="@(()=> estadoContableDto.fechaReunionDirectorio)" />
 
-                            <!-- Repite esta estructura para otros campos -->
-                            <div class="card-body">
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Capital Suscripto" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.capitalSuscripto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.capitalSuscripto)" />
-                                </RadzenStack>
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Ajuste de Capital" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.ajusteCapital InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.ajusteCapital)" />
-                                </RadzenStack>
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Aportes Irrevocables" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.aportesIrrevocables InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.aportesIrrevocables)" />
-                                </RadzenStack>
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Prima Emisión" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.primaEmision InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.primaEmision)" />
-                                </RadzenStack>
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Ganancias Reservadas" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasReservadas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.gananciasReservadas)" />
-                                </RadzenStack>
-
-
-
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Pérdidas Acumuladas" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.perdidasAcumuladas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.perdidasAcumuladas)" />
-                                </RadzenStack>
-
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Ganancias / Pérdidas del Ejercicio" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasPerdidasEjercicio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.gananciasPerdidasEjercicio)" />
-                                </RadzenStack>
-
-
-                                <RadzenStack class="mt-2 mb-2">
-                                    <RadzenFormField Text="Reserva Lega" Style="width:100%">
-                                        <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.reservaLegal InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                    </RadzenFormField>
-                                    <ValidationMessage For="@(()=> estadoContableDto.reservaLegal)" />
-                                </RadzenStack>
-
-                            </div>
+                            <RadzenStack class=" mb-2">
+                                <RadzenFormField Text="Fecha de Acta de Reunión de Socios" Component="DatePickerTimeOnlyType" Style="width:100%">
+                                    <RadzenDatePicker @bind-Value="@(estadoContableDto.fechaAsamblea)" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/MM/yyyy"></RadzenDatePicker>
+                                </RadzenFormField>
+                            </RadzenStack>
+                            <ValidationMessage For="@(()=> estadoContableDto.fechaAsamblea)" />
 
                         </div>
+                    </div>
+                </div>
 
-                        <!--Otros Rubros PN -->
-                        <div class="card">
+                <!-- -->
+                <div class="d-flex  w-100">
 
-                            <h5 class="card-header" style="font-weight: 400;color:#15153D">
-                                Otros Rubros del Patrimonio Neto
-                            </h5>
+                    <!-- Rubros del Balance -->
+                    <div class="card w-50  ">
+                        <h5 class="card-header" style="font-weight: 400;color:#15153D">Rubros del Balance</h5>
 
-                            <div class="card-body">
-                                <Form Model="rubroDto">
+                        <div class="card-body d-flex flex-column gap-1">
+                            <div class="">
 
-                                    <div class="form-group">
-                                        <RadzenStack class="mt-2 mb-2">
-                                            <RadzenFormField Text="Denominación" Style="width:100%">
-                                                <RadzenTextBox @bind-Value="@denominacionDto" id="txtAddress" />
+                                <div class=" gap-1 w-100 d-flex">
+
+                                    <!--Activo corriente-->
+                                    <div class=" w-50">
+                                        <h5 class="card-header" style="font-weight: 400;color:#15153D">Activo Corriente</h5>
+
+                                        <div class="d-flex flex-column gap-1">
+
+                                            <RadzenStack>
+                                                <RadzenFormField Text="Caja Y Bancos" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.cajaYBancos InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.cajaYBancos)" />
+                                            </RadzenStack>
+
+                                            <RadzenStack>
+                                                <RadzenFormField Text="Inversiones" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.inversionesActivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.inversionesActivoCorriente)" />
+                                            </RadzenStack>
+
+
+
+
+                                            <RadzenStack>
+                                                <RadzenFormField Text="Bienes de Cambios" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeCambio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.bienesDeCambio)" />
+                                            </RadzenStack>
+
+
+                                            <RadzenStack>
+                                                <RadzenFormField Text="Activo Corriente Restante" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.activoCorrienteRestante)" />
+                                            </RadzenStack>
+
+                                            <RadzenStack class=" ">
+                                                <RadzenFormField Text="Total Activo Corriente" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;" Disabled />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.activoCorriente)" />
+                                            </RadzenStack>
+                                        </div>
+                                    </div>
+
+                                    <!--Activo No corriente-->
+                                    <div class=" w-50">
+                                        <h5 class="card-header" style="font-weight: 400;color:#15153D">Activo No Corriente</h5>
+
+                                        <div class="d-flex flex-column gap-1">
+                                            <RadzenStack>
+                                                <RadzenFormField Text="Bienes de Uso" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.bienesDeUso InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.bienesDeUso)" />
+                                            </RadzenStack>
+
+
+                                            <RadzenStack>
+                                                <RadzenFormField Text="Propiedades de Inversión" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.propiedadesDeInversion InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.propiedadesDeInversion)" />
+                                            </RadzenStack>
+
+
+
+                                            <RadzenStack>
+                                                <RadzenFormField Text="Inversiones" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.inversionesActivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.inversionesActivoNoCorriente)" />
+                                            </RadzenStack>
+
+                                            <RadzenStack>
+                                                <RadzenFormField Text="Activo No Corriente Restante" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorrienteRestante InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.activoNoCorrienteRestante)" />
+                                            </RadzenStack>
+
+
+                                            <RadzenStack>
+                                                <RadzenFormField Text="Total Activo No Corriente" Style="width:100%">
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.activoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100% ;" Disabled />
+                                                </RadzenFormField>
+                                                <ValidationMessage For="@(()=> estadoContableDto.activoNoCorriente)" />
+                                            </RadzenStack>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <RadzenFormField Text="Total Activo" Style="width:100%">
+                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalActivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" Disabled />
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> estadoContableDto.totalActivo)" />
+                            </div>
+
+                            <!--pasivo-->
+                            <div class="">
+
+                                <div class=" gap-1 w-100 d-flex">
+                                    <div class="w-50">
+                                        <h5 class="card-header" style="font-weight: 400;color:#15153D">Pasivo Corriente</h5>
+
+                                        <RadzenStack class=" w-50">
+                                            <RadzenFormField Text="Pasivo Corriente" Style="width:100%">
+                                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
                                             </RadzenFormField>
+                                            <ValidationMessage For="@(()=> estadoContableDto.deudorPasivoCorriente)" />
+                                        </RadzenStack>
 
+                                    </div>
+
+                                    <div class="w-50">
+                                        <h5 class="card-header" style="font-weight: 400;color:#15153D">Pasivo No Corriente</h5>
+
+                                        <RadzenStack class="w-50">
+                                            <RadzenFormField Text="Pasivo No Corriente" Style="width:100%">
+                                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.deudorPasivoNoCorriente InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                            </RadzenFormField>
+                                            <ValidationMessage For="@(()=> estadoContableDto.deudorPasivoNoCorriente)" />
                                         </RadzenStack>
                                     </div>
 
-                                    <RadzenStack class="mt-2 mb-2">
-                                        <RadzenFormField Text="Pasivo No Corriente" Style="width:100%">
-                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@importeDto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
-                                        </RadzenFormField>
-                                        <ValidationMessage For="@(()=>rubroDto.importe)" />
-                                    </RadzenStack>
+                                </div>
 
-                                    <RadzenButton ButtonStyle="ButtonStyle.Primary" class="d-flex justify-content-center" Click="@insertRubro">Agregar</RadzenButton>
-                                </Form>
+
+                                <RadzenFormField Text="Total Pasivo" Style="width:100%">
+                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.totalPasivo InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" Disabled />
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> estadoContableDto.totalPasivo)" />
+
+                            </div>
+
+                            <div class="">
+                                <RadzenFormField Text="Patrimonio Neto" Style="width:100%">
+                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.patrimonioNeto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" Disabled />
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> estadoContableDto.patrimonioNeto)" />
                             </div>
                         </div>
 
-                        <RadzenGrid @ref=grid Data="estadoContableDto.otrosRubros.AsEnumerable()" TItem="RubroPatrimonioNetoDto">
-                            <Columns>
-                                <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Property="denominacion" Title="Denominación" />
-                                <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Property="importe" Title="Importe" Format="{0.00}" Type="decimal" />
-                                <RadzenGridColumn TItem="RubroPatrimonioNetoDto">
-                                    <Template Context="rubro">
-                                        <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Title="Acción" />
-                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteRubro(rubro))"></RadzenButton>
-                                    </Template>
-                                </RadzenGridColumn>
-                            </Columns>
-                        </RadzenGrid>
-
                     </div>
+
+
+                    <div class="card w-50">
+
+                        <div class="w-100 d-flex">
+                            <!-- Rubros del Patrimonio Neto -->
+                            <div class="card w-50 ">
+                                <h5 class="card-header " style="font-weight: 400;color:#15153D">Rubros del Patrimonio Neto</h5>
+
+                                <!-- Repite esta estructura para otros campos -->
+                                <div class="card-body">
+
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Capital Suscripto" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.capitalSuscripto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.capitalSuscripto)" />
+                                    </RadzenStack>
+
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Ajuste de Capital" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.ajusteCapital InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.ajusteCapital)" />
+                                    </RadzenStack>
+
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Aportes Irrevocables" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.aportesIrrevocables InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.aportesIrrevocables)" />
+                                    </RadzenStack>
+
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Prima Emisión" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.primaEmision InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.primaEmision)" />
+                                    </RadzenStack>
+
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Ganancias Reservadas" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasReservadas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.gananciasReservadas)" />
+                                    </RadzenStack>
+
+
+
+
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Pérdidas Acumuladas" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.perdidasAcumuladas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.perdidasAcumuladas)" />
+                                    </RadzenStack>
+
+
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Ganancias / Pérdidas del Ejercicio" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasPerdidasEjercicio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        @* <ValidationMessage For="@(()=> estadoContableDto.gananciasPerdidasEjercicio)" /> *@
+                                    </RadzenStack>
+
+
+                                    <RadzenStack class="mt-2 mb-2">
+                                        <RadzenFormField Text="Reserva Lega" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.reservaLegal InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                        </RadzenFormField>
+                                        <ValidationMessage For="@(()=> estadoContableDto.reservaLegal)" />
+                                    </RadzenStack>
+
+                                </div>
+
+                            </div>
+                            <!--Otros Rubros PN -->
+                            <div class="card w-50">
+
+                                <h5 class="card-header" style="font-weight: 400;color:#15153D">
+                                    Otros Rubros del Patrimonio Neto
+                                </h5>
+
+                                <div class="card-body">
+                                    <Form Model="rubroDto">
+
+                                        <div class="form-group">
+                                            <RadzenStack class="mt-2 mb-2">
+                                                <RadzenFormField Text="Denominación" Style="width:100%">
+                                                    <RadzenTextBox @bind-Value="@denominacionDto" id="txtAddress" />
+                                                </RadzenFormField>
+
+                                            </RadzenStack>
+                                        </div>
+
+                                        <RadzenStack class="mt-2 mb-2">
+                                            <RadzenFormField Text="Importe" Style="width:100%">
+                                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@importeDto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%" />
+                                            </RadzenFormField>
+                                            <ValidationMessage For="@(()=>rubroDto.importe)" />
+                                        </RadzenStack>
+
+                                        <RadzenButton ButtonStyle="ButtonStyle.Primary" class="d-flex justify-content-center" Click="@insertRubro">Agregar</RadzenButton>
+                                    </Form>
+                                </div>
+                            </div>
+                            <RadzenGrid @ref=grid Data="estadoContableDto.otrosRubros.AsEnumerable()" TItem="RubroPatrimonioNetoDto">
+                                <Columns>
+                                    <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Property="denominacion" Title="Denominación" />
+                                    <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Property="importe" Title="Importe" Format="{0.00}" Type="decimal" />
+                                    <RadzenGridColumn TItem="RubroPatrimonioNetoDto">
+                                        <Template Context="rubro">
+                                            <RadzenGridColumn TItem="RubroPatrimonioNetoDto" Title="Acción" />
+                                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deleteRubro(rubro))"></RadzenButton>
+                                        </Template>
+                                    </RadzenGridColumn>
+                                </Columns>
+                            </RadzenGrid>
+                        </div>
+                    </div>
+
                 </div>
+
 
                 <RadzenStack class="mt-2 mb-2">
                     <RadzenButton ButtonType="Radzen.ButtonType.Submit" Click="@insertEECC" ButtonStyle="ButtonStyle.Primary">Guardar</RadzenButton>
@@ -338,7 +386,7 @@
 </div>
 
 
-@code{
+@code {
 
     private CultureInfo argentinianCulture = new CultureInfo("es-AR");
 
