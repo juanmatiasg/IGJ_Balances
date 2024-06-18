@@ -16,9 +16,9 @@ namespace Balances.Web.Services
         public static decimal ActivoNoCorriente(EstadoContableDto estadoContable)
         {
 
-            var total = estadoContable.bienesDeCambio + estadoContable.propiedadesDeInversion +
+            var total = estadoContable.bienesDeUso + estadoContable.propiedadesDeInversion +
                   estadoContable.inversionesActivoNoCorriente +
-                  estadoContable.inversionesActivoCorriente;
+                  estadoContable.activoNoCorrienteRestante;
 
 
             return total;
@@ -56,16 +56,8 @@ namespace Balances.Web.Services
 
         public static decimal PatrimonioNeto(EstadoContable estadoContable)
         {
-            if (estadoContable.TotalActivo != 0 && estadoContable.TotalPasivo != 0)
-            {
-
                 decimal rst = (decimal)(estadoContable.TotalActivo - estadoContable.TotalPasivo);
                 return rst;
-            }
-            else
-            {
-                return 0;
-            }
         }
 
         public static decimal OtrosRubrosPatrimonioNeto(EstadoContableDto estadoContableDto)
