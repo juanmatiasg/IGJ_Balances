@@ -7,6 +7,8 @@
         public string Denominacion { get; set; }
         public decimal Importe { get; set; }
 
+
+
         public RubroPatrimonioNeto(){ }
 
         public override bool Equals(object obj)

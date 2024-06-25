@@ -373,6 +373,11 @@
                                         </Template>
                                     </RadzenGridColumn>
                                 </Columns>
+                                <Columns>
+                                        <RadzenFormField Text="Total Otros Rubros" Style="width:100%">
+                                            <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@totalOtrosRubros InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;" Disabled />
+                                        </RadzenFormField>
+                                </Columns>
                             </RadzenGrid>
                         </div>
 
@@ -403,6 +408,7 @@
 
     private string denominacionDto = "";
     private decimal importeDto = 0;
+    private decimal totalOtrosRubros = 0;
 
     private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
     private EstadoContableDto estadoContableDto = new EstadoContableDto();
@@ -423,6 +429,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+
+
         await Load();
         await base.OnInitializedAsync();
     }
@@ -452,9 +460,15 @@
 
                         estadoContableDto.fechaInicio = rsp.Result.Caratula.FechaInicio;
                         estadoContableDto.fechaEstado = rsp.Result.Caratula.FechaDeCierre;
-                        estadoContableDto = new EstadoContableDto(rsp.Result.EstadoContable);
+                        estadoContableDto.SesionId = sesionId;
+                        await estadoContableService.insertEECC(estadoContableDto);
+
                     }
                 }
+
+
+
+
             }
             await grid.Reload();
             StateHasChanged();
@@ -473,6 +487,7 @@
         estadoContableDto.totalActivo = SumaEECC.TotalActivo(estadoContableDto);
         estadoContableDto.totalPasivo = SumaEECC.TotalPasivo(estadoContableDto);
         estadoContableDto.patrimonioNeto = SumaEECC.PatrimonioNeto(estadoContableDto);
+        estadoContableDto.totalRubro = SumaEECC.OtrosRubrosPatrimonioNeto(estadoContableDto);
         decimal OtrosRubrosPatrimonioNeto = SumaEECC.OtrosRubrosPatrimonioNeto(estadoContableDto);
 
 
@@ -543,6 +558,7 @@
 
     private async Task<ResponseDTO<BalanceDto>> insertRubro()
     {
+
         var rsp = new ResponseDTO<BalanceDto>();
         try
         {
@@ -554,12 +570,13 @@
             ValidationResult resultadoValidacion = rubrodtovalidator.Validate(rubroDto);
 
 
+
             if (resultadoValidacion.IsValid)
             {
-
                 rsp = await estadoContableService.insertRubro(rubroDto);
                 if (rsp.IsSuccess)
                 {
+                    totalOtrosRubros += rubroDto.importe;
                     var result = rsp.Result;
                     if (result != null)
                     {
@@ -593,6 +610,7 @@
 
             if (respuesta.IsSuccess)
             {
+                totalOtrosRubros -= rubroDto.importe;
                 estadoContableDto.otrosRubros.Remove(rubroDto);
                 respuesta.Message = "Se eliminó el rubro sastifactoriamente";
 
@@ -618,9 +636,11 @@
         if (rubros != null)
         {
             estadoContableDto.otrosRubros.Clear();
+
             foreach (var rubro in rubros)
             {
                 estadoContableDto.otrosRubros.Add(new RubroPatrimonioNetoDto { codigo = rubro.Codigo, denominacion = rubro.Denominacion, importe = rubro.Importe, });
+
             }
         }
     }

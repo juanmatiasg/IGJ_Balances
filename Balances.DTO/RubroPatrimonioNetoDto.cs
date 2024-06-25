@@ -8,6 +8,7 @@
         public string denominacion { get; set; }
         public decimal importe { get; set; }
 
+
         public RubroPatrimonioNetoDto() { }
 
 

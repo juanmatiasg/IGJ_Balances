@@ -47,6 +47,9 @@
         public decimal? GananciasPerdidasEjercicio { get; set; }
         public decimal? ReservaLegal { get; set; }
 
+        public decimal totalRubro { get; set; }
+
+
         private List<RubroPatrimonioNeto> _OtrosRubros;
         public List<RubroPatrimonioNeto> OtrosRubros
         {
