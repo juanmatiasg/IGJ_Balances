@@ -39,7 +39,7 @@
                     <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion />
                     <ValidationMessage For="@(()=> libext.FechaUltimaRegistracion)" />
                     <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
-                    <input placeholder="Folio de la ult Reg." class="form-control" type="number" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
+                    <input placeholder="Folio" class="form-control" type="number" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
                     <ValidationMessage For="@(()=> libext.FolioUltimaRegistracion)" />
                     <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
 
@@ -79,7 +79,7 @@
 
                 <div class=" d-flex col-3">
                     <input type="date" @bind=libext.FechaUltimaRegistracion placeholder="N/C" class="form-control" disabled />
-                    <input placeholder="Folio de la ult Reg." type="number" class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" disabled />
+                    <input placeholder="Folio" type="number" class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" disabled />
 
                 </div>
 
@@ -125,7 +125,7 @@ else
             <div class="d-flex col-3">
                 <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion />
                 <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
-                <input placeholder="Folio de la ult Reg." type="number" class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
+                <input placeholder="Folio" type="number" class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
                 <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
             </div>
 
