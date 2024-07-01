@@ -80,7 +80,7 @@
                             <h5 style="color:#15153D">Email: <b>@(modelo.Email)</b></h5>
                         </RadzenStack>
                     </div>
-                    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@EditarCaratula Text="Editar Caratula" ButtonStyle="ButtonStyle.Info" />
+                    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@ResetCaratula Text="Editar Caratula" ButtonStyle="ButtonStyle.Info" />
 
                 </RadzenCard>
             </div>
@@ -176,7 +176,16 @@
                         </div>
 
                         <div class="col mt-4 mb-4 d-flex justify-content-center">
-                            <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@IniciarTramite Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
+                            @if (modelo.Entidad.Domicilio != null)
+                            {
+                                <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@EditarCaratula Text="Guardar" ButtonStyle="ButtonStyle.Info" />
+
+                            }
+                            else
+                            {
+                                <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@IniciarTramite Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
+
+                            }
                         </div>
                     </EditForm>
                 </RadzenStack>
@@ -463,11 +472,84 @@
 
     }
 
-    private async Task EditarCaratula()
+    private void ResetCaratula()
     {
         tramiteIniciado = false;
+    }
+
+    private async Task EditarCaratula()
+    {
+
+
+        try
+        {
+
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            modelo.SesionId = sesionId;
+
+
+            CaratulaValidator caratulaValidator = new();
+            ValidationResult result = caratulaValidator.Validate(modelo);
+
+
+            if (result.IsValid)
+            {
+                var alerta = await swal.FireAsync(new SweetAlertOptions
+                    {
+                        Title = "Inicio de tramite presentacion de balances y asamblea",
+                        Text = $" Verique Datos: {modelo.Entidad.RazonSocial} {modelo.Entidad.TipoEntidad}, Correlativo: {modelo.Entidad.Correlativo} Fecha cierre ejercicio: {modelo.FechaDeCierre?.ToString("dd/MM/yyyy")}",
+                        Icon = SweetAlertIcon.Warning,
+                        ShowCancelButton = true,
+                        CancelButtonText = "Cancelar",
+                        ConfirmButtonText = "Confirmar"
+
+                    });
+                if (alerta.IsConfirmed)
+                {
+                    var rsp = await caratulaService.updateCaratula(modelo);
+
+                    if (rsp.IsSuccess)
+                    {
+                        await swal.FireAsync(new SweetAlertOptions
+                            {
+                                Title = "Presentacion iniciada exitosamente",
+                                Text = $" Te va a llegar un correo {modelo.Email} con un enlace para poder continuar la carga en cualquier instante y lugar.  ",
+                                Icon = SweetAlertIcon.Success,
+                                ShowCancelButton = true,
+                                ConfirmButtonText = "Aceptar"
+
+                            });
+
+                        isActive = true;
+                        tramiteIniciado = true;
+
+
+                        StateHasChanged();
+                    }
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: IniciarTramites {ex.Message}");
+            await swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Error",
+                    Text = $"No se ha podido iniciar el tramite de presentación",
+                    Icon = SweetAlertIcon.Error,
+                    ShowCancelButton = true,
+                    ConfirmButtonText = "Aceptar"
+
+                });
+        }
+
+
+        StateHasChanged();
+
+
+        StateHasChanged();
 
     }
 
 }
-

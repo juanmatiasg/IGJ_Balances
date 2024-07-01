@@ -6,6 +6,8 @@ namespace Balances.Web.Services.Implementation
     {
 
         Task<ResponseDTO<BalanceDto>> insertCaratula(CaratulaDto caratulaDto);
+
+        Task<ResponseDTO<BalanceDto>> updateCaratula(CaratulaDto caratulaDto);
         Task<ResponseDTO<BalanceDto>> loadCaratula(string id);
 
 
