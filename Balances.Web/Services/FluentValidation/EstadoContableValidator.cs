@@ -27,76 +27,64 @@ namespace Balances.Web.Services.FluentValidation
 
 
             //RUBROBALANCE
-            RuleFor(_ => _.cajaYBancos).Cascade(CascadeMode.Stop)
-                     .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto de caja");
+            
 
             RuleFor(_ => _.inversionesActivoCorriente).Cascade(CascadeMode.Stop)
-                   .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto de inversiones");
+                   .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             RuleFor(_ => _.activoCorrienteRestante).Cascade(CascadeMode.Stop)
-                   .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto del activo corriente restante");
+                   .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             RuleFor(_ => _.bienesDeUso).Cascade(CascadeMode.Stop)
-               .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto de los bienes de uso");
+               .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
 
             RuleFor(_ => _.propiedadesDeInversion).Cascade(CascadeMode.Stop)
-              .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto de las propiedades de inversion");
+              .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
 
             RuleFor(_ => _.activoNoCorrienteRestante).Cascade(CascadeMode.Stop)
-               .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto del activo no corriente restante");
+               .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
 
             RuleFor(_ => _.activoNoCorriente).Cascade(CascadeMode.Stop)
-               .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto del activo no corriente corriente");
+               .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             RuleFor(_ => _.totalActivo).Cascade(CascadeMode.Stop)
-              .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto del total activo");
+              .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             RuleFor(_ => _.deudorPasivoCorriente).Cascade(CascadeMode.Stop)
-               .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto de deudas del pasivo corriente");
+               .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             RuleFor(_ => _.deudorPasivoNoCorriente).Cascade(CascadeMode.Stop)
-               .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto de deudas del pasivo no corriente");
+               .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             RuleFor(_ => _.deudorPasivoNoCorriente).Cascade(CascadeMode.Stop)
-            .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto de deudas del pasivo no corriente");
+            .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             RuleFor(_ => _.pasivoNoCorriente).Cascade(CascadeMode.Stop)
-            .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto del pasivo no coriente");
+            .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
             RuleFor(_ => _.totalPasivo).Cascade(CascadeMode.Stop)
-           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto del total pasivo");
+           .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             RuleFor(_ => _.totalPasivo).Cascade(CascadeMode.Stop)
-           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el monto del patrimonio neto");
+           .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             //RUBROBALANCE
 
             RuleFor(_ => _.capitalSuscripto).Cascade(CascadeMode.Stop)
-           .GreaterThan(0).WithMessage("Debe ingresar el capital suscripto");
+           .GreaterThan(0).WithMessage("El Capital suscripto debe ser 1 o mayor a 1");
 
-
-            RuleFor(_ => _.ajusteCapital).Cascade(CascadeMode.Stop)
-           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar el ajuste del capital");
 
             RuleFor(_ => _.aportesIrrevocables).Cascade(CascadeMode.Stop)
-           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar los aportes irrevocables");
+           .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
             RuleFor(_ => _.primaEmision).Cascade(CascadeMode.Stop)
-           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar la prima de emision");
+           .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
-            RuleFor(_ => _.gananciasReservadas).Cascade(CascadeMode.Stop)
-          .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar las ganancias reservadas");
-
-            RuleFor(_ => _.perdidasAcumuladas).Cascade(CascadeMode.Stop)
-           .LessThanOrEqualTo(0).WithMessage("Las perdidas deben ser numeros negativos");
-
-           // RuleFor(_ => _.gananciasPerdidasEjercicio).Cascade(CascadeMode.Stop)
-           //.GreaterThanOrEqualTo(0).WithMessage("Debe ingresar las ganancias/perdidas del ejercicio");
 
             RuleFor(_ => _.reservaLegal).Cascade(CascadeMode.Stop)
-           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar la reserva legal");
+           .GreaterThanOrEqualTo(0).WithMessage("No pueden ser valores negativos");
 
 
         }

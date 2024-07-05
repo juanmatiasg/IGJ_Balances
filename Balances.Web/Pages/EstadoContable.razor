@@ -299,36 +299,29 @@
                                     <div class="w-50">
 
                                         <RadzenStack class="mt-2 mb-2">
-                                            <RadzenFormField Text="Ganancias Reservadas" Style="width:100%">
-                                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasReservadas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;text-align:end" />
-                                            </RadzenFormField>
-                                            <ValidationMessage For="@(()=> estadoContableDto.gananciasReservadas)" />
-                                        </RadzenStack>
-
-
-
-
-                                        <RadzenStack class="mt-2 mb-2">
-                                            <RadzenFormField Text="Pérdidas Acumuladas" Style="width:100%">
-                                                <RadzenNumeric class="text-danger" TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.perdidasAcumuladas InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;text-align:end" />
-                                            </RadzenFormField>
-                                            <ValidationMessage For="@(()=> estadoContableDto.perdidasAcumuladas)" />
-                                        </RadzenStack>
-
-
-                                        <RadzenStack class="mt-2 mb-2">
-                                            <RadzenFormField Text="Ganancias / Pérdidas del Ejercicio" Style="width:100%">
-                                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasPerdidasEjercicio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;text-align:end" />
-                                            </RadzenFormField>
-                                            @* <ValidationMessage For="@(()=> estadoContableDto.gananciasPerdidasEjercicio)" /> *@
-                                        </RadzenStack>
-
-
-                                        <RadzenStack class="mt-2 mb-2">
                                             <RadzenFormField Text="Reserva Legal" Style="width:100%; ">
                                                 <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.reservaLegal InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;text-align:end" />
                                             </RadzenFormField>
                                             <ValidationMessage For="@(()=> estadoContableDto.reservaLegal)" />
+                                        </RadzenStack>
+
+
+                                        <RadzenStack class="mt-2 mb-2">
+                                            <RadzenFormField Text="Resultados Acumulados del Ejercicio" Style="width:100%">
+                                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.gananciasPerdidasInicioEjercicio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;text-align:end" />
+                                            </RadzenFormField>
+                                        </RadzenStack>
+
+                                        <RadzenStack class="mt-2 mb-2">
+                                            <RadzenFormField Text="Resultados del Ejercicio" Style="width:100%">
+                                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@estadoContableDto.resultadosEjercicio InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;text-align:end" />
+                                            </RadzenFormField>
+                                        </RadzenStack>
+
+                                        <RadzenStack>
+                                            <RadzenFormField Text="Total Otros Rubros" Style="width:100%">
+                                                <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@totalOtrosRubros InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;" Disabled />
+                                            </RadzenFormField>
                                         </RadzenStack>
                                     </div>
 
@@ -343,16 +336,16 @@
                                         <div class="d-flex gap-1 mt-2 mb-2 w-100">
                                             <RadzenStack class="w-75">
                                                 <RadzenFormField Text="Denominación" >
-                                                    <RadzenTextBox @bind-Value="@denominacionDto" id="txtAddress" />
+                                                    <RadzenTextBox @bind-Value="@rubroDto.denominacion" id="txtAddress" />
                                                 </RadzenFormField>
-
+                                                <ValidationMessage For="@(()=> rubroDto.denominacion)" />
                                             </RadzenStack>
 
                                             <RadzenStack class="w-25" >
                                                 <RadzenFormField Text="Importe" >
-                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@importeDto InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;text-align:end" />
+                                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@rubroDto.importe InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;text-align:end" />
                                                 </RadzenFormField>
-                                                <ValidationMessage For="@(()=>rubroDto.importe)" />
+                                                <ValidationMessage For="@(()=> rubroDto.importe)" />
                                             </RadzenStack>
                                         </div>
 
@@ -374,11 +367,7 @@
                                     </RadzenGridColumn>
                                 </Columns>
                             </RadzenGrid>
-                            <RadzenStack>
-                                <RadzenFormField Text="Total Otros Rubros" Style="width:100%">
-                                    <RadzenNumeric TValue="decimal" Format="c" Culture=@argentinianCulture @bind-Value=@totalOtrosRubros InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width:100%;" Disabled />
-                                </RadzenFormField>
-                            </RadzenStack>
+                            
                         </div>
 
                     </div>
