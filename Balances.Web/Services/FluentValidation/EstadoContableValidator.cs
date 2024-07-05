@@ -90,7 +90,7 @@ namespace Balances.Web.Services.FluentValidation
           .GreaterThanOrEqualTo(0).WithMessage("Debe ingresar las ganancias reservadas");
 
             RuleFor(_ => _.perdidasAcumuladas).Cascade(CascadeMode.Stop)
-           .LessThanOrEqualTo(0).WithMessage("Debe ingresar las perdidas acumuladas");
+           .LessThanOrEqualTo(0).WithMessage("Las perdidas deben ser numeros negativos");
 
            // RuleFor(_ => _.gananciasPerdidasEjercicio).Cascade(CascadeMode.Stop)
            //.GreaterThanOrEqualTo(0).WithMessage("Debe ingresar las ganancias/perdidas del ejercicio");

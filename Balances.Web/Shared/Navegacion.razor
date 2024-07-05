@@ -28,11 +28,19 @@ else
 }
 
 <!--Barra de navegación-->
-<div class="container-fluid">
-    <RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center">
 
-        <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()" RenderMode="TabRenderMode.Client">
-            <Tabs>
+<style>
+
+    .rz-tabview-panel {
+        padding: 0 !important;
+    }
+</style>
+
+<div class="container-fluid  my-0">
+    <RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center" class="rz-tabview-panel">
+
+        <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()"  RenderMode="TabRenderMode.Client" >
+            <Tabs >
                 <div class="container d-flex flex-wrap navbar navbar-expand-xl">
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
