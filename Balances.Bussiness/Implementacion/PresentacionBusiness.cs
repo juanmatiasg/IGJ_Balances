@@ -64,6 +64,9 @@ namespace Balances.Bussiness.Implementacion
 
             var bal = _balanceBusiness.GetById(id);
 
+            BalanceResumen resumen = BalanceMapper.MapToResumen(bal.Result);
+            string hash = HashHelper.CalculateHash(resumen);
+            bal.Result.HASH = hash;
 
             //genero QR (PNG en Base 64) con el id  como enlace oculto
             var qr = _qRService.QRGenerator(bal.Result.Id);
@@ -73,6 +76,7 @@ namespace Balances.Bussiness.Implementacion
             // lleno las plantillas con los datos del balance
             var plantillapdf = _presentacionService.CrearPlantillaPresentacionPdf(bal.Result, qr);
             var plantillahtml = _presentacionService.CrearPlantillaPresentacionEmail(bal.Result, qr);
+
 
             //pdf
 

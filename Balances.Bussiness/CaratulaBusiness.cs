@@ -40,10 +40,7 @@ namespace Balances.Bussiness
             _logger = logger;
         }
 
-        public bool Delete(CaratulaDto modelo)
-        {
-            throw new NotImplementedException();
-        }
+
 
 
 
@@ -83,6 +80,56 @@ namespace Balances.Bussiness
                     respuesta.Result = balance;
                     _logger.LogInformation($"CaratulaBusiness.Insert --> {caratulaSerializada}");
                 }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.Message = ex.Message;
+                _logger.LogError($"CaratulaBusiness.Insert  \n {caratulaSerializada}  \n {ex.Message} ");
+
+
+            }
+            return respuesta;
+        }
+
+        public ResponseDTO<BalanceDto> Update(CaratulaDto modelo)
+        {
+            ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
+            respuesta.IsSuccess = false;
+            var caratulaSerializada = JsonConvert.SerializeObject(modelo);
+            try
+            {
+
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+
+                var balanceDto = _balanceBusiness.GetById(id);
+
+                var modeloDto = _mapper.Map<Caratula>(modelo);
+                balanceDto.Result.Caratula = modeloDto;
+                var rsp = _balanceBusiness.Update(balanceDto.Result);
+
+                // si actualizo correctamente
+
+                if (rsp != null)
+                {
+
+
+                    respuesta.IsSuccess = true;
+                    respuesta.Message = "Caratula actualizada correctamente";
+                    respuesta.Result = rsp.Result;
+                    _logger.LogInformation($"CaratulaBusiness.Update --> {caratulaSerializada}");
+                }
+
+                var plantillahtml = CrearPlantillaInicioTramite(balanceDto.Result);
+
+                var email = CrearEmaiInicioTramite(balanceDto.Result, plantillahtml);
+                //var EmailRequest = _emailSenderService.EmaiInicioTramite(balanceDto);
+                _emailSenderService.SendEmailAsync(email);
+
+
+
 
 
 
@@ -201,15 +248,9 @@ namespace Balances.Bussiness
             return caratuladto;
         }
 
-        public IEnumerable<CaratulaDto> List()
-        {
-            throw new NotImplementedException();
-        }
 
-        public bool Update(CaratulaDto modelo)
-        {
-            throw new NotImplementedException();
-        }
+
+
 
     }
 }

@@ -22,5 +22,6 @@ namespace Balances.Model
         public Socios Socios { get; set; }
         public Contador Contador { get; set; }
         public Presentacion Presentacion { get; set; }
+        public string HASH { get; set; }
     }
 }

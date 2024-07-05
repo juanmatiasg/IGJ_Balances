@@ -5,15 +5,10 @@ namespace Balances.Bussiness.Contrato
 {
     public interface ICaratulaBusiness
     {
-
         ResponseDTO<Balance> Insert(CaratulaDto modelo);
 
-        bool Update(CaratulaDto modelo);
+        ResponseDTO<BalanceDto> Update(CaratulaDto modelo);
 
-        bool Delete(CaratulaDto modelo);
 
-        IEnumerable<CaratulaDto> List();
-
-    
     }
 }

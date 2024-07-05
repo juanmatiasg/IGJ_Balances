@@ -2,20 +2,20 @@
 
 namespace Balances.Utilities
 {
-    public class HashSha256
+    public class HashSHA256
     {
-        public static string CalcularHash(string filename)
+        public static string CalcularHash(string dato)
         {
-            var hashbinario = GetHashSha256(filename);
+            var hashbinario = GetHashSha256(dato);
 
             return BytesToString(hashbinario);
 
         }
 
         // Compute the file's hash.
-        private static byte[] GetHashSha256(string filename)
+        private static byte[] GetHashSha256(string dato)
         {
-            using (FileStream stream = File.OpenRead(filename))
+            using (FileStream stream = File.OpenRead(dato))
             {
                 var hash = SHA256.HashData(stream);
                 return hash;

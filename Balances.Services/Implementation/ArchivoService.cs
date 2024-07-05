@@ -73,7 +73,7 @@ namespace Balances.Services.Implementation
 
                         File.WriteAllBytes(fullPath, ms.ToArray());
 
-                        var hash = HashSha256.CalcularHash(fullPath);
+                        var hash = HashSHA256.CalcularHash(fullPath);
                         newFile.Hash = hash;
                     }
 

@@ -22,6 +22,7 @@ namespace Balances.DTO
         public Contador Contador { get; set; }
         public SociosDto Socios { get; set; }
         public Presentacion Presentacion { get; set; }
+        public string HASH { get; set; }
 
         // Constructor para asegurar la inicialización de Presentacion
         public BalanceDto()
