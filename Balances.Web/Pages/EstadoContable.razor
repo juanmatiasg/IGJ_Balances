@@ -1,4 +1,5 @@
 ﻿@page "/EstadoContable/{balid?}"
+@using AutoMapper
 @using Balances.DTO;
 @using Balances.Model;
 @using Balances.Utilities;
@@ -12,6 +13,7 @@
 @using Microsoft.AspNetCore.Http;
 @using CurrieTechnologies.Razor.SweetAlert2;
 
+
 @inject IEstadoContableClientService estadoContableService;
 @inject NavigationManager NavigationManager
 @inject IBalanceClientService balanceService
@@ -20,6 +22,8 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject SweetAlertService swal
 @inject NotificationService notificationService
+@inject IMapper mapper
+
 
 
 
@@ -397,7 +401,7 @@
 
     private string denominacionDto = "";
     private decimal importeDto = 0;
-    private decimal totalOtrosRubros = 0;
+    private decimal totalOtrosRubros;
 
     private RubroPatrimonioNetoDto rubroDto = new RubroPatrimonioNetoDto();
     private EstadoContableDto estadoContableDto = new EstadoContableDto();
@@ -450,7 +454,12 @@
                         estadoContableDto.fechaInicio = rsp.Result.Caratula.FechaInicio;
                         estadoContableDto.fechaEstado = rsp.Result.Caratula.FechaDeCierre;
                         estadoContableDto.SesionId = sesionId;
-                        await estadoContableService.insertEECC(estadoContableDto);
+                        if(rsp.Result.EstadoContable != null){
+
+                        estadoContableDto = mapper.Map<EstadoContableDto>(rsp.Result.EstadoContable);
+                        }else{
+                         await estadoContableService.insertEECC(estadoContableDto);
+                        }
 
                     }
                 }
@@ -552,8 +561,6 @@
         try
         {
             rubroDto.codigo = Guid.NewGuid().ToString();
-            rubroDto.denominacion = denominacionDto;
-            rubroDto.importe = importeDto;
             rubroDto.SesionId = sesionId;
             RubroDtoValidator rubrodtovalidator = new();
             ValidationResult resultadoValidacion = rubrodtovalidator.Validate(rubroDto);
@@ -565,6 +572,7 @@
                 rsp = await estadoContableService.insertRubro(rubroDto);
                 if (rsp.IsSuccess)
                 {
+                     
                     totalOtrosRubros += rubroDto.importe;
                     var result = rsp.Result;
                     if (result != null)
