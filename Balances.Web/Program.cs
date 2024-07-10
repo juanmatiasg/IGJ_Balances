@@ -1,3 +1,4 @@
+using Balances.Utilities;
 using Balances.Web;
 using Balances.Web.Services.Contracts;
 using Balances.Web.Services.Implementation;
@@ -29,6 +30,8 @@ builder.Services.AddScoped<NotificationService>();
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://balanceapi.justicia.ar/") });
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7172/") });
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 //https://localhost:7172/
 

@@ -47,9 +47,8 @@ namespace Balances.DTO
         public decimal ajusteCapital { get; set; }
         public decimal aportesIrrevocables { get; set; }
         public decimal primaEmision { get; set; }
-        public decimal gananciasReservadas { get; set; }
-        public decimal perdidasAcumuladas { get; set; }
-        public decimal gananciasPerdidasEjercicio { get; set; }
+        public decimal resultadosEjercicio { get; set; }
+        public decimal gananciasPerdidasInicioEjercicio { get; set; }
         public decimal reservaLegal { get; set; }
 
         public decimal totalRubro { get; set; }
@@ -119,9 +118,8 @@ namespace Balances.DTO
             ajusteCapital = (decimal)a.AjusteCapital;
             aportesIrrevocables = (decimal)a.AportesIrrevocables;
             primaEmision = (decimal)a.PrimaEmision;
-            gananciasReservadas = (decimal)a.GananciasReservadas;
-            perdidasAcumuladas = (decimal)a.PerdidasAcumuladas;
-            gananciasPerdidasEjercicio = (decimal)a.GananciasPerdidasEjercicio;
+            resultadosEjercicio = (decimal)a.resultadosEjercicio;
+            gananciasPerdidasInicioEjercicio = (decimal)a.gananciasPerdidasInicioEjercicio;
             reservaLegal = (decimal)a.ReservaLegal;
             otrosRubros = ConvertirARubroPatrimonioNetoDto(a.OtrosRubros);
         }

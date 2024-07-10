@@ -14,23 +14,19 @@
                     <label class="w-50">@libext.Tipo</label>
                     <input placeholder="Nombre del Libro" class="form-control w-50" @bind="libext.Nombre" />
                     <ValidationMessage For="@(()=> libext.Nombre)" />
-                    <small id="msgError" class="text-danger">@msgErrorNombre</small>
                 </div>
 
 
                 <!--  -->
                 <div class="d-flex col-4">
                     <input placeholder="Nro.Rúbrica" type="text" class="form-control" @bind=libext.NumeroRubrica />
-                    <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
                     <ValidationMessage For="@(()=> libext.NumeroRubrica)" />
 
                     <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica />
-                    <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
                     <ValidationMessage For="@(()=> libext.FechaRubrica)" />
 
                     <input type="number" placeholder="Folio" class="form-control" @bind=libext.FolioObraTranscripcion />
                     <ValidationMessage For="@(()=> libext.NumeroRubrica)" />
-                    <small id="msgError" class="text-danger">@msgErrorFolio</small>
                 </div>
 
 
@@ -38,10 +34,8 @@
                 <div class=" d-flex col-3">
                     <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion />
                     <ValidationMessage For="@(()=> libext.FechaUltimaRegistracion)" />
-                    <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
-                    <input placeholder="Folio" class="form-control" type="number" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
+                    <input placeholder="Folio" class="form-control" type="number" @bind=libext.FolioUltimaRegistracion />
                     <ValidationMessage For="@(()=> libext.FolioUltimaRegistracion)" />
-                    <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
 
                 </div>
 
@@ -49,7 +43,6 @@
                 <div class="d-flex col-1">
                     <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" />
                     <label class="form-check-label">N/C</label>
-                    <small id="msgError" class="text-danger"></small>
                 </div>
 
 
@@ -79,7 +72,7 @@
 
                 <div class=" d-flex col-3">
                     <input type="date" @bind=libext.FechaUltimaRegistracion placeholder="N/C" class="form-control" disabled />
-                    <input placeholder="Folio" type="number" class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" disabled />
+                    <input placeholder="Folio" type="number" class="form-control" @bind=libext.FolioUltimaRegistracion disabled />
 
                 </div>
 
@@ -103,7 +96,6 @@ else
                 <label class="w-50">@libext.Tipo</label>
                 <input placeholder="Nombre del Libro" class="form-control w-50" @bind="libext.Nombre" />
                 <ValidationMessage For="@(()=> libext.Nombre)" />
-                <small id="msgError" class="text-danger">@msgErrorNombre</small>
             </div>
 
 
@@ -111,22 +103,17 @@ else
 
                 <input placeholder="Nro.Rúbrica" type="text" class="form-control" @bind=libext.NumeroRubrica />
                 <ValidationMessage For="@(()=> libext.NumeroRubrica)" />
-                <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
 
                 <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind="libext.FechaRubrica" />
-                <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
 
                 <input placeholder="Folio" class="form-control" type="number" @bind=libext.FolioObraTranscripcion />
-                <small id="msgError" class="text-danger">@msgErrorFolio</small>
             </div>
 
 
 
             <div class="d-flex col-3">
                 <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion />
-                <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
-                <input placeholder="Folio" type="number" class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
-                <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
+                <input placeholder="Folio" type="number" class="form-control" @bind=libext.FolioUltimaRegistracion  />
             </div>
 
 
@@ -135,12 +122,6 @@ else
 }
 
 @code {
-    private string msgErrorFolio = "";
-    private string msgErrorNroRubrica = "";
-    private string msgErrorNombre = "";
-    private string msgErrorFechaRubrica = "";
-    private string msgErrorFechaUltimaRegistracion = "";
-    private string msgErrormsgErrorFolioUltimaRegistracion = "";
     private const string ESTADO_CONTABLE = "Estados Contables Consolidados";
     private const string INFORME_ORGANO = "Informe Organo Fiscalización";
 
@@ -168,97 +149,6 @@ else
     [Parameter]
     public EventCallback<LibroDto> OnBlur { get; set; }
 
-    private async Task OnBlurHandler()
-    {
-        await OnBlur.InvokeAsync(libroP);
-
-        if (checkData())
-        {
-            await OnBlur.InvokeAsync(libroP);
-        }
-    }
-
-    private bool checkData()
-    {
-        // Nombre
-        if (string.IsNullOrEmpty(libroP.Nombre))
-        {
-            msgErrorNombre = "El campo no puede estar vacío";
-            return false;
-        }
-        else if (Validator.IsNumeric(libroP.Nombre))
-        {
-            msgErrorNombre = "No puedes ingresar un valor numérico";
-            return false;
-        }
-        else
-        {
-            msgErrorNombre = "";
-        }
-
-        // Nro Rubrica
-        if (string.IsNullOrEmpty(libroP.NumeroRubrica))
-        {
-            msgErrorNroRubrica = "El campo no puede estar vacío";
-            return false;
-        }
-        else if (!Validator.IsNumeric(libroP.NumeroRubrica))
-        {
-            msgErrorNroRubrica = "No puedes ingresar caracteres";
-            return false;
-        }
-        else
-        {
-            msgErrorNroRubrica = "";
-        }
-
-        // Fecha Rubrica
-        if (libroP.FechaRubrica == null)
-        {
-            msgErrorFechaRubrica = "No seleccionaste la fecha correspondiente";
-            return false;
-        }
-        else
-        {
-            msgErrorFechaRubrica = "";
-        }
-
-        // Folio Obra Transcripcion
-        if (string.IsNullOrEmpty(libroP.FolioObraTranscripcion))
-        {
-            msgErrorFolio = "El campo no puede estar vacío";
-            return false;
-        }
-        else
-        {
-            msgErrorFolio = "";
-        }
-
-        // FechaUltimaRegistracion
-        if (libroP.FechaUltimaRegistracion == null)
-        {
-            msgErrorFechaUltimaRegistracion = "No seleccionaste la fecha correspondiente";
-            return false;
-        }
-        else
-        {
-            msgErrorFechaUltimaRegistracion = "";
-        }
-
-        // Folio Ultima Registracion
-        if (string.IsNullOrEmpty(libroP.FolioUltimaRegistracion))
-        {
-            msgErrormsgErrorFolioUltimaRegistracion = "El campo no puede estar vacío";
-            return false;
-        }
-        else
-        {
-            msgErrormsgErrorFolioUltimaRegistracion = "";
-        }
-
-        // Si todos los campos pasan la validación o si algunos campos son "N/C", entonces retorna true
-        return true;
-    }
 }
 
 

@@ -42,16 +42,8 @@ namespace Balances.Web.Services
 
         public static decimal PatrimonioNeto(EstadoContableDto estadoContable)
         {
-            if (estadoContable.totalActivo != 0 && estadoContable.totalPasivo != 0)
-            {
-
                 decimal rst = estadoContable.totalActivo - estadoContable.totalPasivo;
                 return rst;
-            }
-            else
-            {
-                return 0;
-            }
         }
 
         public static decimal PatrimonioNeto(EstadoContable estadoContable)
@@ -67,8 +59,8 @@ namespace Balances.Web.Services
             var Total =
                 estadoContableDto.ajusteCapital + estadoContableDto.capitalSuscripto
                 + estadoContableDto.aportesIrrevocables + estadoContableDto.primaEmision +
-                estadoContableDto.gananciasReservadas + estadoContableDto.perdidasAcumuladas +
-                estadoContableDto.gananciasPerdidasEjercicio + estadoContableDto.reservaLegal
+                estadoContableDto.resultadosEjercicio+
+                estadoContableDto.gananciasPerdidasInicioEjercicio + estadoContableDto.reservaLegal
                 + SumaOtrosRubros;
 
             return Total;
@@ -82,8 +74,8 @@ namespace Balances.Web.Services
             var Total =
                 estadoContable.AjusteCapital + estadoContable.CapitalSuscripto
                 + estadoContable.AportesIrrevocables + estadoContable.PrimaEmision +
-                estadoContable.GananciasReservadas + estadoContable.PerdidasAcumuladas +
-                estadoContable.GananciasPerdidasEjercicio + estadoContable.ReservaLegal
+                estadoContable.resultadosEjercicio +
+                estadoContable.gananciasPerdidasInicioEjercicio + estadoContable.ReservaLegal
                 + SumaOtrosRubros;
 
             return (decimal)Total;
