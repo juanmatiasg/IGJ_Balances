@@ -65,11 +65,12 @@ namespace Balances.Bussiness.Implementacion
             var bal = _balanceBusiness.GetById(id);
 
             BalanceResumen resumen = BalanceMapper.MapToResumen(bal.Result);
-            string hash = HashHelper.CalculateHash(resumen);
+            var resumenBalSerializado = JsonConvert.SerializeObject(resumen);
+            string hash = HashHelper.CalculateHash(resumenBalSerializado);
             bal.Result.HASH = hash;
 
-            //genero QR (PNG en Base 64) con el id  como enlace oculto
-            var qr = _qRService.QRGenerator(bal.Result.Id);
+            //genero QR (PNG en Base 64) con el HASH  como enlace oculto
+            var qr = _qRService.QRGenerator(bal.Result.HASH);
 
 
 

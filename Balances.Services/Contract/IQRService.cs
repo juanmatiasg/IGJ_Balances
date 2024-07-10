@@ -2,6 +2,6 @@
 {
     public interface IQRService
     {
-        string QRGenerator(string id);
+        string QRGenerator(string hash);
     }
 }

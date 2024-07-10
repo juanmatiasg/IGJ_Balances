@@ -34,12 +34,13 @@ namespace Balances.DTO
 
     public static class HashHelper
     {
-        public static string CalculateHash(BalanceResumen balanceResumen)
+        public static string CalculateHash(string balanceResumen)
         {
             using (SHA256 sha256 = SHA256.Create())
             {
-                string rawData = $"{balanceResumen.Id}|{balanceResumen.Caratula}|{balanceResumen.EstadoContable}|{balanceResumen.Libros}|{balanceResumen.Socios}|{balanceResumen.Contador}";
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                //string rawData = $"{balanceResumen.Id}|{balanceResumen.Caratula}|{balanceResumen.EstadoContable}|{balanceResumen.Libros}|{balanceResumen.Socios}|{balanceResumen.Contador}";
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(balanceResumen));
 
                 StringBuilder builder = new StringBuilder();
                 foreach (byte b in bytes)

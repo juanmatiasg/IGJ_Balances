@@ -13,14 +13,14 @@ namespace Balances.Services.Implementation
             _logger = logger;
         }
 
-        public string QRGenerator(string cadena)
+        public string QRGenerator(string hash)
         {
 
             try
             {
                 //CREAR QR CON DATA
                 QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrData = QRCodeGenerator.GenerateQrCode(cadena, QRCodeGenerator.ECCLevel.Q);
+                QRCodeData qrData = QRCodeGenerator.GenerateQrCode(hash, QRCodeGenerator.ECCLevel.Q);
 
                 //VISUALIZACION DEL QR
                 PngByteQRCode qrCode = new PngByteQRCode(qrData);
