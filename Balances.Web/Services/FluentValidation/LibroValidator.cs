@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Balances.Web.Services.FluentValidation
 {
-    public class LibroValidator : AbstractValidator<LibroDtoExtended>
+    public class LibroDtoExtendedValidator : AbstractValidator<LibroDtoExtended>
     {
-        public LibroValidator()
+        public LibroDtoExtendedValidator()
         {
             RuleFor(_ => _.Tipo).Cascade(CascadeMode.Stop)
                               .NotEmpty().WithMessage("Debe ingresar el tipo de libro");

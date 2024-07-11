@@ -46,6 +46,7 @@ namespace Balances.DTO
             AgregarLibro(librosDto.IVA);
             AgregarLibro(librosDto.IVACompras);
             AgregarLibro(librosDto.IVAVentas);
+            AgregarLibro(librosDto.LibroDiario);
         }
 
         public List<LibroDto> ObtenerLibros()

@@ -12,36 +12,66 @@
 
                 <div class="d-flex col-4">
                     <label class="w-50">@libext.Tipo</label>
-                    <input placeholder="Nombre del Libro" class="form-control w-50" @bind="libext.Nombre" />
-                    <ValidationMessage For="@(()=> libext.Nombre)" />
+                    <div class="d-flex flex-column w-50">
+                    <input placeholder="Nombre del Libro" class="form-control w-100" @bind="libext.Nombre" @onblur="OnBlurHandler" />
+                    @* <ValidationMessage For="@(()=> libext.Nombre)" /> *@
+                    <small id="msgError" class="text-danger">@msgErrorNombre</small>
+
+                    </div>
                 </div>
 
 
                 <!--  -->
                 <div class="d-flex col-4">
-                    <input placeholder="Nro.Rúbrica" type="text" class="form-control" @bind=libext.NumeroRubrica />
+                    <div class="d-flex flex-column">
+
+                        <input placeholder="Nro.Rúbrica" type="text" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
+                    <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
+                    </div>
+
                     <ValidationMessage For="@(()=> libext.NumeroRubrica)" />
 
-                    <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica />
+                    <div class="d-flex flex-column">
+
+                        <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind=libext.FechaRubrica @onblur="OnBlurHandler" />
+                    <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
+                    </div>
+
                     <ValidationMessage For="@(()=> libext.FechaRubrica)" />
 
-                    <input type="number" placeholder="Folio" class="form-control" @bind=libext.FolioObraTranscripcion />
+                    <div class="d-flex flex-column">
+
+                    <input type="number" placeholder="Folio" class="form-control" @bind=libext.FolioObraTranscripcion @onblur="OnBlurHandler" />
+                    <small id="msgError" class="text-danger">@msgErrorFolio</small>
+                    </div>
+
                     <ValidationMessage For="@(()=> libext.NumeroRubrica)" />
                 </div>
 
 
                 <!--  -->
                 <div class=" d-flex col-3">
-                    <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion />
+                    <div class="d-flex flex-column">
+
+                        <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
+                    <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
+                    </div>
+
                     <ValidationMessage For="@(()=> libext.FechaUltimaRegistracion)" />
-                    <input placeholder="Folio" class="form-control" type="number" @bind=libext.FolioUltimaRegistracion />
+
+                    <div class="d-flex flex-column">
+
+                    <input placeholder="Folio" class="form-control" type="number" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
+                    <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
+                    </div>
+
                     <ValidationMessage For="@(()=> libext.FolioUltimaRegistracion)" />
 
                 </div>
 
 
                 <div class="d-flex col-1">
-                    <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" />
+                    <input type="checkbox" class="form-check-input" @bind="libext.NoSabeNoContesta" @onblur="OnBlurHandler" />
                     <label class="form-check-label">N/C</label>
                 </div>
 
@@ -93,27 +123,58 @@ else
         <div class="row w-100">
 
             <div class="d-flex col-4">
+
                 <label class="w-50">@libext.Tipo</label>
-                <input placeholder="Nombre del Libro" class="form-control w-50" @bind="libext.Nombre" />
-                <ValidationMessage For="@(()=> libext.Nombre)" />
+                <div class="d-flex flex-column w-50">
+                    <input placeholder="Nombre del Libro" class="form-control w-100" @bind="libext.Nombre" @onblur="OnBlurHandler" />
+                    @* <ValidationMessage For="@(()=> libext.Nombre)" /> *@
+                    <small id="msgError" class="text-danger">@msgErrorNombre</small>
+
+                </div>
             </div>
 
 
             <div class="d-flex col-4">
 
-                <input placeholder="Nro.Rúbrica" type="text" class="form-control" @bind=libext.NumeroRubrica />
+                <div class="d-flex flex-column">
+                    <input placeholder="Nro.Rúbrica" type="text" class="form-control" @bind=libext.NumeroRubrica @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrorNroRubrica</small>
+                </div>
+
+
                 <ValidationMessage For="@(()=> libext.NumeroRubrica)" />
 
-                <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind="libext.FechaRubrica" />
+                <div class="d-flex flex-column">
 
-                <input placeholder="Folio" class="form-control" type="number" @bind=libext.FolioObraTranscripcion />
+                    <input type="date" placeholder="Fecha Rúbrica" class="form-control" @bind="libext.FechaRubrica" @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrorFechaRubrica</small>
+                </div>
+
+                <div class="d-flex flex-column">
+
+                <input placeholder="Folio" class="form-control" type="number" @bind=libext.FolioObraTranscripcion @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrorFolio</small>
+                </div>
+
             </div>
 
 
 
             <div class="d-flex col-3">
-                <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion />
-                <input placeholder="Folio" type="number" class="form-control" @bind=libext.FolioUltimaRegistracion  />
+                <div class="d-flex flex-column">
+                    <input type="date" placeholder="Fecha última Registración" class="form-control" @bind=libext.FechaUltimaRegistracion @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrorFechaUltimaRegistracion</small>
+                </div>
+
+
+                <div class="d-flex flex-column">
+
+                <input placeholder="Folio" type="number" class="form-control" @bind=libext.FolioUltimaRegistracion @onblur="OnBlurHandler" />
+                <small id="msgError" class="text-danger">@msgErrormsgErrorFolioUltimaRegistracion</small>
+                </div>
+
+                <ValidationMessage For="@(()=> libext.FolioUltimaRegistracion)" />
+
             </div>
 
 
@@ -122,9 +183,14 @@ else
 }
 
 @code {
+    private string msgErrorFolio = "";
+    private string msgErrorNroRubrica = "";
+    private string msgErrorNombre = "";
+    private string msgErrorFechaRubrica = "";
+    private string msgErrorFechaUltimaRegistracion = "";
+    private string msgErrormsgErrorFolioUltimaRegistracion = "";
     private const string ESTADO_CONTABLE = "Estados Contables Consolidados";
     private const string INFORME_ORGANO = "Informe Organo Fiscalización";
-
 
     [Parameter]
     public LibroDto libroP
@@ -148,6 +214,93 @@ else
 
     [Parameter]
     public EventCallback<LibroDto> OnBlur { get; set; }
+
+    private async Task OnBlurHandler()
+    {
+
+        if (checkData())
+        {
+            await OnBlur.InvokeAsync(libroP);
+        }
+    }
+
+
+    private bool checkData()
+    {
+        // Nombre
+        if (string.IsNullOrEmpty(libroP.Nombre))
+        {
+            msgErrorNombre = "El campo no puede estar vacío";
+            return false;
+        }
+        else if (Validator.IsNumeric(libroP.Nombre))
+        {
+            msgErrorNombre = "No puedes ingresar un valor numérico";
+            return false;
+        }
+        else
+        {
+            msgErrorNombre = "";
+        }
+
+        // Nro Rubrica
+        if (string.IsNullOrEmpty(libroP.NumeroRubrica))
+        {
+            msgErrorNroRubrica = "El campo no puede estar vacío";
+            return false;
+        }
+        else
+        {
+            msgErrorNroRubrica = "";
+        }
+
+        // Fecha Rubrica
+        if (libroP.FechaRubrica == null)
+        {
+            msgErrorFechaRubrica = "No seleccionaste la fecha correspondiente";
+            return false;
+        }
+        else
+        {
+            msgErrorFechaRubrica = "";
+        }
+
+        // Folio Obra Transcripcion
+        if (string.IsNullOrEmpty(libroP.FolioObraTranscripcion))
+        {
+            msgErrorFolio = "El campo no puede estar vacío";
+            return false;
+        }
+        else
+        {
+            msgErrorFolio = "";
+        }
+
+        // FechaUltimaRegistracion
+        if (libroP.FechaUltimaRegistracion == null)
+        {
+            msgErrorFechaUltimaRegistracion = "No seleccionaste la fecha correspondiente";
+            return false;
+        }
+        else
+        {
+            msgErrorFechaUltimaRegistracion = "";
+        }
+
+        // Folio Ultima Registracion
+        if (string.IsNullOrEmpty(libroP.FolioUltimaRegistracion))
+        {
+            msgErrormsgErrorFolioUltimaRegistracion = "El campo no puede estar vacío";
+            return false;
+        }
+        else
+        {
+            msgErrormsgErrorFolioUltimaRegistracion = "";
+        }
+
+        // Si todos los campos pasan la validación o si algunos campos son "N/C", entonces retorna true
+        return true;
+    }
 
 }
 

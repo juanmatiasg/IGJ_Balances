@@ -20,6 +20,8 @@
         public Libro IVA { get; set; }
         public Libro IVACompras { get; set; }
         public Libro IVAVentas { get; set; }
+        public Libro LibroDiario { get; set; }
+
 
     }
 }

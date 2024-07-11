@@ -41,6 +41,8 @@
             <Libro libroP="modelo.AsistenciaAsamblea" OnBlur="() => HandleChange(modelo.AsistenciaAsamblea)"></Libro>
             <Libro libroP="modelo.IVACompras" OnBlur="() => HandleChange(modelo.IVACompras)"></Libro>
             <Libro libroP="modelo.IVAVentas" OnBlur="()=> HandleChange(modelo.IVAVentas)"></Libro>
+            <Libro libroP="modelo.LibroDiario" OnBlur="()=> HandleChange(modelo.LibroDiario)"></Libro>
+
 
         </div>
     </div>
@@ -52,6 +54,7 @@
 @code{
     private LibrosDto modelo = new LibrosDto();
 
+    
 
     [Parameter]
     public string? TipoEntidad { get; set; }
@@ -76,65 +79,33 @@
         // Encuentra el libro correspondiente en el modelo y actualiza sus valores
         if (libro != null)
         {
-            if (modelo.Asamblea == libro)
+            var libroPropiedades = new Dictionary<Func<LibrosDto, LibroDto>, Action<LibrosDto, LibroDto>>
+        {
+            { m => m.Asamblea, (m, l) => m.Asamblea = l },
+            { m => m.Administracion, (m, l) => m.Administracion = l },
+            { m => m.AsistenciaAsamblea, (m, l) => m.AsistenciaAsamblea = l },
+            { m => m.Auditor, (m, l) => m.Auditor = l },
+            { m => m.Efectivo, (m, l) => m.Efectivo = l },
+            { m => m.Fiscalizacion, (m, l) => m.Fiscalizacion = l },
+            { m => m.IVA, (m, l) => m.IVA = l },
+            { m => m.IVACompras, (m, l) => m.IVACompras = l },
+            { m => m.IVAVentas, (m, l) => m.IVAVentas = l },
+            { m => m.Resultados, (m, l) => m.Resultados = l },
+            { m => m.EstadosContablesConsolidados, (m, l) => m.EstadosContablesConsolidados = l },
+            { m => m.PatrimonioNeto, (m, l) => m.PatrimonioNeto = l },
+            { m => m.SituacionPatrimonial, (m, l) => m.SituacionPatrimonial = l },
+            { m => m.Memoria, (m, l) => m.Memoria = l },
+            { m => m.Informacion, (m, l) => m.Informacion = l },
+            { m => m.LibroDiario, (m, l) => m.LibroDiario = l }
+        };
+
+            foreach (var propiedad in libroPropiedades)
             {
-                modelo.Asamblea = libro;
-            }
-            else if (modelo.Administracion == libro)
-            {
-                modelo.Administracion = libro;
-            }
-            else if (modelo.AsistenciaAsamblea == libro)
-            {
-                modelo.AsistenciaAsamblea = libro;
-            }
-            else if (modelo.Auditor == libro)
-            {
-                modelo.Auditor = libro;
-            }
-            else if (modelo.Efectivo == libro)
-            {
-                modelo.Efectivo = libro;
-            }
-            else if (modelo.Fiscalizacion == libro)
-            {
-                modelo.Fiscalizacion = libro;
-            }
-            else if (modelo.IVA == libro)
-            {
-                modelo.IVA = libro;
-            }
-            else if (modelo.IVACompras == libro)
-            {
-                modelo.IVACompras = libro;
-            }
-            else if (modelo.IVAVentas == libro)
-            {
-                modelo.IVAVentas = libro;
-            }
-            else if (modelo.Resultados == libro)
-            {
-                modelo.Resultados = libro;
-            }
-            else if (modelo.EstadosContablesConsolidados == libro)
-            {
-                modelo.EstadosContablesConsolidados = libro;
-            }
-            else if (modelo.PatrimonioNeto == libro)
-            {
-                modelo.PatrimonioNeto = libro;
-            }
-            else if (modelo.SituacionPatrimonial == libro)
-            {
-                modelo.SituacionPatrimonial = libro;
-            }
-            else if (modelo.Memoria == libro)
-            {
-                modelo.Memoria = libro;
-            }
-            else if (modelo.Informacion == libro)
-            {
-                modelo.Informacion = libro;
+                if (propiedad.Key(modelo) == libro)
+                {
+                    propiedad.Value(modelo, libro);
+                    break;
+                }
             }
         }
 
