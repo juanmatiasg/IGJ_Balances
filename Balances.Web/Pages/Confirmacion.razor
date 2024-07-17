@@ -149,7 +149,7 @@
 
 
             responseDto.IsSuccess = false;
-
+            var libroStatus = Libros.isStatus;
 
             // var autoridades = rsp.Result.Autoridades;
 
@@ -172,11 +172,13 @@
 
             // var autoridadfirmante = autoridades.Where(_ => _.EsFirmante).FirstOrDefault();
 
+         
+
             if (!autoridadfirmante)
             {
 
 
-                swal.FireAsync(new SweetAlertOptions
+               await swal.FireAsync(new SweetAlertOptions
                     {
                         Icon = "warning",
                         Title = "No se pudo generar el manifiesto de presentación",
@@ -189,7 +191,7 @@
 
             else if (patrimonioNeto != otrosRubros)
             {
-                var alerta = await swal.FireAsync(new SweetAlertOptions
+                await swal.FireAsync(new SweetAlertOptions
                     {
                         Title = "No se pudo generar el Manifiesto de presentación",
                         Text = $"El total del patrimonio neto: ${patrimonioNeto} ARS no coincide con el total de Rubros del Patrimonio neto: ${otrosRubros} ARS",
@@ -199,6 +201,17 @@
                     });
 
             }
+            else if (!libroStatus)
+            {
+                await swal.FireAsync(new SweetAlertOptions
+                    {
+                        Title = "Error",
+                        Text = $"Faltan completar datos de Libros",
+                        Icon = SweetAlertIcon.Warning,
+                        ConfirmButtonText = "Cerrar"
+
+                    });
+            }
 
             else if (!LibroFiscalizacionSinDatos)
             {
@@ -206,7 +219,7 @@
                         || !DocumentacionActaReuniónAdministradores
                         || !DocumentacionInformeFiscalizacion)
                 {
-                    var alerta = await swal.FireAsync(new SweetAlertOptions
+                    await swal.FireAsync(new SweetAlertOptions
                         {
                             Title = "No se pudo generar el Manifiesto de presentación",
                             Text = $"Falta Adjuntar Documentacion. Los documentos Estados Contables, Acta Reunión Organo, Acta Reunión Administración e Informe de fiscalizacion son obligatorios",
@@ -230,7 +243,7 @@
 
                         // await ShowSuccessModal();
 
-                        var alerta = await swal.FireAsync(new SweetAlertOptions
+                         await swal.FireAsync(new SweetAlertOptions
                             {
                                 Title = "Presentacion Generada con Exito",
                                 Text = $"Recibira la presentacion del balance para su descarga en su email {rsp.Result.Caratula.Email}",
@@ -247,7 +260,7 @@
                 if (!DocumentacionActaReuniOrgano || !DocumentacionEstadoContable
                      || !DocumentacionActaReuniónAdministradores)
                 {
-                    var alerta = await swal.FireAsync(new SweetAlertOptions
+                     await swal.FireAsync(new SweetAlertOptions
                         {
                             Title = "No se pudo generar el Manifiesto de presentación",
                             Text = $"Falta Adjuntar Documentacion. Los documentos Estados Contables, Acta Reunión Organo, Acta Reunión Administración son obligatorios",
@@ -270,7 +283,7 @@
                         responseDto.Result = response.Result;
 
 
-                        var alerta = await swal.FireAsync(new SweetAlertOptions
+                         await swal.FireAsync(new SweetAlertOptions
                             {
                                 Title = "Presentacion Generada con Exito",
                                 Text = $"Recibira la presentacion del balance para su descarga en su email {rsp.Result.Caratula.Email}",

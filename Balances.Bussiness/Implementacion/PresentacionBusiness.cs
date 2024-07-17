@@ -92,6 +92,7 @@ namespace Balances.Bussiness.Implementacion
 
             bal.Result.Presentacion.Fecha = DateTime.Now;
             bal.Result.Presentacion.BinarioPdf = binariopdf;
+            _balanceBusiness.Update(bal.Result);
 
 
 
@@ -119,7 +120,6 @@ namespace Balances.Bussiness.Implementacion
             }
 
             //actualizo la base con los datos de la presentacion
-            _balanceBusiness.Update(bal.Result);
 
             return respuesta;
         }
