@@ -69,9 +69,6 @@
     [Parameter]
     public string sesionId { get; set; }
 
-    [Parameter]
-    public static bool isStatus { get; set; }
-
     protected override async void OnInitialized()
     {
         await Load();
@@ -123,12 +120,11 @@
 
     private async Task<ResponseDTO<BalanceDto>> insertLibros(LibrosDto libros)
     {
-        isStatus = false;
         ResponseDTO<BalanceDto> respuesta = new();
-        
+
         try
         {
-         
+
             if (libros.Asamblea.Nombre is null || libros.Asamblea.Nombre == "" ||
           libros.LibroDiario.Nombre is null || libros.LibroDiario.Nombre == "" ||
           libros.Memoria.Nombre is null || libros.Memoria.Nombre == "" ||
@@ -156,7 +152,6 @@
             {
                 libros.SessionId = sesionId;
                 respuesta = await serviceLibro.insertLibros(libros);
-            isStatus = true;
 
                 notificationService.Notify(new NotificationMessage
                     {

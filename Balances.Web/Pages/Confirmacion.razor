@@ -20,10 +20,10 @@
 <Navegacion PaginaActiva="Confirmacion" TramiteIniciado="true" balid="@balid"></Navegacion>
 
 
-    <div class="d-flex justify-content-center mt-4 mb-4">
+<div class="d-flex justify-content-center mt-4 mb-4">
     <RadzenButton Icon="class" Text="Generar manifiesto de presentación" ButtonType="Radzen.ButtonType.Submit" Click=@generarPresentacion class="d-block mt-4" />
-      @*   <button type ="button" @onclick="generarPresentacion" class="btn btn-primary">Generar manifiesto</button> *@
-    </div>
+    @*   <button type ="button" @onclick="generarPresentacion" class="btn btn-primary">Generar manifiesto</button> *@
+</div>
 
 <!--Loading-->
 
@@ -146,104 +146,98 @@
         var responseDto = new ResponseDTO<BalanceDto>();
         try
         {
-
-
-            responseDto.IsSuccess = false;
-            var libroStatus = Libros.isStatus;
-
-            // var autoridades = rsp.Result.Autoridades;
-
-            var estadocontable = rsp.Result.EstadoContable;
-            var otrosRubros = SumaEECC.OtrosRubrosPatrimonioNeto(estadocontable);
-            var patrimonioNeto = SumaEECC.PatrimonioNeto(estadocontable);
-            var LibroFiscalizacionSinDatos = rsp.Result.Libros.Fiscalizacion.FolioUltimaRegistracion.Contains("N/C");
-
-            var documentacion = rsp.Result.Archivos;
-
-            var autoridadfirmante = rsp.Result.Autoridades.Any(_ => _.EsFirmante == true);
-
-            var DocumentacionEstadoContable = rsp.Result.Archivos.Any(_ => _.Categoria == "Estado Contable");
-
-            var DocumentacionActaReuniOrgano = rsp.Result.Archivos.Any(_ => _.Categoria == "Acta de Reunión de Socios");
-
-            var DocumentacionActaReuniónAdministradores = rsp.Result.Archivos.Any(_ => _.Categoria == "Acta de Reunión Administradores");
-
-            var DocumentacionInformeFiscalizacion = rsp.Result.Archivos.Any(_ => _.Categoria == "Informe Fiscalizacion");
-
-            // var autoridadfirmante = autoridades.Where(_ => _.EsFirmante).FirstOrDefault();
-
-         
-
-            if (!autoridadfirmante)
+            if (rsp.Result.Archivos is null ||
+            rsp.Result.Autoridades is null ||
+            rsp.Result.EstadoContable is null ||
+            rsp.Result.Libros is null ||
+            rsp.Result.Socios is null ||
+            rsp.Result.Contador is null
+            )
             {
-
-
-               await swal.FireAsync(new SweetAlertOptions
+                await swal.FireAsync(new SweetAlertOptions
                     {
                         Icon = "warning",
                         Title = "No se pudo generar el manifiesto de presentación",
 
-                        Text = "Es obligatorio que haya una Autoridad firmante. Regresar a la ventana Autoridades y realizar la modificación ",
+                        Text = "hay datos obligatorios sin completar. Por favor, verifica y completa la información necesaria.",
                         ConfirmButtonText = "Aceptar"
 
                     });
             }
-
-            else if (patrimonioNeto != otrosRubros)
+            else
             {
-                await swal.FireAsync(new SweetAlertOptions
-                    {
-                        Title = "No se pudo generar el Manifiesto de presentación",
-                        Text = $"El total del patrimonio neto: ${patrimonioNeto} ARS no coincide con el total de Rubros del Patrimonio neto: ${otrosRubros} ARS",
-                        Icon = SweetAlertIcon.Warning,
-                        ConfirmButtonText = "Cerrar"
+                responseDto.IsSuccess = false;
 
-                    });
+                // var autoridades = rsp.Result.Autoridades;
 
-            }
-            else if (!libroStatus)
-            {
-                await swal.FireAsync(new SweetAlertOptions
-                    {
-                        Title = "Error",
-                        Text = $"Faltan completar datos de Libros",
-                        Icon = SweetAlertIcon.Warning,
-                        ConfirmButtonText = "Cerrar"
+                var estadocontable = rsp.Result.EstadoContable;
+                var otrosRubros = SumaEECC.OtrosRubrosPatrimonioNeto(estadocontable);
+                var patrimonioNeto = SumaEECC.PatrimonioNeto(estadocontable);
 
-                    });
-            }
+                var LibroFiscalizacionSinDatos = rsp.Result.Libros.Fiscalizacion.FolioUltimaRegistracion.Contains("N/C");
 
-            else if (!LibroFiscalizacionSinDatos)
-            {
-                if (!DocumentacionActaReuniOrgano || !DocumentacionEstadoContable
-                        || !DocumentacionActaReuniónAdministradores
-                        || !DocumentacionInformeFiscalizacion)
+                var documentacion = rsp.Result.Archivos;
+
+                var autoridadfirmante = rsp.Result.Autoridades.Any(_ => _.EsFirmante == true);
+
+                var DocumentacionEstadoContable = rsp.Result.Archivos.Any(_ => _.Categoria == "Estado Contable");
+
+                var DocumentacionActaReuniOrgano = rsp.Result.Archivos.Any(_ => _.Categoria == "Acta de Reunión de Socios");
+
+                var DocumentacionActaReuniónAdministradores = rsp.Result.Archivos.Any(_ => _.Categoria == "Acta de Reunión Administradores");
+
+                var DocumentacionInformeFiscalizacion = rsp.Result.Archivos.Any(_ => _.Categoria == "Informe Fiscalizacion");
+
+                // var autoridadfirmante = autoridades.Where(_ => _.EsFirmante).FirstOrDefault();
+
+
+
+                if (!autoridadfirmante)
+                {
+
+
+                    await swal.FireAsync(new SweetAlertOptions
+                        {
+                            Icon = "warning",
+                            Title = "No se pudo generar el manifiesto de presentación",
+
+                            Text = "Es obligatorio que haya una Autoridad firmante. Regresar a la ventana Autoridades y realizar la modificación ",
+                            ConfirmButtonText = "Aceptar"
+
+                        });
+                }
+
+                else if (patrimonioNeto != otrosRubros)
                 {
                     await swal.FireAsync(new SweetAlertOptions
                         {
                             Title = "No se pudo generar el Manifiesto de presentación",
-                            Text = $"Falta Adjuntar Documentacion. Los documentos Estados Contables, Acta Reunión Organo, Acta Reunión Administración e Informe de fiscalizacion son obligatorios",
+                            Text = $"El total del patrimonio neto: ${patrimonioNeto} ARS no coincide con el total de Rubros del Patrimonio neto: ${otrosRubros} ARS",
                             Icon = SweetAlertIcon.Warning,
                             ConfirmButtonText = "Cerrar"
 
                         });
+
                 }
-                else
+
+                else if (!LibroFiscalizacionSinDatos)
                 {
-
-                    var response = await presentacionService.generarPresentacion(sesionId);
-
-                    if (response.IsSuccess)
+                    if (!DocumentacionActaReuniOrgano || !DocumentacionEstadoContable
+                            || !DocumentacionActaReuniónAdministradores
+                            || !DocumentacionInformeFiscalizacion)
                     {
+                        await swal.FireAsync(new SweetAlertOptions
+                            {
+                                Title = "No se pudo generar el Manifiesto de presentación",
+                                Text = $"Falta Adjuntar Documentacion. Los documentos Estados Contables, Acta Reunión Organo, Acta Reunión Administración e Informe de fiscalizacion son obligatorios",
+                                Icon = SweetAlertIcon.Warning,
+                                ConfirmButtonText = "Cerrar"
 
-
-                        responseDto.IsSuccess = response.IsSuccess;
-                        responseDto.Message = response.Message;
-                        responseDto.Result = response.Result;
-
-                        // await ShowSuccessModal();
-
-                         await swal.FireAsync(new SweetAlertOptions
+                            });
+                    }
+                    else
+                    {
+                        swal.FireAsync(new SweetAlertOptions
                             {
                                 Title = "Presentacion Generada con Exito",
                                 Text = $"Recibira la presentacion del balance para su descarga en su email {rsp.Result.Caratula.Email}",
@@ -251,39 +245,36 @@
                                 ConfirmButtonText = "Cerrar"
 
                             });
-                    }
-                }
-            }
 
-            else if (LibroFiscalizacionSinDatos)
-            {
-                if (!DocumentacionActaReuniOrgano || !DocumentacionEstadoContable
-                     || !DocumentacionActaReuniónAdministradores)
-                {
-                     await swal.FireAsync(new SweetAlertOptions
-                        {
-                            Title = "No se pudo generar el Manifiesto de presentación",
-                            Text = $"Falta Adjuntar Documentacion. Los documentos Estados Contables, Acta Reunión Organo, Acta Reunión Administración son obligatorios",
-                            Icon = SweetAlertIcon.Warning,
-                            ConfirmButtonText = "Cerrar"
 
-                        });
-                }
-                else
-                {
-                    await ShowLoadingModal();
-                    var response = await presentacionService.generarPresentacion(sesionId);
-
-                    if (response.IsSuccess)
-                    {
-
+                        var response = await presentacionService.generarPresentacion(sesionId);
 
                         responseDto.IsSuccess = response.IsSuccess;
                         responseDto.Message = response.Message;
                         responseDto.Result = response.Result;
 
+                    }
+                }
 
-                         await swal.FireAsync(new SweetAlertOptions
+                else if (LibroFiscalizacionSinDatos)
+                {
+                    if (!DocumentacionActaReuniOrgano || !DocumentacionEstadoContable
+                         || !DocumentacionActaReuniónAdministradores)
+                    {
+                        await swal.FireAsync(new SweetAlertOptions
+                            {
+                                Title = "No se pudo generar el Manifiesto de presentación",
+                                Text = $"Falta Adjuntar Documentacion. Los documentos Estados Contables, Acta Reunión Organo, Acta Reunión Administración son obligatorios",
+                                Icon = SweetAlertIcon.Warning,
+                                ConfirmButtonText = "Cerrar"
+
+                            });
+                    }
+                    else
+                    {
+                        await ShowLoadingModal();
+
+                        swal.FireAsync(new SweetAlertOptions
                             {
                                 Title = "Presentacion Generada con Exito",
                                 Text = $"Recibira la presentacion del balance para su descarga en su email {rsp.Result.Caratula.Email}",
@@ -291,13 +282,20 @@
                                 ConfirmButtonText = "Cerrar"
 
                             });
+
+                        var response = await presentacionService.generarPresentacion(sesionId);
+
+                        responseDto.IsSuccess = response.IsSuccess;
+                        responseDto.Message = response.Message;
+                        responseDto.Result = response.Result;
                     }
 
-                }
 
+
+                }
             }
+
         }
-
         catch (Exception ex)
         {
             return new ResponseDTO<BalanceDto>
@@ -313,7 +311,7 @@
         return responseDto;
     }
 
-  
+
     // Método para mostrar el modal de carga
     private Task ShowLoadingModal()
     {
