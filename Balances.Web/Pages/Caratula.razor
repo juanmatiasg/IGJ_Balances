@@ -96,15 +96,37 @@
                     <FluentValidationValidator />
                     <div class="row d-flex justify-content-center align-items-end">
 
-                        <div class="col">
-                            <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
-                                <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
-                            </RadzenFormField>
-                            <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
-                        </div>
+                        @if (!rectificatoria)
+                        {
+                            <div class="col">
+                                <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
+                                    <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
+                            </div>
 
-                        <div class="col d-block">
-                            <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click=FindEntities Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                            <div class="col d-block">
+                                <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click="FindEntities" Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col">
+                                <RadzenFormField Text="Id Balance" Style="width:100%">
+                                    <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="IdTramite" />
+                                </RadzenFormField>
+                            </div>
+                            <div class="col d-block">
+                                <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click="RectificarTramite" Text="Rectificar" ButtonStyle="ButtonStyle.Danger" />
+                            </div>
+                        }
+                        <div class="col">
+                        <RadzenStack >
+                            <RadzenLabel Style="font-size:large; font-weight:700" Component="CheckBox3">
+                                <RadzenCheckBox @bind-Value="@rectificatoria" Name="CheckBox3" />
+                                ¿ Es rectificatoria ?
+                            </RadzenLabel>
+                        </RadzenStack>
                         </div>
                     </div>
                 </EditForm>
@@ -215,8 +237,11 @@
     [Parameter] public string? RazonSocial { get; set; }
 
     private BusquedaEntidadRequest modelbusqueda = new();
-    private bool entidadEncontrada;
 
+    private bool rectificatoria = false;
+    private string IdTramite;
+
+    private bool entidadEncontrada;
     public static bool isActive = false;
 
 
@@ -468,9 +493,6 @@
 
         StateHasChanged();
 
-
-        StateHasChanged();
-
     }
 
     private void ResetCaratula()
@@ -551,6 +573,11 @@
 
         StateHasChanged();
 
+    }
+
+    private async Task RectificarTramite()
+    {
+        NavigationManager.NavigateTo($"Rectificar/{IdTramite}");
     }
 
 }

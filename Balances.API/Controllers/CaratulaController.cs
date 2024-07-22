@@ -27,6 +27,15 @@ namespace Balances.API.Controllers
             return Ok(rsp);
         }
 
+        [HttpPost("RectificarCaratula")]
+        public IActionResult Rectificar(BalanceDto balance)
+
+        {
+
+            var rsp = _caratulaBusiness.Rectificar(balance);
+            return Ok(rsp);
+        }
+
         [HttpPost("UpdateCaratula")]
         public IActionResult Update(CaratulaDto caratuladto)
 

@@ -75,6 +75,37 @@ namespace Balances.Web.Services.Implementation
             return responseDto;
         }
 
+        public async Task<ResponseDTO<BalanceDto>> rectificarBalance(BalanceDto balance)
+        {
+            var responseDto = new ResponseDTO<BalanceDto>();
+            try
+            {
+
+                // Enviar la solicitud POST directamente con PostAsJsonAsync
+                var response = await _httpClient.PostAsJsonAsync("Caratula/RectificarCaratula", balance);
+
+                // Leer la respuesta JSON y deserializarla a ResponseDTO<CaratulaDto>
+                var result = await response.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
+
+
+
+
+
+                responseDto.Result = result.Result;
+                responseDto.IsSuccess = result.IsSuccess;
+                responseDto.Message = result.Message;
+
+
+
+            }
+            catch
+            {
+                throw;
+            }
+
+            return responseDto;
+        }
+
         public async Task<ResponseDTO<BalanceDto>> updateCaratula(CaratulaDto caratula)
         {
             var responseDto = new ResponseDTO<BalanceDto>();

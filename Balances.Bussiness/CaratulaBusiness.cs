@@ -94,6 +94,63 @@ namespace Balances.Bussiness
             return respuesta;
         }
 
+        public ResponseDTO<BalanceDto> Rectificar(BalanceDto balance)
+        {
+            ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
+            respuesta.IsSuccess = false;
+            var caratulaSerializada = JsonConvert.SerializeObject(balance.Caratula);
+
+            try
+            {
+
+                var balanceNew = new Balance();
+
+                balanceNew.Caratula = balance.Caratula;
+                
+                var rsp = _balanceBusiness.Insert(balanceNew);
+
+                var balanceDto = _mapper.Map<BalanceDto>(balanceNew);
+
+                //Setea ID nuevo balance
+                balance.Id = balanceDto.Id;
+
+                // Setea campos viejos al nuevo balance
+                balanceDto = balance;
+
+                var rst = _balanceBusiness.Update(balanceDto);
+
+
+                var plantillahtml = CrearPlantillaInicioTramite(balanceDto);
+
+                var email = CrearEmaiInicioTramite(balanceDto, plantillahtml);
+                //var EmailRequest = _emailSenderService.EmaiInicioTramite(balanceDto);
+                _emailSenderService.SendEmailAsync(email);
+
+                // si inserto correctamente
+                if (rsp != null)
+                {
+                    //_sessionService.SetSession(balance.Id);
+
+                    respuesta.IsSuccess = true;
+                    respuesta.Message = "Caratula creada correctamente";
+                    respuesta.Result = balanceDto;
+                    _logger.LogInformation($"CaratulaBusiness.Insert --> {caratulaSerializada}");
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.Message = ex.Message;
+                _logger.LogError($"CaratulaBusiness.Insert  \n {caratulaSerializada}  \n {ex.Message} ");
+
+
+            }
+            return respuesta;
+        }
+
+
         public ResponseDTO<BalanceDto> Update(CaratulaDto modelo)
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();

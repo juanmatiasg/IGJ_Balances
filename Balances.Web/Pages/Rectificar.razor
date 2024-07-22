@@ -1,0 +1,350 @@
+﻿@page "/RectificarCarga/{balid?}";
+@using Balances.DTO;
+@using Balances.Model
+@using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
+@using Balances.Web.Services.FluentValidation;
+@using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.JSInterop
+@using Balances.Web.Services
+@using System.Text.RegularExpressions;
+@using System.Text.Json;
+@using GoogleMapsComponents.Maps.Places
+@using FluentValidation.Results
+@inject IJSRuntime JS
+@inject ICaratulaClientService caratulaService
+@inject IBalanceClientService balanceService
+@inject ISessionClientService sesionService
+@inject IBusquedaDeSociedadesClientService busquedaSociedadService
+@inject NavigationManager NavigationManager;
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject IHttpContextAccessor httpContextAccessor
+@inject DialogService dialogService
+@inject SweetAlertService swal
+
+<!--Navegacion-->
+
+<Navegacion PaginaActiva="Rectificar" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
+
+<!--Loading-->
+<RadzenDialog />
+
+
+<!--Entidad-->
+
+
+<div class="container my-0">
+    <div class="card mx-auto  bg-light">
+
+        <div class="card-body bg-light">
+
+            <div class="card-header" style="color: #FFF; background-color:#15153D; font-weight: bold; text-align: center;">
+                Datos de la sociedad
+            </div>
+            <RadzenStack>
+                <EditForm Model="@modelo">
+                    <div class="d-flex p-1 justify-content-around">
+                        <RadzenStack>
+                            <span style="color:#15153D;"><b>Correlativo: @(modelo.Entidad.Correlativo ?? "")</b></span>
+                        </RadzenStack>
+                        <RadzenStack>
+                            <span style="color:#15153D;"><b>Razón Social: @(modelo.Entidad.RazonSocial ?? "")</b></span>
+                        </RadzenStack>
+                        <RadzenStack>
+                            <span style="color:#15153D;"><b>Tipo de Entidad: @(modelo.Entidad.TipoEntidad ?? "")</b></span>
+                        </RadzenStack>
+                    </div>
+
+                    <FluentValidationValidator />
+
+                    <div class="row ps-3 pt-3">
+                        <div class="form-group col">
+                            <RadzenFormField Text="Domicilio" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@(modelo.Entidad.Domicilio)" id="txtAddress" />
+                            </RadzenFormField>
+                            <ValidationMessage For="@(()=> @modelo.Entidad.Domicilio)" />
+                        </div>
+
+
+                        <div class="col mt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="sedeInscripta" @bind="@modelo.Entidad.SedeSocialInscripta">
+                                <label class="form-check-label" for="flexCheckDefault">¿Es Sede Social Inscripta?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  ps-3 pt-3 pe-3">
+                        <div class="col">
+                            <RadzenFormField Text="Fecha de Inicio" Style="width:100%">
+                                <RadzenDatePicker @bind-Value="@modelo.FechaInicio" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" />
+                            </RadzenFormField>
+
+                            <ValidationMessage For="@(()=> @modelo.FechaInicio)" />
+
+                        </div>
+                        <div class="col">
+                            <RadzenFormField Text="Fecha de Cierre" Style="width:100%">
+                                <RadzenDatePicker @bind-Value="@modelo.FechaDeCierre" DateFormat="dd/MM/yyyy" Name="DatePickerTimeOnlyType" Placeholder="dd/mm/yyyy" />
+                            </RadzenFormField>
+
+                            <ValidationMessage For="@(()=> @modelo.FechaDeCierre)" />
+                        </div>
+                    </div>
+
+                    <div class="row  ps-3 pt-3 pe-3">
+                        <div class="col mb-4">
+                            <RadzenFormField Text="Email" Style="width:100%">
+                                <RadzenTextBox @bind-Value="@modelo.Email" />
+                            </RadzenFormField>
+                            <ValidationMessage For="@(()=> @modelo.Email)" />
+                        </div>
+                    </div>
+
+                    <div class="col mt-4 mb-4 d-flex justify-content-center">
+                        <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@RectificarTramite Text="Iniciar Rectificaciòn" ButtonStyle="ButtonStyle.Info" />
+                    </div>
+                </EditForm>
+            </RadzenStack>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+
+
+@code {
+
+
+    private ElementReference addressBox;
+    private RadzenTextBox? addressBoxRadzenTextBox;
+    private Autocomplete? autocomplete;
+    private string? placeData;
+    private string? formattedAddress;
+
+
+
+
+    [Parameter] public string? TipoEntidad { get; set; }
+    [Parameter] public string? RazonSocial { get; set; }
+
+    private BusquedaEntidadRequest modelbusqueda = new();
+    private bool entidadEncontrada;
+
+    public static bool isActive = false;
+    private bool tramiteIniciado = false;
+
+
+    [Parameter]
+    public string? balid { get; set; } = null;
+
+
+    [Parameter]
+    public string sesionId { get; set; }
+
+
+    private BalanceDto balancedto = new();
+
+    private CaratulaDto modelo = new CaratulaDto
+        {
+            Entidad = new Model.Entidad()
+
+        };
+
+    private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await Load();
+
+        await base.OnInitializedAsync();
+    }
+
+
+
+    private async Task Load()
+    {
+        try
+        {
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+
+            if (sesionId == null)
+            {
+                var sesionRespuesta = await sesionService.getNewSession();
+
+                sesionId = sesionRespuesta.Result;
+                await sessionStorage.SetItemAsync("SessionId", sesionId);
+            }
+            else
+            {
+
+
+                var rsp = await sesionService.getBalanceId(sesionId);
+
+                if (rsp is not null)
+                {
+                    balid = rsp;
+
+                    var response = await balanceService.getBalance(rsp);
+
+                    if (response.IsSuccess)
+                    {
+                        balancedto = response.Result;
+
+                        if (balancedto != null)
+                        {
+                            var resultCaratula = balancedto.Caratula;
+
+                            setPropertiesCaratula(resultCaratula);
+
+                            Navegacion.TipoEntidad = resultCaratula.Entidad.TipoEntidad;
+                            Navegacion.RazonSocial = resultCaratula.Entidad.RazonSocial;
+                            Navegacion.NroCorrelativo = resultCaratula.Entidad.Correlativo;
+
+                        }
+                        else
+                        {
+                            await swal.FireAsync(new SweetAlertOptions
+                                {
+                                    Title = "Error",
+                                    Text = $"El Numero de ID Balance es incorrecto o no existe",
+                                    Icon = SweetAlertIcon.Error,
+                                    ShowCancelButton = true,
+                                    ConfirmButtonText = "Aceptar"
+
+                                });
+
+                            NavigationManager.NavigateTo($"Caratula");
+
+                        }
+                    }
+                }
+                StateHasChanged();
+            }
+        }
+        catch
+        {
+
+            throw;
+
+        }
+
+
+    }
+
+
+    private void setPropertiesCaratula(Model.Caratula caratula)
+    {
+
+        modelo.Email = caratula.Email;
+        modelo.FechaInicio = caratula.FechaInicio;
+        modelo.FechaDeCierre = caratula.FechaDeCierre;
+        modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
+        modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
+        modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
+        modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
+        modelo.Entidad.SedeSocialInscripta = caratula.Entidad.SedeSocialInscripta;
+
+
+    }
+
+
+    private async Task RectificarTramite()
+    {
+
+        try
+        {
+
+            sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
+            modelo.SesionId = sesionId;
+
+
+            CaratulaValidator caratulaValidator = new();
+            ValidationResult result = caratulaValidator.Validate(modelo);
+
+
+            if (result.IsValid)
+            {
+                var alerta = await swal.FireAsync(new SweetAlertOptions
+                    {
+                        Title = "Inicio rectificacion del tramite presentacion de balances y asamblea",
+                        Text = $" Verique Datos: {modelo.Entidad.RazonSocial} {modelo.Entidad.TipoEntidad}, Correlativo: {modelo.Entidad.Correlativo} Fecha cierre ejercicio: {modelo.FechaDeCierre?.ToString("dd/MM/yyyy")}",
+                        Icon = SweetAlertIcon.Warning,
+                        ShowCancelButton = true,
+                        CancelButtonText = "Cancelar",
+                        ConfirmButtonText = "Confirmar"
+
+                    });
+                if (alerta.IsConfirmed)
+                {
+                    var rsp = await caratulaService.updateCaratula(modelo);
+
+                    balancedto.Caratula = rsp.Result.Caratula;
+
+
+                    var rst = await caratulaService.rectificarBalance(balancedto);
+
+                    await sesionService.setBalanceId(sesionId, rst.Result.Id);
+
+
+                    if (rst.IsSuccess)
+                    {
+                        await swal.FireAsync(new SweetAlertOptions
+                            {
+                                Title = "Rectificacion iniciada exitosamente",
+                                Text = $" Te va a llegar un correo {modelo.Email} con un enlace para poder continuar la carga en cualquier instante y lugar.  ",
+                                Icon = SweetAlertIcon.Success,
+                                ShowCancelButton = true,
+                                ConfirmButtonText = "Aceptar"
+
+                            });
+
+                        var resultCaratula = rsp.Result.Caratula;
+
+                        Navegacion.TipoEntidad = resultCaratula.Entidad.TipoEntidad;
+                        Navegacion.RazonSocial = resultCaratula.Entidad.RazonSocial;
+                        Navegacion.NroCorrelativo = resultCaratula.Entidad.Correlativo;
+                        Navegacion.FechaDeCierre = resultCaratula.FechaDeCierre;
+                        Navegacion.IdBalance = rst.Result.Id;
+
+                        isActive = true;
+                        tramiteIniciado = true;
+
+
+                        StateHasChanged();
+                    }
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: IniciarTramites {ex.Message}");
+            await swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Error",
+                    Text = $"No se ha podido iniciar el tramite de presentación",
+                    Icon = SweetAlertIcon.Error,
+                    ShowCancelButton = true,
+                    ConfirmButtonText = "Aceptar"
+
+                });
+        }
+
+
+        StateHasChanged();
+
+    }
+
+
+
+
+}
+

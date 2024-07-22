@@ -9,6 +9,6 @@ namespace Balances.Bussiness.Contrato
 
         ResponseDTO<BalanceDto> Update(CaratulaDto modelo);
 
-
+        ResponseDTO<BalanceDto> Rectificar(BalanceDto balance);
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/ContinuarCarga/{balid}"
+﻿@page "/rectificar/{balid}"
 @using Balances.DTO;
 @using Balances.Utilities;
 @using Balances.Web.Services.Implementation;
@@ -17,14 +17,13 @@
     </RadzenProgressBarCircular>
 </RadzenStack>
 
-
 @code {
     [Parameter]
     public string balid { get; set; }
     [Parameter]
     public string sesionId { get; set; }
 
-    protected  override async void OnInitialized()
+    protected override async void OnInitialized()
     {
         /*cargar la caratula*/
 
@@ -40,12 +39,7 @@
         await sesionService.setBalanceId(sesionId, balid);
 
 
-        NavigationManager.NavigateTo($"Caratula/{balid}");
+        NavigationManager.NavigateTo($"RectificarCarga/{balid}");
 
     }
-
-  
-
-   
-
 }
