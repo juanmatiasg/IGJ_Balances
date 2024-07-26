@@ -20,5 +20,12 @@ namespace Balances.Web.Services.Implementation
 
             return balance;
         }
+
+        public async Task<ResponseDTO<List<BalanceDto>>> listBalances(string correlativo)
+        {
+            var listaBalances = await _httpClient.GetFromJsonAsync<ResponseDTO<List<BalanceDto>>>($"Balance/GetAll/{correlativo}");
+
+            return listaBalances;
+        }
     }
 }

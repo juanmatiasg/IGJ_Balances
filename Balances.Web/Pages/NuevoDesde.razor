@@ -1,4 +1,4 @@
-﻿@page "/RectificarCarga/{balid?}";
+﻿@page "/NuevoDesde/{balid}"
 @using Balances.DTO;
 @using Balances.Model
 @using Balances.Utilities;
@@ -27,7 +27,7 @@
 
 <!--Navegacion-->
 
-<Navegacion PaginaActiva="Rectificar" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
+<Navegacion PaginaActiva="NuevoDesde" TramiteIniciado="@tramiteIniciado" balid="@balid"></Navegacion>
 
 <!--Loading-->
 <RadzenDialog />
@@ -105,7 +105,7 @@
                     </div>
 
                     <div class="col mt-4 mb-4 d-flex justify-content-center">
-                        <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@RectificarTramite Text="Iniciar Rectificaciòn" ButtonStyle="ButtonStyle.Info" />
+                        <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@nuevoDesde Text="Iniciar Nuevo Con Datos Previos" ButtonStyle="ButtonStyle.Info" />
                     </div>
                 </EditForm>
             </RadzenStack>
@@ -238,10 +238,6 @@
     private void setPropertiesCaratula(Model.Caratula caratula)
     {
 
-        modelo.Email = caratula.Email;
-        modelo.FechaInicio = caratula.FechaInicio;
-        modelo.FechaDeCierre = caratula.FechaDeCierre;
-        modelo.Entidad.Domicilio = caratula.Entidad.Domicilio;
         modelo.Entidad.Correlativo = caratula.Entidad.Correlativo;
         modelo.Entidad.RazonSocial = caratula.Entidad.RazonSocial;
         modelo.Entidad.TipoEntidad = caratula.Entidad.TipoEntidad;
@@ -251,7 +247,7 @@
     }
 
 
-    private async Task RectificarTramite()
+    private async Task nuevoDesde()
     {
 
         try
@@ -269,7 +265,7 @@
             {
                 var alerta = await swal.FireAsync(new SweetAlertOptions
                     {
-                        Title = "Inicio rectificacion del tramite presentacion de balances y asamblea",
+                        Title = "Inicio Nuevo tramite presentacion de balances y asamblea",
                         Text = $" Verique Datos: {modelo.Entidad.RazonSocial} {modelo.Entidad.TipoEntidad}, Correlativo: {modelo.Entidad.Correlativo} Fecha cierre ejercicio: {modelo.FechaDeCierre?.ToString("dd/MM/yyyy")}",
                         Icon = SweetAlertIcon.Warning,
                         ShowCancelButton = true,
@@ -293,7 +289,7 @@
                     {
                         await swal.FireAsync(new SweetAlertOptions
                             {
-                                Title = "Rectificacion iniciada exitosamente",
+                                Title = "Presentacion iniciada exitosamente",
                                 Text = $" Te va a llegar un correo {modelo.Email} con un enlace para poder continuar la carga en cualquier instante y lugar.  ",
                                 Icon = SweetAlertIcon.Success,
                                 ShowCancelButton = true,
@@ -340,4 +336,3 @@
 
 
 }
-

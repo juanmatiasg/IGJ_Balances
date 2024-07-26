@@ -114,14 +114,14 @@ namespace Balances.Bussiness
 
         }
 
-        public ResponseDTO<IEnumerable<BalanceDto>> List()
+        public ResponseDTO<IEnumerable<BalanceDto>> List(string correlativo)
 
         {
             ResponseDTO<IEnumerable<BalanceDto>> respuesta = new ResponseDTO<IEnumerable<BalanceDto>>();
             respuesta.IsSuccess = false;
             try
             {
-                var listaBalance = _balanceService.GetAll();
+                var listaBalance = _balanceService.GetAll(correlativo);
                 //var listaBalance = _balances.Find(p => true).ToList();
                 var listabalanceDto = _mapper.Map<List<BalanceDto>>(listaBalance);
 

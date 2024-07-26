@@ -60,9 +60,9 @@ namespace Balances.Services.Implementation
 
         }
 
-        public List<Balance> GetAll()
+        public List<Balance> GetAll(string correlativo)
         {
-            return _balances.Find(p => true).ToList();
+            return _balances.Find(p => p.Caratula.Entidad.Correlativo == correlativo).ToList();
         }
 
         public Balance GetById(string id)

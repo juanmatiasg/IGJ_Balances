@@ -117,16 +117,22 @@
                                 </RadzenFormField>
                             </div>
                             <div class="col d-block">
-                                <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click="RectificarTramite" Text="Rectificar" ButtonStyle="ButtonStyle.Danger" />
+                                <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click="@(() => RectificarTramite(IdTramite))" Text="Rectificar" ButtonStyle="ButtonStyle.Danger" />
                             </div>
                         }
                         <div class="col">
-                        <RadzenStack >
-                            <RadzenLabel Style="font-size:large; font-weight:700" Component="CheckBox3">
-                                <RadzenCheckBox @bind-Value="@rectificatoria" Name="CheckBox3" />
-                                ¿ Es rectificatoria ?
-                            </RadzenLabel>
-                        </RadzenStack>
+                            <RadzenStack>
+                                <RadzenLabel Style="font-size:large; font-weight:700" Component="CheckBox3">
+                                    <RadzenCheckBox @bind-Value="@rectificatoria" Name="CheckBox3" />
+                                    ¿ Es rectificatoria ?
+                                </RadzenLabel>
+                            </RadzenStack>
+                            <RadzenStack>
+                                <RadzenLabel Style="font-size:large; font-weight:700" Component="CheckBox3">
+                                    <RadzenCheckBox @bind-Value="@continuadora" Name="CheckBox3" />
+                                    ¿ Desea ver balances previos ?
+                                </RadzenLabel>
+                            </RadzenStack>
                         </div>
                     </div>
                 </EditForm>
@@ -217,6 +223,44 @@
         }
     </div>
 
+    @if (continuadora && !rectificatoria)
+    {
+
+        <div class="card w-100 ">
+            <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
+                Balances Previos
+            </div>
+            <div class="card-body">
+                <RadzenGrid AllowColumnResize="true" Data="listaBalances" TItem="BalanceDto">
+                    <Columns>
+                        <RadzenGridColumn TItem="BalanceDto" Width="8,5rem" Title="Fecha de Inicio">
+                            <Template Context="data">
+                                @($"{data.Caratula.FechaInicio.ToShortDateString()}")
+                            </Template>
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="BalanceDto" Width="8,5rem" Title="Fecha de Cierre">
+                            <Template Context="data">
+                                @($"{data.Caratula.FechaDeCierre.ToShortDateString()}")
+                            </Template>
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="BalanceDto" Width="8,5rem" Title="ID">
+                            <Template Context="data">
+                                @($"{data.Id}")
+                            </Template>
+                        </RadzenGridColumn>
+
+                        <RadzenGridColumn TItem="BalanceDto" Width="8,5rem" Title="Continuar Desde">
+                            <Template Context="balance">
+                                <RadzenButton Icon="history" ButtonStyle="ButtonStyle.Warning" Click="@(() => NuevoDesde(balance.Id))"></RadzenButton>
+                            </Template>
+                        </RadzenGridColumn>
+                    </Columns>
+
+                </RadzenGrid>
+            </div>
+        </div>
+    }
+
 </div>
 
 
@@ -239,6 +283,9 @@
     private BusquedaEntidadRequest modelbusqueda = new();
 
     private bool rectificatoria = false;
+
+    private bool continuadora = false;
+
     private string IdTramite;
 
     private bool entidadEncontrada;
@@ -255,6 +302,9 @@
     public string? sesion { get; set; }
 
     private bool tramiteIniciado = false;
+
+
+    public List<BalanceDto> listaBalances = new();
 
 
     private CaratulaDto modelo = new CaratulaDto
@@ -387,8 +437,18 @@
 
                         var response = await busquedaSociedadService.findSociedad(modelbusqueda.NroCorrelativoNroCUIL);
 
+
                         if (response != null)
                         {
+
+                            var rsp = await balanceService.listBalances(modelbusqueda.NroCorrelativoNroCUIL);
+
+                            if (rsp.IsSuccess)
+                            {
+                                listaBalances = rsp.Result;
+
+                            }
+
                             modelo.Entidad.Correlativo = response.Result.NroCorrelativo;
                             modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
                             modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
@@ -575,9 +635,14 @@
 
     }
 
-    private async Task RectificarTramite()
+    private async Task RectificarTramite(string id)
     {
-        NavigationManager.NavigateTo($"Rectificar/{IdTramite}");
+        NavigationManager.NavigateTo($"Rectificar/{id}");
+    }
+
+    private async Task NuevoDesde(string id)
+    {
+        NavigationManager.NavigateTo($"NuevoDesdeCarga/{id}");
     }
 
 }

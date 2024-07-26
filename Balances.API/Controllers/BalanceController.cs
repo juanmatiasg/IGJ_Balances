@@ -40,10 +40,10 @@ namespace Balances.API.Controllers
         }
 
 
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        [HttpGet("GetAll/{correlativo}")]
+        public IActionResult GetAll(string correlativo)
         {
-            var balances = _balanceBusiness.List();
+            var balances = _balanceBusiness.List(correlativo);
 
             if (balances == null) return NotFound();
 

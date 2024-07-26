@@ -109,13 +109,15 @@ namespace Balances.Bussiness
                 
                 var rsp = _balanceBusiness.Insert(balanceNew);
 
-                var balanceDto = _mapper.Map<BalanceDto>(balanceNew);
+                var balanceDto = _mapper.Map<BalanceDto>(rsp.Result);
 
-                //Setea ID nuevo balance
-                balance.Id = balanceDto.Id;
-
+               
                 // Setea campos viejos al nuevo balance
                 balanceDto = balance;
+
+                // Setea id al nuevo balance
+                balanceDto.Id = rsp.Result.Id;
+
 
                 var rst = _balanceBusiness.Update(balanceDto);
 

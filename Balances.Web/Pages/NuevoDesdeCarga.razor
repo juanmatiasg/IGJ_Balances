@@ -1,0 +1,45 @@
+﻿@page "/NuevoDesdeCarga/{balid?}"
+@using Balances.DTO;
+@using Balances.Utilities;
+@using Balances.Web.Services.Implementation;
+@using Org.BouncyCastle.Asn1.Ocsp;
+@using Balances.Web.Services.Contracts
+@inject NavigationManager NavigationManager
+@inject ICaratulaClientService caratulaService
+@inject IBalanceClientService balanceService
+
+@inject ISessionClientService sesionService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<RadzenStack AlignItems="AlignItems.Center" JustifyContent="Radzen.JustifyContent.Center" Wrap="Radzen.FlexWrap.Wrap" Class="rz-m-12" Gap="2rem">
+    <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+        <Template>Cargando</Template>
+    </RadzenProgressBarCircular>
+</RadzenStack>
+
+@code {
+    [Parameter]
+    public string balid { get; set; }
+    [Parameter]
+    public string sesionId { get; set; }
+
+    protected override async void OnInitialized()
+    {
+        /*cargar la caratula*/
+
+        var sesionRespuesta = await sesionService.getNewSession();
+
+        sesionId = sesionRespuesta.Result;
+
+
+        await sessionStorage.SetItemAsync("SessionId", sesionId);
+
+        //insertamos el balance en una sesion
+
+        await sesionService.setBalanceId(sesionId, balid);
+
+
+        NavigationManager.NavigateTo($"NuevoDesde/{balid}");
+
+    }
+}
