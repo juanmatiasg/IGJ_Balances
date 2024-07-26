@@ -18,7 +18,7 @@ namespace Balances.DTO
 
         public DateTime Fecha { get; set; }
 
-
+        public bool Rectificatorio { get; set; }
         public Entidad Entidad { get; set; }
 
         // Conversion method from Balance.Model.Caratula to CaratulaDto

@@ -220,6 +220,21 @@
 
                         }
                     }
+                    else
+                    {
+                        await swal.FireAsync(new SweetAlertOptions
+                            {
+                                Title = "Error",
+                                Text = $"El Numero de ID Balance es incorrecto o no existe",
+                                Icon = SweetAlertIcon.Error,
+                                ShowCancelButton = true,
+                                ConfirmButtonText = "Aceptar"
+
+                            });
+
+                        NavigationManager.NavigateTo($"Caratula");
+                    }
+
                 }
                 StateHasChanged();
             }
@@ -259,6 +274,7 @@
 
             sesionId = await sessionStorage.GetItemAsync<string>("SessionId");
             modelo.SesionId = sesionId;
+            modelo.Rectificatorio = true;
 
 
             CaratulaValidator caratulaValidator = new();
@@ -282,7 +298,8 @@
                     var rsp = await caratulaService.insertCaratula(modelo);
 
                     balancedto.Caratula = rsp.Result.Caratula;
-
+                    balancedto.Id = rsp.Result.Id;
+                    balancedto.Caratula.Rectificatorio = true;
 
                     var rst = await caratulaService.rectificarBalance(balancedto);
 

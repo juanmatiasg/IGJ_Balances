@@ -96,41 +96,22 @@
                     <FluentValidationValidator />
                     <div class="row d-flex justify-content-center align-items-end">
 
-                        @if (!rectificatoria)
-                        {
-                            <div class="col">
-                                <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
-                                    <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
-                                </RadzenFormField>
-                                <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
-                            </div>
+                        <div class="col">
+                            <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
+                                <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
+                            </RadzenFormField>
+                            <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
+                        </div>
 
-                            <div class="col d-block">
-                                <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click="FindEntities" Text="Buscar" ButtonStyle="ButtonStyle.Info" />
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col">
-                                <RadzenFormField Text="Id Balance" Style="width:100%">
-                                    <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="IdTramite" />
-                                </RadzenFormField>
-                            </div>
-                            <div class="col d-block">
-                                <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click="@(() => RectificarTramite(IdTramite))" Text="Rectificar" ButtonStyle="ButtonStyle.Danger" />
-                            </div>
-                        }
+                        <div class="col d-block">
+                            <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click="FindEntities" Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                        </div>
+
                         <div class="col">
                             <RadzenStack>
                                 <RadzenLabel Style="font-size:large; font-weight:700" Component="CheckBox3">
-                                    <RadzenCheckBox @bind-Value="@rectificatoria" Name="CheckBox3" />
-                                    ¿ Es rectificatoria ?
-                                </RadzenLabel>
-                            </RadzenStack>
-                            <RadzenStack>
-                                <RadzenLabel Style="font-size:large; font-weight:700" Component="CheckBox3">
                                     <RadzenCheckBox @bind-Value="@continuadora" Name="CheckBox3" />
-                                    ¿ Desea ver balances previos ?
+                                    ¿ Desea Rectificar o Continuar con Datos de Balances Previos ?
                                 </RadzenLabel>
                             </RadzenStack>
                         </div>
@@ -223,7 +204,7 @@
         }
     </div>
 
-    @if (continuadora && !rectificatoria)
+    @if (continuadora)
     {
 
         <div class="card w-100 ">
@@ -233,25 +214,33 @@
             <div class="card-body">
                 <RadzenGrid AllowColumnResize="true" Data="listaBalances" TItem="BalanceDto">
                     <Columns>
-                        <RadzenGridColumn TItem="BalanceDto" Width="8,5rem" Title="Fecha de Inicio">
+                        <RadzenGridColumn TItem="BalanceDto" Width="15%" Title="Fecha de Inicio">
                             <Template Context="data">
                                 @($"{data.Caratula.FechaInicio.ToShortDateString()}")
                             </Template>
                         </RadzenGridColumn>
-                        <RadzenGridColumn TItem="BalanceDto" Width="8,5rem" Title="Fecha de Cierre">
+                        <RadzenGridColumn TItem="BalanceDto" Width="15%" Title="Fecha de Cierre">
                             <Template Context="data">
                                 @($"{data.Caratula.FechaDeCierre.ToShortDateString()}")
                             </Template>
                         </RadzenGridColumn>
-                        <RadzenGridColumn TItem="BalanceDto" Width="8,5rem" Title="ID">
+                        <RadzenGridColumn TItem="BalanceDto" Width="25%" Title="ID">
                             <Template Context="data">
                                 @($"{data.Id}")
                             </Template>
                         </RadzenGridColumn>
 
-                        <RadzenGridColumn TItem="BalanceDto" Width="8,5rem" Title="Continuar Desde">
+                        <RadzenGridColumn TItem="BalanceDto" Width="45%" Title="Recuperar Balance / Rectificar">
                             <Template Context="balance">
-                                <RadzenButton Icon="history" ButtonStyle="ButtonStyle.Warning" Click="@(() => NuevoDesde(balance.Id))"></RadzenButton>
+
+
+                                <abbr title="Generar Nuevo Con Balance Previo">
+                                    <RadzenButton Icon="history" Text="Recuperar Bal." ButtonStyle="ButtonStyle.Warning" Click="@(() => NuevoDesde(balance.Id))"></RadzenButton>
+                                </abbr>
+                                <abbr title="Rectificar Balance">
+                                    <RadzenButton Icon="cached" Text="Rectificar" ButtonStyle="ButtonStyle.Danger" Click="@(() => RectificarTramite(balance.Id))"></RadzenButton>
+                                </abbr>
+
                             </Template>
                         </RadzenGridColumn>
                     </Columns>

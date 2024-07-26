@@ -41,9 +41,6 @@ namespace Balances.Bussiness
         }
 
 
-
-
-
         public ResponseDTO<Balance> Insert(CaratulaDto modelo)
         {
             ResponseDTO<Balance> respuesta = new ResponseDTO<Balance>();
@@ -94,6 +91,7 @@ namespace Balances.Bussiness
             return respuesta;
         }
 
+
         public ResponseDTO<BalanceDto> Rectificar(BalanceDto balance)
         {
             ResponseDTO<BalanceDto> respuesta = new ResponseDTO<BalanceDto>();
@@ -103,39 +101,23 @@ namespace Balances.Bussiness
             try
             {
 
-                var balanceNew = new Balance();
-
-                balanceNew.Caratula = balance.Caratula;
-                
-                var rsp = _balanceBusiness.Insert(balanceNew);
-
-                var balanceDto = _mapper.Map<BalanceDto>(rsp.Result);
-
-               
-                // Setea campos viejos al nuevo balance
-                balanceDto = balance;
-
-                // Setea id al nuevo balance
-                balanceDto.Id = rsp.Result.Id;
+                var rst = _balanceBusiness.Update(balance);
 
 
-                var rst = _balanceBusiness.Update(balanceDto);
+                var plantillahtml = CrearPlantillaInicioTramite(balance);
 
-
-                var plantillahtml = CrearPlantillaInicioTramite(balanceDto);
-
-                var email = CrearEmaiInicioTramite(balanceDto, plantillahtml);
+                var email = CrearEmaiInicioTramite(balance, plantillahtml);
                 //var EmailRequest = _emailSenderService.EmaiInicioTramite(balanceDto);
                 _emailSenderService.SendEmailAsync(email);
 
                 // si inserto correctamente
-                if (rsp != null)
+                if (rst != null)
                 {
                     //_sessionService.SetSession(balance.Id);
 
                     respuesta.IsSuccess = true;
                     respuesta.Message = "Caratula creada correctamente";
-                    respuesta.Result = balanceDto;
+                    respuesta.Result = balance;
                     _logger.LogInformation($"CaratulaBusiness.Insert --> {caratulaSerializada}");
                 }
 

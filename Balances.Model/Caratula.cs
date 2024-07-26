@@ -19,6 +19,8 @@ namespace Balances.Model
 
         public Entidad Entidad { get; set; }
 
+        public bool Rectificatorio { get; set; }
+
         public Caratula()
         {
 
