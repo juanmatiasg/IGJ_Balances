@@ -37,6 +37,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.11" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.CookiePolicy" Version="2.2.8" />
+    <PackageReference Include="MudBlazor" Version="7.5.0" />
     <PackageReference Include="Radzen.Blazor" Version="4.29.6" />
   </ItemGroup>
 
@@ -46,6 +47,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Pages\UpdatePersonaHumana.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
     <Content Update="Shared\MainLayout.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>

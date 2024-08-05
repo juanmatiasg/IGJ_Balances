@@ -95,32 +95,24 @@
 @code {
     private List<string> tipoDeArchivo = new List<string>()
         {
-            "Estado Contable",
+            "Estados Contables",
             "Acta de Reunión de Socios",
             "Acta de Reunión Administradores",
             "Informe Fiscalizacion",
             "Otro"
         };
-
-
     RadzenGrid<ArchivoDTO> grid;
-
     [Parameter]
     public string? TipoEntidad { get; set; }
-
     [Parameter]
     public string? balid { get; set; }
-
     [Parameter]
     public string sesionId { get; set; }
-
     public string categoria;
-
-
-
     private List<ArchivoDTO> listArchivo = new List<ArchivoDTO>();
     private ArchivoDTO archivo = new ArchivoDTO();
     private IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
+
 
 
 
@@ -194,9 +186,6 @@
         }
     }
 
-
-
-
     private async Task<ResponseDTO<BalanceDto>> DeleteArchivo(ArchivoDTO archivo)
     {
         var response = new ResponseDTO<BalanceDto>();
@@ -259,9 +248,6 @@
         return response;
     }
 
-
-
-
     private async Task<byte[]> ToByteArrayAsync(Stream stream)
     {
         using (var memoryStream = new MemoryStream())
@@ -270,9 +256,6 @@
             return memoryStream.ToArray();
         }
     }
-
-
-
 
     private void HandleFileUpload(InputFileChangeEventArgs e)
     {
@@ -375,4 +358,4 @@
         return response;
     }
 }
-}
+

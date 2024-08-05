@@ -22,7 +22,7 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IHttpContextAccessor httpContextAccessor
-@inject DialogService dialogService
+@inject Radzen.DialogService dialogService
 @inject SweetAlertService swal
 
 <!--Navegacion-->
@@ -105,7 +105,7 @@
                     </div>
 
                     <div class="col mt-4 mb-4 d-flex justify-content-center">
-                        <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@nuevoDesde Text="Iniciar Nuevo Con Datos Previos" ButtonStyle="ButtonStyle.Info" />
+                        <RadzenButton Variant="Radzen.Variant.Flat" Shade="Shade.Dark" Click=@nuevoDesde Text="Iniciar Nuevo Con Datos Previos" ButtonStyle="ButtonStyle.Info" />
                     </div>
                 </EditForm>
             </RadzenStack>
@@ -294,6 +294,7 @@
 
                     balancedto.Caratula = rsp.Result.Caratula;
                     balancedto.Id = rsp.Result.Id;
+                    balancedto.Archivos = null;
 
                     var rst = await caratulaService.rectificarBalance(balancedto);
 

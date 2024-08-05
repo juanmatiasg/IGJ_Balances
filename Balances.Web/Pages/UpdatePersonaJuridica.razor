@@ -1,0 +1,197 @@
+﻿@page "/UpdatePersonaJuridica"
+
+@using Balances.DTO;
+@using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
+@using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
+
+@inject ISociosClientService socioService
+@inject ISessionClientService sesionService
+@inject IBalanceClientService balanceService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+@inject NavigationManager NavigationManager
+@inject Radzen.DialogService dialogService;
+@inject SweetAlertService swal;
+@inject NotificationService notificationService
+@inject IDialogService DialogService;
+@using MudBlazor
+@using System
+
+<MudDialog>
+    <DialogContent>
+
+        <EditForm Model="@personaJuridica">
+
+            <div class="card-header" style="background-color: #15153D; color:#FFF; font-weight: bold; text-align: center;">
+                Datos de Persona Jurídica
+            </div>
+
+            <div class="card-body d-flex flex-column gap-1 w-100 ">
+
+                <FluentValidationValidator />
+
+                <div class="d-flex gap-1 ">
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Denominacion">
+                            <RadzenTextBox @bind-Value="@personaJuridica.Denominacion" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaJuridica.Denominacion)" />
+
+                    </RadzenStack>
+
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Nro. de CUIT">
+                            <RadzenTextBox @bind-Value="@personaJuridica.NroFiscal" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaJuridica.NroFiscal)" />
+
+                    </RadzenStack>
+                </div>
+
+
+                <div class="d-flex gap-1 ">
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Pais">
+                            <RadzenDropDown @bind-Value="@personaJuridica.Pais" Data=@Paises Name="DropDownBindValue" Style="width:100%" Change="OnCountryChanged" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaJuridica.Pais)" />
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Jurisdicción">
+                            <RadzenDropDown @bind-Value=@personaJuridica.Jurisdiccion Data=@Juridisccion Name="DropDownBindValue" Style="width:100%" Disabled=@isJurisdiccionDisabled />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaJuridica.Jurisdiccion)" />
+                    </RadzenStack>
+                </div>
+
+                <div class="d-flex justify-content-between w-100 gap-1">
+
+                    <RadzenStack Style="width:30%">
+                        <RadzenFormField Text="Acciones/Cuotas">
+                            <RadzenTextBox @bind-Value="@personaJuridica.Cuotas" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaJuridica.Cuotas)" />
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:30%">
+                        <RadzenFormField Text="Votos">
+                            <RadzenTextBox @bind-Value="@personaJuridica.Votos" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaJuridica.Votos)" />
+                    </RadzenStack>
+                    <RadzenStack Style="width:30%">
+                        <RadzenFormField Text="Valor Nominal">
+                            <RadzenTextBox @bind-Value="@personaJuridica.ValorNominal" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaJuridica.ValorNominal)" />
+                    </RadzenStack>
+                </div>
+            </div>
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton OnClick="save">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public string id { get; set; }
+    [Parameter] public PersonaJuridicaDto personaJuridica { get; set; }
+
+    [Parameter]
+    public string sesionId { get; set; }
+
+    public List<string> Paises { get; set; } = new List<string>();
+
+    private List<string> Juridisccion { get; set; } = new List<string>();
+
+    private bool isJurisdiccionDisabled = true;
+
+    private string[] tiposDocumentos =
+     {
+            "DNI",
+            "Pasaporte"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadJsonCountry();
+        await LoadJsonProvince();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadJsonProvince()
+    {
+        try
+        {
+            var provincias = await socioService.GetAllProvince();
+
+
+            Juridisccion.AddRange(provincias);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    public async Task LoadJsonCountry()
+    {
+        try
+        {
+            var countries = await socioService.GetAllCountries();
+
+            // Ordenar los nombres de los países en orden ascendente
+            countries.Sort();
+
+            foreach (var name in countries)
+            {
+                Paises.Add(name);
+            }
+        }
+
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+
+    }
+
+    private void OnCountryChanged(object value)
+    {
+        string selectedCountry = value.ToString()!;
+        if (selectedCountry == "Argentina")
+        {
+            isJurisdiccionDisabled = false;
+            personaJuridica.Jurisdiccion = "";
+        }
+        else
+        {
+            isJurisdiccionDisabled = true;
+            personaJuridica.Jurisdiccion = "Extranjero";
+
+        }
+    }
+
+
+
+    private void Cancel() => MudDialog.Cancel();
+    private void save() => MudDialog.Close(DialogResult.Ok(personaJuridica));
+
+
+
+    ResponseDTO<BalanceDto> rsp = new();
+
+
+}

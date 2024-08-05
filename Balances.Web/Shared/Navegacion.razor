@@ -12,7 +12,7 @@
         <img src="icon/balance2.png" style="height:1.5rem; width:auto;" />
         <Span Class="text-white fw-bolder">Cierre @FechaDeCierre?.ToString("yyyy") - </Span>
         <Span Class="text-white fw-bolder">@FechaDeCierre?.ToString("dd/MM/yyyy")</Span>
-        <Span Class="text-white fw-bolder position-absolute mx-2" Style="right:0;">Id: @IdBalance</Span>
+        <Span Class="text-white fw-bolder position-absolute mx-2" Style="right:0;">Id: @IdBalance / @(Rectificacion ? "Rectificación" : "Original")</Span>
     </Div>
 }
 else
@@ -39,8 +39,8 @@ else
 <div class="container-fluid  my-0">
     <RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="Radzen.JustifyContent.Center" class="rz-tabview-panel">
 
-        <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()"  RenderMode="TabRenderMode.Client" >
-            <Tabs >
+        <RadzenTabs Change="OnChange" TabPosition="@tabPosition" SelectedIndex="@GetSelectedIndex()" RenderMode="TabRenderMode.Client">
+            <Tabs>
                 <div class="container d-flex flex-wrap navbar navbar-expand-xl">
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -86,6 +86,7 @@ else
     [Parameter] public static string? RazonSocial { get; set; }
     [Parameter] public static DateTime? FechaDeCierre { get; set; }
     [Parameter] public static string? IdBalance { get; set; }
+    [Parameter] public static bool Rectificacion { get; set; }
 
 
     [Parameter] public string? PaginaActiva { get; set; } = "Caratula";

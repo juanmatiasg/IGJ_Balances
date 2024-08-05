@@ -28,6 +28,16 @@ namespace Balances.API.Controllers
 
         }
 
+        [HttpPost]
+        [Route("Update")]
+        public ResponseDTO<BalanceDto> Update([FromBody] AutoridadDto autoridadDto)
+        {
+
+            var rsp = _autoridadesBusiness.Update(autoridadDto);
+            return rsp;
+
+        }
+
         [HttpDelete]
         [Route("DeleteAutoridad")]
         public ResponseDTO<BalanceDto> Delete([FromBody] AutoridadDto autoridadDto)
@@ -37,5 +47,6 @@ namespace Balances.API.Controllers
             return rsp;
 
         }
+
     }
 }

@@ -49,6 +49,34 @@ namespace Balances.Web.Services.Contracts
 
             return rsp;
         }
+        public async Task<ResponseDTO<BalanceDto>> updatePersonaHumana(PersonaHumanaDto personaHumana)
+        {
+            ResponseDTO<BalanceDto> rsp = new();
+            rsp.IsSuccess = false;
+            try
+            {
+
+                // Enviar la solicitud POST directamente con PostAsJsonAsync
+                var respuesta = await _httpClient.PostAsJsonAsync("Socios/UpdatePersonaHumana", personaHumana);
+
+                // Leer la respuesta JSON y deserializarla
+                var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
+
+
+                rsp = result;
+                rsp.IsSuccess = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                // Manejar cualquier excepción que pueda ocurrir durante la solicitud
+                rsp.Message = ex.Message;
+
+            }
+
+            return rsp;
+        }
         public async Task<ResponseDTO<BalanceDto>> deletePersonaHumana(PersonaHumanaDto personaHumana)
         {
             ResponseDTO<BalanceDto> rsp = new ResponseDTO<BalanceDto>();
@@ -123,6 +151,34 @@ namespace Balances.Web.Services.Contracts
 
             return rsp;
         }
+        public async Task<ResponseDTO<BalanceDto>> updatePersonaJuridica(PersonaJuridicaDto personaJuridica)
+        {
+            ResponseDTO<BalanceDto> rsp = new();
+            rsp.IsSuccess = false;
+            try
+            {
+
+                // Enviar la solicitud POST directamente con PostAsJsonAsync
+                var respuesta = await _httpClient.PostAsJsonAsync("Socios/UpdatePersonaJuridica", personaJuridica);
+
+                // Leer la respuesta JSON y deserializarla
+                var result = await respuesta.Content.ReadFromJsonAsync<ResponseDTO<BalanceDto>>();
+
+
+                rsp = result;
+                rsp.IsSuccess = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                // Manejar cualquier excepción que pueda ocurrir durante la solicitud
+                rsp.Message = ex.Message;
+
+            }
+
+            return rsp;
+        }
         public async Task<ResponseDTO<BalanceDto>> deletePersonaJuridica(PersonaJuridicaDto personaJuridica)
         {
             ResponseDTO<BalanceDto> rsp = new ResponseDTO<BalanceDto>();
@@ -166,6 +222,7 @@ namespace Balances.Web.Services.Contracts
             }
             return rsp;
         }
+
 
         public async Task<List<string>> GetAllCountries()
         {
@@ -380,8 +437,6 @@ namespace Balances.Web.Services.Contracts
             }
 
         }
-
-
         public async Task<List<string>> GetAllProvince()
         {
             List<string> provinceNames = new List<string>();

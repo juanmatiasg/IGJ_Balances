@@ -22,7 +22,7 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IHttpContextAccessor httpContextAccessor
-@inject DialogService dialogService
+@inject Radzen.DialogService dialogService
 @inject SweetAlertService swal
 
 <!--Navegacion-->
@@ -105,7 +105,7 @@
                     </div>
 
                     <div class="col mt-4 mb-4 d-flex justify-content-center">
-                        <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@RectificarTramite Text="Iniciar Rectificaciòn" ButtonStyle="ButtonStyle.Info" />
+                        <RadzenButton Variant="Radzen.Variant.Flat" Shade="Shade.Dark" Click=@RectificarTramite Text="Iniciar Rectificaciòn" ButtonStyle="ButtonStyle.Info" />
                     </div>
                 </EditForm>
             </RadzenStack>
@@ -277,6 +277,7 @@
             modelo.Rectificatorio = true;
 
 
+
             CaratulaValidator caratulaValidator = new();
             ValidationResult result = caratulaValidator.Validate(modelo);
 
@@ -300,6 +301,8 @@
                     balancedto.Caratula = rsp.Result.Caratula;
                     balancedto.Id = rsp.Result.Id;
                     balancedto.Caratula.Rectificatorio = true;
+                    balancedto.Archivos = null;
+                    Navegacion.Rectificacion = true;
 
                     var rst = await caratulaService.rectificarBalance(balancedto);
 

@@ -1,0 +1,163 @@
+﻿@page "/UpdateAutoridad"
+
+@using Balances.DTO;
+@using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
+@using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
+
+@inject IAutoridadClientService autoridadService
+@inject ISessionClientService sesionService
+@inject IBalanceClientService balanceService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+@inject NavigationManager NavigationManager
+@inject Radzen.DialogService dialogService;
+@inject SweetAlertService swal;
+@inject NotificationService notificationService
+@inject IDialogService DialogService;
+@using MudBlazor
+@using System
+
+<MudDialog>
+    <DialogContent>
+
+        <EditForm Model="autoridad" class="d-flex gap-1  flex-column">
+
+            <FluentValidationValidator />
+            <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
+                Datos de la Autoridad
+            </div>
+
+
+            <div class="card-body d-flex flex-column gap-2 justify-content-between">
+
+
+                <!--Nombre y apellido-->
+                <div class="d-flex gap-1">
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Nombre">
+                            <RadzenTextBox MaxLength="24" type="text" @bind-Value="@autoridad.Nombre" />
+                            <ValidationMessage For="@(()=> autoridad.Nombre)" />
+                        </RadzenFormField>
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Apellido">
+                            <RadzenTextBox MaxLength="24" type="text" @bind-Value="@autoridad.Apellido" />
+                            <ValidationMessage For="@(()=> autoridad.Apellido)" />
+                        </RadzenFormField>
+
+                    </RadzenStack>
+
+
+                </div>
+
+                <!--DNI-->
+                <div class="d-flex justify-content-between w-100 gap-1">
+
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Text="Tipo de Documento">
+                            <RadzenDropDown @bind-Value=@autoridad.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" />
+                            <ValidationMessage For="@(()=> @autoridad.TipoDocumento)" />
+                        </RadzenFormField>
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Style="width:100%" Text="CUIL/CUIT">
+                            <RadzenTextBox @bind-Value="@autoridad.NroFiscal" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @autoridad.NroFiscal)" />
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Style="width:100%" Text="Documento">
+                            <RadzenTextBox @bind-Value="@autoridad.NroDocumento" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @autoridad.NroDocumento)" />
+                    </RadzenStack>
+
+                </div>
+
+
+                <!--Cargo y firma-->
+                <div class="d-flex gap-1 justify-content-between align-items-center">
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Cargo">
+                            <RadzenDropDown @bind-Value=@autoridad.Cargo Data=@cargos Name="DropDownBindValue" Style="width:100%" />
+                            <ValidationMessage For="@(()=> @autoridad.Cargo)" />
+                        </RadzenFormField>
+                    </RadzenStack>
+
+                    <div class="w-50 d-flex flex-column gap-1">
+
+                        <div class="d-flex w-75 gap-1">
+
+                            <RadzenLabel class="w-100" Text="Es Firmante del Manifiesto" Component="CheckBox3" />
+                            <RadzenCheckBox @bind-Value="@autoridad.EsFirmante" Name="CheckBox3" />
+                            <ValidationMessage For="@(()=> autoridad.EsFirmante)" />
+
+                        </div>
+
+                        <div class="d-flex w-75 gap-1">
+
+                            <RadzenLabel class="w-100" Text="Esta Vigente" Component="CheckBox3" />
+                            <RadzenCheckBox @bind-Value="@autoridad.EstaVigente" Name="CheckBox3" />
+                            <ValidationMessage For="@(()=> autoridad.EstaVigente)" />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton OnClick="save">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string id { get; set; }
+    [Parameter] public AutoridadDto autoridad { get; set; }
+
+
+    private AutoridadDto nuevoModelo;
+
+    [Parameter]
+    public string sesionId { get; set; }
+
+    private void Cancel() => MudDialog.Cancel();
+    private void save() => MudDialog.Close(DialogResult.Ok(autoridad));
+
+    private string[] tiposDocumentos =
+      {
+            "DNI",
+            "Pasaporte"
+    };
+
+    private string[] cargos = {
+            "Presidente",
+            "Vicepresidente",
+            "Director Titular",
+            "Director Suplente",
+            "Administrador Titular",
+            "Administrador Suplente",
+            "Gerente Titular",
+            "Gerente Suplente",
+            "Consejo de Vigilancia - Titular",
+            "Consejo de Vigilancia - Suplente",
+            "Sindicatura - Titular",
+            "Sindicatura - Suplente",
+            "Comisión Fiscalizadora - Titular",
+            "Comisión Fiscalizadora - Suplente"
+    };
+
+    ResponseDTO<BalanceDto> rsp = new();
+
+    
+}

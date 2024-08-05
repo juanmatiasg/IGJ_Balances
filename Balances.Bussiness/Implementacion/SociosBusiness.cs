@@ -108,6 +108,76 @@ namespace Balances.Bussiness.Implementacion
             return respuesta;
         }
 
+        public ResponseDTO<BalanceDto> UpdatePersonaHumana(PersonaHumanaDto modelo)
+        {
+            var personaSerializada = JsonConvert.SerializeObject(modelo);
+            var resultadoDto = new ResponseDTO<BalanceDto>();
+            resultadoDto.IsSuccess = false;
+            try
+            {
+                //RECUPERO BALANCE 
+                //var bal = _balanceBusiness.BalanceActual;
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+                var rst = _balanceBusiness.GetById(id);
+                var bal = rst.Result;
+                //BUSCO AUTORIDAD
+                var personaHumana = bal.Socios.PersonasHumanas.FirstOrDefault(x => x.Id == modelo.Id);
+                if (personaHumana != null)
+                {
+                    bal.Socios.PersonasHumanas.Remove(personaHumana);
+                    bal.Socios.PersonasHumanas.Add(modelo);
+                }
+                _balanceBusiness.Update(bal);
+
+                _logger.LogInformation($"AutoridadesBusiness.Delete: --> {personaSerializada}");
+                resultadoDto.IsSuccess = true;
+                resultadoDto.Message = "Persona Humana Actualizada correctamente";
+                resultadoDto.Result = bal;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"PersonaHumanaBusiness.Delete: \n {ex}");
+                resultadoDto.Message = ex.Message;
+            }
+
+            return resultadoDto;
+        }
+
+        public ResponseDTO<BalanceDto> UpdatePersonaJuridica(PersonaJuridicaDto modelo)
+        {
+            var personaSerializada = JsonConvert.SerializeObject(modelo);
+            var resultadoDto = new ResponseDTO<BalanceDto>();
+            resultadoDto.IsSuccess = false;
+            try
+            {
+                //RECUPERO BALANCE 
+                //var bal = _balanceBusiness.BalanceActual;
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+                var rst = _balanceBusiness.GetById(id);
+                var bal = rst.Result;
+                //BUSCO AUTORIDAD
+                var personaJuridica = bal.Socios.PersonasJuridicas.FirstOrDefault(x => x.Id == modelo.Id);
+                if (personaJuridica != null)
+                {
+                    bal.Socios.PersonasJuridicas.Remove(personaJuridica);
+                    bal.Socios.PersonasJuridicas.Add(modelo);
+                }
+                _balanceBusiness.Update(bal);
+
+                _logger.LogInformation($"PersonaJuridicaBusiness.Delete: --> {personaSerializada}");
+                resultadoDto.IsSuccess = true;
+                resultadoDto.Message = "Persona Juridica Actualizada correctamente";
+                resultadoDto.Result = bal;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"PersonaHumanaBusiness.Delete: \n {ex}");
+                resultadoDto.Message = ex.Message;
+            }
+
+            return resultadoDto;
+        }
+
         public ResponseDTO<BalanceDto> DeletePersonaHumana(PersonaHumanaDto modelo)
         {
             var respuesta = new ResponseDTO<BalanceDto>();

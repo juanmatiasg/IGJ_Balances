@@ -1,4 +1,5 @@
 ﻿using Balances.Bussiness.Contrato;
+using Balances.Bussiness.Implementacion;
 using Balances.DTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,16 @@ namespace Balances.API.Controllers
         {
 
             var rsp = _sociosBusiness.InsertPersonaHumana(personaHumanaDto);
+            return rsp;
+
+        }
+
+        [HttpPost]
+        [Route("UpdatePersonaHumana")]
+        public ResponseDTO<BalanceDto> UpdatePersonaHumana(PersonaHumanaDto personaHumanaDto)
+        {
+
+            var rsp = _sociosBusiness.UpdatePersonaHumana(personaHumanaDto);
             return rsp;
 
         }
@@ -57,7 +68,15 @@ namespace Balances.API.Controllers
 
         }
 
+        [HttpPost]
+        [Route("UpdatePersonaJuridica")]
+        public ResponseDTO<BalanceDto> UpdatePersonaJuridica(PersonaJuridicaDto personaJuridicaDto)
+        {
 
-        
+            var rsp = _sociosBusiness.UpdatePersonaJuridica(personaJuridicaDto);
+            return rsp;
+
+        }
+
     }
 }

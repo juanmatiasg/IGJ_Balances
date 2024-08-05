@@ -13,6 +13,8 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject SweetAlertService swal;
 @inject NotificationService notificationService
+@inject IDialogService DialogService;
+
 
 <Navegacion PaginaActiva="Integrante" TramiteIniciado=true balid="@balid"></Navegacion>
 
@@ -130,9 +132,10 @@
                         </RadzenGridColumn>
                         <RadzenGridColumn TItem="PersonaJuridicaDto" Width="4rem" Property="Cuotas" Title="ACC/CUO" />
                         <RadzenGridColumn TItem="PersonaJuridicaDto" Width="4rem" Property="Votos" Title="Votos" />
-                        <RadzenGridColumn TItem="PersonaJuridicaDto" Width="4rem">
+                        <RadzenGridColumn TItem="PersonaJuridicaDto" Width="5rem">
                             <Template Context="personaJuridica">
                                 <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => deletePersonaJuridica(personaJuridica))"></RadzenButton>
+                                <RadzenButton Icon="cached" ButtonStyle="Radzen.ButtonStyle.Info" Click="@(() => OpenDialogAsync(personaJuridica))"></RadzenButton>
                             </Template>
                         </RadzenGridColumn>
 
@@ -198,7 +201,7 @@
         try
         {
             var countries = await socioService.GetAllCountries();
-           
+
             // Ordenar los nombres de los países en orden ascendente
             countries.Sort();
 
@@ -230,6 +233,7 @@
 
         }
     }
+
     private async Task Load()
     {
         ResponseDTO<BalanceDto> rsp = new();
@@ -376,6 +380,65 @@
 
 
         return respuesta;
+    }
+
+    private async Task<ResponseDTO<BalanceDto>> updatePersonaJuridica(PersonaJuridicaDto nuevoModelo)
+    {
+        ResponseDTO<BalanceDto> respuesta = new();
+        try
+        {
+            PersonaJuridicaValidator personaValidator = new();
+            ValidationResult result = personaValidator.Validate(nuevoModelo);
+
+            if (result.IsValid)
+            {
+                nuevoModelo.SesionId = sesionId;
+                respuesta = await socioService.updatePersonaJuridica(nuevoModelo);
+                if (respuesta.IsSuccess)
+                {
+
+                    notificationService.Notify(new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Success,
+                            Duration = 3000,
+                            Summary = "Datos guardados correctamente"
+                        });
+
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            respuesta.Message = ex.Message;
+            notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Duration = 3000,
+                    Summary = "No se ha podido guardar los datos"
+                });
+        }
+
+        return respuesta;
+
+    }
+
+    private async Task OpenDialogAsync(PersonaJuridicaDto personaJuridica)
+    {
+
+        IDialogReference dialog;
+
+
+        var parameters = new DialogParameters();
+        parameters.Add("PersonaJuridica", personaJuridica);
+
+        dialog = DialogService.Show<UpdatePersonaJuridica>("Editar Integrante", parameters);
+
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            var nuevoModelo = result.Data as PersonaJuridicaDto;
+            await updatePersonaJuridica(nuevoModelo);
+        }
     }
 }
 

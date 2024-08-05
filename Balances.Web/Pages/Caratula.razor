@@ -12,7 +12,6 @@
 @using System.Text.RegularExpressions;
 @using System.Text.Json;
 @using GoogleMapsComponents.Maps.Places
-@using FluentValidation.Results
 @inject IJSRuntime JS
 @inject ICaratulaClientService caratulaService
 @inject IBalanceClientService balanceService
@@ -22,7 +21,7 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IHttpContextAccessor httpContextAccessor
-@inject DialogService dialogService
+@inject Radzen.DialogService dialogService
 @inject SweetAlertService swal
 
 
@@ -80,7 +79,7 @@
                             <h5 style="color:#15153D">Email: <b>@(modelo.Email)</b></h5>
                         </RadzenStack>
                     </div>
-                    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@ResetCaratula Text="Editar Caratula" ButtonStyle="ButtonStyle.Info" />
+                    <RadzenButton Variant="Radzen.Variant.Flat" Shade="Shade.Dark" Click=@ResetCaratula Text="Editar Caratula" ButtonStyle="ButtonStyle.Info" />
 
                 </RadzenCard>
             </div>
@@ -104,7 +103,7 @@
                         </div>
 
                         <div class="col d-block">
-                            <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Variant.Flat" Shade="Shade.Dark" Click="FindEntities" Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                            <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Radzen.Variant.Flat" Shade="Shade.Dark" Click="FindEntities" Text="Buscar" ButtonStyle="ButtonStyle.Info" />
                         </div>
 
                         <div class="col">
@@ -187,12 +186,12 @@
                         <div class="col mt-4 mb-4 d-flex justify-content-center">
                             @if (Navegacion.IdBalance != null)
                             {
-                                <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@EditarCaratula Text="Guardar" ButtonStyle="ButtonStyle.Info" />
+                                <RadzenButton Variant="Radzen.Variant.Flat" Shade="Shade.Dark" Click=@EditarCaratula Text="Guardar" ButtonStyle="ButtonStyle.Info" />
 
                             }
                             else
                             {
-                                <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@IniciarTramite Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
+                                <RadzenButton Variant="Radzen.Variant.Flat" Shade="Shade.Dark" Click=@IniciarTramite Text="Iniciar Trámite" ButtonStyle="ButtonStyle.Info" Disabled="@(!entidadEncontrada ||tramiteIniciado )" />
 
                             }
                         </div>
@@ -224,13 +223,13 @@
                                 @($"{data.Caratula.FechaDeCierre.ToShortDateString()}")
                             </Template>
                         </RadzenGridColumn>
-                        <RadzenGridColumn TItem="BalanceDto" Width="25%" Title="ID">
+                        <RadzenGridColumn TItem="BalanceDto" Width="35%" Title="ID">
                             <Template Context="data">
-                                @($"{data.Id}")
+                                @($"{data.Id}")  /  @(data.Caratula.Rectificatorio ? "Rectificación" : "Original")
                             </Template>
                         </RadzenGridColumn>
 
-                        <RadzenGridColumn TItem="BalanceDto" Width="45%" Title="Recuperar Balance / Rectificar">
+                        <RadzenGridColumn TItem="BalanceDto" Width="35%" Title="Recuperar Balance / Rectificar">
                             <Template Context="balance">
 
 
@@ -255,54 +254,35 @@
 
 
 @code {
-
-
     private ElementReference addressBox;
     private RadzenTextBox? addressBoxRadzenTextBox;
     private Autocomplete? autocomplete;
     private string? placeData;
     private string? formattedAddress;
-
-
-
-
     [Parameter] public string? TipoEntidad { get; set; }
     [Parameter] public string? RazonSocial { get; set; }
-
     private BusquedaEntidadRequest modelbusqueda = new();
-
     private bool rectificatoria = false;
-
     private bool continuadora = false;
-
     private string IdTramite;
-
     private bool entidadEncontrada;
     public static bool isActive = false;
-
-
     [Parameter]
     public string? balid { get; set; } = null;
-
-
     [Parameter]
     public string sesionId { get; set; }
-
     public string? sesion { get; set; }
-
     private bool tramiteIniciado = false;
-
-
     public List<BalanceDto> listaBalances = new();
-
-
     private CaratulaDto modelo = new CaratulaDto
         {
             Entidad = new Model.Entidad()
 
         };
-
     private Regex emailRegex = new Regex(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
+
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -311,8 +291,6 @@
 
         await base.OnInitializedAsync();
     }
-
-
 
     private async Task Load()
     {
@@ -353,7 +331,7 @@
                             Navegacion.NroCorrelativo = resultCaratula.Entidad.Correlativo;
                             Navegacion.FechaDeCierre = resultCaratula.FechaDeCierre;
                             Navegacion.IdBalance = response.Result.Id;
-
+                            Navegacion.Rectificacion = resultCaratula.Rectificatorio;
 
                             entidadEncontrada = true;
                             tramiteIniciado = true;
@@ -382,9 +360,6 @@
 
     }
 
-
-
-
     private void setPropertiesCaratula(Model.Caratula caratula)
     {
 
@@ -399,9 +374,6 @@
 
 
     }
-
-
-
 
     private async Task FindEntities()
     {
@@ -426,6 +398,7 @@
 
                         var response = await busquedaSociedadService.findSociedad(modelbusqueda.NroCorrelativoNroCUIL);
 
+                        StateHasChanged();
 
                         if (response != null)
                         {

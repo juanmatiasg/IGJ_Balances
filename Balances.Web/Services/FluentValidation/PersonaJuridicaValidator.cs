@@ -8,7 +8,6 @@ namespace Balances.Web.Services.FluentValidation
         public PersonaJuridicaValidator()
         {
             RuleFor(_ => _.Denominacion).Cascade(CascadeMode.Stop)
-                             .Matches(@"^[^\d]+$").WithMessage("La razón social no debe contener números")
                              .NotEmpty().WithMessage("Debe ingresar Razón Social");
 
             RuleFor(_ => _.Pais).Cascade(CascadeMode.Stop)

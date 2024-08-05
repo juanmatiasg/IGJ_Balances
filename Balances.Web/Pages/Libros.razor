@@ -135,9 +135,7 @@
           libros.Efectivo.Nombre is null || libros.Efectivo.Nombre == "" ||
           libros.Informacion.Nombre is null || libros.Informacion.Nombre == "" ||
           libros.Auditor.Nombre is null || libros.Auditor.Nombre == "" ||
-          libros.AsistenciaAsamblea.Nombre is null || libros.AsistenciaAsamblea.Nombre == "" ||
-          libros.IVACompras.Nombre is null || libros.IVACompras.Nombre == "" ||
-          libros.IVAVentas.Nombre is null || libros.IVAVentas.Nombre == "")
+          libros.AsistenciaAsamblea.Nombre is null || libros.AsistenciaAsamblea.Nombre == "" )
             {
                 var alerta = await swal.FireAsync(new SweetAlertOptions
                     {

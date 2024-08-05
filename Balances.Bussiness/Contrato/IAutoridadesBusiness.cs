@@ -7,5 +7,7 @@ namespace Balances.Bussiness.Contrato
         ResponseDTO<BalanceDto> Insert(AutoridadDto modelo);
         ResponseDTO<BalanceDto> Delete(AutoridadDto modelo);
 
+        ResponseDTO<BalanceDto> Update(AutoridadDto modelo);
+
     }
 }

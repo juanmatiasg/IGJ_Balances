@@ -58,6 +58,44 @@ namespace Balances.Bussiness.Implementacion
             return resultadoDto;
         }
 
+        public ResponseDTO<BalanceDto> Update(AutoridadDto modelo)
+        {
+            var autoridadSerializada = JsonConvert.SerializeObject(modelo);
+            var resultadoDto = new ResponseDTO<BalanceDto>();
+            resultadoDto.IsSuccess = false;
+            try
+            {
+                //RECUPERO BALANCE 
+                //var bal = _balanceBusiness.BalanceActual;
+                var id = _sessionService.GetBalanceId(modelo.SesionId);
+                var rst = _balanceBusiness.GetById(id);
+                var bal = rst.Result;
+                //BUSCO AUTORIDAD
+                var autoridad = bal.Autoridades.FirstOrDefault(x => x.Id == modelo.Id);
+
+                // SI LA ENCUENTRO LA ELIMINO Y ACTUALIZO
+                if (autoridad != null)
+                {
+                    bal.Autoridades.Remove(autoridad);
+                    bal.Autoridades.Add(modelo);
+                        };
+
+                _balanceBusiness.Update(bal);
+
+                _logger.LogInformation($"AutoridadesBusiness.Delete: --> {autoridadSerializada}");
+                resultadoDto.IsSuccess = true;
+                resultadoDto.Message = "Autoridad Actualizada correctamente";
+                resultadoDto.Result = bal;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"AutoridadesBusiness.Delete: \n {ex}");
+                resultadoDto.Message = ex.Message;
+            }
+
+            return resultadoDto;
+        }
+
 
         public ResponseDTO<BalanceDto> Insert(AutoridadDto modelo)
         {

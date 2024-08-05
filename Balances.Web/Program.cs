@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Http;
+using MudBlazor.Services;
 using Radzen;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -57,6 +58,7 @@ builder.Services.AddScoped<IBalanceClientService, BalanceClientService>();
 
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddRadzenComponents();
+builder.Services.AddMudServices();
 
 // Ejemplo de configuración para ASP.NET Core
 builder.Services.Configure<CookiePolicyOptions>(options =>

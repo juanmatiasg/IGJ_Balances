@@ -1,0 +1,143 @@
+﻿@page "/UpdatePersonaHumana"
+
+@using Balances.DTO;
+@using Balances.Utilities;
+@using Balances.Web.Services.Contracts;
+@using Balances.Web.Services.Implementation;
+@using FluentValidation.Results
+
+@inject ISociosClientService socioService
+@inject ISessionClientService sesionService
+@inject IBalanceClientService balanceService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+@inject NavigationManager NavigationManager
+@inject Radzen.DialogService dialogService;
+@inject SweetAlertService swal;
+@inject NotificationService notificationService
+@inject IDialogService DialogService;
+@using MudBlazor
+@using System
+
+<MudDialog>
+    <DialogContent>
+
+        <EditForm Model="@personaHumana">
+
+            <div class="card-header" style="color: #FFF;background-color:#15153D; font-weight: bold; text-align: center;">
+                Datos de Persona Humana
+            </div>
+
+            <div class="card-body d-flex flex-column gap-1 w-100 ">
+
+                <FluentValidationValidator />
+
+                <!--NOMBRE Y APELLIDO-->
+
+
+                <div class="d-flex gap-1 ">
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Nombre">
+                            <RadzenTextBox @bind-Value="@personaHumana.Nombre" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaHumana.Nombre)" />
+
+                    </RadzenStack>
+
+
+                    <RadzenStack Style="width:50%">
+                        <RadzenFormField Text="Apellido">
+                            <RadzenTextBox @bind-Value="@personaHumana.Apellido" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaHumana.Apellido)" />
+
+                    </RadzenStack>
+                </div>
+
+
+
+                <!--DOCUMENTO-->
+                <div class="d-flex justify-content-between w-100 gap-1">
+
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Text="Tipo de Documento">
+                            <RadzenDropDown @bind-Value=@personaHumana.TipoDocumento Data=@tiposDocumentos Name="DropDownBindValue" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaHumana.TipoDocumento)" />
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Style="width:100%" Text="CUIL/CUIT">
+                            <RadzenTextBox @bind-Value="@personaHumana.NroFiscal" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @personaHumana.NroFiscal)" />
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:30%;">
+                        <RadzenFormField Style="width:100%" Text="Documento">
+                            <RadzenTextBox @bind-Value="@personaHumana.NroDocumento" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> @personaHumana.NroDocumento)" />
+                    </RadzenStack>
+
+                </div>
+
+
+
+                <!--ACCIONES Y VOTOS-->
+                <div class="d-flex justify-content-between w-100 gap-1">
+
+                    <RadzenStack Style="width:30%">
+                        <RadzenFormField Text="Acciones/Cuotas">
+                            <RadzenTextBox @bind-Value="@personaHumana.Cuotas" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaHumana.Cuotas)" />
+                    </RadzenStack>
+
+                    <RadzenStack Style="width:30%">
+                        <RadzenFormField Text="Votos">
+                            <RadzenTextBox @bind-Value="@personaHumana.Votos" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaHumana.Votos)" />
+                    </RadzenStack>
+                    <RadzenStack Style="width:30%">
+                        <RadzenFormField Text="Valor Nominal">
+                            <RadzenTextBox @bind-Value="@personaHumana.ValorNominal" />
+                        </RadzenFormField>
+                        <ValidationMessage For="@(()=> personaHumana.ValorNominal)" />
+                    </RadzenStack>
+                </div>
+            </div>
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton OnClick="save">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string id { get; set; }
+    [Parameter] public PersonaHumanaDto personaHumana { get; set; }
+
+    [Parameter]
+    public string sesionId { get; set; }
+
+    private string[] tiposDocumentos =
+     {
+            "DNI",
+            "Pasaporte"
+    };
+
+    private void Cancel() => MudDialog.Cancel();
+    private void save() => MudDialog.Close(DialogResult.Ok(personaHumana));
+
+
+
+    ResponseDTO<BalanceDto> rsp = new();
+
+    
+}
