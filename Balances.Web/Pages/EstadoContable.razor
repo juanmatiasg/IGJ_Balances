@@ -34,7 +34,7 @@
     <div Class="card">
 
         <div class="card-header" style="color: white; font-weight: bold; text-align: center; background-color:#15153D;">
-            Estado Contable
+            Estados Contables
         </div>
         <EditForm Model="estadoContableDto">
 
@@ -456,7 +456,9 @@
                         estadoContableDto.SesionId = sesionId;
                         if(rsp.Result.EstadoContable != null){
 
-                        estadoContableDto = mapper.Map<EstadoContableDto>(rsp.Result.EstadoContable);
+                            estadoContableDto = mapper.Map<EstadoContableDto>(rsp.Result.EstadoContable);
+                            estadoContableDto.fechaInicio = rsp.Result.Caratula.FechaInicio;
+                            estadoContableDto.fechaEstado = rsp.Result.Caratula.FechaDeCierre;
                         }else{
                          await estadoContableService.insertEECC(estadoContableDto);
                         }

@@ -59,7 +59,9 @@ try
     builder.Services.AddScoped<IArchivoService, ArchivoService>();
     builder.Services.AddScoped<IPresentacionBusiness, PresentacionBusiness>();
 
-
+    //Captcha
+    builder.Services.AddHttpClient();
+    builder.Services.AddScoped<IReCaptchaService, ReCaptchaService>();
 
     //QR
     builder.Services.AddScoped<IQRService, QRService>();

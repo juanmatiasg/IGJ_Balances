@@ -28,6 +28,7 @@ namespace Balances.Services.Implementation
             SetTag("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
             SetTag("{{FechaEstado}}", balance.Caratula.FechaDeCierre.ToShortDateString());
             SetTag("{{Domicilio}}", balance.Caratula.Entidad.Domicilio);
+            SetTag("{{Rectificatorio}}", balance.Caratula.Rectificatorio ? "Rectificación" : "Original");
             SetTag("{{RepresentanteLegal.RepresentanteApellido}}", autoridadfirmante.Apellido);
             SetTag("{{RepresentanteLegal.RepresentanteNombre}}", autoridadfirmante.Nombre);
             SetTag("{{RepresentanteLegal.RepresentanteNroFiscal}}", autoridadfirmante.NroFiscal);
@@ -123,6 +124,7 @@ namespace Balances.Services.Implementation
             PlantillaHTML = PlantillaHTML.Replace("{{NroCorrelativo}}", balance.Caratula.Entidad.Correlativo);
             PlantillaHTML = PlantillaHTML.Replace("{{FechaEstado}}", balance.Caratula.FechaDeCierre.ToShortDateString());
             PlantillaHTML = PlantillaHTML.Replace("{{Domicilio}}", balance.Caratula.Entidad.Domicilio);
+            PlantillaHTML = PlantillaHTML.Replace("{{Rectificatorio}}", balance.Caratula.Rectificatorio ? "Rectificación" : "original");
             PlantillaHTML = PlantillaHTML.Replace("{{QR}}", qr);
             PlantillaHTML = PlantillaHTML.Replace("{{RepresentanteLegal.RepresentanteApellido}}", autoridadfirmante.Apellido);
             PlantillaHTML = PlantillaHTML.Replace("{{RepresentanteLegal.RepresentanteNombre}}", autoridadfirmante.Nombre);

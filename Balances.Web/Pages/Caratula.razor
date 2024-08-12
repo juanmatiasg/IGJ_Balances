@@ -12,6 +12,7 @@
 @using System.Text.RegularExpressions;
 @using System.Text.Json;
 @using GoogleMapsComponents.Maps.Places
+@using MudBlazor
 @inject IJSRuntime JS
 @inject ICaratulaClientService caratulaService
 @inject IBalanceClientService balanceService
@@ -23,8 +24,23 @@
 @inject IHttpContextAccessor httpContextAccessor
 @inject Radzen.DialogService dialogService
 @inject SweetAlertService swal
+@inject IReCaptchaClientService ReCaptchaServiceClient;
 
+<head>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfVmSEqAAAAAGD0Jm30ss6rGVp35N3s3dsYdTjP"></script>
+</head>
 
+<script>
+    function getToken() {
+        return new Promise((resolve) => {
+            grecaptcha.ready(function () {
+                grecaptcha.execute('6LfVmSEqAAAAAGD0Jm30ss6rGVp35N3s3dsYdTjP').then(function (token) {
+                    resolve(token);
+                });
+            });
+        });
+    }
+</script>
 
 <!--Navegacion-->
 
@@ -94,17 +110,35 @@
                 <EditForm Model="modelbusqueda">
                     <FluentValidationValidator />
                     <div class="row d-flex justify-content-center align-items-end">
-
-                        <div class="col">
-                            <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
-                                <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
-                            </RadzenFormField>
-                            <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
-                        </div>
-
-                        <div class="col d-block">
-                            <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Radzen.Variant.Flat" Shade="Shade.Dark" Click="FindEntities" Text="Buscar" ButtonStyle="ButtonStyle.Info" />
-                        </div>
+                        @* <MudProgressCircular Color="MudBlazor.Color.Primary" Style="height:70px;width:70px;" Class="@(loader ? "fixed": "hidden")" Indeterminate="true" /> *@
+                        @if (continuadora)
+                        {
+                            <div class="col">
+                                <RadzenFormField Text="Id Balance" Style="width:100%">
+                                    <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="IdTramite" />
+                                </RadzenFormField>
+                            </div>
+                            <div class="col d-block">
+                                <abbr title="Generar Nuevo Con Balance Previo">
+                                    <RadzenButton Icon="history" Text="Recuperar Bal." ButtonStyle="ButtonStyle.Warning" Click="@(() => NuevoDesde(IdTramite))"></RadzenButton>
+                                </abbr>
+                                <abbr title="Rectificar Balance">
+                                    <RadzenButton Icon="cached" Text="Rectificar" ButtonStyle="ButtonStyle.Danger" Click="@(() => RectificarTramite(IdTramite))"></RadzenButton>
+                                </abbr>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col">
+                                <RadzenFormField Text="Nro.Correlativo / CUIT / CUIL" Style="width:100%">
+                                    <RadzenTextBox Disabled="@(tramiteIniciado ? true : false)" @bind-Value="modelbusqueda.NroCorrelativoNroCUIL" />
+                                </RadzenFormField>
+                                <ValidationMessage For="@(()=> modelbusqueda.NroCorrelativoNroCUIL)" />
+                            </div>
+                            <div class="col d-block">
+                                <RadzenButton Disabled="@(tramiteIniciado ? true : false)" ButtonType="Radzen.ButtonType.Submit" Variant="Radzen.Variant.Flat" Shade="Shade.Dark" Click="GetAndSendToken" Text="Buscar" ButtonStyle="ButtonStyle.Info" />
+                            </div>
+                        }
 
                         <div class="col">
                             <RadzenStack>
@@ -203,7 +237,7 @@
         }
     </div>
 
-    @if (continuadora)
+    @* @if (continuadora)
     {
 
         <div class="card w-100 ">
@@ -247,7 +281,7 @@
                 </RadzenGrid>
             </div>
         </div>
-    }
+    } *@
 
 </div>
 
@@ -273,6 +307,7 @@
     public string sesionId { get; set; }
     public string? sesion { get; set; }
     private bool tramiteIniciado = false;
+    // private bool loader = false;
     public List<BalanceDto> listaBalances = new();
     private CaratulaDto modelo = new CaratulaDto
         {
@@ -375,6 +410,29 @@
 
     }
 
+    private async Task GetAndSendToken()
+    {
+        // loader = true;
+        var token = await JS.InvokeAsync<string>("getToken");
+
+        var isValid = await ValidateCaptcha(token);
+        @if (isValid)
+        {
+            FindEntities();
+        }
+        else
+        {
+            // Manejar el error de validación
+            Console.WriteLine("Captcha no válido");
+        }
+    }
+
+    private async Task<bool> ValidateCaptcha(string captchaToken)
+    {
+        return await ReCaptchaServiceClient.ValidarCaptcha(captchaToken);
+    }
+
+
     private async Task FindEntities()
     {
 
@@ -403,19 +461,20 @@
                         if (response != null)
                         {
 
-                            var rsp = await balanceService.listBalances(modelbusqueda.NroCorrelativoNroCUIL);
+                            // var rsp = await balanceService.listBalances(modelbusqueda.NroCorrelativoNroCUIL);
 
-                            if (rsp.IsSuccess)
-                            {
-                                listaBalances = rsp.Result;
+                            // if (rsp.IsSuccess)
+                            // {
+                            //     listaBalances = rsp.Result;
 
-                            }
+                            // }
 
                             modelo.Entidad.Correlativo = response.Result.NroCorrelativo;
                             modelo.Entidad.RazonSocial = response.Result.RazonSocial ?? "Entidad no encontrada";
                             modelo.Entidad.TipoEntidad = response.Result.TipoEntidad;
 
                             entidadEncontrada = true;
+                            // loader = false;
                             StateHasChanged();
                         }
                     }
@@ -606,5 +665,6 @@
     {
         NavigationManager.NavigateTo($"NuevoDesdeCarga/{id}");
     }
+
 
 }

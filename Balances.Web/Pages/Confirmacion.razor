@@ -180,7 +180,7 @@
 
                 var autoridadfirmante = rsp.Result.Autoridades.Any(_ => _.EsFirmante == true);
 
-                var DocumentacionEstadoContable = rsp.Result.Archivos.Any(_ => _.Categoria == "Estado Contable");
+                var DocumentacionEstadoContable = rsp.Result.Archivos.Any(_ => _.Categoria == "Estados Contables");
 
                 var DocumentacionActaReuniOrgano = rsp.Result.Archivos.Any(_ => _.Categoria == "Acta de Reunión de Socios");
 
